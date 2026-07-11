@@ -1,0 +1,503 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix gov: <https://w3id.org/sdkb/gov/> .
+@prefix ont: <https://w3id.org/sdkb/ont/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sdkb: <https://w3id.org/sdkb/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+sdkb:ont a owl:Ontology ;
+    rdfs:label "SDKB v1.1 — Semiconductor Domain Knowledge Base Ontology"@en ;
+    dcterms:creator "Park HyoungSik — SKKU MOT" ;
+    dcterms:license <https://spdx.org/licenses/CDLA-Permissive-2.0.html> ;
+    dcterms:modified "2026-05-12"^^xsd:date ;
+    dcterms:references <http://qudt.org/schema/qudt/>,
+        <http://w3id.org/SemicONTO/0.2/> ;
+    rdfs:comment "Provenance-grounded curation ontology for semiconductor manufacturing, covering process, equipment, materials, FMEA, and regulatory governance layers. SDKB-centric architecture: external ontologies (SemicONTO, QUDT, etc.) are REFERENCED via SKOS mappings and class-level skos:exactMatch back-links, NOT imported. See docs/architecture_amendment_sdkb_centric.md."@en ;
+    rdfs:seeAlso <https://github.com/arkwith7/semiconductor-knowledge-base/blob/main/docs/architecture_amendment_sdkb_centric.md>,
+        <https://w3id.org/sdkb/alignment/semiconto> ;
+    owl:imports <http://www.w3.org/ns/prov-o#> ;
+    owl:versionInfo "1.1.0-dev" .
+
+ont:DopingRelation a owl:Class ;
+    rdfs:label "DopingRelation"@en ;
+    rdfs:comment "A relation describing how a dopant modifies a host semiconductor (host material, dopant species, concentration, profile)."@en ;
+    skos:exactMatch <http://w3id.org/SemicONTO/DopingRelation> .
+
+ont:ElectronBeamLithography a owl:Class ;
+    rdfs:label "ElectronBeamLithography"@en ;
+    rdfs:comment "Patterning sub-process using a focused electron beam (direct-write or mask-making)."@en ;
+    rdfs:subClassOf ont:SubProcess ;
+    skos:exactMatch <http://w3id.org/SemicONTO/ElectronBeamLithography> .
+
+ont:FieldEffectMeasurement a owl:Class ;
+    rdfs:label "FieldEffectMeasurement"@en ;
+    rdfs:comment "Metrology determining field-effect mobility from a transistor characteristic."@en ;
+    rdfs:subClassOf ont:Metrology ;
+    skos:exactMatch <http://w3id.org/SemicONTO/FieldEffectMeasurement> .
+
+ont:HallEffectMeasurement a owl:Class ;
+    rdfs:label "HallEffectMeasurement"@en ;
+    rdfs:comment "Metrology determining carrier type, density, and mobility via the Hall effect."@en ;
+    rdfs:subClassOf ont:Metrology ;
+    skos:exactMatch <http://w3id.org/SemicONTO/HallEffectMeasurement> .
+
+ont:IntrinsicSemiconductor a owl:Class ;
+    rdfs:label "IntrinsicSemiconductor"@en ;
+    rdfs:comment "An undoped semiconductor whose carriers come from thermal excitation."@en ;
+    rdfs:subClassOf ont:Semiconductor ;
+    skos:exactMatch <http://w3id.org/SemicONTO/IntrinsicSemiconductor> .
+
+ont:NTypeSemiconductor a owl:Class ;
+    rdfs:label "NTypeSemiconductor"@en ;
+    rdfs:comment "An extrinsic semiconductor whose majority carriers are electrons (donor-doped)."@en ;
+    rdfs:subClassOf ont:ExtrinsicSemiconductor ;
+    skos:exactMatch <http://w3id.org/SemicONTO/N-TypeSemiconductor> .
+
+ont:Organization a owl:Class ;
+    rdfs:label "Organization"@en ;
+    rdfs:comment "An industry consortium, standards body, or institution."@en .
+
+ont:PTypeSemiconductor a owl:Class ;
+    rdfs:label "PTypeSemiconductor"@en ;
+    rdfs:comment "An extrinsic semiconductor whose majority carriers are holes (acceptor-doped)."@en ;
+    rdfs:subClassOf ont:ExtrinsicSemiconductor ;
+    skos:exactMatch <http://w3id.org/SemicONTO/P-TypeSemiconductor> .
+
+ont:PhotoelectronSpectroscopy a owl:Class ;
+    rdfs:label "PhotoelectronSpectroscopy"@en ;
+    rdfs:comment "Surface/composition metrology measuring photoelectron kinetic-energy spectra (XPS/UPS)."@en ;
+    rdfs:subClassOf ont:Metrology ;
+    skos:exactMatch <http://w3id.org/SemicONTO/PhotoelectronSpectroscopy> .
+
+ont:ThermalEvaporation a owl:Class ;
+    rdfs:label "ThermalEvaporation"@en ;
+    rdfs:comment "PVD sub-process where material is vaporized by resistive or e-beam heating in vacuum."@en ;
+    rdfs:subClassOf ont:SubProcess ;
+    skos:exactMatch <http://w3id.org/SemicONTO/ThermalEvaporation> .
+
+ont:affectsMetric a owl:ObjectProperty ;
+    rdfs:label "affectsMetric"@en ;
+    rdfs:comment "Metric affected by the failure (e.g. CD, LER)."@en ;
+    rdfs:domain ont:FailureMode ;
+    rdfs:range ont:Parameter .
+
+ont:belongsToFunction a owl:ObjectProperty ;
+    rdfs:label "belongsToFunction"@en ;
+    rdfs:comment "Outcome belongs to a NIST CSF 2.0 function."@en ;
+    rdfs:domain gov:NISTOutcome ;
+    rdfs:range gov:NISTFunction .
+
+ont:changeSet a owl:DatatypeProperty ;
+    rdfs:label "changeSet"@en ;
+    rdfs:comment "Release version tag for change tracking."@en ;
+    rdfs:range xsd:string .
+
+ont:confidence a owl:DatatypeProperty ;
+    rdfs:label "confidence"@en ;
+    rdfs:comment "Confidence score (0.0–1.0) from expert/literature."@en ;
+    rdfs:range xsd:decimal .
+
+ont:conflictNote a owl:DatatypeProperty ;
+    rdfs:label "conflictNote"@en ;
+    rdfs:comment "Note on unresolved alignment conflict."@en ;
+    rdfs:range xsd:string .
+
+ont:controlledBy a owl:ObjectProperty ;
+    rdfs:label "controlledBy"@en ;
+    rdfs:comment "Regulation controlling this item."@en ;
+    rdfs:domain gov:RegulatedItem ;
+    rdfs:range gov:EARRule .
+
+ont:deprecatedId a owl:DatatypeProperty ;
+    rdfs:label "deprecatedId"@en ;
+    rdfs:comment "Former ID preserved after merge."@en ;
+    rdfs:range xsd:string .
+
+ont:effectiveDate a owl:DatatypeProperty ;
+    rdfs:label "effectiveDate"@en ;
+    rdfs:comment "Regulatory effective date."@en ;
+    rdfs:range xsd:date .
+
+ont:granularity a owl:DatatypeProperty ;
+    rdfs:label "granularity"@en ;
+    rdfs:comment "Process granularity level (group/module/unit)."@en ;
+    rdfs:range xsd:string .
+
+ont:hardConstraint a owl:NamedIndividual,
+        ont:ConstraintType ;
+    rdfs:label "hardConstraint"@en .
+
+ont:hasAcceptor a owl:ObjectProperty ;
+    rdfs:label "hasAcceptor"@en ;
+    rdfs:comment "An extrinsic semiconductor's acceptor dopant material."@en ;
+    rdfs:domain ont:ExtrinsicSemiconductor ;
+    rdfs:range ont:Material ;
+    skos:exactMatch <http://w3id.org/SemicONTO/hasAcceptor> .
+
+ont:hasCommunicationProtocol a owl:ObjectProperty ;
+    rdfs:label "hasCommunicationProtocol"@en ;
+    rdfs:comment "Communication protocol standard (E30/EDA)."@en ;
+    rdfs:domain ont:Equipment ;
+    rdfs:range gov:StandardReference .
+
+ont:hasDonor a owl:ObjectProperty ;
+    rdfs:label "hasDonor"@en ;
+    rdfs:comment "An extrinsic semiconductor's donor dopant material."@en ;
+    rdfs:domain ont:ExtrinsicSemiconductor ;
+    rdfs:range ont:Material ;
+    skos:exactMatch <http://w3id.org/SemicONTO/hasDonor> .
+
+ont:hasECCN a owl:ObjectProperty ;
+    rdfs:label "hasECCN"@en ;
+    rdfs:comment "Links equipment class to ECCN classification."@en ;
+    rdfs:domain ont:EquipmentClass ;
+    rdfs:range gov:RegulatedItem .
+
+ont:hasEquipment a owl:ObjectProperty ;
+    rdfs:label "hasEquipment"@en ;
+    rdfs:comment "Links a sub-process step to a specific equipment instance (complements usesEquipmentClass at the class level)."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range ont:Equipment ;
+    skos:exactMatch <http://w3id.org/SemicONTO/hasEquipment> .
+
+ont:hasEquipmentState a owl:ObjectProperty ;
+    rdfs:label "hasEquipmentState"@en ;
+    rdfs:comment "Current equipment state per SEMI E10."@en ;
+    rdfs:domain ont:Equipment ;
+    rdfs:range gov:EquipmentState .
+
+ont:hasMeasuredProperty a owl:ObjectProperty ;
+    rdfs:label "hasMeasuredProperty"@en ;
+    rdfs:comment "Links a sub-process (typically Metrology) to the material property it measures."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range ont:MaterialProperty ;
+    skos:exactMatch <http://w3id.org/SemicONTO/hasMeasuredProperty> .
+
+ont:hasNextStep a owl:ObjectProperty ;
+    rdfs:label "hasNextStep"@en ;
+    rdfs:comment "Links a sub-process step to its immediately succeeding step."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range ont:SubProcess ;
+    skos:exactMatch <http://w3id.org/SemicONTO/hasNextStep> .
+
+ont:hasNumericValue a owl:DatatypeProperty ;
+    rdfs:label "hasNumericValue"@en ;
+    rdfs:comment "Numeric value of a Quantity. Unit is given by hasUnitSymbol."@en ;
+    rdfs:domain ont:Quantity ;
+    rdfs:range xsd:decimal ;
+    skos:closeMatch <http://qudt.org/schema/qudt/numericValue> .
+
+ont:hasParameter a owl:ObjectProperty ;
+    rdfs:label "hasParameter"@en ;
+    rdfs:comment "A measurable parameter of a sub-process."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range ont:Parameter .
+
+ont:hasProperty a owl:ObjectProperty ;
+    rdfs:label "hasProperty"@en ;
+    rdfs:comment "Links a material to one of its measurable properties."@en ;
+    rdfs:domain ont:Material ;
+    rdfs:range ont:MaterialProperty ;
+    skos:exactMatch <http://w3id.org/SemicONTO/hasProperty> .
+
+ont:hasSVHC a owl:ObjectProperty ;
+    rdfs:label "hasSVHC"@en ;
+    rdfs:comment "Material linked to SCIP reporting rule."@en ;
+    rdfs:domain ont:Material ;
+    rdfs:range gov:SCIPRule .
+
+ont:hasSubStep a owl:ObjectProperty,
+        owl:TransitiveProperty ;
+    rdfs:label "hasSubStep"@en ;
+    rdfs:comment "Links a sub-process step to a nested sub-step (transitive)."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range ont:SubProcess ;
+    skos:exactMatch <http://w3id.org/SemicONTO/hasSubStep> .
+
+ont:hasSubprocess a owl:ObjectProperty ;
+    rdfs:label "hasSubprocess"@en ;
+    rdfs:comment "Links a process to its sub-steps."@en ;
+    rdfs:domain ont:Process ;
+    rdfs:range ont:SubProcess .
+
+ont:hasUnitSymbol a owl:DatatypeProperty ;
+    rdfs:label "hasUnitSymbol"@en ;
+    rdfs:comment "String symbol of a Quantity's unit (e.g. 'mTorr', 'W', '°C'). Pragmatic Phase 1 form; future versions may bind to qudt:Unit IRIs."@en ;
+    rdfs:domain ont:Quantity ;
+    rdfs:range xsd:string .
+
+ont:incompatibleWith a owl:ObjectProperty ;
+    rdfs:label "incompatibleWith"@en ;
+    rdfs:comment "Material incompatible with a sub-process."@en ;
+    rdfs:domain [ a owl:Class ;
+            owl:unionOf ( ont:SubProcess ont:EquipmentClass ont:Material ) ] ;
+    rdfs:range ont:Material .
+
+ont:interpretationType a owl:DatatypeProperty ;
+    rdfs:label "interpretationType"@en ;
+    rdfs:comment "Interpretation: verbatim | mapped | author-defined."@en ;
+    rdfs:range xsd:string .
+
+ont:isDueTo a owl:ObjectProperty ;
+    rdfs:label "isDueTo"@en ;
+    rdfs:comment "Causal link from failure to root cause."@en ;
+    rdfs:domain ont:FailureMode ;
+    rdfs:range ont:RootCause .
+
+ont:isInstanceOf a owl:ObjectProperty ;
+    rdfs:label "isInstanceOf"@en ;
+    rdfs:comment "Equipment belongs to a class."@en ;
+    rdfs:domain ont:Equipment ;
+    rdfs:range ont:EquipmentClass .
+
+ont:madeBy a owl:ObjectProperty ;
+    rdfs:label "madeBy"@en ;
+    rdfs:comment "Material produced by vendor."@en ;
+    rdfs:domain [ a owl:Class ;
+            owl:unionOf ( ont:Material ont:EquipmentClass ) ] ;
+    rdfs:range ont:Vendor .
+
+ont:measuredBy a owl:ObjectProperty ;
+    rdfs:label "measuredBy"@en ;
+    rdfs:comment "Metrology method for a sub-process."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range ont:Metrology .
+
+ont:mitigatedBy a owl:ObjectProperty ;
+    rdfs:label "mitigatedBy"@en ;
+    rdfs:comment "Mitigation action for a failure mode."@en ;
+    rdfs:domain [ a owl:Class ;
+            owl:unionOf ( ont:FailureMode ont:RootCause ) ] ;
+    rdfs:range ont:Mitigation .
+
+ont:notAllowedWith a owl:ObjectProperty ;
+    rdfs:label "notAllowedWith"@en ;
+    rdfs:comment "Material not permitted in a sub-process."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range [ a owl:Class ;
+            owl:unionOf ( ont:Material ont:Parameter ont:SubProcess ) ] .
+
+ont:occursAtProcessStep a owl:ObjectProperty ;
+    rdfs:label "occursAtProcessStep"@en ;
+    rdfs:comment "Failure observed at a process step."@en ;
+    rdfs:domain ont:FailureMode ;
+    rdfs:range ont:SubProcess .
+
+ont:probability a owl:DatatypeProperty ;
+    rdfs:label "probability"@en ;
+    rdfs:comment "Conditional probability of cause→failure (optional)."@en ;
+    rdfs:range xsd:decimal .
+
+ont:providedBy a owl:ObjectProperty ;
+    rdfs:label "providedBy"@en ;
+    rdfs:comment "Equipment supplied by vendor."@en ;
+    rdfs:domain ont:Equipment ;
+    rdfs:range ont:Vendor .
+
+ont:relevantForTechNode a owl:ObjectProperty ;
+    rdfs:label "relevantForTechNode"@en ;
+    rdfs:comment "Sub-process relevant for a technology node."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range ont:TechnologyNode .
+
+ont:relevantOutcome a owl:ObjectProperty ;
+    rdfs:label "relevantOutcome"@en ;
+    rdfs:comment "NIST security outcome relevant to equipment."@en ;
+    rdfs:domain ont:Equipment ;
+    rdfs:range gov:NISTOutcome .
+
+ont:requiresSkill a owl:ObjectProperty ;
+    rdfs:label "requiresSkill"@en ;
+    rdfs:comment "Skill required for a sub-process or mitigation."@en ;
+    rdfs:domain [ a owl:Class ;
+            owl:unionOf ( ont:SubProcess ont:Mitigation ) ] ;
+    rdfs:range ont:Skill .
+
+ont:retrievedDate a owl:DatatypeProperty ;
+    rdfs:label "retrievedDate"@en ;
+    rdfs:comment "Date when the data was retrieved."@en ;
+    rdfs:range xsd:date .
+
+ont:reviewStatus a owl:DatatypeProperty ;
+    rdfs:label "reviewStatus"@en ;
+    rdfs:comment "Review status: APPROVED | DISPUTED | PENDING."@en ;
+    rdfs:range xsd:string .
+
+ont:securityLevel a owl:DatatypeProperty ;
+    rdfs:label "securityLevel"@en ;
+    rdfs:comment "Security classification: PUBLIC | RESTRICTED."@en ;
+    rdfs:range xsd:string .
+
+ont:softConstraint a owl:NamedIndividual,
+        ont:ConstraintType ;
+    rdfs:label "softConstraint"@en .
+
+ont:standardRef a owl:ObjectProperty ;
+    rdfs:label "standardRef"@en ;
+    rdfs:comment "Reference to an industry standard."@en ;
+    rdfs:domain ont:EquipmentClass ;
+    rdfs:range gov:StandardReference .
+
+ont:svhcConcentration a owl:DatatypeProperty ;
+    rdfs:label "svhcConcentration"@en ;
+    rdfs:comment "SVHC concentration (w/w fraction)."@en ;
+    rdfs:range xsd:decimal .
+
+ont:tppValue a owl:DatatypeProperty ;
+    rdfs:label "tppValue"@en ;
+    rdfs:comment "Total Processing Performance value."@en ;
+    rdfs:range xsd:decimal .
+
+ont:usesEquipmentClass a owl:ObjectProperty ;
+    rdfs:label "usesEquipmentClass"@en ;
+    rdfs:comment "Equipment class used in a sub-process."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range ont:EquipmentClass .
+
+ont:usesMaterial a owl:ObjectProperty ;
+    rdfs:label "usesMaterial"@en ;
+    rdfs:comment "Material used in a sub-process."@en ;
+    rdfs:domain ont:SubProcess ;
+    rdfs:range ont:Material .
+
+ont:validationRequired a owl:DatatypeProperty ;
+    rdfs:label "validationRequired"@en ;
+    rdfs:comment "Whether this entity needs expert validation."@en ;
+    rdfs:range xsd:boolean .
+
+gov:EARRule a owl:Class ;
+    rdfs:label "EARRule"@en ;
+    rdfs:comment "A BIS Export Administration Regulation rule (e.g. §744.23)."@en .
+
+gov:EquipmentState a owl:Class ;
+    rdfs:label "EquipmentState"@en ;
+    rdfs:comment "A SEMI E10 equipment state (Productive/Standby/Engineering/etc.)."@en ;
+    rdfs:subClassOf prov:Entity .
+
+gov:NISTFunction a owl:Class ;
+    rdfs:label "NISTFunction"@en ;
+    rdfs:comment "A NIST CSF 2.0 function (Govern/Identify/Protect/Detect/Respond/Recover)."@en .
+
+gov:SCIPRule a owl:Class ;
+    rdfs:label "SCIPRule"@en ;
+    rdfs:comment "An ECHA SCIP reporting rule for SVHC substances."@en .
+
+ont:Acceptor a owl:Class ;
+    rdfs:label "Acceptor"@en ;
+    rdfs:comment "A dopant that accepts electrons, producing a p-type semiconductor."@en ;
+    rdfs:subClassOf ont:Dopant ;
+    skos:exactMatch <http://w3id.org/SemicONTO/Acceptor> .
+
+ont:Donor a owl:Class ;
+    rdfs:label "Donor"@en ;
+    rdfs:comment "A dopant that donates electrons, producing an n-type semiconductor."@en ;
+    rdfs:subClassOf ont:Dopant ;
+    skos:exactMatch <http://w3id.org/SemicONTO/Donor> .
+
+ont:Skill a owl:Class ;
+    rdfs:label "Skill"@en ;
+    rdfs:comment "A human competency required for a process or mitigation."@en .
+
+ont:TechnologyNode a owl:Class ;
+    rdfs:label "TechnologyNode"@en ;
+    rdfs:comment "A semiconductor technology generation (e.g. 7nm, 3nm)."@en .
+
+gov:NISTOutcome a owl:Class ;
+    rdfs:label "NISTOutcome"@en ;
+    rdfs:comment "A desired security outcome from NIST IR 8546."@en .
+
+gov:RegulatedItem a owl:Class ;
+    rdfs:label "RegulatedItem"@en ;
+    rdfs:comment "An item classified by ECCN (e.g. 3B001)."@en .
+
+gov:StandardReference a owl:Class ;
+    rdfs:label "StandardReference"@en ;
+    rdfs:comment "A reference to a paywalled/restricted standard (Link-Only)."@en .
+
+ont:ConstraintType a owl:Class ;
+    rdfs:label "ConstraintType"@en ;
+    rdfs:comment "Type of constraint: hard (prohibitive) or soft (advisory)."@en .
+
+ont:Dopant a owl:Class ;
+    rdfs:label "Dopant"@en ;
+    rdfs:comment "An impurity introduced into a semiconductor to alter conductivity."@en ;
+    rdfs:subClassOf ont:Material ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:unionOf ( ont:Acceptor ont:Donor ) ] ;
+    skos:exactMatch <http://w3id.org/SemicONTO/Dopant> .
+
+ont:MaterialProperty a owl:Class ;
+    rdfs:label "MaterialProperty"@en ;
+    rdfs:comment "A measurable property of a material instance (e.g. bandgap, resistivity, carrier mobility, refractive index)."@en ;
+    rdfs:subClassOf ont:Quantity ;
+    skos:closeMatch <http://qudt.org/schema/qudt/Quantity> ;
+    skos:exactMatch <http://w3id.org/SemicONTO/MaterialProperty> .
+
+ont:Mitigation a owl:Class ;
+    rdfs:label "Mitigation"@en ;
+    rdfs:comment "A corrective or preventive action for a failure mode."@en .
+
+ont:Process a owl:Class ;
+    rdfs:label "Process"@en ;
+    rdfs:comment "A major semiconductor manufacturing process (e.g. Lithography, Etch)."@en .
+
+ont:RootCause a owl:Class ;
+    rdfs:label "RootCause"@en ;
+    rdfs:comment "An identified root cause of a failure mode."@en .
+
+ont:Semiconductor a owl:Class ;
+    rdfs:label "Semiconductor"@en ;
+    rdfs:comment "A material with electrical conductivity between conductor and insulator."@en ;
+    rdfs:subClassOf ont:Material ;
+    skos:exactMatch <http://w3id.org/SemicONTO/Semiconductor> .
+
+ont:Vendor a owl:Class ;
+    rdfs:label "Vendor"@en ;
+    rdfs:comment "A supplier or manufacturer of equipment or materials."@en .
+
+ont:Parameter a owl:Class ;
+    rdfs:label "Parameter"@en ;
+    rdfs:comment "A measurable process parameter (e.g. temperature, pressure)."@en ;
+    rdfs:subClassOf ont:Quantity ;
+    skos:closeMatch <http://qudt.org/schema/qudt/Quantity> .
+
+ont:ExtrinsicSemiconductor a owl:Class ;
+    rdfs:label "ExtrinsicSemiconductor"@en ;
+    rdfs:comment "A doped semiconductor whose carriers come from intentional dopants."@en ;
+    rdfs:subClassOf ont:Semiconductor ;
+    skos:exactMatch <http://w3id.org/SemicONTO/ExtrinsicSemiconductor> .
+
+ont:FailureMode a owl:Class ;
+    rdfs:label "FailureMode"@en ;
+    rdfs:comment "A defect or failure observed in manufacturing."@en .
+
+ont:Metrology a owl:Class ;
+    rdfs:label "Metrology"@en ;
+    rdfs:comment "A measurement or inspection method."@en .
+
+ont:Quantity a owl:Class ;
+    rdfs:label "Quantity"@en ;
+    rdfs:comment "An abstract measurable quantity with a numeric value and unit. Generalizes process Parameter and MaterialProperty."@en ;
+    skos:exactMatch <http://qudt.org/schema/qudt/Quantity> .
+
+ont:Equipment a owl:Class ;
+    rdfs:label "Equipment"@en ;
+    rdfs:comment "A specific equipment instance (model/vendor)."@en .
+
+ont:EquipmentClass a owl:Class ;
+    rdfs:label "EquipmentClass"@en ;
+    rdfs:comment "A category of semiconductor manufacturing equipment."@en .
+
+ont:Material a owl:Class ;
+    rdfs:label "Material"@en ;
+    rdfs:comment "A raw material, chemical, or substance used in manufacturing."@en .
+
+ont:SubProcess a owl:Class ;
+    rdfs:label "SubProcess"@en ;
+    rdfs:comment "A sub-step within a Process (e.g. Wet Etch, Plasma Etch)."@en ;
+    rdfs:subClassOf ont:Process .
+

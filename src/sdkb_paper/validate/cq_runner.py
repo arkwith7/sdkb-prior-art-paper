@@ -65,7 +65,8 @@ def main() -> None:
 
     results = run_cqs(args.graph)
     if not results:
-        print("[cq_runner] no CQ files found"); sys.exit(2)
+        print("[cq_runner] no CQ files found")
+        sys.exit(2)
 
     lines = ["| CQ | 질문 | 결과행 | 기준 | 통과 |", "|---|---|---:|---:|:--:|"]
     for r in results:

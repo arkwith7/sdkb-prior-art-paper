@@ -1,0 +1,56 @@
+{
+  "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
+  "source_commit": "e64f90cc74ec5e8229e0968a043e1b3c55a959d1",
+  "source_commit_date": "2026-05-28T22:38:19+09:00",
+  "source_dirty": true,
+  "source_license": "CDLA-Permissive-2.0",
+  "vendored_at": "2026-07-11T14:03:15+00:00",
+  "baseline_counts": {
+    "nodes": 229,
+    "edges": 268,
+    "synonyms": 177,
+    "cases": 3,
+    "provenance_sources": 13
+  },
+  "excluded": {
+    "ontology/sdkb-abox-patents.ttl": "SIRP 거절특허 773건 — baseline 에서 의도적으로 제외. graph_v0 를 '특허 없는 상태'로 두어야 KIPRIS 보강의 H1 효과가 측정된다."
+  },
+  "files": [
+    {
+      "file": "sdkb-core.ttl",
+      "source_path": "ontology/sdkb-core.ttl",
+      "role": "TBox: 제조 코어(Process/SubProcess/Equipment/Material/FailureMode)",
+      "sha256": "ab1630d12185ee7ecc3fdbee922a170fbe2b13a75541cc0a07cc43ecd6acbb70"
+    },
+    {
+      "file": "sdkb-patent.ttl",
+      "source_path": "ontology/sdkb-patent.ttl",
+      "role": "TBox: 특허 모듈(Patent/IPC/CPC/realizesProcess)",
+      "sha256": "7890ebfa1624542dddd4ed506dddb824a69b8d3ca7da302c4b12bb43a0b43731"
+    },
+    {
+      "file": "sdkb-foresight.ttl",
+      "source_path": "ontology/sdkb-foresight.ttl",
+      "role": "TBox: 예측 모듈(Scenario/Signal/STEEPVE) — H2 의 기반",
+      "sha256": "1a85936074e6f00c89e9e6ecbed5b03ebd8b4abc2d78a43d87ac95fd6445164a"
+    },
+    {
+      "file": "sdkb-core-data.ttl",
+      "source_path": "ontology/sdkb-core-data.ttl",
+      "role": "ABox: 도메인 인스턴스 229 노드 / 268 엣지",
+      "sha256": "a445cebdab3804ff82d95641fb037f464b69c52ae9e80c2eae41ad6ba96e6d7d"
+    },
+    {
+      "file": "semiconductor_v0_3.json",
+      "source_path": "data/semiconductor_v0_3.json",
+      "role": "ABox 의 커밋된 원천(=재현 기준점)",
+      "sha256": "806600aba2652bb56a7a6f2b710e41f48dc271e7579c32a2d506c3f71177049b"
+    },
+    {
+      "file": "schema_report.json",
+      "source_path": "data/schema_report.json",
+      "role": "원천의 sha256 + 노드/엣지 카운트",
+      "sha256": "10d3ec6fc1de6ae1fe5ae57835198d8f168030309bd57e8ca62879953e325731"
+    }
+  ]
+}

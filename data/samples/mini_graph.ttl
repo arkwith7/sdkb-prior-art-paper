@@ -1,26 +1,51 @@
-# CI/테스트용 소형 샘플 그래프 (합성 데이터 — 라이선스 무관, 커밋 가능)
-@prefix sdkb: <https://w3id.org/sdkb#> .
+# CI/테스트용 소형 샘플 그래프 (합성 특허 — 라이선스 무관, 커밋 가능)
+#
+# 어휘는 SDKB v1.0 실물과 동일하다: TBox 는 ont:, 인스턴스는 data:.
+# 공정 IRI/레이블은 SDKB ABox 에서 그대로 발췌했고(합성 아님), 특허 3건만 합성이다.
+# 특허는 data:patent/ 아래에 둔다 — 상류 SDKB 와 충돌하지 않는 서브트리.
+#
+# 인스턴스 IRI 를 꺾쇠로 쓰는 이유: Turtle 접두명의 로컬 파트에는 '/' 가 올 수 없다
+# (data:process/etch 는 문법 오류). SDKB 자신의 core-data.ttl 도 같은 이유로 꺾쇠를 쓴다.
+@prefix ont:  <https://w3id.org/sdkb/ont/> .
+@prefix pat:  <https://w3id.org/sdkb/data/patent/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
-sdkb:Etching a sdkb:ProcessStep ; rdfs:label "Etching" .
-sdkb:Lithography a sdkb:ProcessStep ; rdfs:label "Lithography" .
-sdkb:CMP a sdkb:ProcessStep ; rdfs:label "CMP" .
+# TBox 발췌: SHACL 게이트가 RDFS 추론으로 SubProcess -> Process 를 유도해야
+# ont:realizesProcess (range ont:Process) 가 SubProcess 링크도 허용한다.
+ont:SubProcess rdfs:subClassOf ont:Process .
 
-sdkb:P1020200000001 a sdkb:Patent ;
-    rdfs:label "플라즈마 식각 균일도 개선 방법" ;
-    sdkb:applicationNumber "1020200000001" ;
-    sdkb:filingDate "2020-03-02"^^xsd:date ;
-    sdkb:appliesToProcessStep sdkb:Etching .
+# 공정 계층 (SDKB ABox 발췌 — Process 2 + SubProcess 2)
+<https://w3id.org/sdkb/data/process/etch> a ont:Process ;
+    skos:prefLabel "Etch"@en ; skos:altLabel "식각"@ko ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
 
-sdkb:P1020210000002 a sdkb:Patent ;
-    rdfs:label "EUV 마스크 결함 검사 장치" ;
-    sdkb:applicationNumber "1020210000002" ;
-    sdkb:filingDate "2021-07-15"^^xsd:date ;
-    sdkb:appliesToProcessStep sdkb:Lithography .
+<https://w3id.org/sdkb/data/process/lithography> a ont:Process ;
+    skos:prefLabel "Lithography"@en ; skos:altLabel "노광"@ko ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/euv_lithography> .
 
-sdkb:P1020230000003 a sdkb:Patent ;
-    rdfs:label "슬러리 조성물 및 연마 방법" ;
-    sdkb:applicationNumber "1020230000003" ;
-    sdkb:filingDate "2023-01-20"^^xsd:date ;
-    sdkb:appliesToProcessStep sdkb:CMP .
+<https://w3id.org/sdkb/data/subprocess/plasma_etch> a ont:SubProcess ;
+    skos:prefLabel "Plasma Etch"@en .
+
+<https://w3id.org/sdkb/data/subprocess/euv_lithography> a ont:SubProcess ;
+    skos:prefLabel "EUV Lithography"@en .
+
+# 합성 특허 3건 — 하위 SubProcess 링크와 상위 Process 링크를 모두 exercise 한다.
+pat:1020200000001 a ont:Patent ;
+    skos:prefLabel "플라즈마 식각 균일도 개선 방법"@ko ;
+    ont:applicationNumber "1020200000001" ;
+    ont:filingDate "2020-03-02"^^xsd:date ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
+
+pat:1020210000002 a ont:Patent ;
+    skos:prefLabel "EUV 마스크 결함 검사 장치"@ko ;
+    ont:applicationNumber "1020210000002" ;
+    ont:filingDate "2021-07-15"^^xsd:date ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/euv_lithography> .
+
+pat:1020230000003 a ont:Patent ;
+    skos:prefLabel "식각 공정용 슬러리 조성물"@ko ;
+    ont:applicationNumber "1020230000003" ;
+    ont:filingDate "2023-01-20"^^xsd:date ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/process/etch> .

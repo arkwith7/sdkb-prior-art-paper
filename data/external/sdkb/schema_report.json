@@ -1,0 +1,98 @@
+{
+  "file": "semiconductor_v0_3.json",
+  "file_sha256": "806600aba2652bb56a7a6f2b710e41f48dc271e7579c32a2d506c3f71177049b",
+  "version": "0.3",
+  "version_id": "sdkb_semiconductor_v0_3",
+  "status": "active",
+  "counts": {
+    "nodes": 229,
+    "edges": 268,
+    "synonyms": 177,
+    "cases": 3,
+    "provenance_sources": 13
+  },
+  "node_types": {
+    "Process": 8,
+    "SubProcess": 12,
+    "EquipmentClass": 11,
+    "Vendor": 16,
+    "Organization": 2,
+    "Parameter": 5,
+    "Metrology": 3,
+    "FailureMode": 25,
+    "RootCause": 20,
+    "Mitigation": 20,
+    "TechnologyNode": 3,
+    "Skill": 12,
+    "Material": 20,
+    "Equipment": 41,
+    "Device": 31
+  },
+  "predicates": {
+    "HAS_SUBPROCESS": 12,
+    "USES_EQUIPMENT_CLASS": 10,
+    "MADE_BY": 5,
+    "HAS_PARAMETER": 4,
+    "MEASURED_BY": 2,
+    "OBSERVED_IN": 31,
+    "CAUSED_BY": 36,
+    "MITIGATED_BY": 21,
+    "REQUIRES_SKILL": 18,
+    "USES_MATERIAL": 30,
+    "NOT_ALLOWED_WITH": 7,
+    "INCOMPATIBLE_WITH": 8,
+    "IS_INSTANCE_OF": 42,
+    "PROVIDED_BY": 42
+  },
+  "validation_required": {
+    "nodes": 71,
+    "edges": 121
+  },
+  "interpretation_distribution": {
+    "mapped": 126,
+    "author-defined": 82,
+    "verbatim": 21
+  },
+  "integrity": {
+    "id_unique": {
+      "duplicate_ids": [],
+      "is_unique": true
+    },
+    "referential": {
+      "dangling_src": [],
+      "dangling_dst": [],
+      "total_dangling": 0
+    }
+  },
+  "provenance_sources": [
+    "semikong",
+    "semiconto",
+    "matkg",
+    "bis_ccl",
+    "jedec",
+    "semi_standards",
+    "irds",
+    "wikidata",
+    "tibonto_dr",
+    "korea_nct",
+    "fmea_framework",
+    "vendor_public",
+    "author"
+  ],
+  "provenance_statistics": {
+    "total_nodes": 198,
+    "total_edges": 264,
+    "validation_required_nodes": 71,
+    "validation_required_edges": 117,
+    "node_interpretation_breakdown": {
+      "mapped": 107,
+      "author-defined": 71,
+      "verbatim": 20
+    },
+    "edge_interpretation_breakdown": {
+      "mapped": 58,
+      "verbatim": 89,
+      "author-defined": 117
+    }
+  }
+}
