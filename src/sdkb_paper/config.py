@@ -17,13 +17,42 @@ RAW_BQ = DATA / "raw" / "bigquery"
 INTERIM = DATA / "interim"
 PROCESSED = DATA / "processed"
 SAMPLES = DATA / "samples"
+EXTERNAL_SDKB = DATA / "external" / "sdkb"   # 근간 온톨로지 스냅샷 (vendor.py 가 채운다)
 QUERIES_CQ = ROOT / "queries" / "cq"
 QUERIES_SHAPES = ROOT / "queries" / "shapes"
 FIGURES = ROOT / "paper" / "figures"
 
+# vendoring 원본. 스냅샷을 갱신할 때만 쓰인다 — 분석/게이트는 EXTERNAL_SDKB 만 본다.
+SDKB_HOME = Path(os.environ.get("SDKB_HOME", Path.home() / "Dev" / "sdkb"))
+
+# baseline: 보강 전 그래프 (H1 의 "before")
+GRAPH_V0 = PROCESSED / "graph_v0.ttl"
+
 # --- 온톨로지 네임스페이스 ------------------------------------------------
-# TODO: 실제 SDKB 네임스페이스 IRI 로 교체 (기존 semiconductor-knowledge-base 와 일치시킬 것)
-SDKB = Namespace("https://w3id.org/sdkb#")
+# SDKB v1.0 실물과 일치 (semiconductor-knowledge-base). slash 네임스페이스 3분리:
+#   ont:  TBox 어휘        ont:Patent, ont:Process, ont:realizesProcess …
+#   data: ABox 인스턴스    data:subprocess/plasma_etch …
+#   gov:  거버넌스 모듈    (이 논문에서는 사용하지 않음)
+SDKB = Namespace("https://w3id.org/sdkb/")
+ONT = Namespace("https://w3id.org/sdkb/ont/")
+SDKB_DATA = Namespace("https://w3id.org/sdkb/data/")
+GOV = Namespace("https://w3id.org/sdkb/gov/")
+
+# 이 논문이 KIPRIS 에서 새로 만들어 넣는 특허 인스턴스의 IRI 접두어.
+# TBox 는 SDKB 것을 그대로 쓰되(ont:Patent / ont:realizesProcess), 인스턴스는
+# SDKB 의 data: 공간에 특허 서브트리를 새로 판다 — 상류 병합 시 충돌하지 않는다.
+PATENT_NS = Namespace("https://w3id.org/sdkb/data/patent/")
+
+# 네임스페이스 바인딩 헬퍼 (직렬화 시 prefix 를 SDKB 와 동일하게 유지)
+NAMESPACES = {
+    "sdkb": SDKB, "ont": ONT, "data": SDKB_DATA, "gov": GOV, "pat": PATENT_NS,
+}
+
+
+def bind_namespaces(g) -> None:
+    """rdflib Graph 에 SDKB 표준 prefix 를 바인딩한다."""
+    for prefix, ns in NAMESPACES.items():
+        g.bind(prefix, ns)
 
 
 def get_secret(name: str) -> str:

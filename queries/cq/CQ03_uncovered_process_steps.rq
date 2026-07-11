@@ -1,8 +1,11 @@
-# desc: 특허가 하나도 매핑되지 않은 공정 단계(커버리지 공백)를 찾을 수 있는가?
+# desc: 특허가 하나도 매핑되지 않은 공정 단계(커버리지 공백)를 찾을 수 있는가? — H1 의 핵심 질의
 # expect-min: 0
-PREFIX sdkb: <https://w3id.org/sdkb#>
-SELECT ?step
+PREFIX ont:  <https://w3id.org/sdkb/ont/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT ?level ?step ?stepLabel
 WHERE {
-  ?step a sdkb:ProcessStep .
-  FILTER NOT EXISTS { ?p a sdkb:Patent ; sdkb:appliesToProcessStep ?step . }
+  VALUES (?stepType ?level) { (ont:Process "process") (ont:SubProcess "subprocess") }
+  ?step a ?stepType ; skos:prefLabel ?stepLabel .
+  FILTER NOT EXISTS { ?p a ont:Patent ; ont:realizesProcess ?step . }
 }
+ORDER BY ?level ?stepLabel
