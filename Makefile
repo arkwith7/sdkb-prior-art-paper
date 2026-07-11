@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor baseline validate cq gate figures
+.PHONY: setup lint test vendor baseline mapping validate cq gate figures
 
 setup:
 	uv sync --all-extras
@@ -18,6 +18,10 @@ vendor:
 # baseline 그래프(graph_v0 = H1 의 "before") 를 스냅샷에서 조립. 결정적 산출물.
 baseline:
 	uv run python -m sdkb_paper.ontology.baseline
+
+# IPC/CPC 룰 커버리지 — 특허를 수집하기 전에 매핑의 사각지대를 드러낸다
+mapping:
+	uv run python -m sdkb_paper.ontology.mapping
 
 # SHACL 게이트: 대상 그래프를 shapes 전체로 검증
 validate:

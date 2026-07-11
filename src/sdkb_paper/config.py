@@ -20,6 +20,8 @@ SAMPLES = DATA / "samples"
 EXTERNAL_SDKB = DATA / "external" / "sdkb"   # 근간 온톨로지 스냅샷 (vendor.py 가 채운다)
 QUERIES_CQ = ROOT / "queries" / "cq"
 QUERIES_SHAPES = ROOT / "queries" / "shapes"
+MAPPINGS = ROOT / "mappings"
+IPC_MAPPING = MAPPINGS / "ipc_to_process.csv"   # IPC/CPC 접두어 -> SDKB 공정 IRI
 FIGURES = ROOT / "paper" / "figures"
 
 # vendoring 원본. 스냅샷을 갱신할 때만 쓰인다 — 분석/게이트는 EXTERNAL_SDKB 만 본다.
