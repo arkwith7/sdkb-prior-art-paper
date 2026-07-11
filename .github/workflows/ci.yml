@@ -1,0 +1,19 @@
+name: quality-gate
+on: [push, pull_request]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: Install
+        run: uv sync --extra dev
+      - name: Lint
+        run: uv run ruff check src tests
+      - name: Unit tests
+        run: uv run pytest -q
+      - name: SHACL gate (sample graph)
+        run: uv run python -m sdkb_paper.validate.shacl_gate data/samples/mini_graph.ttl
+      - name: Competency questions
+        run: uv run python -m sdkb_paper.validate.cq_runner data/samples/mini_graph.ttl --report

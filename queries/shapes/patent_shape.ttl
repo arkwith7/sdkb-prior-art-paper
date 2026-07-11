@@ -1,0 +1,21 @@
+# 특허 인스턴스 필수 제약: 출원번호 1개, 출원일 1개(date), 공정 단계 매핑 1개 이상
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix sdkb: <https://w3id.org/sdkb#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+sdkb:PatentShape a sh:NodeShape ;
+    sh:targetClass sdkb:Patent ;
+    sh:property [
+        sh:path sdkb:applicationNumber ;
+        sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path sdkb:filingDate ;
+        sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "특허는 filingDate(xsd:date)가 정확히 1개 있어야 함 — foresight 시계열의 전제" ;
+    ] ;
+    sh:property [
+        sh:path sdkb:appliesToProcessStep ;
+        sh:minCount 1 ; sh:class sdkb:ProcessStep ;
+        sh:message "특허는 최소 1개 공정 단계에 매핑되어야 함 — 커버리지 분석의 전제" ;
+    ] .

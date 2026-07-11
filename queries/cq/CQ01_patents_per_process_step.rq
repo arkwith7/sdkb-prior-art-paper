@@ -1,0 +1,11 @@
+# desc: 공정 단계별로 매핑된 특허가 몇 건인가? (커버리지 기본 질의)
+# expect-min: 1
+PREFIX sdkb: <https://w3id.org/sdkb#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?stepLabel (COUNT(?patent) AS ?n)
+WHERE {
+  ?patent a sdkb:Patent ; sdkb:appliesToProcessStep ?step .
+  ?step rdfs:label ?stepLabel .
+}
+GROUP BY ?stepLabel
+ORDER BY DESC(?n)

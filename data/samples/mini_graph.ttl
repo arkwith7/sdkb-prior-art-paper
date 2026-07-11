@@ -1,0 +1,26 @@
+# CI/테스트용 소형 샘플 그래프 (합성 데이터 — 라이선스 무관, 커밋 가능)
+@prefix sdkb: <https://w3id.org/sdkb#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+sdkb:Etching a sdkb:ProcessStep ; rdfs:label "Etching" .
+sdkb:Lithography a sdkb:ProcessStep ; rdfs:label "Lithography" .
+sdkb:CMP a sdkb:ProcessStep ; rdfs:label "CMP" .
+
+sdkb:P1020200000001 a sdkb:Patent ;
+    rdfs:label "플라즈마 식각 균일도 개선 방법" ;
+    sdkb:applicationNumber "1020200000001" ;
+    sdkb:filingDate "2020-03-02"^^xsd:date ;
+    sdkb:appliesToProcessStep sdkb:Etching .
+
+sdkb:P1020210000002 a sdkb:Patent ;
+    rdfs:label "EUV 마스크 결함 검사 장치" ;
+    sdkb:applicationNumber "1020210000002" ;
+    sdkb:filingDate "2021-07-15"^^xsd:date ;
+    sdkb:appliesToProcessStep sdkb:Lithography .
+
+sdkb:P1020230000003 a sdkb:Patent ;
+    rdfs:label "슬러리 조성물 및 연마 방법" ;
+    sdkb:applicationNumber "1020230000003" ;
+    sdkb:filingDate "2023-01-20"^^xsd:date ;
+    sdkb:appliesToProcessStep sdkb:CMP .

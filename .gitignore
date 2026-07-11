@@ -1,0 +1,20 @@
+# secrets
+.env
+*.key
+
+# data — 원문/대용량은 절대 커밋하지 않음 (MANIFEST.md와 samples/만 예외)
+data/raw/
+data/interim/
+data/processed/
+!data/**/.gitkeep
+*.parquet
+*.sqlite
+
+# python
+__pycache__/
+*.egg-info/
+.venv/
+.ruff_cache/
+.pytest_cache/
+.ipynb_checkpoints/
+dist/
