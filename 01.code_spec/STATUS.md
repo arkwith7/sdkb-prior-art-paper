@@ -2,7 +2,7 @@
 
 *최종 갱신: 2026-07-12 · 근거: `make gate`(exit 0) · `pytest`(35 passed) · SDKB 커밋 `c49dea0`*
 
-새 세션은 이 문서부터 읽는다.
+새 세션은 이 문서부터 읽는다. 온톨로지 용어가 낯설면 [GLOSSARY.md](GLOSSARY.md) 를 먼저 본다.
 
 ---
 
