@@ -28,7 +28,7 @@ from sdkb_paper.validate.shacl_gate import validate_graph
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 24566
+EXPECTED_TRIPLES = 26676
 EXPECTED_PROCESS = 8
 EXPECTED_SUBPROCESS = 12
 EXPECTED_DEVICE = 31        # H2 의 개념 축은 Process ∪ Device (HBM·GAA 는 Device 다)
@@ -39,13 +39,25 @@ EXPECTED_PATENTS = 1000     # SIRP 거절특허 — G₀ 는 "현행 SDKB" 다 (
 EXPECTED_COVERED_STEPS = 16
 EXPECTED_UNCOVERED_STEPS = 4
 
-# G₀ 의 CQ 서명. 현행 SDKB 에는 특허가 있으므로 세 CQ 가 모두 응답 가능하다.
-# CQ01 이 응답 불가가 되면 특허가 사라진 것이고, CQ03 이 20을 반환하면 공정 매핑이 끊긴 것이다.
+# G₀ 의 CQ 서명 — 논문 §4.2 의 before 열.
+#
+# 8개 CQ 가 **모두 응답한다**. 그래서 §3.4.2 가 쓰려던 이진 지표("G₀ 응답 불가 → G₁ 응답 가능
+# 비율")는 분모가 0 이라 정의되지 않는다. 보강 효과는 **응답 완전성**(결과 행 수)으로 잰다:
+# CQ06 의 커버리지 공백 29개가 G₁ 에서 줄어드는가, CQ01 의 커버 공정 16개가 늘어나는가.
 CQ_MUST_ANSWER = {
     "CQ01_patents_per_process_step",
     "CQ02_recent_patents_by_step",
     "CQ03_uncovered_process_steps",
+    "CQ04_concept_annual_series",
+    "CQ05_concept_vs_ipc_series",
+    "CQ06_concepts_without_recent_patents",
+    "CQ07_device_process_crosswalk",
+    "CQ08_applicant_process_portfolio",
 }
+
+# 완전성 지표의 before 값. G₁ 과 비교되는 수치이므로 여기서 고정한다.
+EXPECTED_CONCEPTS_WITHOUT_RECENT = 29   # CQ06 — 개념 51개 중 2021년 이후 출원 전무
+EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴리오 분석에 쓸 수 없다
 
 
 @pytest.fixture(scope="module")
@@ -124,7 +136,7 @@ def test_baseline_passes_shacl(graph_v0):
 
 
 def test_baseline_cq_signature(graph_v0):
-    """L3: G₀ 의 CQ 서명 — 논문 §4.2 의 before 열. 현행 SDKB 에는 특허가 있으므로 셋 다 응답한다.
+    """L3: G₀ 의 CQ 서명 — 논문 §4.2 의 before 열.
 
     CQ01 이 응답 불가가 되면 특허가 사라진 것이고, CQ03 이 20(=전 공정)을 반환하면
     특허↔공정 링크가 끊어진 것이다. 둘 다 H1 을 조용히 무효화한다.
@@ -140,6 +152,22 @@ def test_baseline_cq_signature(graph_v0):
 
     assert results["CQ01_patents_per_process_step"].rows == EXPECTED_COVERED_STEPS
     assert results["CQ03_uncovered_process_steps"].rows == EXPECTED_UNCOVERED_STEPS
+    assert results["CQ06_concepts_without_recent_patents"].rows == EXPECTED_CONCEPTS_WITHOUT_RECENT
+
+
+def test_baseline_patents_have_applicants(graph_v0):
+    """모든 특허가 출원인을 갖는다 — CQ08(전 공정 포트폴리오 보유, §1.1)의 전제.
+
+    TBox 는 ont:assignedTo 를 처음부터 정의했지만 ABox 가 비워두고 있었다. 그 상태로는
+    "삼성전자가 전 공정 포트폴리오를 보유한다"는 논문의 출발점을 그래프에 물어볼 수 없다.
+    """
+    g, _ = graph_v0
+    pats = set(g.subjects(RDF.type, ONT["Patent"]))
+    with_org = {s for s, _ in g.subject_objects(ONT["assignedTo"])}
+
+    assert len(with_org & pats) == EXPECTED_PATENTS_WITH_APPLICANT
+    for _, o in g.subject_objects(ONT["assignedTo"]):
+        assert (o, RDF.type, ONT["Organization"]) in g, f"assignedTo 의 객체가 Organization 이 아니다: {o}"
 
 
 @pytest.mark.skipif(shutil.which("java") is None, reason="HermiT 는 Java 가 필요하다")

@@ -31,21 +31,44 @@ ont:SubProcess rdfs:subClassOf ont:Process .
 <https://w3id.org/sdkb/data/subprocess/euv_lithography> a ont:SubProcess ;
     skos:prefLabel "EUV Lithography"@en .
 
+# 디바이스 (개념 축의 두 번째 축 — H2 사례 HBM·GAA 가 여기 산다)
+<https://w3id.org/sdkb/data/device/hbm> a ont:Device ;
+    skos:prefLabel "HBM"@en ; skos:altLabel "고대역폭 메모리"@ko .
+
+# 출원인 (ont:assignedTo 의 range)
+<https://w3id.org/sdkb/data/organization/samsung_electronics> a ont:Organization ;
+    skos:prefLabel "SAMSUNG ELECTRONICS CO., LTD."@en ; skos:altLabel "삼성전자"@ko .
+
+# IPC 심볼 (H2 의 대조군 — 코드 단위 시계열)
+<https://w3id.org/sdkb/data/ipc/H01L21-3065> a ont:IPCSymbol ;
+    skos:notation "H01L 21/3065" .
+<https://w3id.org/sdkb/data/ipc/H10B12-00> a ont:IPCSymbol ;
+    skos:notation "H10B 12/00" .
+
 # 합성 특허 3건 — 하위 SubProcess 링크와 상위 Process 링크를 모두 exercise 한다.
+# CQ04~CQ08 이 요구하는 축(연도·IPC·출원인·디바이스)을 전부 때리도록 구성했다.
 pat:1020200000001 a ont:Patent ;
     skos:prefLabel "플라즈마 식각 균일도 개선 방법"@ko ;
     ont:applicationNumber "1020200000001" ;
     ont:filingDate "2020-03-02"^^xsd:date ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
     ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
 
 pat:1020210000002 a ont:Patent ;
     skos:prefLabel "EUV 마스크 결함 검사 장치"@ko ;
     ont:applicationNumber "1020210000002" ;
     ont:filingDate "2021-07-15"^^xsd:date ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
     ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/euv_lithography> .
 
+# 디바이스 축과 공정 축을 동시에 갖는 특허 — CQ07(교차)의 전제
 pat:1020230000003 a ont:Patent ;
-    skos:prefLabel "식각 공정용 슬러리 조성물"@ko ;
+    skos:prefLabel "HBM 적층용 식각 공정 슬러리 조성물"@ko ;
     ont:applicationNumber "1020230000003" ;
     ont:filingDate "2023-01-20"^^xsd:date ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H10B12-00> ;
+    ont:concernsDevice <https://w3id.org/sdkb/data/device/hbm> ;
     ont:realizesProcess <https://w3id.org/sdkb/data/process/etch> .

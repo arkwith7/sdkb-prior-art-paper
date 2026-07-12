@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "4fca29c3f6e2dc76bf6728c053fcdcbd1dd4dbf9",
-  "source_commit_date": "2026-07-12T18:54:22+09:00",
+  "source_commit": "c49dea0c671e90bbf82a73d3d212f05b1c50b683",
+  "source_commit_date": "2026-07-12T19:34:11+09:00",
   "source_dirty": true,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-12T09:54:55+00:00",
+  "vendored_at": "2026-07-12T10:34:11+00:00",
   "baseline_counts": {
     "nodes": 229,
     "edges": 268,
@@ -42,7 +42,7 @@
       "file": "sdkb-abox-patents.ttl",
       "source_path": "ontology/sdkb-abox-patents.ttl",
       "role": "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다",
-      "sha256": "a71ca875de7397cfa677f06bb576076729b8bd715012429741a54ce632b54065"
+      "sha256": "f13186095003a9e600e9f1920bceee8f8bebef1941d6812897e93765b226c2d1"
     },
     {
       "file": "semiconductor_v0_3.json",
