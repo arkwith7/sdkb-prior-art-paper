@@ -165,10 +165,23 @@ G₀ 를 움직이는 어떤 변경도 H1 을 무효화한다 — baseline 은 �
 ## 5. 검증 게이트 (그래프를 바꾸는 모든 작업)
 
 게이트를 통과하지 못한 델타는 그래프에 **병합되지 않는다.** 우회 경로를 만들지 않는다.
+`make gate` = 스냅샷 무결성 → baseline 재조립 → L1 → L2 → L3. CI 가 매 push 마다 같은 것을 돌린다.
 
+- **스냅샷 무결성** — 커밋된 `data/external/sdkb/` 가 `PROVENANCE.json` 의 sha256 과 일치하는가.
+  스냅샷이 제자리에서 수정되면 baseline 의 출처가 거짓이 되고 H1 의 before 가 조용히 움직인다.
 - **L1 구조(SHACL)** — 특허 인스턴스는 출원번호 1개, 출원일 1개(`xsd:date`), 공정 매핑 1개 이상.
-- **L2 논리(추론기)** — 병합 후 그래프 일관성.
-- **L3 기능(CQ)** — `queries/cq/*.rq` 응답률이 기준 이상.
+- **L2 논리(추론기)** — HermiT 일관성. HermiT 는 Turtle 도 `xsd:date` 도 못 먹으므로
+  `reasoner_gate.reasoning_view()` 가 **추론 전용 뷰**(RDF/XML · owl:imports 제거 · date→dateTime)를
+  만들어 넘긴다. 원본 그래프의 `xsd:date` 는 손대지 않는다 — H2 시계열의 전제이고 L1 이 검사한다.
+- **L3 기능(CQ)** — `queries/cq/*.rq` 응답률.
+
+게이트 대상은 **두 그래프**다. 하나로는 게이트가 vacuous 해진다.
+- `graph_v0` — 실물 baseline(특허 0건). 얼린 스냅샷과 코드의 정합성을 지킨다.
+  **CQ 는 여기서 게이트가 아니라 측정이다**: 특허가 없으므로 CQ01·CQ02 가 응답 불가인 것이 정상이고,
+  그 값(현재 33%)이 논문 §4.2 의 G₀ 열이 된다. 이 서명이 깨지면(예: CQ01 이 갑자기 응답)
+  특허가 새어든 것이므로 통합 테스트가 실패시킨다.
+- `mini_graph` — 합성 특허 3건. baseline 으로는 exercise 되지 않는 PatentShape·CQ01·CQ02 를
+  실제로 때린다. 여기서는 CQ 100% 를 요구하는 진짜 게이트다.
 
 머지 시 규율: `data/processed/graph_v{n}.ttl` 스냅샷 + `data/MANIFEST.md` 갱신을 **한 커밋으로**.
 G₀↔G₁ 비교는 스냅샷 간 비교이므로, 스냅샷 없이 나온 수치는 논문에 쓸 수 없다.
@@ -180,11 +193,15 @@ G₀↔G₁ 비교는 스냅샷 간 비교이므로, 스냅샷 없이 나온 수
 ```bash
 make setup      # uv sync --all-extras
 make lint       # ruff check src tests
-make test       # pytest -q
-make vendor     # SDKB 스냅샷 갱신 (사용자 지시 시에만)
+make test       # pytest -q (단위 + 통합)
+make vendor     # SDKB 스냅샷 갱신 (사용자 지시 시에만 — baseline 이 움직인다)
+make snapshot   # 스냅샷 무결성만 검사 (sha256 vs PROVENANCE, SDKB 원본 불필요)
 make baseline   # graph_v0 조립 (H1 의 before)
 make mapping    # IPC/CPC 룰 커버리지 점검
-make gate       # SHACL + CQ  ← 그래프 변경 시 필수
+make validate   # L1 SHACL
+make reason     # L2 HermiT 일관성 (Java 필요)
+make cq         # L3 CQ 응답률 (그래프별 리포트)
+make gate       # snapshot + baseline + L1 + L2 + L3  ← 그래프 변경 시 필수
 make figures    # 논문 그림 전량 재생성
 ```
 

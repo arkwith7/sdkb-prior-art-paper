@@ -10,8 +10,8 @@ data/processed/
 *.parquet
 *.sqlite
 
-# 게이트 리포트 (make cq 가 매번 재생성)
-paper/figures/cq_report.md
+# 게이트 리포트 (make cq 가 그래프별로 매번 재생성)
+paper/figures/cq_report*.md
 
 # Windows/WSL 부산물 (NTFS alternate data stream)
 *:Zone.Identifier

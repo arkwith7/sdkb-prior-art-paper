@@ -53,8 +53,12 @@ BigQuery ────┘        (clean.py)                     (mapping.py)     
                                               analysis: coverage(H1) · timeseries(H2) · viz
 ```
 
-- **검증 게이트**: `make gate` — SHACL 제약 + Competency Question 통과율. 게이트를 통과한
-  델타만 `ontology.merge.merge_with_gate()` 로 그래프에 머지된다. CI 가 매 push 마다 동일 게이트를 실행.
+- **검증 게이트**: `make gate` — 스냅샷 무결성(sha256 vs PROVENANCE) → baseline 재조립 →
+  **L1** SHACL 제약 → **L2** HermiT 논리 일관성 → **L3** Competency Question. 게이트를 통과한
+  델타만 `ontology.merge.merge_with_gate()` 로 그래프에 머지된다. CI 가 매 push 마다 동일 게이트를 실행한다.
+  대상은 두 그래프다: 실물 `graph_v0`(스냅샷↔코드 정합성)과 `mini_graph`(합성 특허 3건 —
+  특허 0건인 baseline 으로는 PatentShape·CQ01·CQ02 가 vacuous 하게 통과해 버린다).
+  `graph_v0` 의 CQ 응답률(33%)은 게이트가 아니라 **H1 의 before 측정값**이다.
 - **그래프 스냅샷 규율**: 머지할 때마다 `data/processed/graph_v{n}.ttl` 저장 + `data/MANIFEST.md`
   갱신을 한 커밋으로. H1/H2 의 보강 전후 비교는 스냅샷 간 비교다.
 - **그림**: 논문 그림은 전부 `viz/figures.py` 가 생성 (`paper/figures/`). 수작업 그림 금지.

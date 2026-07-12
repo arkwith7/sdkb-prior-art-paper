@@ -74,6 +74,40 @@ def _verify_source(sdkb_home: Path) -> dict:
     return report
 
 
+def verify_snapshot(dest: Path = EXTERNAL_SDKB) -> list[str]:
+    """커밋된 스냅샷이 PROVENANCE.json 의 sha256 과 여전히 일치하는지 검사.
+
+    SDKB 원본이 필요 없다 — 커밋된 파일만 본다. 그래서 CI 에서 매 push 마다 돌 수 있다.
+    스냅샷이 제자리에서 수정되면(누가 TTL 을 손으로 고치면) baseline 의 출처가 거짓이 되고
+    H1 의 before 가 조용히 움직인다. 이 검사가 그걸 막는다.
+
+    문제 목록을 반환한다 (빈 리스트 = 정상).
+    """
+    prov_path = dest / "PROVENANCE.json"
+    if not prov_path.exists():
+        return [f"PROVENANCE.json 이 없다: {prov_path} — `make vendor` 를 먼저 실행할 것."]
+
+    prov = json.loads(prov_path.read_text(encoding="utf-8"))
+    problems = []
+    for entry in prov["files"]:
+        f = dest / entry["file"]
+        if not f.exists():
+            problems.append(f"{entry['file']}: 스냅샷에 파일이 없다")
+            continue
+        actual = sha256(f)
+        if actual != entry["sha256"]:
+            problems.append(
+                f"{entry['file']}: sha256 불일치 — 기록 {entry['sha256'][:12]}… / 실제 {actual[:12]}…"
+            )
+
+    # PROVENANCE 가 모르는 TTL 이 스냅샷에 섞여 있으면 baseline 이 조용히 오염될 수 있다.
+    known = {e["file"] for e in prov["files"]} | {"PROVENANCE.json"}
+    for stray in sorted(p.name for p in dest.glob("*.ttl") if p.name not in known):
+        problems.append(f"{stray}: PROVENANCE 에 없는 파일이 스냅샷에 있다 (SIRP ABox 유입?)")
+
+    return problems
+
+
 def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
     if not (sdkb_home / ".git").exists():
         raise SystemExit(f"[vendor] SDKB git repo 를 찾을 수 없음: {sdkb_home}")
@@ -128,7 +162,31 @@ def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
 def main() -> None:
     ap = argparse.ArgumentParser(description="SDKB 온톨로지 스냅샷을 data/external/sdkb/ 로 vendor")
     ap.add_argument("--sdkb-home", type=Path, default=SDKB_HOME)
+    ap.add_argument(
+        "--verify", action="store_true",
+        help="스냅샷 무결성만 검사한다 (SDKB 원본 불필요 — CI 게이트용). 갱신하지 않는다.",
+    )
     args = ap.parse_args()
+
+    if args.verify:
+        problems = verify_snapshot()
+        for p in problems:
+            print(f"[vendor] ✗ {p}", file=sys.stderr)
+        if problems:
+            print(
+                "[vendor] 스냅샷이 PROVENANCE 와 어긋난다 — baseline 의 출처가 거짓이 된다.\n"
+                "         의도한 갱신이라면 `make vendor` 로 PROVENANCE 를 재작성하고 "
+                "data/MANIFEST.md 에 새 줄을 추가할 것.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        prov = json.loads((EXTERNAL_SDKB / "PROVENANCE.json").read_text(encoding="utf-8"))
+        print(
+            f"[vendor] ✓ 스냅샷 무결 — {len(prov['files'])} files, "
+            f"SDKB commit {prov['source_commit'][:12]}"
+        )
+        return
+
     vendor(args.sdkb_home)
 
 

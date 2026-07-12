@@ -56,11 +56,22 @@ def run_cqs(graph_path: Path, cq_dir: Path = QUERIES_CQ) -> list[CQResult]:
     return results
 
 
+def report_path(graph_path: Path) -> Path:
+    """그래프별 리포트 경로. G₀ 와 G₁ 의 리포트가 서로 덮어쓰지 않아야 논문 §4.2 의
+    '보강 전후 CQ 응답률 비교표'를 만들 수 있다."""
+    return ROOT / "paper" / "figures" / f"cq_report_{graph_path.stem}.md"
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("graph", type=Path)
     ap.add_argument("--report", action="store_true", help="markdown 리포트 파일 생성")
-    ap.add_argument("--min-pass", type=float, default=1.0, help="요구 통과율 (0~1)")
+    ap.add_argument("--out", type=Path, default=None, help="리포트 경로 (기본: cq_report_<graph>.md)")
+    ap.add_argument(
+        "--min-pass", type=float, default=1.0,
+        help="요구 통과율 (0~1). baseline(graph_v0)처럼 특허 0건인 그래프는 "
+             "CQ01/CQ02 가 응답 불가인 것이 정상이므로 0 으로 두고 '측정'으로 쓴다.",
+    )
     args = ap.parse_args()
 
     results = run_cqs(args.graph)
@@ -71,14 +82,20 @@ def main() -> None:
     lines = ["| CQ | 질문 | 결과행 | 기준 | 통과 |", "|---|---|---:|---:|:--:|"]
     for r in results:
         lines.append(f"| {r.name} | {r.desc} | {r.rows} | ≥{r.expect_min} | {'✅' if r.passed else '❌'} |")
-    rate = sum(r.passed for r in results) / len(results)
+    n_pass = sum(r.passed for r in results)
+    rate = n_pass / len(results)
     table = "\n".join(lines)
+    print(f"[cq_runner] graph = {args.graph}")
     print(table)
-    print(f"\n[cq_runner] pass rate = {rate:.0%} ({sum(r.passed for r in results)}/{len(results)})")
+    print(f"\n[cq_runner] pass rate = {rate:.0%} ({n_pass}/{len(results)})")
 
     if args.report:
-        out = ROOT / "paper" / "figures" / "cq_report.md"
-        out.write_text(table + f"\n\npass rate: {rate:.0%}\n", encoding="utf-8")
+        out = args.out or report_path(args.graph)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(
+            f"# CQ 응답률 — `{args.graph}`\n\n{table}\n\npass rate: {rate:.0%} ({n_pass}/{len(results)})\n",
+            encoding="utf-8",
+        )
         print(f"[cq_runner] report -> {out}")
 
     sys.exit(0 if rate >= args.min_pass else 1)

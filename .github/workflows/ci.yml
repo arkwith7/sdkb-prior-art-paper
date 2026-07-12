@@ -1,19 +1,66 @@
 name: quality-gate
 on: [push, pull_request]
 
+# 이 워크플로가 매 push 마다 보증하는 것: "얼린 스냅샷과 코드가 여전히 정합한가".
+# 온톨로지를 최신으로 '갱신'하지 않는다 — baseline 이 움직이면 H1 의 before 가 재현되지 않는다.
+# 스냅샷 갱신은 사람이 `make vendor` + MANIFEST 갱신으로만 한다 (data/MANIFEST.md).
+
 jobs:
   gate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
+
+      # HermiT(L2 리즈너)는 JAR 이다 — Java 가 없으면 논리 일관성 검증을 못 한다.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
       - name: Install
         run: uv sync --extra dev
+
       - name: Lint
         run: uv run ruff check src tests
-      - name: Unit tests
+
+      # 단위 + 통합 테스트. 통합 테스트가 커밋된 스냅샷에서 baseline 을 재조립해
+      # 관측 단위 수(Process 8 / SubProcess 12)·특허 0건·결정성·CQ 서명을 검증한다.
+      - name: Unit + integration tests
         run: uv run pytest -q
-      - name: SHACL gate (sample graph)
-        run: uv run python -m sdkb_paper.validate.shacl_gate data/samples/mini_graph.ttl
-      - name: Competency questions
-        run: uv run python -m sdkb_paper.validate.cq_runner data/samples/mini_graph.ttl --report
+
+      # 스냅샷 무결성: 커밋된 TTL 이 PROVENANCE 의 sha256 과 일치하는가.
+      - name: Snapshot integrity (PROVENANCE sha256)
+        run: uv run python -m sdkb_paper.ontology.vendor --verify
+
+      # baseline 재조립. 특허가 0건이 아니면 여기서 죽는다 (SIRP ABox 유입 감지).
+      - name: Assemble baseline (graph_v0)
+        run: uv run python -m sdkb_paper.ontology.baseline
+
+      # L1 구조 제약 (SHACL) — 실물 baseline + 합성 특허 샘플 둘 다.
+      # 샘플이 없으면 PatentShape 가 vacuous 하게 통과한다 (baseline 에는 특허가 0건이므로).
+      - name: L1 SHACL gate
+        run: |
+          uv run python -m sdkb_paper.validate.shacl_gate data/processed/graph_v0.ttl
+          uv run python -m sdkb_paper.validate.shacl_gate data/samples/mini_graph.ttl
+
+      # L2 논리 일관성 (HermiT).
+      - name: L2 reasoner gate (consistency)
+        run: uv run python -m sdkb_paper.validate.reasoner_gate data/processed/graph_v0.ttl
+
+      # L3 CQ. graph_v0 은 특허 0건이라 CQ01/CQ02 가 응답 불가인 것이 정상 —
+      # 게이트가 아니라 논문 §4.2 의 G₀ 열을 만드는 **측정**이다(--min-pass 0).
+      # 회귀 감시(특허 유입)는 통합 테스트의 CQ 서명 검사가 맡는다.
+      - name: L3 competency questions
+        run: |
+          uv run python -m sdkb_paper.validate.cq_runner data/processed/graph_v0.ttl --report --min-pass 0
+          uv run python -m sdkb_paper.validate.cq_runner data/samples/mini_graph.ttl --report
+
+      # 게이트 리포트를 아티팩트로 남긴다 — 논문 §4.2 표의 원천.
+      - name: Upload CQ reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cq-reports
+          path: paper/figures/cq_report_*.md
+          if-no-files-found: warn
