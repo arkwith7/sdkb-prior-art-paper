@@ -29,13 +29,16 @@ from pathlib import Path
 from sdkb_paper.config import EXTERNAL_SDKB, SDKB_HOME
 
 # vendor 대상: (SDKB 내 상대경로, 역할)
-# SIRP 특허 ABox(sdkb-abox-patents.ttl)는 **의도적으로 제외** — baseline 을 특허 없는
-# 상태로 두어야 KIPRIS 보강의 H1 효과가 선명하게 측정된다. SIRP 는 별도 비교군.
+#
+# SIRP 특허 ABox(sdkb-abox-patents.ttl)를 **포함한다**. 예전에는 baseline 을 특허 0건으로
+# 두려고 제외했지만, 그러면 모든 공정 단계에서 C₀(s)=0 이 되어 H1 이 기각될 수 없는 자명한
+# 가설이 된다. G₀ 는 "현행 SDKB" 여야 한다 (CLAUDE.md §0).
 VENDOR_FILES: list[tuple[str, str]] = [
-    ("ontology/sdkb-core.ttl", "TBox: 제조 코어(Process/SubProcess/Equipment/Material/FailureMode)"),
-    ("ontology/sdkb-patent.ttl", "TBox: 특허 모듈(Patent/IPC/CPC/realizesProcess)"),
+    ("ontology/sdkb-core.ttl", "TBox: 제조 코어(Process/SubProcess/Equipment/Material/Device/FailureMode)"),
+    ("ontology/sdkb-patent.ttl", "TBox: 특허 모듈(Patent/IPC/realizesProcess/concernsDevice)"),
     ("ontology/sdkb-foresight.ttl", "TBox: 예측 모듈(Scenario/Signal/STEEPVE) — H2 의 기반"),
-    ("ontology/sdkb-core-data.ttl", "ABox: 도메인 인스턴스 229 노드 / 268 엣지"),
+    ("ontology/sdkb-core-data.ttl", "ABox: 도메인 인스턴스 (공정 20 · 디바이스 31 …)"),
+    ("ontology/sdkb-abox-patents.ttl", "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다"),
     ("data/semiconductor_v0_3.json", "ABox 의 커밋된 원천(=재현 기준점)"),
     ("data/schema_report.json", "원천의 sha256 + 노드/엣지 카운트"),
 ]
@@ -139,12 +142,7 @@ def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
         "source_license": "CDLA-Permissive-2.0",
         "vendored_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "baseline_counts": report["counts"],
-        "excluded": {
-            "ontology/sdkb-abox-patents.ttl": (
-                "SIRP 거절특허 773건 — baseline 에서 의도적으로 제외. "
-                "graph_v0 를 '특허 없는 상태'로 두어야 KIPRIS 보강의 H1 효과가 측정된다."
-            ),
-        },
+        "excluded": {},
         "files": files,
     }
     (dest / "PROVENANCE.json").write_text(

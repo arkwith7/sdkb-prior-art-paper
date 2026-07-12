@@ -24,7 +24,12 @@ BASELINE_PARTS = [
     "sdkb-patent.ttl",
     "sdkb-foresight.ttl",
     "sdkb-core-data.ttl",
+    "sdkb-abox-patents.ttl",   # SIRP 거절특허 1,000건 — H1 의 before
 ]
+
+# G₀ 의 서명. 스냅샷을 의도적으로 갱신하면 바뀐다 — 그때는 data/MANIFEST.md 와
+# tests/test_baseline_integration.py 를 같은 커밋에서 고친다.
+EXPECTED_PATENTS = 1000
 
 
 def build_baseline(snapshot: Path = EXTERNAL_SDKB, out: Path = GRAPH_V0) -> Graph:
@@ -48,20 +53,24 @@ def build_baseline(snapshot: Path = EXTERNAL_SDKB, out: Path = GRAPH_V0) -> Grap
     print(f"[baseline] {out}  ({len(g):,} triples)")
     print(f"[baseline] SDKB commit {prov['source_commit'][:12]}")
     print(f"[baseline] Process={counts['Process']}  SubProcess={counts['SubProcess']}  "
-          f"Patent={counts['Patent']}  (Patent=0 이어야 정상 — 보강 전 상태)")
-    if counts["Patent"]:
+          f"Device={counts['Device']}  Patent={counts['Patent']}")
+    if counts["Patent"] != EXPECTED_PATENTS:
         raise SystemExit(
-            f"[baseline] ✗ baseline 에 특허 {counts['Patent']}건이 들어있다. "
-            f"SIRP ABox 가 섞였는지 확인할 것 — before 에 특허가 있으면 H1 이 성립하지 않는다."
+            f"[baseline] ✗ G₀ 의 특허가 {counts['Patent']:,}건이다 (기대 {EXPECTED_PATENTS:,}건). "
+            f"SIRP ABox 가 빠졌거나 상류가 바뀌었다 — before 가 움직이면 H1 이 재현되지 않는다."
         )
     return g
 
 
 def summarize(g: Graph) -> dict[str, int]:
-    """baseline 의 관측 단위(공정 계층)와 특허 수. SubProcess ⊑ Process 이므로 명시 타입으로 센다."""
+    """G₀ 의 관측 단위(공정 계층)·개념 축(디바이스)·특허 수.
+
+    SubProcess ⊑ Process 이므로 명시 타입으로 센다. H1 의 관측 단위는 Process+SubProcess(20),
+    H2 의 개념 축은 거기에 Device(31)를 더한 51 이다.
+    """
     return {
         name: sum(1 for _ in g.subjects(RDF.type, ONT[name]))
-        for name in ("Process", "SubProcess", "Patent")
+        for name in ("Process", "SubProcess", "Device", "Patent")
     }
 
 

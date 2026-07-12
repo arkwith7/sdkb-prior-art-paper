@@ -20,6 +20,11 @@ SAMPLES = DATA / "samples"
 EXTERNAL_SDKB = DATA / "external" / "sdkb"   # 근간 온톨로지 스냅샷 (vendor.py 가 채운다)
 QUERIES_CQ = ROOT / "queries" / "cq"
 QUERIES_SHAPES = ROOT / "queries" / "shapes"
+# L1 은 두 겹이다. 그래프 전체(레거시 SIRP 포함)에는 완화 제약, 이 논문이 병합하는 델타에는
+# 개념 매핑(Process ∪ Device) ≥1 을 요구하는 엄격 제약. 게이트는 델타를 검증하는 것이지
+# 상류가 남긴 데이터를 소급 처벌하는 것이 아니다.
+SHAPES_GRAPH = QUERIES_SHAPES / "graph"
+SHAPES_DELTA = QUERIES_SHAPES / "delta"
 MAPPINGS = ROOT / "mappings"
 IPC_MAPPING = MAPPINGS / "ipc_to_process.csv"   # IPC/CPC 접두어 -> SDKB 공정 IRI
 FIGURES = ROOT / "paper" / "figures"

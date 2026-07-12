@@ -30,22 +30,24 @@ snapshot:
 
 # --- 3층 검증 게이트 (논문 §3.3) --------------------------------------------
 # 게이트 대상은 두 그래프다:
-#   graph_v0     — 실물 baseline. 얼린 스냅샷과 코드가 여전히 정합한지 본다. 특허 0건.
-#   mini_graph   — 합성 특허 3건. 특허 0건인 baseline 으로는 exercise 되지 않는
-#                  PatentShape/CQ01/CQ02 를 실제로 때린다. 둘 다 있어야 게이트가 non-vacuous.
+#   graph_v0   — 실물 baseline(G₀ = 현행 SDKB, SIRP 특허 1,000건). 레거시 특허가 섞여 있으므로
+#                **완화 shape**(graph) 로 검증한다 — 공정 링크 없는 디바이스 특허를 소급 처벌하지 않는다.
+#   mini_graph — 합성 특허 3건. **엄격 shape**(delta) 를 실제로 때린다. 병합될 특허가 지켜야 할
+#                계약(개념 매핑 ≥1)이 살아있는지는 여기서만 확인된다.
 
 # L1 구조 제약 (SHACL)
 validate: baseline
-	uv run python -m sdkb_paper.validate.shacl_gate data/processed/graph_v0.ttl
-	uv run python -m sdkb_paper.validate.shacl_gate data/samples/mini_graph.ttl
+	uv run python -m sdkb_paper.validate.shacl_gate data/processed/graph_v0.ttl --shapes graph
+	uv run python -m sdkb_paper.validate.shacl_gate data/samples/mini_graph.ttl --shapes delta
 
 # L2 논리 일관성 (HermiT — Java 필요)
 reason: baseline
 	uv run python -m sdkb_paper.validate.reasoner_gate data/processed/graph_v0.ttl
 
 # L3 기능 검증 (Competency Question)
-#   graph_v0 은 특허가 0건이므로 CQ01/CQ02 가 응답 불가인 것이 정상 — 게이트가 아니라 **측정**이다
-#   (--min-pass 0). 이 값이 논문 §4.2 의 G₀ 열이 된다. 회귀 감시는 통합 테스트가 맡는다.
+#   graph_v0 의 CQ 는 게이트가 아니라 **측정**이다(--min-pass 0) — 그 값이 논문 §4.2 의 G₀ 열이 된다.
+#   현행 CQ 3개는 G₀ 에서 이미 100% 응답한다. 보강 효과를 판별하려면 CQ 확장이 필요하다(부록 A).
+#   회귀 감시(특허 유실·링크 단절)는 통합 테스트의 CQ 서명 검사가 맡는다.
 #   mini_graph 는 특허가 있으므로 100% 를 요구하는 진짜 게이트다.
 cq: baseline
 	uv run python -m sdkb_paper.validate.cq_runner data/processed/graph_v0.ttl --report --min-pass 0

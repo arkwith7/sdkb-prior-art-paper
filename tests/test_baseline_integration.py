@@ -19,24 +19,33 @@ import subprocess
 import pytest
 from rdflib import RDF
 
-from sdkb_paper.config import EXTERNAL_SDKB, QUERIES_CQ
+from sdkb_paper.config import EXTERNAL_SDKB, ONT, QUERIES_CQ
 from sdkb_paper.ontology.baseline import build_baseline, summarize
 from sdkb_paper.ontology.vendor import verify_snapshot
 from sdkb_paper.validate.cq_runner import run_cqs
 from sdkb_paper.validate.shacl_gate import validate_graph
 
-# 얼린 스냅샷(SDKB e64f90cc74ec)이 만들어내는 baseline 의 서명.
+# 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 3201
+EXPECTED_TRIPLES = 24566
 EXPECTED_PROCESS = 8
 EXPECTED_SUBPROCESS = 12
+EXPECTED_DEVICE = 31        # H2 의 개념 축은 Process ∪ Device (HBM·GAA 는 Device 다)
+EXPECTED_PATENTS = 1000     # SIRP 거절특허 — G₀ 는 "현행 SDKB" 다 (특허 0건이 아니다)
 
-# graph_v0 은 보강 전 그래프다: 특허가 0건이므로 특허를 요구하는 CQ 는 응답 불가여야 하고,
-# 커버리지 공백을 찾는 CQ 는 응답 가능해야 한다. 이 서명이 깨지면 SIRP 특허가 섞였거나
-# 질의가 망가진 것이다.
-CQ_MUST_ANSWER = {"CQ03_uncovered_process_steps"}
-CQ_MUST_NOT_ANSWER = {"CQ01_patents_per_process_step", "CQ02_recent_patents_by_step"}
+# H1 의 before: 20개 공정 단계 중 16개가 이미 커버되어 있고 4개가 공백이다.
+# 이 값이 H1 을 자명하지 않게 만든다 — C₀(s)=0 이면 어떤 보강도 유의해진다.
+EXPECTED_COVERED_STEPS = 16
+EXPECTED_UNCOVERED_STEPS = 4
+
+# G₀ 의 CQ 서명. 현행 SDKB 에는 특허가 있으므로 세 CQ 가 모두 응답 가능하다.
+# CQ01 이 응답 불가가 되면 특허가 사라진 것이고, CQ03 이 20을 반환하면 공정 매핑이 끊긴 것이다.
+CQ_MUST_ANSWER = {
+    "CQ01_patents_per_process_step",
+    "CQ02_recent_patents_by_step",
+    "CQ03_uncovered_process_steps",
+}
 
 
 @pytest.fixture(scope="module")
@@ -54,18 +63,47 @@ def test_snapshot_matches_provenance():
 
 
 def test_baseline_observation_units(graph_v0):
-    """H1 의 관측 단위(공정 계층)가 스냅샷과 코드 사이에서 유지된다."""
+    """H1 의 관측 단위(공정 20)와 H2 의 개념 축(Device 31)이 스냅샷과 코드 사이에서 유지된다."""
     g, _ = graph_v0
     counts = summarize(g)
     assert counts["Process"] == EXPECTED_PROCESS
     assert counts["SubProcess"] == EXPECTED_SUBPROCESS
+    assert counts["Device"] == EXPECTED_DEVICE
     assert len(g) == EXPECTED_TRIPLES
 
 
-def test_baseline_has_no_patents(graph_v0):
-    """보강 전 그래프에 특허가 있으면 H1(보강 효과)이 성립하지 않는다."""
+def test_baseline_carries_sirp_patents(graph_v0):
+    """G₀ 는 '현행 SDKB' 다 — SIRP 거절특허가 들어 있어야 H1 의 before 가 정직하다."""
     g, _ = graph_v0
-    assert summarize(g)["Patent"] == 0
+    assert summarize(g)["Patent"] == EXPECTED_PATENTS
+
+
+def test_baseline_patents_have_filing_dates(graph_v0):
+    """모든 특허가 출원일을 갖는다. 상류의 filing_date 는 한때 **공개일**이었다 —
+    그 값이 되돌아오면 H2 의 시계열이 1~2년 밀린다."""
+    from rdflib import XSD
+
+    g, _ = graph_v0
+    pats = set(g.subjects(RDF.type, ONT["Patent"]))
+    dated = {p for p in pats if (p, ONT["filingDate"], None) in g}
+    assert dated == pats, f"출원일 없는 특허 {len(pats - dated)}건"
+
+    for _, o in g.subject_objects(ONT["filingDate"]):
+        assert o.datatype == XSD.date, f"filingDate 가 xsd:date 가 아니다: {o!r}"
+
+
+def test_baseline_coverage_is_not_vacuous(graph_v0):
+    """H1 의 before 가 자명하지 않은가. C₀(s)=0 이면 어떤 보강도 유의해져 H1 이 검정이 아니게 된다."""
+    g, _ = graph_v0
+    steps = set(g.subjects(RDF.type, ONT["Process"])) | set(g.subjects(RDF.type, ONT["SubProcess"]))
+    covered = {
+        o for p in g.subjects(RDF.type, ONT["Patent"])
+        for o in g.objects(p, ONT["realizesProcess"])
+    } & steps
+
+    assert len(covered) == EXPECTED_COVERED_STEPS
+    assert len(steps) - len(covered) == EXPECTED_UNCOVERED_STEPS
+    assert 0 < len(covered) < len(steps), "before 가 전무하거나 이미 만점이면 H1 이 검정이 아니다"
 
 
 def test_baseline_is_deterministic(tmp_path):
@@ -86,20 +124,22 @@ def test_baseline_passes_shacl(graph_v0):
 
 
 def test_baseline_cq_signature(graph_v0):
-    """L3: 특허 0건 그래프의 CQ 서명. CQ01 이 갑자기 응답하면 특허가 새어든 것이다."""
+    """L3: G₀ 의 CQ 서명 — 논문 §4.2 의 before 열. 현행 SDKB 에는 특허가 있으므로 셋 다 응답한다.
+
+    CQ01 이 응답 불가가 되면 특허가 사라진 것이고, CQ03 이 20(=전 공정)을 반환하면
+    특허↔공정 링크가 끊어진 것이다. 둘 다 H1 을 조용히 무효화한다.
+    """
     _, path = graph_v0
     results = {r.name: r for r in run_cqs(path, QUERIES_CQ)}
 
-    missing = (CQ_MUST_ANSWER | CQ_MUST_NOT_ANSWER) - results.keys()
+    missing = CQ_MUST_ANSWER - results.keys()
     assert not missing, f"CQ 파일이 사라졌다: {missing}"
 
     for name in CQ_MUST_ANSWER:
-        assert results[name].passed, f"{name} 은 baseline 에서도 응답 가능해야 한다 (H1 의 핵심 질의)"
-    for name in CQ_MUST_NOT_ANSWER:
-        assert results[name].rows == 0, (
-            f"{name} 이 baseline 에서 {results[name].rows}행을 반환했다 — "
-            f"보강 전 그래프에 특허가 섞여 있다."
-        )
+        assert results[name].passed, f"{name} 이 G₀ 에서 응답하지 못한다"
+
+    assert results["CQ01_patents_per_process_step"].rows == EXPECTED_COVERED_STEPS
+    assert results["CQ03_uncovered_process_steps"].rows == EXPECTED_UNCOVERED_STEPS
 
 
 @pytest.mark.skipif(shutil.which("java") is None, reason="HermiT 는 Java 가 필요하다")
@@ -147,13 +187,13 @@ def test_verify_snapshot_detects_tampering(tmp_path):
 
 
 def test_verify_snapshot_detects_stray_ttl(tmp_path):
-    """PROVENANCE 가 모르는 TTL(예: SIRP 특허 ABox)이 스냅샷에 섞이면 잡는다."""
+    """PROVENANCE 가 모르는 TTL 이 스냅샷에 섞이면 잡는다 — baseline 이 조용히 오염된다."""
     fake = tmp_path / "sdkb"
     shutil.copytree(EXTERNAL_SDKB, fake)
-    (fake / "sdkb-abox-patents.ttl").write_text("# SIRP 773건\n", encoding="utf-8")
+    (fake / "sdkb-abox-experts.ttl").write_text("# PROVENANCE 가 모르는 ABox\n", encoding="utf-8")
 
     problems = verify_snapshot(fake)
-    assert any("sdkb-abox-patents.ttl" in p for p in problems), problems
+    assert any("sdkb-abox-experts.ttl" in p for p in problems), problems
 
 
 # --- CLI 계약 (Makefile/CI 가 부르는 경로) ------------------------------------

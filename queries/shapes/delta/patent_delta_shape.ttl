@@ -1,0 +1,31 @@
+# L1 — 이 논문이 **병합하는 델타**(삼성 특허)에만 적용되는 엄격 제약.
+#
+# 게이트의 의미는 "그래프에 넣어도 되는 데이터인가"이지 "상류가 남긴 데이터를 소급 처벌한다"가
+# 아니다. 그래서 개념 매핑 요구는 여기에만 있다 — merge_with_gate() 가 델타 그래프에 적용한다.
+#
+# 개념 축은 **Process ∪ Device** 다. 논문 §3.4.4 의 H2 검증 사례(HBM, GAA)가 공정이 아니라
+# 디바이스 아키텍처이므로, 개념 단위 시계열의 개념은 두 축을 모두 포함해야 한다.
+# (H1 의 관측 단위는 공정 20개를 그대로 유지한다 — §3.4.3.)
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix ont:  <https://w3id.org/sdkb/ont/> .
+@prefix pat:  <https://w3id.org/sdkb/data/patent/> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+pat:PatentDeltaShape a sh:NodeShape ;
+    sh:targetClass ont:Patent ;
+    sh:property [
+        sh:path ont:applicationNumber ;
+        sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path ont:filingDate ;
+        sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "특허는 filingDate(xsd:date)가 정확히 1개 있어야 함 — foresight 시계열의 전제" ;
+    ] ;
+    # 개념 매핑 ≥1. SubProcess ⊑ Process 이므로 RDFS 추론(shacl_gate 의 inference="rdfs")
+    # 하에서 realizesProcess 는 상위 Process 링크와 하위 SubProcess 링크를 모두 허용한다.
+    sh:or (
+        [ sh:property [ sh:path ont:realizesProcess ; sh:minCount 1 ; sh:class ont:Process ] ]
+        [ sh:property [ sh:path ont:concernsDevice  ; sh:minCount 1 ; sh:class ont:Device  ] ]
+    ) ;
+    sh:message "병합되는 특허는 최소 1개 온톨로지 개념(Process 또는 Device)에 매핑되어야 함 — 커버리지·시계열 분석의 전제" .

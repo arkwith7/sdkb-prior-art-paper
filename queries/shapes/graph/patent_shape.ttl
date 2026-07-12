@@ -1,4 +1,13 @@
-# 특허 인스턴스 필수 제약: 출원번호 1개, 출원일 1개(date), 공정 링크 1개 이상.
+# L1 — 그래프 전체(G₀·G₁)에 적용되는 특허 제약.
+#
+# 이 그래프에는 **레거시 SIRP 특허 1,000건**이 들어 있다. 그중 118건은 공정 링크가 없는데,
+# IPC 가 G11C(기억장치 회로)·H10B/H10D(반도체 소자) 같은 **소자 분류**이기 때문이다 —
+# 데이터 결함이 아니라 그들이 디바이스 특허라는 사실이다. 공정으로 억지 매핑하는 것은
+# 날조이므로(CLAUDE.md §1.2), 그래프 전체에는 아래 두 가지만 요구한다.
+#
+# 개념 매핑(Process ∪ Device) ≥1 은 **이 논문이 병합하는 델타**에만 엄격히 요구한다
+#   → queries/shapes/delta/patent_delta_shape.ttl
+#
 # 어휘는 SDKB v1.0 실물 (ont:) — 새 술어를 발명하지 않는다.
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix ont:  <https://w3id.org/sdkb/ont/> .
@@ -15,11 +24,4 @@ pat:PatentShape a sh:NodeShape ;
         sh:path ont:filingDate ;
         sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
         sh:message "특허는 filingDate(xsd:date)가 정확히 1개 있어야 함 — foresight 시계열의 전제" ;
-    ] ;
-    # SubProcess ⊑ Process 이므로, RDFS 추론(shacl_gate 의 inference="rdfs") 하에서
-    # 이 제약은 상위 Process 링크와 하위 SubProcess 링크를 모두 허용한다.
-    sh:property [
-        sh:path ont:realizesProcess ;
-        sh:minCount 1 ; sh:class ont:Process ;
-        sh:message "특허는 최소 1개 공정(Process 또는 SubProcess)에 매핑되어야 함 — 커버리지 분석의 전제" ;
     ] .

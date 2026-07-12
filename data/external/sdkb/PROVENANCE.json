@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "e64f90cc74ec5e8229e0968a043e1b3c55a959d1",
-  "source_commit_date": "2026-05-28T22:38:19+09:00",
+  "source_commit": "4fca29c3f6e2dc76bf6728c053fcdcbd1dd4dbf9",
+  "source_commit_date": "2026-07-12T18:54:22+09:00",
   "source_dirty": true,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-11T14:03:15+00:00",
+  "vendored_at": "2026-07-12T09:54:55+00:00",
   "baseline_counts": {
     "nodes": 229,
     "edges": 268,
@@ -12,21 +12,19 @@
     "cases": 3,
     "provenance_sources": 13
   },
-  "excluded": {
-    "ontology/sdkb-abox-patents.ttl": "SIRP 거절특허 773건 — baseline 에서 의도적으로 제외. graph_v0 를 '특허 없는 상태'로 두어야 KIPRIS 보강의 H1 효과가 측정된다."
-  },
+  "excluded": {},
   "files": [
     {
       "file": "sdkb-core.ttl",
       "source_path": "ontology/sdkb-core.ttl",
-      "role": "TBox: 제조 코어(Process/SubProcess/Equipment/Material/FailureMode)",
-      "sha256": "ab1630d12185ee7ecc3fdbee922a170fbe2b13a75541cc0a07cc43ecd6acbb70"
+      "role": "TBox: 제조 코어(Process/SubProcess/Equipment/Material/Device/FailureMode)",
+      "sha256": "2e350f2376d40a0190b984cefc834b7705b440bafd3347b258daf1d82d27af2e"
     },
     {
       "file": "sdkb-patent.ttl",
       "source_path": "ontology/sdkb-patent.ttl",
-      "role": "TBox: 특허 모듈(Patent/IPC/CPC/realizesProcess)",
-      "sha256": "7890ebfa1624542dddd4ed506dddb824a69b8d3ca7da302c4b12bb43a0b43731"
+      "role": "TBox: 특허 모듈(Patent/IPC/realizesProcess/concernsDevice)",
+      "sha256": "3b8822c923e91a5f21bb3628e4dd5fc802c88dcecc4158502609a2721a737473"
     },
     {
       "file": "sdkb-foresight.ttl",
@@ -37,8 +35,14 @@
     {
       "file": "sdkb-core-data.ttl",
       "source_path": "ontology/sdkb-core-data.ttl",
-      "role": "ABox: 도메인 인스턴스 229 노드 / 268 엣지",
+      "role": "ABox: 도메인 인스턴스 (공정 20 · 디바이스 31 …)",
       "sha256": "a445cebdab3804ff82d95641fb037f464b69c52ae9e80c2eae41ad6ba96e6d7d"
+    },
+    {
+      "file": "sdkb-abox-patents.ttl",
+      "source_path": "ontology/sdkb-abox-patents.ttl",
+      "role": "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다",
+      "sha256": "a71ca875de7397cfa677f06bb576076729b8bd715012429741a54ce632b54065"
     },
     {
       "file": "semiconductor_v0_3.json",

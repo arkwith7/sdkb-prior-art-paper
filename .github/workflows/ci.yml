@@ -33,24 +33,24 @@ jobs:
       - name: Snapshot integrity (PROVENANCE sha256)
         run: uv run python -m sdkb_paper.ontology.vendor --verify
 
-      # baseline 재조립. 특허가 0건이 아니면 여기서 죽는다 (SIRP ABox 유입 감지).
+      # baseline(G₀ = 현행 SDKB) 재조립. SIRP 특허가 1,000건이 아니면 여기서 죽는다 —
+      # before 가 움직이면 H1 이 재현되지 않는다.
       - name: Assemble baseline (graph_v0)
         run: uv run python -m sdkb_paper.ontology.baseline
 
-      # L1 구조 제약 (SHACL) — 실물 baseline + 합성 특허 샘플 둘 다.
-      # 샘플이 없으면 PatentShape 가 vacuous 하게 통과한다 (baseline 에는 특허가 0건이므로).
+      # L1 구조 제약 (SHACL). graph_v0 에는 완화 shape(레거시 특허 포함), mini_graph 에는
+      # 엄격 shape(병합될 특허의 계약 — 개념 매핑 ≥1). 둘 다 있어야 게이트가 non-vacuous.
       - name: L1 SHACL gate
         run: |
-          uv run python -m sdkb_paper.validate.shacl_gate data/processed/graph_v0.ttl
-          uv run python -m sdkb_paper.validate.shacl_gate data/samples/mini_graph.ttl
+          uv run python -m sdkb_paper.validate.shacl_gate data/processed/graph_v0.ttl --shapes graph
+          uv run python -m sdkb_paper.validate.shacl_gate data/samples/mini_graph.ttl --shapes delta
 
       # L2 논리 일관성 (HermiT).
       - name: L2 reasoner gate (consistency)
         run: uv run python -m sdkb_paper.validate.reasoner_gate data/processed/graph_v0.ttl
 
-      # L3 CQ. graph_v0 은 특허 0건이라 CQ01/CQ02 가 응답 불가인 것이 정상 —
-      # 게이트가 아니라 논문 §4.2 의 G₀ 열을 만드는 **측정**이다(--min-pass 0).
-      # 회귀 감시(특허 유입)는 통합 테스트의 CQ 서명 검사가 맡는다.
+      # L3 CQ. graph_v0 의 CQ 는 게이트가 아니라 논문 §4.2 의 G₀ 열을 만드는 **측정**이다
+      # (--min-pass 0). 회귀 감시(특허 유실·공정 링크 단절)는 통합 테스트의 CQ 서명이 맡는다.
       - name: L3 competency questions
         run: |
           uv run python -m sdkb_paper.validate.cq_runner data/processed/graph_v0.ttl --report --min-pass 0

@@ -22,11 +22,29 @@ make baseline                       # graph_v0 재조립
 
 | 일시 | 소스 | 커밋 | 가져온 것 | 규모 | 산출 그래프 |
 |---|---|---|---|---:|---|
-| 2026-07-11 | [semiconductor-knowledge-base](https://github.com/arkwith7/semiconductor-knowledge-base) (CDLA-Permissive-2.0) | `e64f90cc74ec` | TBox: core·patent·foresight / ABox: core-data | 229 노드, 268 엣지 → 3,201 트리플 | `graph_v0.ttl` |
+| 2026-07-11 | [semiconductor-knowledge-base](https://github.com/arkwith7/semiconductor-knowledge-base) (CDLA-Permissive-2.0) | `e64f90cc74ec` | TBox: core·patent·foresight / ABox: core-data (SIRP 제외) | 3,201 트리플 | (폐기) |
+| 2026-07-12 | 〃 | `4fca29c3f6e2` | TBox: core·patent·foresight / ABox: core-data + **SIRP 특허 1,000건** | 24,566 트리플 | `graph_v0.ttl` |
 
-- 파일별 sha256 과 원천(`semiconductor_v0_3.json`, sha256 `806600ab…`)은 `data/external/sdkb/PROVENANCE.json` 에 기록.
-- **의도적 제외**: SDKB 의 SIRP 특허 ABox(`sdkb-abox-patents.ttl`, 거절특허 773건). baseline 을
-  특허 0건 상태로 두어야 KIPRIS 보강의 H1 효과가 측정된다. SIRP 는 별도 비교군으로 쓴다.
+**G₀ 정의 변경 (2026-07-12).** 이전 스냅샷은 SIRP 특허 ABox 를 의도적으로 제외해 baseline 을
+특허 0건으로 두었다. 그러면 모든 공정 단계에서 C₀(s)=0 이 되어 **H1 이 기각될 수 없는 자명한
+가설**이 된다. G₀ 는 "현행 SDKB"여야 한다. 새 baseline 의 서명:
+
+| 항목 | 값 |
+|---|---:|
+| 트리플 | 24,566 |
+| 공정 단계 (H1 의 관측 단위) | 20 (Process 8 + SubProcess 12) |
+| 디바이스 (H2 의 개념 축에 포함) | 31 |
+| 특허 (SIRP 거절특허) | 1,000 |
+| 출원일 보유 특허 | 1,000 (100%) |
+| **커버된 공정 단계 C₀** | **16 / 20** |
+| **커버리지 공백** | **4 / 20** |
+
+- 상류에서 **출원일이 정정되었다**: SDKB 의 `filing_date` 는 출원일이 아니라 공개일이었다
+  (KIPRIS 대조로 확인). SDKB 커밋 `4fca29c` 에서 KIPRIS 권위 원천으로 재수집·교체했다.
+  이 정정 없이는 H2 시계열이 1~2년 밀린다.
+- SIRP 는 **1,000건**이다. 초기 코호트 스냅샷이 773건이었고 GT 페어가 그 시점에 동결되어 있다 —
+  이전 표의 "773건"은 그 혼동이었다.
+- 파일별 sha256 은 `data/external/sdkb/PROVENANCE.json` 에 기록.
 - `graph_v0.ttl` 은 스냅샷에서 결정적으로 재생성되므로 커밋하지 않는다 (`make baseline`).
 
 ## 2. 특허 수집 (KIPRIS / BigQuery)
