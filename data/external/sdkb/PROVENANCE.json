@@ -1,14 +1,14 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "c49dea0c671e90bbf82a73d3d212f05b1c50b683",
-  "source_commit_date": "2026-07-12T19:34:11+09:00",
+  "source_commit": "ad7fe3d2ecc67893c921b7c818a665fbfe6632df",
+  "source_commit_date": "2026-07-12T23:03:03+09:00",
   "source_dirty": true,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-12T10:34:11+00:00",
+  "vendored_at": "2026-07-12T14:03:09+00:00",
   "baseline_counts": {
-    "nodes": 229,
-    "edges": 268,
-    "synonyms": 177,
+    "nodes": 261,
+    "edges": 294,
+    "synonyms": 184,
     "cases": 3,
     "provenance_sources": 13
   },
@@ -36,7 +36,7 @@
       "file": "sdkb-core-data.ttl",
       "source_path": "ontology/sdkb-core-data.ttl",
       "role": "ABox: 도메인 인스턴스 (공정 20 · 디바이스 31 …)",
-      "sha256": "a445cebdab3804ff82d95641fb037f464b69c52ae9e80c2eae41ad6ba96e6d7d"
+      "sha256": "3ed9a570e3295c56a82c58c394110e490c3c9331d825597a338d217b22501daf"
     },
     {
       "file": "sdkb-abox-patents.ttl",
@@ -48,13 +48,13 @@
       "file": "semiconductor_v0_3.json",
       "source_path": "data/semiconductor_v0_3.json",
       "role": "ABox 의 커밋된 원천(=재현 기준점)",
-      "sha256": "806600aba2652bb56a7a6f2b710e41f48dc271e7579c32a2d506c3f71177049b"
+      "sha256": "dc83156c1b4fcacae47000211a07fa96d5fce426e31283ea5ced658892e0a943"
     },
     {
       "file": "schema_report.json",
       "source_path": "data/schema_report.json",
       "role": "원천의 sha256 + 노드/엣지 카운트",
-      "sha256": "10d3ec6fc1de6ae1fe5ae57835198d8f168030309bd57e8ca62879953e325731"
+      "sha256": "e718667189848f89c2087e5a0f6b0d08a4c0e1e61f60a82d69ed6a07253ee998"
     }
   ]
 }

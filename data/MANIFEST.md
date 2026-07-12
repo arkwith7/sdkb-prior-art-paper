@@ -23,7 +23,8 @@ make baseline                       # graph_v0 재조립
 | 일시 | 소스 | 커밋 | 가져온 것 | 규모 | 산출 그래프 |
 |---|---|---|---|---:|---|
 | 2026-07-11 | [semiconductor-knowledge-base](https://github.com/arkwith7/semiconductor-knowledge-base) (CDLA-Permissive-2.0) | `e64f90cc74ec` | TBox: core·patent·foresight / ABox: core-data (SIRP 제외) | 3,201 트리플 | (폐기) |
-| 2026-07-12 | 〃 | `4fca29c3f6e2` | TBox: core·patent·foresight / ABox: core-data + **SIRP 특허 1,000건** | 24,566 트리플 | `graph_v0.ttl` |
+| 2026-07-12 | 〃 | `4fca29c3f6e2` | TBox: core·patent·foresight / ABox: core-data + **SIRP 특허 1,000건** | 24,566 트리플 | (대체됨) |
+| 2026-07-12 | 〃 | `ad7fe3d2ecc6` | 〃 + **SemiKong Table 7 공정 어휘 복원**(그룹 1·9·10) + 소자 3개 | 26,973 트리플 | `graph_v0.ttl` |
 
 **G₀ 정의 변경 (2026-07-12).** 이전 스냅샷은 SIRP 특허 ABox 를 의도적으로 제외해 baseline 을
 특허 0건으로 두었다. 그러면 모든 공정 단계에서 C₀(s)=0 이 되어 **H1 이 기각될 수 없는 자명한
@@ -31,16 +32,23 @@ make baseline                       # graph_v0 재조립
 
 | 항목 | 값 |
 |---|---:|
-| 트리플 | 26,676 |
-| 공정 단계 (H1 의 관측 단위) | 20 (Process 8 + SubProcess 12) |
-| 디바이스 (H2 의 개념 축에 포함) | 31 |
+| 트리플 | 26,973 |
+| 공정 단계 (H1 의 관측 단위) | **49** (Process 11 + SubProcess 38) |
+| 디바이스 (H2 의 개념 축에 포함) | **34** |
 | 특허 (SIRP 거절특허) | 1,000 |
 | 출원일 보유 특허 | 1,000 (100%) |
-| 출원인(Organization) | 351 |
-| **커버된 공정 단계 C₀** | **16 / 20** |
-| **커버리지 공백** | **4 / 20** |
-| 최근 5년(2021–) 출원 전무 개념 (CQ06) | **29 / 51** |
+| 출원인(Organization) | 353 |
+| **커버된 공정 단계 C₀** | **16 / 49** |
+| **커버리지 공백** | **33 / 49** |
+| 최근 5년(2021–) 출원 전무 개념 (CQ06) | **61 / 83** |
 | CQ 응답률 (8개) | **100%** |
+
+**공정 어휘 복원 (2026-07-12, SDKB `ad7fe3d`).** SDKB 의 공정은 SemiKong Appendix A Table 7 의
+L1 Process Group 을 원천으로 하는데(`provenance.source_id`), 원천은 그룹이 **10개**인 반면 SDKB 는
+7개만 담고 있었다 — **기판준비 · 어드밴스드 모듈 · 후공정**(다이싱·패키징·금속화·웨이퍼 테스트)이
+통째로 없었다. Table 7 의 Group·Module 열을 전량 복원해 공정 20 → 49, 소자 31 → 34 가 되었다.
+복원된 단계는 G₀ 에서 C₀(s)=0 이므로 H1 에 유리한 편향이 있다 — H1 은 확장 집합(49)과 복원 이전
+집합(20) 양쪽으로 병기 보고한다.
 
 **출원인 상위 (SIRP 는 다출원인 코퍼스다)**: SK hynix 128 · **Samsung Electronics 75** ·
 Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · LAM 19.

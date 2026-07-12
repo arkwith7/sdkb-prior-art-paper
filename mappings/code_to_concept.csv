@@ -1,0 +1,97 @@
+code_prefix,axis,concept_iri,level,scheme,code_title,rationale,confidence,status
+G03F7/20,process,https://w3id.org/sdkb/data/process/lithography,process,CPC-2026.01,Exposure; Apparatus therefor (photographic printing apparatus for making copies G03B 27/00),노광 자체 — Lithography 정의(pattern transfer using photoresist and exposure)와 직결,high,author-defined
+G03F7/70,process,https://w3id.org/sdkb/data/process/lithography,process,CPC-2026.01,{Microphotolithographic exposure; Apparatus therefor (photo-masks G03F 1/00)},스캐너/스테퍼 노광 장비,high,author-defined
+G03F1,process,https://w3id.org/sdkb/data/process/lithography,process,CPC-2026.01,"Originals for photomechanical production of textured or patterned surfaces, e.g., masks, photo-masks, reticles; Mask blanks or pellicles therefor; Containers specially adapted therefor; Preparation thereof",마스크/레티클 — 노광의 구성요소이나 공정 자체는 아님,medium,author-defined
+H01L21/027,process,https://w3id.org/sdkb/data/process/lithography,process,CPC-2026.01,Making masks on semiconductor bodies for further photolithographic processing not provided for in group H01L 21/18 or H01L 21/34 {(photographic masks or originals per se G03F 1/00; registration or positioning of photographic masks or originals G03F 9/00; photographic cameras G03B; control of position G05D 3/00)},반도체 기판 상 포토리소 공정,high,author-defined
+G03F7/16,process,https://w3id.org/sdkb/data/subprocess/photoresist_coat_develop,subprocess,CPC-2026.01,Coating processes; Apparatus therefor (applying coatings to base materials in general B05; applying photosensitive compositions to base for photographic purposes G03C 1/74),감광막 도포 — Coat/Develop 정의와 직결,high,author-defined
+G03F7/30,process,https://w3id.org/sdkb/data/subprocess/photoresist_coat_develop,subprocess,CPC-2026.01,Imagewise removal using liquid means,현상 공정,high,author-defined
+G03F7/32,process,https://w3id.org/sdkb/data/subprocess/photoresist_coat_develop,subprocess,CPC-2026.01,"Liquid compositions therefor, e.g. developers",현상액,medium,author-defined
+G03F9,process,https://w3id.org/sdkb/data/subprocess/overlay_control,subprocess,CPC-2026.01,"Registration or positioning of originals, masks, frames, photographic sheets or textured or patterned surfaces, e.g. automatically (G03F 7/22 takes precedence; preparation of photographic masks G03F 1/00; within photographic printing apparatus for making copies G03B 27/00)",정렬(align) — Overlay Control 정의(alignment/APC)와 직결,high,author-defined
+G03F7/70633,process,https://w3id.org/sdkb/data/subprocess/overlay_control,subprocess,CPC-2026.01,"{Overlay, i.e. relative alignment between patterns printed by separate exposures in different layers, or in the same layer in multiple exposures or stitching}",오버레이 계측,high,author-defined
+H01L21/306,process,https://w3id.org/sdkb/data/process/etch,process,CPC-2026.01,"Chemical or electrical treatment, e.g. electrolytic etching (to form insulating layers H01L 21/31)",식각 일반 — 건식/습식 미분화이므로 상위 Process 로 둔다,high,author-defined
+H01L21/311,process,https://w3id.org/sdkb/data/process/etch,process,CPC-2026.01,Etching the insulating layers {by chemical or physical means (H01L 21/31058 takes precedence)},절연막 식각. Hardmask(SiN/SiO2)일 수 있으나 IPC 만으로는 단정 불가 → 상위로,medium,author-defined
+H01L21/3213,process,https://w3id.org/sdkb/data/process/etch,process,CPC-2026.01,"Physical or chemical etching of the layers, e.g. to produce a patterned layer from a pre-deposited extensive layer",도전막 식각,high,author-defined
+H01L21/3065,process,https://w3id.org/sdkb/data/subprocess/plasma_etch,subprocess,CPC-2026.01,Plasma etching; Reactive-ion etching,플라즈마 건식 식각 — Plasma Etch 정의(RIE/ICP)와 직결,high,author-defined
+H01J37/32,process,https://w3id.org/sdkb/data/subprocess/plasma_etch,subprocess,CPC-2026.01,Gas-filled discharge tubes (heating by discharge H05B),플라즈마 장비. 식각뿐 아니라 플라즈마 증착에도 쓰임 → 오분류 위험 있음,medium,author-defined
+C09K13,process,https://w3id.org/sdkb/data/subprocess/wet_etch,subprocess,CPC-2026.01,"Etching, surface-brightening or pickling compositions (for glass C03C 15/00, {C03C 25/66; for mortars, concrete, artificial or natural stone or ceramics C04B 41/5338}; for metallic material C23F, C23G 1/00, C25F 1/00; {for semi-conductors H10P 52/40})",식각액 조성물 — Wet Etch 정의(liquid chemistries)와 직결,high,author-defined
+H01L21/033,process,https://w3id.org/sdkb/data/subprocess/hardmask_etch,subprocess,CPC-2026.01,comprising inorganic layers,하드마스크,high,author-defined
+H01L21/205,process,https://w3id.org/sdkb/data/process/deposition,process,IPC,Deposition of semiconductor materials from gases (epitaxy),기상 증착/에피,high,author-defined
+H01L21/285,process,https://w3id.org/sdkb/data/process/deposition,process,CPC-2026.01,"from a gas or vapour, e.g. condensation",전극 박막 증착,high,author-defined
+C23C16,process,https://w3id.org/sdkb/data/subprocess/cvd,subprocess,CPC-2026.01,"Chemical coating by decomposition of gaseous compounds, without leaving reaction products of surface material in the coating, i.e. chemical vapour deposition [CVD] processes (reactive sputtering or vacuum evaporation C23C 14/00)",CVD,high,author-defined
+C23C16/455,process,https://w3id.org/sdkb/data/subprocess/ald,subprocess,CPC-2026.01,characterised by the method used for introducing gases into reaction chamber or for modifying gas flows in reaction chamber,ALD 는 C23C16/455 계열에 배치됨. 상위 C23C16(CVD)보다 긴 접두어이므로 우선 매칭,medium,author-defined
+C23C14,process,https://w3id.org/sdkb/data/subprocess/pvd,subprocess,CPC-2026.01,"Coating by vacuum evaporation, by sputtering or by ion implantation of the coating forming material",PVD(스퍼터),high,author-defined
+B24B37,process,https://w3id.org/sdkb/data/process/cmp,process,IPC,Lapping machines / polishing machines,CMP 장비,high,author-defined
+C09G1/02,process,https://w3id.org/sdkb/data/process/cmp,process,IPC,Polishing compositions,CMP 슬러리,high,author-defined
+H01L21/304,process,https://w3id.org/sdkb/data/process/cmp,process,CPC-2026.01,"Mechanical treatment, e.g. grinding, polishing, cutting {(H01L 21/30625 takes precedence)}",기계적 연마. 백그라인딩 등 CMP 가 아닌 것도 포함 → 오분류 위험,medium,author-defined
+H01L21/3105,process,https://w3id.org/sdkb/data/process/cmp,process,CPC-2026.01,After-treatment,평탄화,high,author-defined
+H01L21/31053,process,https://w3id.org/sdkb/data/subprocess/cmp_oxide,subprocess,CPC-2026.01,{involving a dielectric removal step},산화막 CMP,high,author-defined
+H01L21/3212,process,https://w3id.org/sdkb/data/subprocess/cmp_metal,subprocess,CPC-2026.01,{by chemical mechanical polishing [CMP]},금속막 CMP,high,author-defined
+H01L21/02052,process,https://w3id.org/sdkb/data/process/clean,process,CPC-2026.01,{Wet cleaning only (H01L 21/02085 takes precedence)},세정,high,author-defined
+B08B,process,https://w3id.org/sdkb/data/process/clean,process,IPC,Cleaning in general,일반 세정 — 반도체 외 분야도 포함하므로 출원인 필터와 병용해야 함,medium,author-defined
+C11D,process,https://w3id.org/sdkb/data/process/clean,process,IPC,Detergent compositions,세정액 조성물. 생활화학 특허가 다수 → 오분류 위험 큼,medium,author-defined
+H01L21/265,process,https://w3id.org/sdkb/data/process/implant,process,CPC-2026.01,producing ion implantation,이온주입 — Ion Implantation 정의와 직결,high,author-defined
+H01L21/26,process,https://w3id.org/sdkb/data/process/implant,process,CPC-2026.01,Bombardment with radiation {(H01L 21/3105 takes precedence)},조사 일반. /265(주입) /268(어닐) 이 더 긴 접두어로 우선함,medium,author-defined
+H01L21/22,process,https://w3id.org/sdkb/data/process/diffusion,process,CPC-2026.01,"Diffusion of impurity materials, e.g. doping materials, electrode materials, into or out of a semiconductor body, or between semiconductor regions; {Interactions between two or more impurities; Redistribution of impurities}",불순물 확산,high,author-defined
+H01L21/324,process,https://w3id.org/sdkb/data/process/diffusion,process,CPC-2026.01,"Thermal treatment for modifying the properties of semiconductor bodies, e.g. annealing, sintering (H01L 21/20 - H01L 21/288 and H01L 21/302 - H01L 21/322 take precedence)",열처리·어닐 — Diffusion/Anneal 정의와 직결,high,author-defined
+H01L21/268,process,https://w3id.org/sdkb/data/process/diffusion,process,CPC-2026.01,"using electromagnetic radiation, e.g. laser radiation",레이저 어닐,medium,author-defined
+H01L22,process,https://w3id.org/sdkb/data/process/metrology,process,CPC-2026.01,"{Testing or measuring during manufacture or treatment; Reliability measurements, i.e. testing of parts without further processing to modify the parts as such; Structural arrangements therefor}",제조 중 검사·계측 — Metrology/Inspection 정의와 직결,high,author-defined
+H01L21/66,process,https://w3id.org/sdkb/data/process/metrology,process,IPC,Testing or measuring during manufacture,제조 중 측정(구 분류),high,author-defined
+G01N21/95,process,https://w3id.org/sdkb/data/process/metrology,process,IPC,Investigating materials — surface/defect inspection,웨이퍼 결함 검사,high,author-defined
+G01B11,process,https://w3id.org/sdkb/data/process/metrology,process,IPC,Optical measuring of dimensions,광학 치수 계측(CD). 반도체 외 분야 포함,medium,author-defined
+H10P14,process,https://w3id.org/sdkb/data/process/deposition,process,CPC-2026.01,"Formation of materials, e.g. in the shape of layers or pillars",층 형성 일반 — 구 H01L21/02 계열의 후속,high,author-defined
+H10P14/24,process,https://w3id.org/sdkb/data/subprocess/cvd,subprocess,CPC-2026.01,using chemical vapour deposition [CVD],CVD 명시,high,author-defined
+H10P14/43,process,https://w3id.org/sdkb/data/subprocess/cvd,subprocess,CPC-2026.01,"Chemical deposition, e.g. chemical vapour deposition [CVD]",절연막 CVD,high,author-defined
+H10P14/6336,process,https://w3id.org/sdkb/data/subprocess/cvd,subprocess,CPC-2026.01,{in the presence of a plasma [PECVD]},PECVD 는 CVD 의 하위,high,author-defined
+H10P14/22,process,https://w3id.org/sdkb/data/subprocess/pvd,subprocess,CPC-2026.01,"using physical deposition, e.g. vacuum deposition or sputtering",물리 증착(진공증착·스퍼터),high,author-defined
+H10P14/44,process,https://w3id.org/sdkb/data/subprocess/pvd,subprocess,CPC-2026.01,Physical vapour deposition [PVD],PVD 명시,high,author-defined
+H10P14/45,process,https://w3id.org/sdkb/data/subprocess/pvd,subprocess,CPC-2026.01,Sputtering,스퍼터링,high,author-defined
+H10P14/6339,process,https://w3id.org/sdkb/data/subprocess/ald,subprocess,CPC-2026.01,"{deposition by cyclic CVD, e.g. ALD, ALE or pulsed CVD}",cyclic CVD = ALD 명시,high,author-defined
+H10P14/6304,process,https://w3id.org/sdkb/data/subprocess/oxidation,subprocess,CPC-2026.01,"{Formation by oxidation, e.g. oxidation of the substrate}",기판 산화 — SemiKong 2.1 Oxidation,high,author-defined
+H10P14/6349,process,https://w3id.org/sdkb/data/subprocess/epitaxial_growth,subprocess,CPC-2026.01,{Deposition of epitaxial materials},에피 증착 — SemiKong 2.3,high,author-defined
+H10P30,process,https://w3id.org/sdkb/data/process/implant,process,CPC-2026.01,"Ion implantation into wafers, substrates or parts of devices",이온주입 명시,high,author-defined
+H10P30/28,process,https://w3id.org/sdkb/data/subprocess/dopant_activation,subprocess,CPC-2026.01,"characterised by an annealing step, e.g. for activation of dopants",도판트 활성화 어닐 — SemiKong 7.3,high,author-defined
+H10P32,process,https://w3id.org/sdkb/data/process/diffusion,process,CPC-2026.01,"Diffusion of dopants within, into or out of wafers, substrates or parts of devices (during formation of materials H10P 14/00)",확산 명시,high,author-defined
+H10P34,process,https://w3id.org/sdkb/data/process/diffusion,process,CPC-2026.01,"Irradiation with electromagnetic or particle radiation of wafers, substrates or parts of devices",조사(레이저 어닐 포함) — Diffusion/Anneal 정의에 포함,medium,author-defined
+H10P95/90,process,https://w3id.org/sdkb/data/subprocess/annealing,subprocess,CPC-2026.01,"Thermal treatments, e.g. annealing or sintering",열처리·어닐 — SemiKong 7.1,high,author-defined
+H10P50,process,https://w3id.org/sdkb/data/process/etch,process,CPC-2026.01,"Etching of wafers, substrates or parts of devices",식각 일반 — 건식/습식 미분화이므로 상위 Process,high,author-defined
+H10P50/20,process,https://w3id.org/sdkb/data/subprocess/plasma_etch,subprocess,CPC-2026.01,Dry etching; Plasma etching; Reactive-ion etching,건식·플라즈마·RIE 명시,high,author-defined
+H10P50/60,process,https://w3id.org/sdkb/data/subprocess/wet_etch,subprocess,CPC-2026.01,Wet etching,습식 식각 명시,high,author-defined
+H10P52,process,https://w3id.org/sdkb/data/process/cmp,process,CPC-2026.01,"Grinding, lapping or polishing of wafers, substrates or parts of devices",연마 일반. 백그라인딩(웨이퍼 박막화)도 포함하므로 오분류 위험,medium,author-defined
+H10P52/40,process,https://w3id.org/sdkb/data/process/cmp,process,CPC-2026.01,Chemomechanical polishing [CMP] (electrochemical mechanical polishing H10P 52/20),CMP 명시,high,author-defined
+H10P52/403,process,https://w3id.org/sdkb/data/subprocess/cmp_metal,subprocess,CPC-2026.01,{of conductive or resistive materials},도전막 CMP,high,author-defined
+H10P52/407,process,https://w3id.org/sdkb/data/subprocess/cmp_oxide,subprocess,CPC-2026.01,{of inorganic insulating materials},절연막 CMP,high,author-defined
+H10P95/04,process,https://w3id.org/sdkb/data/subprocess/cmp_metal,subprocess,CPC-2026.01,{Planarisation of conductive or resistive materials},도전막 평탄화,medium,author-defined
+H10P70,process,https://w3id.org/sdkb/data/process/clean,process,CPC-2026.01,"Cleaning of wafers, substrates or parts of devices",세정 명시,high,author-defined
+H10P70/12,process,https://w3id.org/sdkb/data/subprocess/dry_cleaning,subprocess,CPC-2026.01,{by dry cleaning only (H10P 70/52 takes precedence)},건식 세정 — SemiKong 6.2,high,author-defined
+H10P70/15,process,https://w3id.org/sdkb/data/subprocess/wet_cleaning,subprocess,CPC-2026.01,{by wet cleaning only (H10P 70/52 takes precedence)},습식 세정 — SemiKong 6.1,high,author-defined
+H10P70/80,process,https://w3id.org/sdkb/data/subprocess/advanced_cleaning,subprocess,CPC-2026.01,{Cleaning only by supercritical fluids},초임계 유체 세정 — SemiKong 6.3,high,author-defined
+H10P74,process,https://w3id.org/sdkb/data/process/metrology,process,CPC-2026.01,"Testing or measuring during manufacture or treatment of wafers, substrates or devices",제조 중 검사·계측 — 구 H01L22 의 후속,high,author-defined
+H10P72/06,process,https://w3id.org/sdkb/data/process/metrology,process,CPC-2026.01,"{Apparatus for monitoring, sorting, marking, testing or measuring}",모니터링·측정 장비. 소팅·마킹도 포함해 오분류 위험,medium,author-defined
+H10P76,process,https://w3id.org/sdkb/data/process/lithography,process,CPC-2026.01,"Manufacture or treatment of masks on semiconductor bodies, e.g. by lithography or photolithography",반도체 기판상 마스크 제조(리소그래피) — 구 H01L21/027 의 후속,high,author-defined
+H10P10,process,https://w3id.org/sdkb/data/process/back_end,process,CPC-2026.01,"Bonding of wafers, substrates or parts of devices",웨이퍼 본딩. 3D 집적·SOI 형성 등 용도가 갈려 모듈을 특정할 수 없어 그룹으로,medium,author-defined
+H10P54,process,https://w3id.org/sdkb/data/subprocess/dicing,subprocess,CPC-2026.01,"Cutting or separating of wafers, substrates or parts of devices",절단·분리 — SemiKong 10.7 Dicing,high,author-defined
+H10P58,process,https://w3id.org/sdkb/data/subprocess/dicing,subprocess,CPC-2026.01,"Singulating wafers or substrates into multiple chips, i.e. dicing",싱귤레이션 = 다이싱 명시,high,author-defined
+H10P56,process,https://w3id.org/sdkb/data/process/back_end,process,CPC-2026.01,"Debonding of wafers, substrates or parts of devices",디본딩 — 후공정이나 대응 모듈 없음,medium,author-defined
+H01L21/56,process,https://w3id.org/sdkb/data/subprocess/packaging,subprocess,IPC,"Encapsulations, e.g. encapsulation layers, coatings",봉지(encapsulation) — SemiKong 10.8 Packaging,high,author-defined
+C23F1,process,https://w3id.org/sdkb/data/subprocess/wet_etch,subprocess,CPC-2026.01,Etching metallic material by chemical means (manufacture of printing surfaces B41C; manufacture of printed circuits H05K),금속 화학 식각 = 습식 식각,high,author-defined
+H05H1,process,https://w3id.org/sdkb/data/subprocess/plasma_etch,subprocess,CPC-2026.01,Generating plasma; Handling plasma,플라즈마 발생. 식각 외 용도도 있어 오분류 위험,medium,author-defined
+H10B10,device,https://w3id.org/sdkb/data/device/sram,device,CPC-2026.01,Static random access memory [SRAM] devices,코드 정의가 곧 소자,high,author-defined
+H10B12,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,Dynamic random access memory [DRAM] devices,코드 정의가 곧 소자,high,author-defined
+H10B41,device,https://w3id.org/sdkb/data/device/eeprom,device,CPC-2026.01,Electrically erasable-and-programmable ROM [EEPROM] devices comprising floating gates,부동게이트 EEPROM,high,author-defined
+H10B43,device,https://w3id.org/sdkb/data/device/eeprom,device,CPC-2026.01,EEPROM devices comprising charge-trapping gate insulators,전하트랩형 EEPROM,high,author-defined
+H10B43/27,device,https://w3id.org/sdkb/data/device/3d_nand,device,CPC-2026.01,"the channels comprising vertical portions, e.g. U-shaped channels",수직 채널 = 3D NAND 구조,high,author-defined
+H10B51,device,https://w3id.org/sdkb/data/device/feram,device,CPC-2026.01,Ferroelectric RAM [FeRAM] devices comprising ferroelectric memory transistors,FeRAM 명시,high,author-defined
+H10B53,device,https://w3id.org/sdkb/data/device/feram,device,CPC-2026.01,Ferroelectric RAM [FeRAM] devices comprising ferroelectric memory capacitors,FeRAM 명시,high,author-defined
+H10B61,device,https://w3id.org/sdkb/data/device/mram,device,CPC-2026.01,"Magnetic memory devices, e.g. magnetoresistive RAM [MRAM] devices",MRAM 명시,high,author-defined
+H10B63,device,https://w3id.org/sdkb/data/device/reram,device,CPC-2026.01,"Resistance change memory devices, e.g. resistive RAM [ReRAM] devices",ReRAM 명시,high,author-defined
+H10B69,device,https://w3id.org/sdkb/data/device/eprom,device,CPC-2026.01,"Erasable-and-programmable ROM [EPROM] devices not provided for in groups H10B 41/00 - H10B 63/00, e.g. ultraviolet erasable-and-programmable ROM [UVEPROM] devices",EPROM 명시(41–63 에 없는 잔여군),high,author-defined
+H10D8,device,https://w3id.org/sdkb/data/device/diode,device,CPC-2026.01,Diodes (variable-capacitance diodes H10D 1/64; gated diodes H10D 12/00),다이오드 명시,high,author-defined
+H10D10,device,https://w3id.org/sdkb/data/device/bjt,device,CPC-2026.01,Bipolar junction transistors [BJT],BJT 명시,high,author-defined
+H10D12,device,https://w3id.org/sdkb/data/device/igbt,device,CPC-2026.01,"Bipolar devices controlled by the field effect, e.g. insulated-gate bipolar transistors [IGBT]",IGBT 명시,high,author-defined
+H10D18,device,https://w3id.org/sdkb/data/device/thyristor,device,CPC-2026.01,Thyristors,사이리스터 명시,high,author-defined
+H10D30/60,device,https://w3id.org/sdkb/data/device/mosfet,device,CPC-2026.01,Insulated-gate field-effect transistors [IGFET] (H10D 30/40 takes precedence),"IGFET = 절연게이트 FET, 실무상 MOSFET",medium,author-defined
+H10D30/68,device,https://w3id.org/sdkb/data/device/eeprom,device,CPC-2026.01,Floating-gate IGFETs,부동게이트 IGFET = 플래시/EEPROM 셀,medium,author-defined
+G11C11/15,device,https://w3id.org/sdkb/data/device/mram,device,CPC-2026.01,using multiple magnetic layers (G11C 11/155 takes precedence),다층 자성막 기억소자 = MRAM,medium,author-defined
+G11C16,device,https://w3id.org/sdkb/data/device/eprom,device,CPC-2026.01,Erasable programmable read-only memories (G11C 14/00 takes precedence),소거가능 프로그래머블 ROM,medium,author-defined
+H01L21/8247,device,https://w3id.org/sdkb/data/device/eprom,device,IPC-2013,Manufacture or treatment of devices consisting of a plurality of solid state components — memory structures — read-only memory structures — electrically-programmable [EPROM],(폐지 코드) ROM 구조 중 electrically-programmable = EPROM 제조,high,author-defined
+H01L27/108,device,https://w3id.org/sdkb/data/device/dram,device,IPC-2013,Dynamic random access memory structures,(폐지 코드) DRAM 구조,high,author-defined

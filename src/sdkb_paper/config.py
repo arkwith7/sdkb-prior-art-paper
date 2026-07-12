@@ -26,7 +26,9 @@ QUERIES_SHAPES = ROOT / "queries" / "shapes"
 SHAPES_GRAPH = QUERIES_SHAPES / "graph"
 SHAPES_DELTA = QUERIES_SHAPES / "delta"
 MAPPINGS = ROOT / "mappings"
-IPC_MAPPING = MAPPINGS / "ipc_to_process.csv"   # IPC/CPC 접두어 -> SDKB 공정 IRI
+# IPC/CPC 접두어 -> SDKB 개념 IRI. 개념 축은 Process ∪ Device 이므로 공정 전용이 아니다 —
+# axis 컬럼이 realizesProcess 와 concernsDevice 를 가른다.
+CODE_MAPPING = MAPPINGS / "code_to_concept.csv"
 FIGURES = ROOT / "paper" / "figures"
 
 # vendoring 원본. 스냅샷을 갱신할 때만 쓰인다 — 분석/게이트는 EXTERNAL_SDKB 만 본다.

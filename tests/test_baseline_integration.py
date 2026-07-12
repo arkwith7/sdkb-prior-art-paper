@@ -28,16 +28,23 @@ from sdkb_paper.validate.shacl_gate import validate_graph
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 26676
-EXPECTED_PROCESS = 8
-EXPECTED_SUBPROCESS = 12
-EXPECTED_DEVICE = 31        # H2 의 개념 축은 Process ∪ Device (HBM·GAA 는 Device 다)
+EXPECTED_TRIPLES = 26973
+EXPECTED_PROCESS = 11       # SemiKong Table 7 의 L1 그룹 10개 (Patterning 이 리소/식각 둘로 갈림)
+EXPECTED_SUBPROCESS = 38    # Table 7 의 L2 모듈 + SDKB 고유 유닛
+EXPECTED_DEVICE = 34        # H2 의 개념 축은 Process ∪ Device (HBM·GAA 는 Device 다)
 EXPECTED_PATENTS = 1000     # SIRP 거절특허 — G₀ 는 "현행 SDKB" 다 (특허 0건이 아니다)
 
-# H1 의 before: 20개 공정 단계 중 16개가 이미 커버되어 있고 4개가 공백이다.
-# 이 값이 H1 을 자명하지 않게 만든다 — C₀(s)=0 이면 어떤 보강도 유의해진다.
+# H1 의 before: 49개 공정 단계 중 16개가 커버되어 있고 33개가 공백이다.
+#
+# 공백이 4 → 33 으로 뛴 것은 상류 SDKB 가 SemiKong Table 7 의 그룹 1·9·10(기판준비·어드밴스드
+# 모듈·**후공정**)을 통째로 빠뜨리고 있었기 때문이다. 복원 후 그 단계들은 G₀ 에서 전부 비어 있다 —
+# SDKB 가 그 어휘로 특허를 매핑한 적이 없으므로 당연하다.
+#
+# 이것은 H1 에 **구조적으로 유리한 조건**이다: 새로 복원된 단계는 C₀(s)=0 이라 G₁ 이 채우기만 하면
+# 이긴다. 그래서 논문은 H1 을 **두 집합으로 보고한다** — 확장 집합(49)과 기존 집합(20). 독자가
+# "새로 추가한 단계 덕분에 산 결과인가"를 직접 판별할 수 있어야 한다 (§4.5).
 EXPECTED_COVERED_STEPS = 16
-EXPECTED_UNCOVERED_STEPS = 4
+EXPECTED_UNCOVERED_STEPS = 33
 
 # G₀ 의 CQ 서명 — 논문 §4.2 의 before 열.
 #
@@ -56,7 +63,7 @@ CQ_MUST_ANSWER = {
 }
 
 # 완전성 지표의 before 값. G₁ 과 비교되는 수치이므로 여기서 고정한다.
-EXPECTED_CONCEPTS_WITHOUT_RECENT = 29   # CQ06 — 개념 51개 중 2021년 이후 출원 전무
+EXPECTED_CONCEPTS_WITHOUT_RECENT = 61   # CQ06 — 개념 83개 중 2021년 이후 출원 전무
 EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴리오 분석에 쓸 수 없다
 
 

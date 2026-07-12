@@ -27,17 +27,17 @@ SDKB 원본(~/Dev/sdkb) ──(사람이 make vendor)──> data/external/sdkb/
 **결정적이다.** 같은 스냅샷 → 같은 그래프(바이트 단위 동일).
 → `test_baseline_is_deterministic` (두 번 조립해 sha256 비교)
 
-**서명 (`make baseline` 출력, SDKB 커밋 `c49dea0`)**
+**서명 (`make baseline` 출력, SDKB 커밋 `ad7fe3d`)**
 
 | 항목 | 값 | 이것이 깨지면 |
 |---|---:|---|
-| 트리플 | 26,676 | 스냅샷이나 조립이 바뀌었다 |
-| Process / SubProcess | 8 / 12 | **H1 의 관측 단위(n=20)가 바뀐다** |
-| Device | 31 | H2 의 개념 축이 바뀐다 |
+| 트리플 | 26,973 | 스냅샷이나 조립이 바뀌었다 |
+| Process / SubProcess | 11 / 38 | **H1 의 관측 단위(n=49)가 바뀐다** |
+| Device | 34 | H2 의 개념 축이 바뀐다 |
 | Patent | 1,000 | SIRP 가 빠졌거나 상류가 바뀌었다 |
 | 출원일 보유 | 1,000 (100%) | H2 시계열의 전제가 깨진다 |
-| 출원인(Organization) | 351 | CQ08(포트폴리오)이 무너진다 |
-| **커버된 공정 / 공백** | **16 / 4** | **H1 의 before 가 움직인다** |
+| 출원인(Organization) | 353 | CQ08(포트폴리오)이 무너진다 |
+| **커버된 공정 / 공백** | **16 / 33** | **H1 의 before 가 움직인다** |
 
 → `test_baseline_observation_units`, `test_baseline_patents_have_filing_dates`,
 `test_baseline_patents_have_applicants`, `test_baseline_coverage_is_not_vacuous`
@@ -77,5 +77,16 @@ SDKB 원본(~/Dev/sdkb) ──(사람이 make vendor)──> data/external/sdkb/
 
 **개념 축은 Process ∪ Device.** 논문 §3.4.4 의 H2 사례(HBM, GAA)가 공정이 아니라 **디바이스**다.
 Device 없이는 H2 가 자기 검증 사례를 온톨로지에 매핑조차 할 수 없다.
-다만 **H1 의 관측 단위는 공정 20개를 유지한다**(§3.4.3) — 가설을 결과를 본 뒤 바꾸지 않는다.
-개념 51개 기준 커버리지는 §4.5 강건성으로 병기한다.
+
+**공정 어휘를 복원했다 (PLAN-001, SDKB `ad7fe3d`).** SDKB 의 공정은 SemiKong Appendix A
+Table 7 의 L1 Process Group 을 원천으로 하는데(`provenance.source_id`), 원천의 **10개 그룹 중 7개만**
+담고 있었다 — **기판준비 · 어드밴스드 모듈 · 후공정**이 통째로 없었다. 다이싱·패키징·금속화를
+표현할 어휘가 없는 baseline 으로는 RQ1("전 공정 커버리지")에 답할 수 없다. Table 7 의 Group·Module
+열을 전량 복원해 공정 20 → **49**, 소자 31 → **34** 가 되었다.
+
+**이것이 H1 에 유리한 편향을 만든다.** 복원된 단계는 G₀ 에서 C₀(s)=0 이므로 G₁ 이 채우기만 하면
+이긴다. 복원 자체는 특허를 보기 전에 원천만 보고 했지만(따라서 §1.2 의 사후 조정은 아니다),
+편향은 남는다. 그래서 **H1 은 두 집합으로 병기 보고한다** — 확장 집합(49)과 복원 이전 집합(20).
+두 집합에서 결론이 갈리면 그 사실 자체를 결과로 적는다(논문 §3.4.3 · §5.3(f)).
+
+**여기서 상류는 동결이다.** 삼성 특허를 한 건이라도 본 뒤의 어휘 변경은 사후 조정이 된다.

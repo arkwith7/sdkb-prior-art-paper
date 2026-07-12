@@ -1,6 +1,6 @@
 # 진행 실적
 
-*최종 갱신: 2026-07-12 · 근거: `make gate`(exit 0) · `pytest`(35 passed) · SDKB 커밋 `c49dea0`*
+*최종 갱신: 2026-07-12 · 근거: `make gate`(exit 0) · `pytest`(41 passed) · SDKB 커밋 `ad7fe3d`*
 
 새 세션은 이 문서부터 읽는다. 온톨로지 용어가 낯설면 [GLOSSARY.md](GLOSSARY.md) 를 먼저 본다.
 
@@ -16,15 +16,24 @@ G₀ 를 동결한 뒤에는 상류 SDKB 를 건드리지 않는다 — before �
 
 | 항목 | 값 |
 |---|---:|
-| 트리플 | 26,676 |
-| 공정 단계 (H1 의 관측 단위) | 20 (Process 8 + SubProcess 12) |
-| 디바이스 (H2 의 개념 축) | 31 |
+| 트리플 | 26,973 |
+| 공정 단계 (H1 의 관측 단위) | **49** (Process 11 + SubProcess 38) |
+| 디바이스 (H2 의 개념 축) | **34** |
 | 특허 (SIRP 거절특허) | 1,000 |
 | 출원일 보유 | 1,000 (100%) |
-| 출원인(Organization) | 351 |
-| **커버된 공정 C₀ / 공백** | **16 / 4** |
-| 최근 5년 출원 전무 개념 (CQ06) | 29 / 51 |
+| 출원인(Organization) | 353 |
+| **커버된 공정 C₀ / 공백** | **16 / 33** |
+| 최근 5년 출원 전무 개념 (CQ06) | 61 / 83 |
 | CQ 응답률 | 8/8 (100%) |
+| 룰의 SIRP 매핑률 (`make mapping`) | **870 / 1,000 (87.0%)** |
+
+> **공정 20 → 49 는 상류 SDKB 의 결함을 고친 결과다.** SDKB 의 공정은 SemiKong Appendix A
+> Table 7 의 L1 Process Group 인데(`provenance.source_id = "L1-Planarization"` 등), 원천은
+> 그룹이 **10개**이고 SDKB 는 7개만 담고 있었다 — **기판준비·어드밴스드 모듈·후공정**이 통째로
+> 없었다. 다이싱·패키징을 표현할 어휘가 없는 baseline 으로는 RQ1("전 공정")에 답할 수 없다.
+>
+> 대가: 새로 복원된 단계는 G₀ 에서 C₀(s)=0 이라 **H1 에 유리한 편향**이 생긴다. 그래서 H1 은
+> 확장 집합(49)과 복원 이전 집합(20) **양쪽으로 보고**한다(논문 §3.4.3 · §5.3(f)).
 
 ---
 
@@ -39,6 +48,8 @@ G₀ 를 동결한 뒤에는 상류 SDKB 를 건드리지 않는다 — before �
 | **G₀ 재정의** | 특허 0건 → 현행 SDKB(SIRP 1,000건). **자명하던 H1 이 기각 가능해짐** | `feat(baseline)` |
 | **출원인 보강** | 1,000/1,000, Organization 351. 신규 API 호출 0건 | SDKB `c49dea0` |
 | **CQ 확장** | 3개 → 8개. G₀ 가 전부 응답(100%) | `feat(cq)` |
+| **PLAN-001 · 룰 H10 보강** | 룰 39 → 96 (공정 76 · 소자 20). SIRP 매핑률 **44.7% → 87.0%**. axis 컬럼으로 `realizesProcess`/`concernsDevice` 분기 | `feat(mapping)` |
+| **상류 SDKB 공정 어휘 복원** | SemiKong Table 7 그룹 1·9·10 누락 발견 → 공정 20 → 49, 소자 31 → 34 | SDKB `ad7fe3d` |
 
 ### 확정된 스펙
 - [SPEC-001 · 검증 게이트](specs/SPEC-001-validation-gate.md) — 3층 게이트와 두 겹 L1
@@ -51,9 +62,12 @@ G₀ 를 동결한 뒤에는 상류 SDKB 를 건드리지 않는다 — before �
 
 | 순서 | 계획 | 왜 지금인가 |
 |---|---|---|
-| 1 | [PLAN-001 · IPC→개념 룰 H10 보강](plans/PLAN-001-h10-mapping-rules.md) | 룰 테이블에 H10 룰 **0개**. 삼성 수집 시 그대로 터진다 |
-| 2 | [PLAN-002 · 삼성 특허 수집과 G₁](plans/PLAN-002-samsung-collection.md) | G₀ 동결 후. **삼성 75건이 이미 G₀ 에 있어 중복 제거 필수** |
-| 3 | [PLAN-003 · Device→Process 브리지 · DART 제품 레이어](plans/PLAN-003-device-market-layer.md) | G₀ 동결 **후**. 지금 넣으면 커버리지 정의가 바뀌어 H1 이 흔들린다 |
+| 1 | [PLAN-002 · 삼성 특허 수집과 G₁](plans/PLAN-002-samsung-collection.md) | G₀ 동결 후. **삼성 75건이 이미 G₀ 에 있어 중복 제거 필수** |
+| 2 | [PLAN-003 · Device→Process 브리지 · DART 제품 레이어](plans/PLAN-003-device-market-layer.md) | G₀ 동결 **후**. 지금 넣으면 커버리지 정의가 바뀌어 H1 이 흔들린다 |
+
+> **G₀ 는 이제 동결 대상이다.** PLAN-001 이 상류 SDKB 를 마지막으로 건드렸다. 여기서부터
+> SDKB 를 바꾸면 H1 의 before 가 움직인다 — 삼성 특허를 한 건이라도 본 뒤의 어휘 변경은
+> 사후 조정이 되므로 금지다.
 
 ---
 

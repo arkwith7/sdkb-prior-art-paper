@@ -1,19 +1,19 @@
 {
   "file": "semiconductor_v0_3.json",
-  "file_sha256": "806600aba2652bb56a7a6f2b710e41f48dc271e7579c32a2d506c3f71177049b",
+  "file_sha256": "dc83156c1b4fcacae47000211a07fa96d5fce426e31283ea5ced658892e0a943",
   "version": "0.3",
   "version_id": "sdkb_semiconductor_v0_3",
   "status": "active",
   "counts": {
-    "nodes": 229,
-    "edges": 268,
-    "synonyms": 177,
+    "nodes": 261,
+    "edges": 294,
+    "synonyms": 184,
     "cases": 3,
     "provenance_sources": 13
   },
   "node_types": {
-    "Process": 8,
-    "SubProcess": 12,
+    "Process": 11,
+    "SubProcess": 38,
     "EquipmentClass": 11,
     "Vendor": 16,
     "Organization": 2,
@@ -26,10 +26,10 @@
     "Skill": 12,
     "Material": 20,
     "Equipment": 41,
-    "Device": 31
+    "Device": 34
   },
   "predicates": {
-    "HAS_SUBPROCESS": 12,
+    "HAS_SUBPROCESS": 38,
     "USES_EQUIPMENT_CLASS": 10,
     "MADE_BY": 5,
     "HAS_PARAMETER": 4,
@@ -49,7 +49,7 @@
     "edges": 121
   },
   "interpretation_distribution": {
-    "mapped": 126,
+    "mapped": 158,
     "author-defined": 82,
     "verbatim": 21
   },

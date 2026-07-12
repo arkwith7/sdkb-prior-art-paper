@@ -194,9 +194,9 @@ SDKB 는 SKOS 어휘를 쓴다. **여기서 `rdfs:label` 을 쓰면 질의가 �
 | **게이트(gate)** | 통과하지 못한 델타는 병합되지 않는 검문소. `merge_with_gate()` |
 | **vendoring / 스냅샷** | 상류 SDKB 를 특정 커밋에서 **얼려서** 복사해 오는 것. `data/external/sdkb/` |
 | **PROVENANCE** | 스냅샷의 출처(커밋 SHA)와 무결성(파일별 sha256) 기록. 이게 없으면 baseline 의 출처가 거짓이 된다 |
-| **개념 축** | H2 의 집계 단위 = **Process(20) ∪ Device(31)**. HBM·GAA 는 공정이 아니라 디바이스다 |
-| **관측 단위** | H1 의 표본 단위 = **공정 20개**(Process 8 + SubProcess 12) |
-| **커버리지 C(s)** | 공정 단계 s 에 매핑된 특허의 존재/수. G₀ 는 20개 중 16개 커버, 4개 공백 |
+| **개념 축** | H2 의 집계 단위 = **Process(49) ∪ Device(34)**. HBM·GAA 는 공정이 아니라 디바이스다 |
+| **관측 단위** | H1 의 표본 단위 = **공정 49개**(Process 11 + SubProcess 38). 복원 이전 20개 집합으로도 병기 검정한다 |
+| **커버리지 C(s)** | 공정 단계 s 에 매핑된 특허의 존재/수. G₀ 는 49개 중 16개 커버, 33개 공백 |
 | **PROV-O** | 출처 표준 어휘. `prov:wasGeneratedBy`(어느 활동이 만들었나), `dcterms:source` / `dcterms:license` |
 
 ---

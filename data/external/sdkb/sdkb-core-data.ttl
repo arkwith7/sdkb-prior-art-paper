@@ -74,6 +74,17 @@
     skos:prefLabel "CMOS image sensor"@en ;
     ont:interpretationType "author-defined" .
 
+<https://w3id.org/sdkb/data/device/diode> a ont:Device ;
+    dcterms:bibliographicCitation "Wikidata device class (paper_data Phase D, 2026-05-16)" ;
+    dcterms:license "CC0-1.0" ;
+    dcterms:source "wikidata" ;
+    rdfs:seeAlso <https://www.wikidata.org/wiki/Q11656> ;
+    skos:altLabel "diode"@en,
+        "다이오드"@ko ;
+    skos:definition "Discrete semiconductor device (rectifying or switching component)."@en ;
+    skos:prefLabel "diode"@en ;
+    ont:interpretationType "mapped" .
+
 <https://w3id.org/sdkb/data/device/dram> a ont:Device ;
     dcterms:bibliographicCitation "Wikidata device class (paper_data Phase D, 2026-05-16)" ;
     dcterms:license "CC0-1.0" ;
@@ -96,6 +107,16 @@
     skos:prefLabel "E2PROM"@en ;
     ont:interpretationType "mapped" .
 
+<https://w3id.org/sdkb/data/device/eprom> a ont:Device ;
+    dcterms:bibliographicCitation "Wikidata device class (paper_data Phase D, 2026-05-16)" ;
+    dcterms:license "CC0-1.0" ;
+    dcterms:source "wikidata" ;
+    rdfs:seeAlso <https://www.wikidata.org/wiki/Q378210> ;
+    skos:altLabel "EPROM"@en ;
+    skos:definition "Memory device architecture."@en ;
+    skos:prefLabel "EPROM"@en ;
+    ont:interpretationType "mapped" .
+
 <https://w3id.org/sdkb/data/device/fan_out_wlp> a ont:Device ;
     dcterms:bibliographicCitation "Wikidata device class (paper_data Phase D, 2026-05-16)" ;
     dcterms:license "CC0-1.0" ;
@@ -104,6 +125,19 @@
     skos:definition "Advanced packaging / interconnect architecture."@en ;
     skos:prefLabel "fan-out wafer-level packaging"@en ;
     ont:interpretationType "author-defined" .
+
+<https://w3id.org/sdkb/data/device/feram> a ont:Device ;
+    dcterms:bibliographicCitation "Wikidata device class (paper_data Phase D, 2026-05-16)" ;
+    dcterms:license "CC0-1.0" ;
+    dcterms:source "wikidata" ;
+    rdfs:seeAlso <https://www.wikidata.org/wiki/Q703656> ;
+    skos:altLabel "F-RAM"@en,
+        "FRAM"@en,
+        "FeRAM"@en,
+        "ferroelectric RAM"@en ;
+    skos:definition "Memory device architecture."@en ;
+    skos:prefLabel "FeRAM"@en ;
+    ont:interpretationType "mapped" .
 
 <https://w3id.org/sdkb/data/device/finfet> a ont:Device ;
     dcterms:bibliographicCitation "Wikidata device class (paper_data Phase D, 2026-05-16)" ;
@@ -1220,6 +1254,38 @@
     skos:prefLabel "Temperature"@en ;
     ont:interpretationType "mapped" .
 
+<https://w3id.org/sdkb/data/process/advanced_modules> a ont:Process ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Device-enabling integration modules, e.g. high-k/metal gate, strain, 3D structures."@en ;
+    skos:prefLabel "Advanced Modules"@en ;
+    ont:confidence 0.9 ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/high_k_metal_gate>,
+        <https://w3id.org/sdkb/data/subprocess/strain_engineering>,
+        <https://w3id.org/sdkb/data/subprocess/three_d_structures> ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/process/back_end> a ont:Process ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Post-FEOL processes: interconnect, passivation, thinning, test, dicing and packaging."@en ;
+    skos:prefLabel "Back-End Processes"@en ;
+    ont:confidence 0.9 ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/advanced_packaging>,
+        <https://w3id.org/sdkb/data/subprocess/dicing>,
+        <https://w3id.org/sdkb/data/subprocess/interconnect_patterning>,
+        <https://w3id.org/sdkb/data/subprocess/metallization>,
+        <https://w3id.org/sdkb/data/subprocess/multilayer_interconnect>,
+        <https://w3id.org/sdkb/data/subprocess/packaging>,
+        <https://w3id.org/sdkb/data/subprocess/passivation>,
+        <https://w3id.org/sdkb/data/subprocess/wafer_testing>,
+        <https://w3id.org/sdkb/data/subprocess/wafer_thinning> ;
+    ont:interpretationType "mapped" .
+
 <https://w3id.org/sdkb/data/process/clean> a ont:Process ;
     dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A" ;
     dcterms:license "Apache-2.0" ;
@@ -1227,6 +1293,10 @@
     rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
     skos:definition "Wet/dry cleaning steps to remove residues/particles."@en ;
     skos:prefLabel "Clean"@en ;
+    ont:confidence 0.9 ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/advanced_cleaning>,
+        <https://w3id.org/sdkb/data/subprocess/dry_cleaning>,
+        <https://w3id.org/sdkb/data/subprocess/wet_cleaning> ;
     ont:interpretationType "mapped" .
 
 <https://w3id.org/sdkb/data/process/cmp> a ont:Process ;
@@ -1240,7 +1310,8 @@
     skos:prefLabel "CMP"@en ;
     ont:confidence 0.9 ;
     ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/cmp_metal>,
-        <https://w3id.org/sdkb/data/subprocess/cmp_oxide> ;
+        <https://w3id.org/sdkb/data/subprocess/cmp_oxide>,
+        <https://w3id.org/sdkb/data/subprocess/etchback_planarization> ;
     ont:interpretationType "mapped" .
 
 <https://w3id.org/sdkb/data/process/deposition> a ont:Process ;
@@ -1252,9 +1323,12 @@
     skos:definition "Thin film formation (CVD/PVD/ALD/epi)."@en ;
     skos:prefLabel "Deposition"@en ;
     ont:confidence 0.8,
+        0.9,
         1.0 ;
     ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/ald>,
         <https://w3id.org/sdkb/data/subprocess/cvd>,
+        <https://w3id.org/sdkb/data/subprocess/epitaxial_growth>,
+        <https://w3id.org/sdkb/data/subprocess/oxidation>,
         <https://w3id.org/sdkb/data/subprocess/pvd> ;
     ont:interpretationType "mapped" .
 
@@ -1265,6 +1339,9 @@
     rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
     skos:definition "Thermal processes for dopant activation and film modification."@en ;
     skos:prefLabel "Diffusion/Anneal"@en ;
+    ont:confidence 0.9 ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/annealing>,
+        <https://w3id.org/sdkb/data/subprocess/dopant_activation> ;
     ont:interpretationType "mapped" .
 
 <https://w3id.org/sdkb/data/process/etch> a ont:Process ;
@@ -1290,6 +1367,8 @@
     rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
     skos:definition "Dopant implantation using ion beams."@en ;
     skos:prefLabel "Ion Implantation"@en ;
+    ont:confidence 0.9 ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/in_situ_doping> ;
     ont:interpretationType "mapped" .
 
 <https://w3id.org/sdkb/data/process/lithography> a ont:Process ;
@@ -1317,6 +1396,22 @@
     rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
     skos:definition "Measurement and inspection for CD/overlay/defects."@en ;
     skos:prefLabel "Metrology/Inspection"@en ;
+    ont:confidence 0.9 ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/defect_inspection>,
+        <https://w3id.org/sdkb/data/subprocess/electrical_metrology>,
+        <https://w3id.org/sdkb/data/subprocess/physical_metrology> ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/process/substrate_preparation> a ont:Process ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Wafer manufacturing, polishing and incoming cleaning, before device fabrication."@en ;
+    skos:prefLabel "Substrate Preparation"@en ;
+    ont:confidence 0.9 ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/wafer_manufacturing>,
+        <https://w3id.org/sdkb/data/subprocess/wafer_polishing> ;
     ont:interpretationType "mapped" .
 
 <https://w3id.org/sdkb/data/rootcause/electrostatic_discharge> a ont:RootCause ;
@@ -1866,6 +1961,96 @@
     ont:interpretationType "author-defined" ;
     ont:validationRequired true .
 
+<https://w3id.org/sdkb/data/subprocess/advanced_cleaning> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Supercritical CO2 and cryogenic cleaning."@en ;
+    skos:prefLabel "Advanced Cleaning"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/advanced_packaging> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "TSV, wafer-level packaging, 3D integration."@en ;
+    skos:prefLabel "Advanced Packaging"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/annealing> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Furnace, rapid thermal and laser annealing."@en ;
+    skos:prefLabel "Annealing"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/defect_inspection> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Optical, e-beam and wafer inspection."@en ;
+    skos:prefLabel "Defect Inspection"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/dicing> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Mechanical, laser and plasma dicing."@en ;
+    skos:prefLabel "Dicing"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/dopant_activation> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Spike and flash annealing for dopant activation."@en ;
+    skos:prefLabel "Dopant Activation"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/dry_cleaning> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Plasma and UV-ozone cleaning."@en ;
+    skos:prefLabel "Dry Cleaning"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/electrical_metrology> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Sheet resistance and C-V measurement."@en ;
+    skos:prefLabel "Electrical Metrology"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/epitaxial_growth> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Silicon and compound-semiconductor epitaxy."@en ;
+    skos:prefLabel "Epitaxial Growth"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/etchback_planarization> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Planarisation by resist or sacrificial-layer etchback."@en ;
+    skos:prefLabel "Etchback Planarization"@en ;
+    ont:interpretationType "mapped" .
+
 <https://w3id.org/sdkb/data/subprocess/hardmask_etch> a ont:SubProcess ;
     dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A" ;
     dcterms:license "Apache-2.0" ;
@@ -1879,6 +2064,51 @@
         <https://w3id.org/sdkb/data/material/taC> ;
     ont:validationRequired true .
 
+<https://w3id.org/sdkb/data/subprocess/high_k_metal_gate> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Gate dielectric and metal gate formation."@en ;
+    skos:prefLabel "High-k/Metal Gate"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/in_situ_doping> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Dopant incorporation during epitaxy or deposition."@en ;
+    skos:prefLabel "In-situ Doping"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/interconnect_patterning> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Damascene and dual-damascene patterning."@en ;
+    skos:prefLabel "Interconnect Patterning"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/metallization> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "PVD, CVD, electroplating and sputtering of interconnect metal."@en ;
+    skos:prefLabel "Metallization"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/multilayer_interconnect> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Interlayer dielectric and metal layers, with CMP."@en ;
+    skos:prefLabel "Multilayer Interconnect"@en ;
+    ont:interpretationType "mapped" .
+
 <https://w3id.org/sdkb/data/subprocess/overlay_control> a ont:SubProcess ;
     dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A" ;
     dcterms:license "Apache-2.0" ;
@@ -1891,6 +2121,105 @@
     ont:measuredBy <https://w3id.org/sdkb/data/metrology/overlay> ;
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/overlay_optimization> ;
     ont:validationRequired true .
+
+<https://w3id.org/sdkb/data/subprocess/oxidation> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Growth of oxide films (thermal, plasma-enhanced, high/low pressure, anodic). Table 7 lists oxidation twice (2.1 and 7.2 Thermal Oxidation); modelled once."@en ;
+    skos:prefLabel "Oxidation"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/packaging> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Die attach, wire bonding, flip-chip bonding, encapsulation."@en ;
+    skos:prefLabel "Packaging"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/passivation> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Silicon nitride deposition, polyimide coating."@en ;
+    skos:prefLabel "Passivation"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/physical_metrology> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Profilometry, ellipsometry, X-ray reflectometry."@en ;
+    skos:prefLabel "Physical Metrology"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/strain_engineering> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Strained silicon and SiGe channels."@en ;
+    skos:prefLabel "Strain Engineering"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/three_d_structures> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "FinFET formation and gate-all-around structures."@en ;
+    skos:prefLabel "3D Structures"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/wafer_manufacturing> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Crystal growth, wafer slicing, edge rounding."@en ;
+    skos:prefLabel "Wafer Manufacturing"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/wafer_polishing> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Lapping and polishing of the incoming wafer."@en ;
+    skos:prefLabel "Wafer Polishing"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/wafer_testing> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Parametric and functional test at wafer level."@en ;
+    skos:prefLabel "Wafer Testing"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/wafer_thinning> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "Backside grinding and chemical etching."@en ;
+    skos:prefLabel "Wafer Thinning"@en ;
+    ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/subprocess/wet_cleaning> a ont:SubProcess ;
+    dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A (Table 7)" ;
+    dcterms:license "Apache-2.0" ;
+    dcterms:source "semikong" ;
+    rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:definition "RCA clean, piranha clean, HF dip."@en ;
+    skos:prefLabel "Wet Cleaning"@en ;
+    ont:interpretationType "mapped" .
 
 <https://w3id.org/sdkb/data/vendor/3m> a ont:Vendor ;
     dcterms:bibliographicCitation "3M public corporate information" ;
