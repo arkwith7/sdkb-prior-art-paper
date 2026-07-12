@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "ad7fe3d2ecc67893c921b7c818a665fbfe6632df",
-  "source_commit_date": "2026-07-12T23:03:03+09:00",
-  "source_dirty": true,
+  "source_commit": "786218c94c74ed57aaee9e2225f9b329d1b2f789",
+  "source_commit_date": "2026-07-12T23:56:31+09:00",
+  "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-12T14:03:09+00:00",
+  "vendored_at": "2026-07-12T14:56:43+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
