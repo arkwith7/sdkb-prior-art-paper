@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline mapping validate reason cq gate figures
+.PHONY: setup lint test vendor snapshot baseline collect profile mapping validate reason cq gate figures
 
 setup:
 	uv sync --all-extras
@@ -18,6 +18,20 @@ vendor:
 # baseline 그래프(graph_v0 = H1 의 "before") 를 스냅샷에서 조립. 결정적 산출물.
 baseline:
 	uv run python -m sdkb_paper.ontology.baseline
+
+# 삼성전자·SK하이닉스 특허 수집 (KIPRIS). 응답은 sqlite 캐시 → 재실행해도 API 를 다시 안 때린다.
+# make collect SMOKE=1 이면 클래스 1개만 (파이프라인 관통 검증용)
+collect:
+	uv run python -m sdkb_paper.collect.collect $(if $(SMOKE),--smoke,)
+
+# 정제 + 데이터 프로파일 (CLAUDE.md §4 의무). 논문 표 4 의 원천.
+profile:
+	uv run python -m sdkb_paper.preprocess.profile
+
+# 델타 트리플 생성 + 게이트 통과분만 병합 → graph_v1 (= G₁, H1 의 "after")
+merge:
+	uv run python -m sdkb_paper.ontology.delta
+	uv run python -m sdkb_paper.ontology.merge_cli
 
 # IPC/CPC 룰 커버리지 — 특허를 수집하기 전에 매핑의 사각지대를 드러낸다
 mapping:

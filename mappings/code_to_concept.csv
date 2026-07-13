@@ -95,3 +95,32 @@ G11C11/15,device,https://w3id.org/sdkb/data/device/mram,device,CPC-2026.01,using
 G11C16,device,https://w3id.org/sdkb/data/device/eprom,device,CPC-2026.01,Erasable programmable read-only memories (G11C 14/00 takes precedence),소거가능 프로그래머블 ROM,medium,author-defined
 H01L21/8247,device,https://w3id.org/sdkb/data/device/eprom,device,IPC-2013,Manufacture or treatment of devices consisting of a plurality of solid state components — memory structures — read-only memory structures — electrically-programmable [EPROM],(폐지 코드) ROM 구조 중 electrically-programmable = EPROM 제조,high,author-defined
 H01L27/108,device,https://w3id.org/sdkb/data/device/dram,device,IPC-2013,Dynamic random access memory structures,(폐지 코드) DRAM 구조,high,author-defined
+H10W20/01,process,https://w3id.org/sdkb/data/subprocess/metallization,subprocess,CPC-2026.01,{ Manufacture or treatment },칩·웨이퍼 내 배선의 제조 — Metallization 정의(interconnect metal 의 PVD/CVD/도금)와 직결,high,author-defined
+H10W20/084,process,https://w3id.org/sdkb/data/subprocess/interconnect_patterning,subprocess,CPC-2026.01,{ for dual-damascene structures },Interconnect Patterning 의 SDKB 정의가 'Damascene and dual-damascene patterning' 그 자체,high,author-defined
+H10W20/40,process,https://w3id.org/sdkb/data/subprocess/metallization,subprocess,CPC-2026.01,"Interconnections external to wafers or substrates, e.g. back-end-of-line [BEOL] metallisation",구조 그룹이나 코드 제목이 BEOL metallisation 을 명명한다. 구조/공정 경계의 판단 — 오분류 위험 있음,medium,author-defined
+H10W70/01,process,https://w3id.org/sdkb/data/subprocess/advanced_packaging,subprocess,CPC-2026.01,Manufacture or treatment,패키지 기판·인터포저·RDL 의 제조 — Advanced Packaging 정의의 'wafer-level packaging',high,author-defined
+H10W72/01,process,https://w3id.org/sdkb/data/subprocess/packaging,subprocess,CPC-2026.01,{ Manufacture or treatment },"패키지 내 접속·커넥터 제조 — Packaging 정의가 'die attach, wire bonding, flip-chip bonding' 를 명시",high,author-defined
+H10W74/01,process,https://w3id.org/sdkb/data/subprocess/packaging,subprocess,CPC-2026.01,Manufacture or treatment,봉지 제조 — Packaging 정의의 'encapsulation',high,author-defined
+H10W76/01,process,https://w3id.org/sdkb/data/process/back_end,process,CPC-2026.01,Manufacture or treatment,용기·실링. packaging/advanced_packaging 어느 정의에도 없다 → 우산 개념(Back-End)으로. 하위 개념을 발명하지 않는다,medium,author-defined
+H10W80,process,https://w3id.org/sdkb/data/subprocess/advanced_packaging,subprocess,CPC-2026.01,"Direct bonding of chips, wafers or substrates",다이렉트/하이브리드 본딩 — Advanced Packaging 정의의 '3D integration',medium,author-defined
+H10W95,process,https://w3id.org/sdkb/data/process/back_end,process,CPC-2026.01,Packaging processes not covered by the other groups of this subclass,잔여 그룹이라 하위 개념을 특정할 수 없다 → 우산 개념(Back-End)으로,medium,author-defined
+H10W20/20,device,https://w3id.org/sdkb/data/device/tsv,device,CPC-2026.01,"Interconnections within wafers or substrates, e.g. through-silicon vias [TSV]",코드 제목이 TSV 를 명명,high,author-defined
+H10W20/211,device,https://w3id.org/sdkb/data/device/tsv,device,CPC-2026.01,"{ Through-semiconductor vias, e.g. TSVs }",코드 정의가 곧 TSV,high,author-defined
+H10W20/023,device,https://w3id.org/sdkb/data/device/tsv,device,CPC-2026.01,{ the interconnections being through-semiconductor vias },코드 정의가 곧 TSV,high,author-defined
+H10W72/50,device,https://w3id.org/sdkb/data/device/wire_bonding,device,CPC-2026.01,Bond wires,코드 제목이 곧 와이어 본딩,high,author-defined
+H10W70/60,device,https://w3id.org/sdkb/data/device/interposer,device,CPC-2026.01,Insulating or insulated package substrates ; Interposers ; Redistribution layers [RDL],그룹이 인터포저 외에 패키지 기판·RDL 을 함께 담아 개념보다 넓다,medium,author-defined
+H10W70/655,device,https://w3id.org/sdkb/data/device/fan_out_wlp,device,CPC-2026.01,Fan-out layouts,팬아웃 레이아웃 — FOWLP 의 정의적 구조. 다만 레이아웃이 곧 WLP 는 아니다,medium,author-defined
+H10W72/20,device,https://w3id.org/sdkb/data/device/flip_chip,device,CPC-2026.01,"Bump connectors, e.g. solder bumps or copper pillars ; Dummy bumps ; Thermal bumps",범프 접속 = 플립칩(C4)의 정의적 요소. 구리 필러까지 포함해 C4 보다 넓다,medium,author-defined
+G11C11/401,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,"forming cells needing refreshing or charge regeneration, i.e. dynamic cells",코드 정의가 곧 동적 셀(DRAM),high,author-defined
+G11C11/402,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,"with charge regeneration individual to each memory cell, i.e. internal refresh",동적 셀(11/401) 가지 — 리프레시는 DRAM 의 정의적 성질,high,author-defined
+G11C11/403,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,"with charge regeneration common to a multiplicity of memory cells, i.e. external refresh",동적 셀(11/401) 가지,high,author-defined
+G11C11/404,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,"with one charge-transfer gate, e.g. MOS transistor, per cell",동적 셀(11/401) 가지 — 1T DRAM,high,author-defined
+G11C11/405,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,"with three charge-transfer gates, e.g. MOS transistors, per cell",동적 셀(11/401) 가지 — 3T DRAM,high,author-defined
+G11C11/406,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,Management or control of the refreshing or charge-regeneration cycles,회로 코드이나 동적 셀(11/401) 가지에 속하므로 소자는 DRAM. 제목만으로는 소자가 드러나지 않는다,medium,author-defined
+G11C11/407,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,for memory cells of the field-effect type,동적 셀 가지의 회로 코드,medium,author-defined
+G11C11/408,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,Address circuits,동적 셀 가지의 회로 코드 — 계층으로만 DRAM 이 확정된다,medium,author-defined
+G11C11/409,device,https://w3id.org/sdkb/data/device/dram,device,CPC-2026.01,Read-write [R-W] circuits,동적 셀 가지의 회로 코드 — 계층으로만 DRAM 이 확정된다,medium,author-defined
+G11C11/41,device,https://w3id.org/sdkb/data/device/sram,device,CPC-2026.01,"forming { static } cells with positive feedback, i.e. cells not needing refreshing or charge regeneration",코드 정의가 곧 정적 셀(SRAM). 하위 13개 코드를 접두어로 함께 덮는다,high,author-defined
+G11C11/16,device,https://w3id.org/sdkb/data/device/mram,device,CPC-2026.01,using elements in which the storage effect is based on magnetic spin effect,스핀 저장 = MRAM. 기존 G11C11/15 룰과 같은 소자,high,author-defined
+G11C11/22,device,https://w3id.org/sdkb/data/device/feram,device,CPC-2026.01,using ferroelectric elements,강유전체 소자 = FeRAM,high,author-defined
+G11C13/0002,device,https://w3id.org/sdkb/data/device/reram,device,CPC-2026.01,{ using resistive RAM [RRAM] elements },코드 제목이 RRAM 을 명명,high,author-defined
