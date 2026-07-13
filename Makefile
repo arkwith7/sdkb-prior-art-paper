@@ -28,6 +28,13 @@ collect:
 profile:
 	uv run python -m sdkb_paper.preprocess.profile
 
+# PLAN-009 · H2 좌측절단 교정분 (2005–2009). **G₁ 에 병합되지 않는다** — H2 시계열 전용이다.
+collect-extended:
+	uv run python -m sdkb_paper.collect.collect --period extended
+
+profile-extended:
+	uv run python -m sdkb_paper.preprocess.profile --period extended
+
 # 델타 트리플 생성 + 게이트 통과분만 병합 → graph_v1 (= G₁, H1 의 "after")
 merge:
 	uv run python -m sdkb_paper.ontology.delta

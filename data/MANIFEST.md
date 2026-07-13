@@ -67,9 +67,24 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 | 일시 | 소스 | 검색식/쿼리 | 건수 | 저장 파일 | 그래프 반영 버전 |
 |---|---|---|---:|---|---|
 | 2026-07-13 | KIPRIS Plus `getAdvancedSearch` | `applicant=삼성전자주식회사 ∪ 에스케이하이닉스 주식회사` × `ipcNumber ∈ {룰 테이블의 18개 클래스}` × `applicationDate=20100101~20251231` (patent=true, utility=false) | 원시 50,514행 → 델타 후보 34,521 → **병합 24,179** | `raw/kipris/patents_raw.parquet` · `interim/patents_delta.parquet` (둘 다 gitignore) | `graph_v1.ttl` |
+| 2026-07-13 | KIPRIS Plus `getAdvancedSearch` | 위와 **동일한 검색식** · 기간만 `applicationDate=20050101~20091231` (PLAN-009 · H2 좌측절단 교정) | 원시 41,443행 → 정제 후 **29,415** | `raw/kipris/patents_2005_2009.parquet` · `interim/patents_2005_2009.parquet` (둘 다 gitignore) | **없음 — 병합하지 않는다** |
 
 **재현 절차**: `make collect && make profile && make merge` (응답은 `raw/kipris/kipris_cache.sqlite`
 에 캐시되므로 재실행해도 API 를 다시 때리지 않는다).
+2005–2009 분은 `make collect-extended && make profile-extended`.
+
+> **2005–2009 수집분은 그래프에 병합되지 않는다** (PLAN-009 §2). H2 시계열 전용이다 —
+> G₁ 은 2010–2025 로 동결돼 있고, 병합하면 **H1 의 after 가 움직여** 이미 보고한 검정이 재현되지
+> 않는다. H2 의 말뭉치는 처음부터 G₁ 이 아니라 수집 말뭉치 전체였으므로(미매핑 특허를 빼면 코드
+> 팔이 불리해진다) 이 분리는 새로 생긴 비대칭이 아니다.
+>
+> **출원인명 변천은 검색식에 반영할 필요가 없었다** (실측 2026-07-13): KIPRIS 는 2005–09 출원도
+> **현재 사명**으로 색인·반환한다 — H01L 2005–09 하이닉스 1,944건이 전부 `에스케이하이닉스 주식회사`
+> 로 나온다(SK 편입은 2012년, 당시 사명은 주식회사 하이닉스반도체).
+>
+> **말뭉치 밀도가 과거에 더 높다**: 2005–09 는 연평균 **5,883건**, 2010–25 는 **2,158건**이다.
+> 상대성장 규칙(θ × 직전 3년 평균)은 **두 팔에 대칭으로** 걸리므로 개념 vs 코드 **비교**는
+> 공정하지만, 절대 탐지 시점은 말뭉치 밀도에 영향을 받는다. §5.3 에 교란으로 적는다.
 
 ### 2-1. CPC 분류 (BigQuery `patents-public-data`) — H2 의 대조군 (PLAN-007)
 
