@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile mapping validate reason cq gate figures
+.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping validate reason cq gate h1 figures
 
 setup:
 	uv sync --all-extras
@@ -69,6 +69,11 @@ cq: baseline
 
 # 머지 전 전체 게이트: 스냅샷 무결성 + baseline 재조립 + L1 + L2 + L3
 gate: snapshot validate reason cq
+
+# H1 검정 — 공정 단계별 커버리지 (Wilcoxon 단측). 게이트를 통과한 두 스냅샷을 읽기만 한다.
+# 표본 집합은 확장 49 와 복원 이전 20 **양쪽**으로 병기 보고된다 (PLAN-005).
+h1:
+	uv run python -m sdkb_paper.analysis.h1_cli
 
 figures:
 	uv run python -m sdkb_paper.viz.figures

@@ -1,0 +1,21 @@
+iri,level,label,source_commit
+https://w3id.org/sdkb/data/process/clean,process,Clean,eaf8406
+https://w3id.org/sdkb/data/process/cmp,process,CMP,eaf8406
+https://w3id.org/sdkb/data/process/deposition,process,Deposition,eaf8406
+https://w3id.org/sdkb/data/process/diffusion,process,Diffusion/Anneal,eaf8406
+https://w3id.org/sdkb/data/process/etch,process,Etch,eaf8406
+https://w3id.org/sdkb/data/process/implant,process,Ion Implantation,eaf8406
+https://w3id.org/sdkb/data/process/lithography,process,Lithography,eaf8406
+https://w3id.org/sdkb/data/process/metrology,process,Metrology/Inspection,eaf8406
+https://w3id.org/sdkb/data/subprocess/ald,subprocess,ALD,eaf8406
+https://w3id.org/sdkb/data/subprocess/cmp_metal,subprocess,Metal CMP,eaf8406
+https://w3id.org/sdkb/data/subprocess/cmp_oxide,subprocess,Oxide CMP,eaf8406
+https://w3id.org/sdkb/data/subprocess/cvd,subprocess,CVD,eaf8406
+https://w3id.org/sdkb/data/subprocess/duv_lithography,subprocess,DUV Lithography,eaf8406
+https://w3id.org/sdkb/data/subprocess/euv_lithography,subprocess,EUV Lithography,eaf8406
+https://w3id.org/sdkb/data/subprocess/hardmask_etch,subprocess,Hardmask Etch,eaf8406
+https://w3id.org/sdkb/data/subprocess/overlay_control,subprocess,Overlay Control,eaf8406
+https://w3id.org/sdkb/data/subprocess/photoresist_coat_develop,subprocess,Coat/Develop,eaf8406
+https://w3id.org/sdkb/data/subprocess/plasma_etch,subprocess,Plasma Etch,eaf8406
+https://w3id.org/sdkb/data/subprocess/pvd,subprocess,PVD,eaf8406
+https://w3id.org/sdkb/data/subprocess/wet_etch,subprocess,Wet Etch,eaf8406

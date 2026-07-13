@@ -29,7 +29,12 @@ MAPPINGS = ROOT / "mappings"
 # IPC/CPC 접두어 -> SDKB 개념 IRI. 개념 축은 Process ∪ Device 이므로 공정 전용이 아니다 —
 # axis 컬럼이 realizesProcess 와 concernsDevice 를 가른다.
 CODE_MAPPING = MAPPINGS / "code_to_concept.csv"
+# H1 의 두 번째 표본 집합: SemiKong Table 7 복원 **이전**의 공정 20개.
+# 복원된 단계는 G₀ 에서 C₀(s)=0 이라 H1 에 유리하다 — 그 편향을 독자가 판별할 수 있도록
+# 확장 49 와 병기 보고한다 (scripts/freeze_legacy_scope.py 가 커밋 스냅샷에서 생성).
+LEGACY_SCOPE = MAPPINGS / "process_scope_legacy20.csv"
 FIGURES = ROOT / "paper" / "figures"
+TABLES = ROOT / "paper" / "tables"
 
 # vendoring 원본. 스냅샷을 갱신할 때만 쓰인다 — 분석/게이트는 EXTERNAL_SDKB 만 본다.
 SDKB_HOME = Path(os.environ.get("SDKB_HOME", Path.home() / "Dev" / "sdkb"))
