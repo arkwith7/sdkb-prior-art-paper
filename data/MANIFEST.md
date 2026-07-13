@@ -71,6 +71,29 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 **재현 절차**: `make collect && make profile && make merge` (응답은 `raw/kipris/kipris_cache.sqlite`
 에 캐시되므로 재실행해도 API 를 다시 때리지 않는다).
 
+### 2-1. CPC 분류 (BigQuery `patents-public-data`) — H2 의 대조군 (PLAN-007)
+
+| 일시 | 소스 | 쿼리 | 건수 | 저장 파일 | 쓰이는 곳 |
+|---|---|---|---:|---|---|
+| 2026-07-13 | BQ `patents.publications` (현재 스냅샷) | KR 출원 34,521건의 `cpc.code` | 434,888행 · 출원 **33,266 / 34,521 (96.4%)** | `raw/bigquery/cpc_map.parquet` (gitignore) | H2 경로 B |
+| 2026-07-13 | BQ `patents.publications_{201710,201903,202004,202101,202204,202304}` | 같은 출원의 **동결 스냅샷별** CPC | 스냅샷 6개 | `raw/bigquery/cpc_vintage.parquet` (gitignore) | H2 경로 C · C′ |
+
+**재현 절차**: `make cpc && make cpc-vintage` (GCP 서비스계정 필요 —
+`GOOGLE_APPLICATION_CREDENTIALS`). 스캔량 ≈ 16.5 GB + 6×16 GB (무료 한도 1 TB/월 내).
+
+**왜 CPC 를 따로 받았는가.** KIPRIS `getAdvancedSearch` 는 **IPC 만** 준다. 그런데 H2 대조 코드
+2개(`H10D30/6735` GAA · `H10W20/211` TSV)는 CPC 전용 코드(스킴에서 중괄호 표기)라 IPC 말뭉치에
+**존재할 수 없다** — 34,521건에서 출현 0회였다.
+
+**결측은 관측창 밖에만 있다.** 2010–2023 CPC 커버리지 **100%**. 결측 1,255건은 전부 2024–25년
+(18개월 비공개 절단 구간)이라 탐지 판정에 영향이 없다.
+
+> **소급 재분류 (PLAN-007 의 핵심 발견).** H10 스킴(H10B·H10D·H10W)은 **2021년 이후 신설**이고,
+> 특허청이 과거 출원에 소급 부여했다. 실측: 2017-10 스냅샷 H10 코드 **0개** · 2021-01 **0개** ·
+> 현재 **587,882행**. 2010년 출원의 62%가 지금은 H10 코드를 달고 있다. 따라서 **현재 스냅샷으로
+> 만든 코드 시계열은 구조적으로 늦을 수 없다** — H2 가 말하는 것을 재지 못한다. 동결 스냅샷이
+> 필요한 이유가 이것이다.
+
 **IPC 18개 클래스**는 손으로 고른 목록이 아니라 `mappings/code_to_concept.csv` 의 코드 접두어에서
 파생한다(`collect.ipc_classes()`). 룰과 수집 범위가 어긋나면 룰 없는 코드를 수집해 게이트에서
 전량 버리거나, 룰 있는 코드를 빠뜨려 커버리지가 이유 없이 비기 때문이다.

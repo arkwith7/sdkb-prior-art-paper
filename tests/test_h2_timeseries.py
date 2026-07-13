@@ -25,6 +25,7 @@ from sdkb_paper.analysis.timeseries import (
     concept_series,
     detect_year,
     lead_times,
+    prepare,
     sign_test,
 )
 from sdkb_paper.config import ONT
@@ -111,8 +112,11 @@ def test_sign_test_is_one_sided():
 
 @pytest.fixture(scope="module")
 def corpus() -> pd.DataFrame:
-    """고정 픽스처. FinFET 은 코드로, TSV 는 이름으로만 잡힌다 — 두 경로를 모두 때린다."""
-    return pd.DataFrame(
+    """고정 픽스처. FinFET 은 코드로, TSV 는 이름으로만 잡힌다 — 두 경로를 모두 때린다.
+
+    prepare(use_cpc=False) = 사전등록 경로(KIPRIS IPC 만). 분석은 `codes` 컬럼만 본다.
+    """
+    df = pd.DataFrame(
         [
             {
                 "application_number": "1020150000001",
@@ -143,6 +147,7 @@ def corpus() -> pd.DataFrame:
             },
         ]
     )
+    return prepare(df, use_cpc=False)
 
 
 def test_concept_series_matches_the_graph(corpus):
@@ -200,3 +205,33 @@ def test_lead_times_marks_lower_bound_when_code_never_detects(corpus):
     assert row["outcome"] == "concept_first"
     assert row["lead_is_lower_bound"]
     assert row["lead"] == WINDOW_END - 2016
+
+
+# --- 당시(vintage) 분류 — 관측 시점 ≠ 출원연도 (PLAN-007) ----------------------
+
+def test_vintage_reports_observation_year_not_filing_year(corpus):
+    """탐지 연도는 **관측자가 알 수 있었던 해**다 (출원연도가 아니다).
+
+    첫 구현이 둘을 섞어 측정이 무너졌다: T 의 관측자는 t=T 의 출원을 볼 수 없는데(18개월
+    비공개) 신호 규칙을 y(T) 에 걸어, 늦은 해는 언제나 0 이고 이른 해는 미래 정보를 받았다.
+    이 테스트가 그 회귀를 막는다.
+    """
+    from sdkb_paper.analysis.timeseries import OBS_START, vintage_detect_year
+
+    # 픽스처 3건이 2017-10 스냅샷에 보이고, 전부 FinFET 코드를 달고 있었다고 두자.
+    snap = {row.application_number: ["H01L29/785"] for row in corpus.itertuples()}
+    vintage = {201710: snap, 201903: snap, 202004: snap, 202101: snap, 202204: snap, 202304: snap}
+
+    year = vintage_detect_year(
+        corpus, lambda codes, _row: any(c.startswith("H01L29/785") for c in codes), vintage, n_min=1
+    )
+    assert year is not None
+    assert year >= OBS_START, "관측 시점은 스냅샷이 존재하는 2017년 이후여야 한다"
+
+
+def test_vintage_cannot_see_patents_absent_from_the_snapshot(corpus):
+    """스냅샷에 없는 특허 = 그때 미공개. 결측이 아니라 관측값이므로 세지 않는다."""
+    from sdkb_paper.analysis.timeseries import vintage_detect_year
+
+    empty = {s: {} for s in (201710, 201903, 202004, 202101, 202204, 202304)}
+    assert vintage_detect_year(corpus, lambda codes, _row: True, empty, n_min=1) is None

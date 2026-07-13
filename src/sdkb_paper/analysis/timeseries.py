@@ -29,6 +29,9 @@ from sdkb_paper.ontology.mapping import _norm_code, load_code_mapping
 # 동결된 관측창과 신호 규칙 (PLAN-006). 결과를 보고 바꾸지 않는다.
 WINDOW_START, WINDOW_END = 2010, 2023
 SEARCH_START = 2013  # 직전 3년 후행창을 확보할 수 있는 첫 해
+# C 경로(PLAN-007)의 **관측 시점** 하한. BigQuery 동결 스냅샷이 2017-10 부터 존재한다 —
+# 그 이전의 분류 상태는 복원할 수 없으므로 "2016년에 이미 알 수 있었는가"는 묻지 않는다.
+OBS_START = 2017
 THETA = 2.0
 N_MIN = 3
 LOOKBACK = 3
@@ -36,6 +39,33 @@ LOOKBACK = 3
 
 def load_cases(path=H2_CASES) -> pd.DataFrame:
     return pd.read_csv(path)
+
+
+# ── 분류 데이터 (사전등록 IPC · 교정 IPC∪CPC) ─────────────────────────────
+def prepare(df: pd.DataFrame, use_cpc: bool) -> pd.DataFrame:
+    """분석에 쓸 분류코드 컬럼 `codes` 를 만든다.
+
+    use_cpc=False → **사전등록 그대로** (KIPRIS IPC 만). 이 경로를 지우지 않는다 — 교정본이
+    사전등록 결과를 조용히 대체하는 것을 막기 위해서다 (CLAUDE.md §1.2).
+
+    use_cpc=True → IPC ∪ CPC (BigQuery `patents-public-data`). 대조 코드 2개가 **CPC 전용**이라
+    IPC 말뭉치에서 구조적으로 0건이었던 측정 결함을 고친다. 두 팔(개념·코드)이 **같은** 분류
+    데이터를 쓴다 — 한쪽만 풍부해지면 비교가 공정하지 않다.
+    관측창(2010–2023)의 CPC 커버리지는 100% 다 (결측 1,255건은 전부 절단 구간인 2024–25).
+    """
+    out = df.copy()
+    if not use_cpc:
+        out["codes"] = out["ipc_codes"].map(list)
+        return out
+
+    from sdkb_paper.collect.bq_cpc import load_cpc
+
+    cpc = load_cpc()
+    out["codes"] = [
+        sorted({*row.ipc_codes, *cpc.get(row.application_number, [])})
+        for row in out.itertuples()
+    ]
+    return out
 
 
 # ── 시계열 ──────────────────────────────────────────────────────────────
@@ -52,7 +82,7 @@ def _patent_concepts(row, table, aliases, combos, exclude_code: str | None) -> s
     exclude_code 는 §4.5 의 **대조 코드 제거 재검정**용이다 — 대조 코드를 개념 시계열에서
     빼도 결론이 서는지 본다. 부분집합 관계(개념 ⊇ 코드)가 결론을 만들지 않았음을 보이기 위해서.
     """
-    codes = [c.strip() for c in row.ipc_codes if c.strip()]
+    codes = [c.strip() for c in row.codes if c.strip()]
     if exclude_code:
         drop = _norm_code(exclude_code)
         codes = [c for c in codes if not _norm_code(c).startswith(drop)]
@@ -101,7 +131,7 @@ def code_series(df: pd.DataFrame, code: str) -> pd.Series:
     years = [
         row.application_date.year
         for row in df.itertuples()
-        if any(_norm_code(c).startswith(prefix) for c in row.ipc_codes)
+        if any(_norm_code(c).startswith(prefix) for c in row.codes)
     ]
     return annual_counts(pd.Series(years, dtype="int64"))
 
@@ -127,6 +157,154 @@ def detect_year(
     return None
 
 
+# ── 당시(vintage) 분류로 하는 탐지 — PLAN-007 ────────────────────────────
+def vintage_detect_year(
+    df: pd.DataFrame,
+    hit_fn,
+    vintage: dict[int, dict[str, list[str]]],
+    theta: float = THETA,
+    n_min: int = N_MIN,
+) -> int | None:
+    """**관측 시점** T — 그때의 분류체계로 이 기술을 처음 알아볼 수 있었던 해 (PLAN-007 §2).
+
+    **관측 시점 T 와 출원연도 t 는 다르다.** 이것을 섞으면 측정이 무너진다:
+    T 의 관측자는 t=T 의 출원을 **볼 수 없다**(출원 후 18개월 비공개). 신호 규칙을 y(T) 에
+    걸면 언제나 0 이라 아무것도 탐지되지 않는다.
+
+    그래서 관측자 T 는
+      1. 스냅샷 S(T) 에 보이는 특허만 세고 (없는 특허 = 미공개 · 없는 코드 = 미신설),
+      2. **성숙한 출원연도** t ≤ T − 2 에 대해서만 신호 규칙(θ · n_min)을 적용한다.
+    어느 t 에서든 규칙이 걸리면 그 **관측 시점 T** 가 탐지 연도다 (t 가 아니다 — 관측자가
+    실제로 알 수 있었던 해를 보고한다).
+
+    관측 시점은 스냅샷이 실재하는 **2017–2023** 뿐이다. 그 이전은 스냅샷이 없어 재구성할 수
+    없다 — 2016년 이전에 이미 탐지 가능했는지는 이 방법으로 말할 수 없고, 그 사실을 §5.3 에
+    적는다. 따라서 C 의 탐지 연도는 **상한이 아니라 하한도 아닌, 관측 가능 구간 안의 값**이다.
+
+    개념 팔과 코드 팔은 **같은 스냅샷**을 본다 — 한쪽만 미래 정보를 받으면 비교가 아니다.
+    """
+    from sdkb_paper.collect.bq_cpc import SNAPSHOT_FOR_YEAR
+
+    for obs in range(OBS_START, WINDOW_END + 1):
+        snap = vintage.get(SNAPSHOT_FOR_YEAR[obs], {})
+        years = [
+            row.application_date.year
+            for row in df.itertuples()
+            if row.application_number in snap and hit_fn(snap[row.application_number], row)
+        ]
+        s = annual_counts(pd.Series(years, dtype="int64"))
+        for t in range(SEARCH_START, obs - 1):  # 성숙한 출원연도만 (t <= obs-2)
+            y = s.get(t, 0)
+            if y < n_min:
+                continue
+            prior = [s.get(t - k, 0) for k in range(1, LOOKBACK + 1)]
+            mean_prior = sum(prior) / LOOKBACK
+            if mean_prior == 0 or y >= theta * mean_prior:
+                return obs
+    return None
+
+
+def vintage_lead_times(
+    df: pd.DataFrame,
+    cases: pd.DataFrame,
+    vintage: dict[int, dict[str, list[str]]],
+    control_codes: dict[str, str] | None = None,
+    variant: str = DEFAULT_VARIANT,
+) -> pd.DataFrame:
+    """C 경로 — 두 팔 모두 당시 분류(+ 텍스트) 위에서 잰다.
+
+    control_codes 를 주면 대조 코드를 갈아끼운다 (PLAN-007 §3-2 의 **선행 코드 검정**).
+    선행 코드는 우리가 고르지 않는다 — 2017-10 스냅샷의 최빈 코드로 결정적으로 뽑는다.
+    """
+    table = load_code_mapping()
+    aliases = load_aliases(variant=variant)
+    combos = load_combinations(variant=variant)
+
+    rows = []
+    for case in cases.itertuples():
+        ctrl = (control_codes or {}).get(case.case_id, case.control_code)
+        prefix = _norm_code(ctrl)
+
+        def concept_hit(codes, row, iri=case.concept_iri):
+            text = f"{row.invention_title or ''} {row.abstract or ''}"
+            hits = _map(codes, table) | set(emerging_devices(codes, text, aliases, combos))
+            return iri in hits
+
+        def code_hit(codes, _row, prefix=prefix):
+            return any(_norm_code(c).startswith(prefix) for c in codes)
+
+        cy = vintage_detect_year(df, concept_hit, vintage)
+        ky = vintage_detect_year(df, code_hit, vintage)
+
+        if cy is None and ky is None:
+            outcome, lead = "both_undetected", pd.NA
+        elif ky is None:
+            outcome, lead = "concept_first", WINDOW_END - cy
+        elif cy is None:
+            outcome, lead = "code_first", pd.NA
+        elif cy < ky:
+            outcome, lead = "concept_first", ky - cy
+        elif cy > ky:
+            outcome, lead = "code_first", ky - cy
+        else:
+            outcome, lead = "tie", 0
+
+        rows.append(
+            {
+                "case_id": case.case_id,
+                "concept_iri": case.concept_iri,
+                "control_code": ctrl,
+                "subset_flag": bool(case.subset_flag),
+                "concept_year": cy,
+                "code_year": ky,
+                "lead": lead,
+                "lead_is_lower_bound": ky is None and cy is not None,
+                "outcome": outcome,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def predecessor_codes(
+    cases: pd.DataFrame,
+    current: dict[str, list[str]],
+    vintage: dict[int, dict[str, list[str]]],
+    snapshot: int = 201710,
+) -> pd.DataFrame:
+    """당시 관측자가 이 기술을 찾는 데 **실제로 썼을 코드** (PLAN-007 §3-2).
+
+    우리가 고르지 않는다 — 지금 대조 코드를 달고 있는 특허들이 2017-10 스냅샷에서 실제로
+    달고 있던 코드 중 **최빈 코드 1개**다(동률이면 코드 문자열 오름차순). 결정적 규칙이다.
+    이것이 없으면 "전용 코드가 없던 시기에 전용 코드가 신호를 못 준다"는 동어반복만 남는다.
+    """
+    from collections import Counter
+
+    old = vintage.get(snapshot, {})
+    rows = []
+    for case in cases.itertuples():
+        prefix = _norm_code(case.control_code)
+        bearers = [
+            app
+            for app, codes in current.items()
+            if any(_norm_code(c).startswith(prefix) for c in codes)
+        ]
+        counter = Counter(
+            _norm_code(c) for app in bearers if app in old for c in old[app]
+        )
+        best = min(counter.items(), key=lambda kv: (-kv[1], kv[0]))[0] if counter else None
+        rows.append(
+            {
+                "case_id": case.case_id,
+                "control_code": case.control_code,
+                "predecessor_code": best,
+                "n_bearers": len(bearers),
+                "n_in_snapshot": sum(1 for a in bearers if a in old),
+                "support": counter.get(best, 0) if best else 0,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 # ── 시차와 검정 ─────────────────────────────────────────────────────────
 @dataclass(frozen=True)
 class SignTest:
@@ -150,6 +328,7 @@ def lead_times(
     theta: float = THETA,
     n_min: int = N_MIN,
     drop_control_code: bool = False,
+    assigned: pd.Series | None = None,
 ) -> pd.DataFrame:
     """사례별 탐지 연도와 시차 L = (코드 탐지연도) − (개념 탐지연도). 양수 = 개념이 앞섬.
 
@@ -160,15 +339,16 @@ def lead_times(
       동률(같은 해) → 동점, 검정에서 제외
     """
     rows = []
-    # 대조 코드 제거 재검정은 사례마다 빼는 코드가 다르므로 설정이 사례별이다.
-    shared = None if drop_control_code else assign_concepts(df, variant=variant)
+    # 개념 배정은 variant 에만 의존한다 — θ·n_min 을 훑는 민감도에서 재계산하지 않도록
+    # 호출자가 미리 계산해 넘길 수 있다. 대조 코드 제거 재검정만 사례별 배정이 필요하다.
+    shared = None if drop_control_code else (assigned if assigned is not None else assign_concepts(df, variant=variant))
     for case in cases.itertuples():
-        assigned = (
+        case_assigned = (
             assign_concepts(df, variant=variant, exclude_code=case.control_code)
             if drop_control_code
             else shared
         )
-        cs = concept_series(df, case.concept_iri, assigned)
+        cs = concept_series(df, case.concept_iri, case_assigned)
         ks = code_series(df, case.control_code)
         cy, ky = detect_year(cs, theta, n_min), detect_year(ks, theta, n_min)
 
