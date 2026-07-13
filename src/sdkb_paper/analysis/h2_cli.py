@@ -11,10 +11,12 @@ from __future__ import annotations
 import pandas as pd
 
 from sdkb_paper.analysis.timeseries import (
+    DEFINITIONS,
     N_MIN,
     THETA,
     WINDOW_END,
     WINDOW_START,
+    WINDOWS,
     assign_concepts,
     code_series,
     concept_series,
@@ -33,6 +35,7 @@ TIMESERIES_CSV = PROCESSED / "h2_timeseries.csv"
 LEADTIME_CSV = PROCESSED / "h2_leadtime.csv"
 REPORT_MD = PROCESSED / "h2_report.md"
 PREDECESSOR_CSV = PROCESSED / "h2_predecessor_codes.csv"
+PLAN009_CSV = PROCESSED / "h2_plan009_matrix.csv"
 
 # §4.5 민감도 — 사전 정의 (PLAN-006). 결과를 보고 추가하지 않는다.
 THETAS = (1.5, 2.0, 3.0)
@@ -153,14 +156,83 @@ def run_vintage(raw: pd.DataFrame, cases: pd.DataFrame) -> dict:
     }
 
 
+def union_corpus() -> pd.DataFrame:
+    """H2 말뭉치 = 2010–2025 ∪ 2005–2009 (PLAN-009 · 좌측절단 교정).
+
+    **말뭉치는 항상 합집합이고, 잘라내는 것은 관측창이다.** 그래야 사전등록 창(2010–2023)의
+    결과가 교정 창과 **같은 코드**로 재현된다 — 창만 바뀌었음을 코드가 보증한다.
+    2005–2009 분은 그래프에 병합되지 않는다 (G₁·H1 불변).
+    """
+    from sdkb_paper.preprocess.profile import PERIODS
+
+    frames = [pd.read_parquet(p) for _, p, *_ in PERIODS.values() if p.exists()]
+    return pd.concat(frames, ignore_index=True).sort_values("application_number")
+
+
+def run_plan009(union: pd.DataFrame, cases: pd.DataFrame) -> dict:
+    """창(사전등록·교정) × 정의(legacy·si) × 코드팔(현재분류·당시선행코드) 행렬.
+
+    **여덟 셀 전부를 보고한다** — 유리한 셀을 고르지 않는다 (CLAUDE.md §1.2).
+    """
+    from sdkb_paper.collect.bq_cpc import VINTAGE_MAP, load_cpc, load_vintage
+
+    cpc = prepare(union, use_cpc=True)  # 두 팔이 같은 분류 데이터를 본다
+    vintage = load_vintage() if VINTAGE_MAP.exists() else None
+
+    pred_map: dict[str, str] = {}
+    pred = None
+    if vintage:
+        pred = predecessor_codes(cases, load_cpc(), vintage)
+        pred_map = dict(zip(pred["case_id"], pred["predecessor_code"], strict=True))
+
+    rows, leads_by_cell = [], {}
+    for wname, window in WINDOWS.items():
+        for definition in DEFINITIONS:
+            # si 정의에 FOWLP 는 없다 — '팬아웃' 어휘가 전 말뭉치 21건이라 어떤 정의로도
+            # 시계열이 서지 않아 **사전 배제**했다 (PLAN-009 §3-2). 결과를 보고 뺀 것이 아니다.
+            cs = cases[cases["case_id"] != "fowlp"] if definition == "si" else cases
+            assigned = assign_concepts(cpc, definition=definition)
+
+            arms = {
+                "현재 분류 (IPC∪CPC)": lead_times(
+                    cpc, cs, assigned=assigned, window=window, definition=definition
+                )
+            }
+            if vintage:
+                arms["당시 분류 · 선행코드"] = vintage_lead_times(
+                    cpc, cs, vintage, control_codes=pred_map,
+                    window=window, definition=definition,
+                )
+
+            for arm, leads in arms.items():
+                t = sign_test(leads)
+                key = (wname, definition, arm)
+                leads_by_cell[key] = leads
+                rows.append({
+                    "window": f"{window[0]}–{window[1]}",
+                    "window_id": wname,
+                    "definition": definition,
+                    "code_arm": arm,
+                    "n_cases": len(cs),
+                    "n_pairs": t.n_pairs,
+                    "concept_first": t.n_concept_first,
+                    "code_first": t.n_code_first,
+                    "p": t.p_value,
+                    "rejects": t.rejects,
+                })
+    return {"matrix": pd.DataFrame(rows), "leads": leads_by_cell, "pred": pred}
+
+
 def main() -> int:
     raw = pd.read_parquet(DELTA_PARQUET)
+    union = union_corpus()
     cases = load_cases()
 
     # 세 경로를 **나란히** 낸다. 뒤의 것이 앞의 것을 대체하지 않는다 (CLAUDE.md §1.2).
     pre = run(prepare(raw, use_cpc=False), cases)   # A 사전등록: KIPRIS IPC
     cor = run(prepare(raw, use_cpc=True), cases)    # B 교정: IPC ∪ CPC (두 팔 같은 데이터)
     vin = run_vintage(prepare(raw, use_cpc=False), cases)  # C 당시 분류 (텍스트는 시점 불변)
+    p9 = run_plan009(union, cases)  # PLAN-009: 창 × 정의 × 코드팔 행렬
 
     PROCESSED.mkdir(parents=True, exist_ok=True)
     pd.concat(
@@ -260,8 +332,51 @@ B p = {cor["bidir_test"].p_value:.4g} (사례 2건뿐 — **검정이 아니라 
 ## §4.5 민감도 (사전등록 A)
 
 {_md_table(pre["sens"])}
+
+---
+
+# PLAN-009 — 좌측절단 교정 + 분류체계 독립 개념
+
+여기까지의 네 측정(A·B·C·C′)에는 **두 개의 구조적 결함**이 있었다.
+
+1. **코드 팔이 미래에서 온다** (PLAN-007): H10 스킴은 전량 소급 재분류라 늦을 수 없다.
+2. **개념 팔이 코드에 기생한다** (PLAN-008): 0층 룰이 사례 7건 중 **6건**의 개념을 바로 그
+   신설 H10 코드로 매핑하고 있었다 — 개념이 코드보다 앞설 수 없었다.
+3. **개념 팔이 과거를 못 본다** (PLAN-009): HBM 의 구조적 부상(적층 ∧ 관통전극)이 관측창의
+   **첫 해(2010)에 이미 정점**이라, 상대성장 규칙(θ × 직전 3년 평균)의 기저가 정의되지 않는다.
+
+교정은 두 축이다. **신호 규칙(θ·n_min·후행창)은 만지지 않았다.**
+
+- **창**: 2010–2023(사전등록) → **2005–2023**(부상 이전으로 확장 · 두 팔에 대칭)
+- **정의**: legacy(코드 기생) → **si**(JEDEC/IRDS 표준의 구조 어휘 · 분류코드 0개)
+
+말뭉치: 2010–2025 {len(raw):,}건 ∪ 2005–2009 {len(union) - len(raw):,}건 = **{len(union):,}건**
+(2005–2009 분은 **그래프에 병합되지 않는다** — G₁·H1 은 불변이다)
+
+## 여덟 셀 전부 (유리한 셀을 고르지 않는다)
+
+{_md_table(p9["matrix"].drop(columns=["window_id"]))}
+
+**주 셀 = 교정 창 × si 정의 × 당시 분류·선행코드** — 세 결함을 모두 교정한 유일한 셀이다.
+
+{_md_table(p9["leads"][("extended", "si", "당시 분류 · 선행코드")].drop(columns=["concept_iri"]))
+ if ("extended", "si", "당시 분류 · 선행코드") in p9["leads"] else "(스냅샷 미수집)"}
+
+## 정직성 규율 (PLAN-009 §4)
+
+- **관측창 확장은 사후(post-hoc)다.** PLAN-002 가 "결과를 본 뒤 기간 변경은 p-hacking"이라고
+  스스로 못 박았다. 이것이 p-hacking 이 **아닌** 근거는 하나뿐이다 — 동기가 p 값이 아니라
+  **측정의 무효성**(상대성장 규칙의 정의역이 좌측절단으로 비어 있음)이라는 것.
+- **사전등록 결과(A·B·C·C′)를 지우지 않는다.** 위에 그대로 있다.
+- **창은 한 번만 바꿨다.** 2005 에서 결과가 안 나온다고 2000 으로 내리지 않는다.
+- **말뭉치 밀도 교란**: 2005–09 는 연평균 5,883건, 2010–25 는 2,158건이다. 상대성장 규칙은
+  두 팔에 **대칭**으로 걸리므로 개념 vs 코드 **비교**는 공정하나, 절대 탐지 시점은 밀도에
+  영향을 받는다 (§5.3).
+- **잔여 좌측절단**: FinFET·GAA·MRAM 의 학술적 기원은 1990년대다. 산업 출원의 부상은 창 안에
+  있지만 이 한계는 §5.3 에 적는다.
 """
     REPORT_MD.write_text(report, encoding="utf-8")
+    p9["matrix"].to_csv(PLAN009_CSV, index=False)
     fig = fig_h2_timeseries(cor["ts"], cor["leads"])
     fig_pre = fig_h2_timeseries(
         pre["ts"], pre["leads"], out=FIGURES / "fig4b_h2_timeseries_preregistered.png"

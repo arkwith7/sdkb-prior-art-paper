@@ -23,12 +23,26 @@ from sdkb_paper.ontology.emerging import (
     emerging_devices,
     load_aliases,
     load_combinations,
+    load_si_combinations,
+    si_devices,
 )
 from sdkb_paper.ontology.mapping import _norm_code, load_code_mapping
 
 # 동결된 관측창과 신호 규칙 (PLAN-006). 결과를 보고 바꾸지 않는다.
 WINDOW_START, WINDOW_END = 2010, 2023
 SEARCH_START = 2013  # 직전 3년 후행창을 확보할 수 있는 첫 해
+
+# PLAN-009 · 좌측절단 교정. **신호 규칙(θ·n_min·후행창)은 만지지 않는다 — 창만 넓힌다.**
+# 사전등록 창에서는 HBM 의 구조적 부상(적층 ∧ 관통전극)이 첫 해(2010)에 이미 정점이라
+# 상대성장 규칙의 기저가 정의되지 않았다. 확장은 **두 팔에 대칭**이므로 설계상 한쪽에
+# 유리할 수 없다. 두 창의 결과를 **나란히** 보고한다 (PLAN-009 §4).
+WINDOWS = {"prereg": (2010, 2023), "extended": (2005, 2023)}
+DEFAULT_WINDOW = WINDOWS["prereg"]
+
+# 개념을 무엇으로 정의하는가 (PLAN-009 §3-2).
+#   legacy — 0층 룰(분류코드) ∪ 1층 별칭 ∪ 2층 코드조합.  사전등록 경로. **코드에 기생한다.**
+#   si     — 텍스트 구조 어휘만. 분류코드를 일절 보지 않는다.
+DEFINITIONS = ("legacy", "si")
 # C 경로(PLAN-007)의 **관측 시점** 하한. BigQuery 동결 스냅샷이 2017-10 부터 존재한다 —
 # 그 이전의 분류 상태는 복원할 수 없으므로 "2016년에 이미 알 수 있었는가"는 묻지 않는다.
 OBS_START = 2017
@@ -69,26 +83,36 @@ def prepare(df: pd.DataFrame, use_cpc: bool) -> pd.DataFrame:
 
 
 # ── 시계열 ──────────────────────────────────────────────────────────────
-def annual_counts(years: pd.Series) -> pd.Series:
-    """연도 -> 건수. 관측창 전체를 0 으로 채운다 (빈 해가 빠지면 직전 3년 평균이 틀어진다)."""
-    idx = range(WINDOW_START, WINDOW_END + 1)
-    counts = years[(years >= WINDOW_START) & (years <= WINDOW_END)].value_counts()
-    return pd.Series({y: int(counts.get(y, 0)) for y in idx}, name="n").sort_index()
+def annual_counts(years: pd.Series, window: tuple[int, int] = DEFAULT_WINDOW) -> pd.Series:
+    """연도 -> 건수. 관측창 전체를 0 으로 채운다 (빈 해가 빠지면 직전 3년 평균이 틀어진다).
+
+    말뭉치는 항상 합집합(2005–2025)을 넘기고 **창이 잘라낸다** — 그래야 사전등록 창의
+    결과가 교정 창과 같은 코드로 재현된다 (회귀 테스트로 고정).
+    """
+    lo, hi = window
+    counts = years[(years >= lo) & (years <= hi)].value_counts()
+    return pd.Series({y: int(counts.get(y, 0)) for y in range(lo, hi + 1)}, name="n").sort_index()
 
 
-def _patent_concepts(row, table, aliases, combos, exclude_code: str | None) -> set[str]:
+def _patent_concepts(row, table, aliases, combos, exclude_code: str | None,
+                     definition: str = "legacy") -> set[str]:
     """특허 1건이 가리키는 개념(Process ∪ Device). delta.build_delta 와 같은 3층 규칙이다.
 
     exclude_code 는 §4.5 의 **대조 코드 제거 재검정**용이다 — 대조 코드를 개념 시계열에서
     빼도 결론이 서는지 본다. 부분집합 관계(개념 ⊇ 코드)가 결론을 만들지 않았음을 보이기 위해서.
     """
+    text = f"{row.invention_title or ''} {row.abstract or ''}"
+    if definition == "si":
+        # **분류코드를 일절 보지 않는다** (PLAN-009). 0층 룰이 사례 7건 중 6건의 개념을 신설
+        # H10 코드로 매핑하고 있었고, 그 코드는 소급 부여된다 — 개념이 코드보다 앞설 수 없었다.
+        return set(si_devices(text, combos))
+
     codes = [c.strip() for c in row.codes if c.strip()]
     if exclude_code:
         drop = _norm_code(exclude_code)
         codes = [c for c in codes if not _norm_code(c).startswith(drop)]
 
     hits = _map(codes, table)
-    text = f"{row.invention_title or ''} {row.abstract or ''}"
     hits |= set(emerging_devices(codes, text, aliases, combos))
     return hits
 
@@ -105,27 +129,41 @@ def _map(codes: list[str], table: dict[str, list[tuple[str, str]]]) -> set[str]:
 
 
 def assign_concepts(
-    df: pd.DataFrame, variant: str = DEFAULT_VARIANT, exclude_code: str | None = None
+    df: pd.DataFrame,
+    variant: str = DEFAULT_VARIANT,
+    exclude_code: str | None = None,
+    definition: str = "legacy",
 ) -> pd.Series:
     """특허별 개념 집합. **설정(variant · exclude_code)당 한 번만** 계산한다 —
     사례마다 34,521건을 다시 스캔하면 민감도 분석에서 같은 매칭을 수십 번 반복한다.
     """
     table = load_code_mapping()
     aliases = load_aliases(variant=variant)
-    combos = load_combinations(variant=variant)
+    combos = (
+        load_si_combinations(variant=variant) if definition == "si"
+        else load_combinations(variant=variant)
+    )
     return pd.Series(
-        [_patent_concepts(row, table, aliases, combos, exclude_code) for row in df.itertuples()],
+        [
+            _patent_concepts(row, table, aliases, combos, exclude_code, definition)
+            for row in df.itertuples()
+        ],
         index=df.index,
     )
 
 
-def concept_series(df: pd.DataFrame, concept_iri: str, assigned: pd.Series) -> pd.Series:
-    """개념 단위 연도별 출원 건수. 0층(룰) ∪ 1층(별칭) ∪ 2층(조합)."""
+def concept_series(
+    df: pd.DataFrame, concept_iri: str, assigned: pd.Series,
+    window: tuple[int, int] = DEFAULT_WINDOW,
+) -> pd.Series:
+    """개념 단위 연도별 출원 건수. legacy=0층∪1층∪2층 · si=텍스트 구조 어휘만."""
     hit = assigned.map(lambda s: concept_iri in s)
-    return annual_counts(df.loc[hit, "application_date"].dt.year)
+    return annual_counts(df.loc[hit, "application_date"].dt.year, window)
 
 
-def code_series(df: pd.DataFrame, code: str) -> pd.Series:
+def code_series(
+    df: pd.DataFrame, code: str, window: tuple[int, int] = DEFAULT_WINDOW
+) -> pd.Series:
     """코드 단위 연도별 출원 건수 — H2 의 대조군. 접두어 일치다 (하위 코드를 포함한다)."""
     prefix = _norm_code(code)
     years = [
@@ -133,12 +171,13 @@ def code_series(df: pd.DataFrame, code: str) -> pd.Series:
         for row in df.itertuples()
         if any(_norm_code(c).startswith(prefix) for c in row.codes)
     ]
-    return annual_counts(pd.Series(years, dtype="int64"))
+    return annual_counts(pd.Series(years, dtype="int64"), window)
 
 
 # ── 탐지 ────────────────────────────────────────────────────────────────
 def detect_year(
-    series: pd.Series, theta: float = THETA, n_min: int = N_MIN
+    series: pd.Series, theta: float = THETA, n_min: int = N_MIN,
+    window: tuple[int, int] = DEFAULT_WINDOW,
 ) -> int | None:
     """최초 탐지 연도 = y(t) >= n_min **이고** y(t) >= theta * mean(y(t-3..t-1)) 인 최초의 t.
 
@@ -146,7 +185,8 @@ def detect_year(
     어느 해도 만족하지 않으면 None — **"탐지되지 않음"** 이다. 임의의 큰 값으로 대체하지
     않는다 (우편향 절단으로 보고한다 · PLAN-006 의 사전 약속).
     """
-    for t in range(SEARCH_START, WINDOW_END + 1):
+    lo, hi = window
+    for t in range(lo + LOOKBACK, hi + 1):  # 후행창을 확보할 수 있는 첫 해부터
         y = series.get(t, 0)
         if y < n_min:
             continue
@@ -164,6 +204,7 @@ def vintage_detect_year(
     vintage: dict[int, dict[str, list[str]]],
     theta: float = THETA,
     n_min: int = N_MIN,
+    window: tuple[int, int] = DEFAULT_WINDOW,
 ) -> int | None:
     """**관측 시점** T — 그때의 분류체계로 이 기술을 처음 알아볼 수 있었던 해 (PLAN-007 §2).
 
@@ -185,15 +226,16 @@ def vintage_detect_year(
     """
     from sdkb_paper.collect.bq_cpc import SNAPSHOT_FOR_YEAR
 
-    for obs in range(OBS_START, WINDOW_END + 1):
+    lo, hi = window
+    for obs in range(OBS_START, hi + 1):
         snap = vintage.get(SNAPSHOT_FOR_YEAR[obs], {})
         years = [
             row.application_date.year
             for row in df.itertuples()
             if row.application_number in snap and hit_fn(snap[row.application_number], row)
         ]
-        s = annual_counts(pd.Series(years, dtype="int64"))
-        for t in range(SEARCH_START, obs - 1):  # 성숙한 출원연도만 (t <= obs-2)
+        s = annual_counts(pd.Series(years, dtype="int64"), window)
+        for t in range(lo + LOOKBACK, obs - 1):  # 성숙한 출원연도만 (t <= obs-2)
             y = s.get(t, 0)
             if y < n_min:
                 continue
@@ -210,6 +252,8 @@ def vintage_lead_times(
     vintage: dict[int, dict[str, list[str]]],
     control_codes: dict[str, str] | None = None,
     variant: str = DEFAULT_VARIANT,
+    window: tuple[int, int] = DEFAULT_WINDOW,
+    definition: str = "legacy",
 ) -> pd.DataFrame:
     """C 경로 — 두 팔 모두 당시 분류(+ 텍스트) 위에서 잰다.
 
@@ -218,6 +262,7 @@ def vintage_lead_times(
     """
     table = load_code_mapping()
     aliases = load_aliases(variant=variant)
+    si_combos = load_si_combinations(variant=variant)
     combos = load_combinations(variant=variant)
 
     rows = []
@@ -227,19 +272,21 @@ def vintage_lead_times(
 
         def concept_hit(codes, row, iri=case.concept_iri):
             text = f"{row.invention_title or ''} {row.abstract or ''}"
+            if definition == "si":
+                return iri in set(si_devices(text, si_combos))
             hits = _map(codes, table) | set(emerging_devices(codes, text, aliases, combos))
             return iri in hits
 
         def code_hit(codes, _row, prefix=prefix):
             return any(_norm_code(c).startswith(prefix) for c in codes)
 
-        cy = vintage_detect_year(df, concept_hit, vintage)
-        ky = vintage_detect_year(df, code_hit, vintage)
+        cy = vintage_detect_year(df, concept_hit, vintage, window=window)
+        ky = vintage_detect_year(df, code_hit, vintage, window=window)
 
         if cy is None and ky is None:
             outcome, lead = "both_undetected", pd.NA
         elif ky is None:
-            outcome, lead = "concept_first", WINDOW_END - cy
+            outcome, lead = "concept_first", window[1] - cy
         elif cy is None:
             outcome, lead = "code_first", pd.NA
         elif cy < ky:
@@ -329,6 +376,8 @@ def lead_times(
     n_min: int = N_MIN,
     drop_control_code: bool = False,
     assigned: pd.Series | None = None,
+    window: tuple[int, int] = DEFAULT_WINDOW,
+    definition: str = "legacy",
 ) -> pd.DataFrame:
     """사례별 탐지 연도와 시차 L = (코드 탐지연도) − (개념 탐지연도). 양수 = 개념이 앞섬.
 
@@ -341,21 +390,32 @@ def lead_times(
     rows = []
     # 개념 배정은 variant 에만 의존한다 — θ·n_min 을 훑는 민감도에서 재계산하지 않도록
     # 호출자가 미리 계산해 넘길 수 있다. 대조 코드 제거 재검정만 사례별 배정이 필요하다.
-    shared = None if drop_control_code else (assigned if assigned is not None else assign_concepts(df, variant=variant))
+    shared = (
+        None
+        if drop_control_code
+        else (
+            assigned
+            if assigned is not None
+            else assign_concepts(df, variant=variant, definition=definition)
+        )
+    )
     for case in cases.itertuples():
         case_assigned = (
-            assign_concepts(df, variant=variant, exclude_code=case.control_code)
+            assign_concepts(
+                df, variant=variant, exclude_code=case.control_code, definition=definition
+            )
             if drop_control_code
             else shared
         )
-        cs = concept_series(df, case.concept_iri, case_assigned)
-        ks = code_series(df, case.control_code)
-        cy, ky = detect_year(cs, theta, n_min), detect_year(ks, theta, n_min)
+        cs = concept_series(df, case.concept_iri, case_assigned, window)
+        ks = code_series(df, case.control_code, window)
+        cy = detect_year(cs, theta, n_min, window)
+        ky = detect_year(ks, theta, n_min, window)
 
         if cy is None and ky is None:
             outcome, lead = "both_undetected", pd.NA
         elif ky is None:
-            outcome, lead = "concept_first", WINDOW_END - cy  # 하한 (우편향 절단)
+            outcome, lead = "concept_first", window[1] - cy  # 하한 (우편향 절단)
         elif cy is None:
             outcome, lead = "code_first", pd.NA
         elif cy < ky:

@@ -1,0 +1,9 @@
+tech,concept_iri,pattern,is_reference,rationale,status
+HBM,https://w3id.org/sdkb/data/device/hbm,\bHBM\b|고대역폭,TRUE,JEDEC 표준 명칭과 국문 통용어,frozen-2026-07-13
+3D NAND,https://w3id.org/sdkb/data/device/3d_nand,V-?NAND|3D ?NAND|3차원 ?낸드,TRUE,제조사 제품명(V-NAND)과 표준 명칭,frozen-2026-07-13
+TSV,https://w3id.org/sdkb/data/device/tsv,\bTSV\b|실리콘 관통,TRUE,JEDEC/SEMI 용어,frozen-2026-07-13
+GAA,https://w3id.org/sdkb/data/device/gaa_fet,\bGAA\b|MBCFET|게이트 ?올 ?어라운드|나노시트,TRUE,IRDS 용어와 제조사 제품명(MBCFET),frozen-2026-07-13
+MRAM,https://w3id.org/sdkb/data/device/mram,\bMRAM\b|엠램,FALSE,"**사전 배제** — 2011년부터 매년 5회씩 등장하는 사업계획 상용구다. 부상 신호가 아니다 (PLAN-009 §3-3)",frozen-2026-07-13
+FinFET,https://w3id.org/sdkb/data/device/finfet,\bFinFET\b|핀펫,FALSE,"**사전 배제** — 언급이 산발적이다. 파운드리 공정 세부는 공시에 잘 드러나지 않는다",frozen-2026-07-13
+FOWLP,https://w3id.org/sdkb/data/device/fan_out_wlp,FOWLP|팬 ?아웃|\bPLP\b,FALSE,"**사전 배제** — 특허 말뭉치에서 '팬아웃' 어휘가 21건뿐이라 개념 시계열 자체가 서지 않는다",frozen-2026-07-13
+EUV,,\bEUV\b,FALSE,H2 사례가 아니다 — 준거의 타당성을 눈으로 보기 위한 대조용 서술 항목,frozen-2026-07-13

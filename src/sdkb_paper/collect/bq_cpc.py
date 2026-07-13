@@ -141,13 +141,26 @@ def load_cpc(path: Path = CPC_MAP) -> dict[str, list[str]]:
     return df.groupby("application_number")["cpc_code"].apply(list).to_dict()
 
 
+def corpus_application_numbers() -> list[str]:
+    """CPC 를 받아야 할 출원번호 = **두 말뭉치의 합집합** (PLAN-009).
+
+    2010–2025(G₁ 의 원천) ∪ 2005–2009(좌측절단 교정분). 합집합으로 한 번에 받는 이유는
+    분리해서 받으면 `make cpc` 재실행이 다른 기간의 행을 덮어써 **코드 팔이 조용히 0 이 되기**
+    때문이다 — 그러면 H2 가 거짓으로 지지된다.
+    """
+    from sdkb_paper.preprocess.profile import PERIODS
+
+    apps: list[str] = []
+    for _, delta_path, *_ in PERIODS.values():
+        if delta_path.exists():
+            apps.extend(pd.read_parquet(delta_path)["application_number"].tolist())
+    return sorted(set(apps))
+
+
 def main() -> int:
     import sys
 
-    from sdkb_paper.preprocess.profile import DELTA
-
-    corpus = pd.read_parquet(DELTA)
-    apps = corpus["application_number"].tolist()
+    apps = corpus_application_numbers()
 
     if "--vintage" in sys.argv:  # PLAN-007
         df = fetch_vintage(apps)
