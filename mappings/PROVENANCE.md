@@ -75,3 +75,81 @@ SDKB 의 후공정 개념 세 개는 `skos:broader` 없이 평면이라(`Back-En
 > 삭제했다. 그 판단은 SDKB 에 배선 개념이 없던 시점의 것이고, PLAN-001 §3.5 가 SemiKong
 > Table 7 의 후공정 그룹(Metallization · Interconnect Patterning · Advanced Packaging)을
 > 복원하면서 근거가 소멸했다. 룰 16개를 추가했다(공정 9 · 소자 7).
+
+---
+
+# 신기술 인식 레이어의 출처 (PLAN-004 · 2026-07-13 동결)
+
+`term_aliases.csv`(1층 별칭)와 `emerging_concepts.csv`(2층 조합 정의)의 근거다.
+**두 파일은 시계열을 보기 전에 동결됐다** — 커밋 해시가 사전등록(pre-registration)의 증거다.
+대상 기술과 정의식은 우리 데이터 분포가 아니라 **외부 원천**에서 왔다 (CLAUDE.md §1.2).
+
+## 왜 이 레이어가 필요한가 (실측)
+
+| 사실 | 값 |
+|---|---|
+| GAA 전용 코드(`H10D30/6735`·`H10D30/501`)를 받은 삼성·SK하이닉스 특허 | **0건** |
+| HBM — 명세에 이름을 쓴 특허 | 32건 |
+| HBM — 조합 정의(base)로 잡히는 특허 | **209건** (그중 이름을 쓴 것은 **4건**) |
+| FinFET — 코드 135건 · 텍스트 36건 | **교집합 2건** (두 경로가 거의 겹치지 않는다) |
+| SDKB 의 `device/gaa_fet` altLabel | **0개** (`device/hbm` 은 영문 1개뿐) |
+
+신기술은 **코드로도 이름으로도 잡히지 않는다.** 이것이 H2 의 장애물이자 H2 의 논지
+("코드 단위는 늦다")에 대한 관측 증거다.
+
+## 코드 제목 (verbatim · CPC 2026.01 공식 스킴 HTML 직접 파싱)
+
+요약 모델을 거치지 않았다 (이 문서 상단의 원칙).
+
+| 코드 | 공식 제목 |
+|---|---|
+| H10B 80/00 | Assemblies of multiple devices comprising at least one memory device covered by this subclass |
+| H10W 20/00 | Interconnections in chips, wafers or substrates |
+| H10W 20/20 | Interconnections within wafers or substrates, e.g. through-silicon vias [TSV] |
+| H10W 20/211 | {Through-semiconductor vias, e.g. TSVs} |
+| H10W 20/023 | {the interconnections being through-semiconductor vias} |
+| H10W 20/40 | Interconnections external to wafers or substrates, e.g. back-end-of-line [BEOL] metallisations … |
+| H10W 90/00 | Package configurations |
+| H10D 30/62 | Fin field-effect transistors [FinFET] |
+| H10D 30/6735 | {having gates fully surrounding the channels, e.g. gate-all-around} |
+| H10D 30/501 | {FETs having stacked nanowire, nanosheet or nanoribbon channels} |
+| H01L 25/065 | the devices being of a type provided for in group H10D 89/00 |
+| H01L 25/0657 | {Stacked arrangements of devices} |
+
+**H10B 80/00 의 WARNING (verbatim):**
+> Group H10B 80/00 is incomplete pending reclassification of documents from group H10W 90/00.
+> Groups H10W 90/00 and H10B 80/00 should be considered in order to perform a complete search.
+
+## 조합 정의가 이 제목들에서 나온 방식
+
+- **HBM(base) = (H10B80 ∨ H10W90) ∧ (H10W20/20 ∨ H10W20/211 ∨ H10W20/023)**
+  적층 메모리 어셈블리 ∧ TSV. TSV 쪽은 **제목이 TSV 를 명시한 코드만** 넣었다 —
+  `H10W20` 전체는 "배선 일반"(BEOL·레이아웃 포함)이라 TSV 가 아니다.
+  H10W90 을 적층 집합에 넣는 것은 위 WARNING 의 지시다(우리 판단이 아니다).
+- **GAA(base) = H10D30/6735 ∨ H10D30/501.** 두 코드 모두 우리 코퍼스에서 0건이다 —
+  그래서 GAA 는 1층(별칭)이 담당한다. "적층 나노시트 채널 FET = GAA 구현"은 우리 해석이
+  아니라 `H10D30/501` 의 제목이 직접 말하는 것이다.
+
+> **위 §"매핑하지 않는 코드" 표의 H10W90 항목과 충돌하지 않는다.** 그 표는
+> "H10W90 **단독으로** `device/hbm` 을 부여하지 않는다"는 규칙이고, 지금도 유효하다.
+> 조합 정의는 H10W90 **∧ TSV** 일 때만 HBM 을 부여한다 — 적층 일반은 여전히 HBM 이 아니다.
+
+## 별칭의 출처
+
+- HBM 계열: **JEDEC JESD235**(HBM/HBM2/HBM2E) · **JESD238**(HBM3/HBM3E) 의 표준 명칭.
+- GAA 계열: CPC `H10D30/6735`·`H10D30/501` 의 제목이 명명한 용어(gate-all-around ·
+  nanosheet · nanoribbon) + 삼성 3nm 공정의 **MBCFET**(Multi-Bridge Channel FET).
+- 국문 별칭은 **SDKB 의 라벨 설계**(prefLabel@en 기준 · altLabel@ko 별칭, 실측 en 630 / ko 428)를
+  따른다. 신기술 개념만 이 체계에서 비어 있었으므로(`gaa_fet` altLabel 0개), base 별칭을
+  `skos:altLabel`(언어 태그 포함)로 **G₁ 에 실체화**한다. G₀ 는 건드리지 않는다.
+- `나노와이어`/`nanowire` 는 **loose 변이 전용**이다. 스킴은 나노시트와 같은 그룹에 두지만,
+  명세의 "나노와이어"가 채널이 아닌 구조를 가리킬 수 있어 정밀도 위험이 있다.
+
+## 민감도 변이 (§4.5 — 사전 정의)
+
+| 개념 | strict | base | loose |
+|---|---:|---:|---:|
+| HBM | 74건 | **209건** | 1,018건 |
+| GAA (코드) | 0건 | 0건 | 135건(FinFET 포함 시) |
+
+결론이 정의에 민감하면 **그 사실 자체를 보고한다.**

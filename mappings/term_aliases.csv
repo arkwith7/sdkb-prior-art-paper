@@ -1,0 +1,23 @@
+term,concept_iri,lang,variant,source,rationale,status
+HBM,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD235 (High Bandwidth Memory DRAM),표준 규격의 약칭,frozen-2026-07-13
+High Bandwidth Memory,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD235,표준 규격의 정식 명칭,frozen-2026-07-13
+HBM2,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD235,세대 표기,frozen-2026-07-13
+HBM2E,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD235,세대 표기,frozen-2026-07-13
+HBM3,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD238 (High Bandwidth Memory DRAM 3),세대 표기,frozen-2026-07-13
+HBM3E,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD238,세대 표기,frozen-2026-07-13
+고대역폭 메모리,https://w3id.org/sdkb/data/device/hbm,ko,base,JEDEC JESD235 의 국문 통용 역어,KIPRIS 명세는 국문이다 — 국문 별칭이 없으면 이름 경로가 작동하지 않는다,frozen-2026-07-13
+고대역폭메모리,https://w3id.org/sdkb/data/device/hbm,ko,base,JEDEC JESD235 의 국문 통용 역어,띄어쓰기 변이,frozen-2026-07-13
+gate-all-around,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/6735 (제목이 'e.g. gate-all-around'),코드 제목이 명명한 용어,frozen-2026-07-13
+gate all around,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/6735,하이픈 변이,frozen-2026-07-13
+GAA,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/6735,통용 약어,frozen-2026-07-13
+게이트 올 어라운드,https://w3id.org/sdkb/data/device/gaa_fet,ko,base,CPC-2026.01 H10D30/6735 의 국문 음차,국문 명세 대응,frozen-2026-07-13
+MBCFET,https://w3id.org/sdkb/data/device/gaa_fet,en,base,삼성전자 3nm 공정 발표 (Multi-Bridge Channel FET = 적층 나노시트 채널 GAA),기업이 부르는 상표명. 이름을 다르게 부르는 대표 사례,frozen-2026-07-13
+나노시트,https://w3id.org/sdkb/data/device/gaa_fet,ko,base,"CPC-2026.01 H10D30/501 = 'FETs having stacked nanowire, nanosheet or nanoribbon channels'",적층 나노시트 채널 FET 이 GAA 구현이라는 것은 스킴 제목이 직접 말한다 — 우리 해석이 아니다,frozen-2026-07-13
+nanosheet,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/501,같음,frozen-2026-07-13
+나노리본,https://w3id.org/sdkb/data/device/gaa_fet,ko,base,CPC-2026.01 H10D30/501,같음,frozen-2026-07-13
+nanoribbon,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/501,같음,frozen-2026-07-13
+나노와이어,https://w3id.org/sdkb/data/device/gaa_fet,ko,loose,CPC-2026.01 H10D30/501,"스킴은 나노와이어를 나노시트와 같은 그룹에 두지만, 명세의 '나노와이어'는 채널이 아닌 구조(성장·센서)를 가리킬 수 있다 — 정밀도 위험이 있어 base 에서 뺀다",frozen-2026-07-13
+nanowire,https://w3id.org/sdkb/data/device/gaa_fet,en,loose,CPC-2026.01 H10D30/501,같음,frozen-2026-07-13
+FinFET,https://w3id.org/sdkb/data/device/finfet,en,base,CPC-2026.01 H10D30/62 = 'Fin field-effect transistors [FinFET]',코드 제목이 명명,frozen-2026-07-13
+핀펫,https://w3id.org/sdkb/data/device/finfet,ko,base,CPC-2026.01 H10D30/62 의 국문 음차,국문 명세 대응,frozen-2026-07-13
+fin field-effect transistor,https://w3id.org/sdkb/data/device/finfet,en,base,CPC-2026.01 H10D30/62,정식 명칭,frozen-2026-07-13

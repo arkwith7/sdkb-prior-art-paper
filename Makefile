@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping validate reason cq gate h1 figures
+.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq gate h1 figures
 
 setup:
 	uv sync --all-extras
@@ -36,6 +36,10 @@ merge:
 # IPC/CPC 룰 커버리지 — 특허를 수집하기 전에 매핑의 사각지대를 드러낸다
 mapping:
 	uv run python -m sdkb_paper.ontology.mapping
+
+# 3층 후보 발굴 (PLAN-004) — 후보 리포트만 만든다. 채택은 사람이 한다.
+candidates:
+	uv run python -m sdkb_paper.ontology.candidates
 
 # 스냅샷 무결성: 커밋된 SDKB 스냅샷이 PROVENANCE 의 sha256 과 일치하는가.
 # SDKB 원본이 필요 없다 — CI 에서 매 push 마다 돈다. baseline 의 출처가 거짓이 되는 것을 막는다.

@@ -124,3 +124,6 @@ G11C11/41,device,https://w3id.org/sdkb/data/device/sram,device,CPC-2026.01,"form
 G11C11/16,device,https://w3id.org/sdkb/data/device/mram,device,CPC-2026.01,using elements in which the storage effect is based on magnetic spin effect,스핀 저장 = MRAM. 기존 G11C11/15 룰과 같은 소자,high,author-defined
 G11C11/22,device,https://w3id.org/sdkb/data/device/feram,device,CPC-2026.01,using ferroelectric elements,강유전체 소자 = FeRAM,high,author-defined
 G11C13/0002,device,https://w3id.org/sdkb/data/device/reram,device,CPC-2026.01,{ using resistive RAM [RRAM] elements },코드 제목이 RRAM 을 명명,high,author-defined
+H10D30/62,device,https://w3id.org/sdkb/data/device/finfet,device,CPC-2026.01,Fin field-effect transistors [FinFET],전용 코드 — 소자 개념 finfet 과 1:1. 델타 135건인데 룰이 없어 전부 유실되고 있었다,high,author-defined
+H10D30/6735,device,https://w3id.org/sdkb/data/device/gaa_fet,device,CPC-2026.01,"{having gates fully surrounding the channels, e.g. gate-all-around}",GAA 전용 코드. 델타 0건이지만 H2 의 코드 단위 대조군으로 필요하다 — 부여되지 않는다는 사실 자체가 관측값,high,author-defined
+H10D30/501,device,https://w3id.org/sdkb/data/device/gaa_fet,device,CPC-2026.01,"{FETs having stacked nanowire, nanosheet or nanoribbon channels}",적층 나노시트 채널 FET = GAA 구현. 스킴 제목이 직접 말한다,high,author-defined
