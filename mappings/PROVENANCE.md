@@ -153,3 +153,74 @@ SDKB 의 후공정 개념 세 개는 `skos:broader` 없이 평면이라(`Back-En
 | GAA (코드) | 0건 | 0건 | 135건(FinFET 포함 시) |
 
 결론이 정의에 민감하면 **그 사실 자체를 보고한다.**
+
+---
+
+# H2 검증 사례의 출처 (PLAN-006 · 2026-07-13 동결)
+
+`h2_cases.csv` 는 H2 의 검증 사례 7건과 각 사례의 **대조 코드**(코드 단위 시계열)를 담는다.
+**시계열을 계산하기 전에 동결됐다** — 커밋 해시가 사전등록의 증거다.
+
+## 왜 3건이 아니라 7건인가
+
+PLAN-004 가 동결한 사례는 HBM·GAA·FinFET **3건**인데, 단측 부호검정은 **3/3 전부 개념이 앞서도
+p = 0.125** 다. α=0.05 에 **구조적으로 도달할 수 없다** — 결과를 보기 전에 이미 정해진 사실이다.
+사례를 늘리는 것이 정당한 이유는 **아직 어떤 시계열도 계산하지 않았기** 때문이다. 선정은 우리
+데이터 분포가 아니라 SDKB 어휘 · CPC 2026.01 스킴 원문 · 외부 부상 근거만으로 이루어졌다.
+
+## 선정 기준 (a priori · 결과 무관)
+
+1. 개념이 **SDKB 에 실재**한다 (Device 34 ∪ Process 49). 새 어휘를 만들지 않는다 (CLAUDE.md §1.4).
+2. 부상이 **사후적으로 확인**된다 (표준 제정 · 양산 발표).
+3. **CPC 스킴 원문이 기술명을 제목에 명시한 전용 단일 코드**가 존재한다.
+4. 두 출원인(삼성 · SK하이닉스)의 **포트폴리오 범위** 안이다.
+
+**사전 배제(결과 보기 전).** **EUV** — 전용 코드가 광원(`G03F7/70033`)과 마스크(`G03F1/22`)로
+갈라져 기준 3을 만족하지 않는다. 선택지가 둘이면 유리한 쪽을 고를 자유도가 생긴다.
+**SiC MOSFET · GaN HEMT · 이미지센서** — 기준 4 밖.
+
+## 대조 코드 제목 (verbatim · CPC 2026.01 공식 스킴 HTML 직접 파싱)
+
+요약 모델을 거치지 않았다 (이 문서 상단의 원칙). 2026-07-13 취득 · `cpc-H10B.html` · `cpc-H10W.html`.
+
+| 코드 | 공식 제목 |
+|---|---|
+| H10B 43/27 | the channels comprising vertical portions, e.g. U-shaped channels |
+| H10B 43/20 | characterised by three-dimensional [3D] arrangements, e.g. with cells on different height levels |
+| H10B 43/35 | with cell select transistors, e.g. NAND |
+| H10B 61/00 | Magnetic memory devices, e.g. magnetoresistive RAM [MRAM] devices |
+| H10W 70/09 | extending onto an encapsulation that laterally surrounds the chip or wafer, e.g. fan-out wafer level package [FOWLP] RDLs |
+| H10W 70/655 | Fan-out layouts |
+
+(HBM `H10B80/00` · GAA `H10D30/6735` · FinFET `H10D30/62` · TSV `H10W20/211` 의 제목은 이 문서
+위쪽 PLAN-004 표에 이미 있다.)
+
+## 별칭의 출처 (신규 4개 개념)
+
+PLAN-006 의 규율: 별칭은 **CPC 스킴 원문 제목이 명시한 기술명 + 표준/양산 공식 명칭**에서만 온다.
+
+- **3D NAND** — 스킴은 `H10B43/20` 에서 'three-dimensional [3D]' 를, `H10B43/35` 에서 'NAND' 를
+  명명한다(같은 서브트리). 제품 공식 명칭은 삼성 **V-NAND**(2013 양산)다.
+- **MRAM** — `H10B61/00` 제목이 'magnetoresistive RAM [MRAM]' 을 명명한다. 제품 공식 명칭은
+  삼성 **eMRAM**(2019 양산). 국문 '엠램'은 **SDKB 가 이미 가진 altLabel@ko** 다.
+- **FOWLP** — `H10W70/09` 제목이 'fan-out wafer level package [FOWLP]' 를 명명한다.
+- **TSV** — `H10W20/211` 제목이 'TSVs' 를, `H10W20/20` 이 'through-silicon vias [TSV]' 를 명명한다.
+  국문 '실리콘 관통 전극'은 **SDKB 의 altLabel@ko** 다.
+
+**loose 로 강등한 별칭** (나노와이어와 같은 처리 — 근거 등급이 낮거나 다의어라 base 에서 뺀다):
+
+| 용어 | 왜 base 가 아닌가 |
+|---|---|
+| `STT-MRAM` · `스핀전달토크` | 업계 통용어일 뿐 **스킴 제목에도 제품 공식 명칭에도 없다** |
+| `팬아웃` · `fan-out` | 단독으로는 디지털 회로의 **팬아웃(구동 가능 부하 수)** 을 가리킬 수 있다 — 정밀도 위험 |
+
+## 구조적 비대칭 — 숨기지 않는다
+
+7건 중 **5건(GAA·FinFET·3D NAND·MRAM·TSV)은 대조 코드가 개념의 0층 룰 안에 이미 들어 있다.**
+개념 집합 ⊇ 코드 집합이므로 **개념이 코드보다 늦게 탐지되는 것이 구조적으로 불가능**하다.
+HBM(룰 0건 · 조합 정의)과 FOWLP(대조 코드 `H10W70/09` 가 룰에 없다 — 룰은 `H10W70/655`)만이
+개념이 늦을 수도 있는 **진짜 양방향 사례**다.
+
+`subset_flag` 는 손으로 적은 값이 아니라 **룰 테이블에서 유도해 대조**한다
+(`tests/test_h2_cases.py::test_subset_flag_is_derived_not_asserted`). §4.5 는 **대조 코드를 개념
+시계열에서 제거한 재검정**을 사전 규정한다 — 부분집합 관계가 결론을 만들지 않았음을 보이기 위해서다.

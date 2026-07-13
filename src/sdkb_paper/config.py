@@ -34,6 +34,10 @@ CODE_MAPPING = MAPPINGS / "code_to_concept.csv"
 # 두 파일은 **시계열을 보기 전에 동결**됐다 (외부 원천 = JEDEC · CPC 공식 스킴 원문).
 TERM_ALIASES = MAPPINGS / "term_aliases.csv"          # 1층 · 별칭
 EMERGING_CONCEPTS = MAPPINGS / "emerging_concepts.csv"  # 2층 · 조합 정의 (strict/base/loose)
+# H2 의 검증 사례 7건 (PLAN-006). 개념 시계열과 대조할 CPC 코드가 사례마다 하나씩 고정돼 있다.
+# **시계열을 보기 전에 동결**됐다 — 사례 선정은 우리 데이터 분포가 아니라 SDKB 어휘 · CPC 공식
+# 스킴 원문 · 외부 부상 근거(JEDEC 표준 · 양산 발표)만으로 이루어졌다. 커밋 해시가 사전등록이다.
+H2_CASES = MAPPINGS / "h2_cases.csv"
 # H1 의 두 번째 표본 집합: SemiKong Table 7 복원 **이전**의 공정 20개.
 # 복원된 단계는 G₀ 에서 C₀(s)=0 이라 H1 에 유리하다 — 그 편향을 독자가 판별할 수 있도록
 # 확장 49 와 병기 보고한다 (scripts/freeze_legacy_scope.py 가 커밋 스냅샷에서 생성).
