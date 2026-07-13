@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq gate h1 figures
+.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq gate h1 h2 figures
 
 setup:
 	uv sync --all-extras
@@ -78,6 +78,11 @@ gate: snapshot validate reason cq
 # 표본 집합은 확장 49 와 복원 이전 20 **양쪽**으로 병기 보고된다 (PLAN-005).
 h1:
 	uv run python -m sdkb_paper.analysis.h1_cli
+
+# H2 검정 — 개념 단위 vs 코드 단위 시계열의 탐지 시차 (단측 부호검정 · PLAN-006).
+# 사례 7건·신호 규칙·판정 규칙은 시계열을 보기 전에 동결됐다 (mappings/h2_cases.csv).
+h2:
+	uv run python -m sdkb_paper.analysis.h2_cli
 
 figures:
 	uv run python -m sdkb_paper.viz.figures
