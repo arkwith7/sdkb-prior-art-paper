@@ -28,7 +28,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from sdkb_paper.config import EMERGING_CONCEPTS, TERM_ALIASES
+from sdkb_paper.config import EMERGING_CONCEPTS, SI_CONCEPTS, TERM_ALIASES
 from sdkb_paper.ontology.mapping import _norm_code
 
 # 기본 변이. 민감도 분석은 strict/loose 로 같은 함수를 다시 돌린다 (§4.5).
@@ -73,22 +73,20 @@ def alias_labels(
     ]
 
 
-def match_aliases(text: str, aliases: dict[str, list[str]]) -> list[str]:
-    """명세 텍스트에서 별칭을 찾아 개념 IRI 로 되돌린다 (결정적 매칭).
+def _term_in(term: str, hay: str) -> bool:
+    """한글은 단어경계(\\b)가 동작하지 않으므로 ASCII 용어일 때만 경계를 강제한다 —
+    mapping.map_text_to_concepts 와 같은 규칙이다."""
+    t = term.lower()
+    pattern = rf"\b{re.escape(t)}\b" if term.isascii() else re.escape(t)
+    return re.search(pattern, hay) is not None
 
-    한글은 단어경계(\\b)가 동작하지 않으므로 ASCII 용어일 때만 경계를 강제한다 —
-    mapping.map_text_to_concepts 와 같은 규칙이다.
-    """
+
+def match_aliases(text: str, aliases: dict[str, list[str]]) -> list[str]:
+    """명세 텍스트에서 별칭을 찾아 개념 IRI 로 되돌린다 (결정적 매칭)."""
     hay = text.lower()
-    hits = []
-    for iri, terms in aliases.items():
-        for term in terms:
-            t = term.lower()
-            pattern = rf"\b{re.escape(t)}\b" if term.isascii() else re.escape(t)
-            if re.search(pattern, hay):
-                hits.append(iri)
-                break
-    return sorted(set(hits))
+    return sorted(
+        {iri for iri, terms in aliases.items() if any(_term_in(t, hay) for t in terms)}
+    )
 
 
 # ── 2층 · 조합 정의 ─────────────────────────────────────────────────────
@@ -155,3 +153,67 @@ def emerging_devices(
     않는다 — HBM 에서 조합 209건 중 이름을 쓴 것은 4건뿐이다.
     """
     return sorted(set(match_aliases(text, aliases)) | set(match_combinations(codes, combos)))
+
+
+# ── 분류체계 독립 정의 (PLAN-009) ───────────────────────────────────────
+#
+# 왜 별도의 층인가. 위의 2층 조합은 **분류코드**로 개념을 정의한다 — 그런데 그 코드(H10*)가
+# 전량 2021년 이후 신설이고 과거 특허에 소급 부여된다는 것이 PLAN-007 에서 드러났다.
+# 개념이 코드에 기생하면 개념은 코드보다 앞설 수 없고, 그러면 H2 는 검정되기 전에 진다.
+#
+# 그래서 si 정의는 **분류코드를 일절 보지 않는다.** 개념 팔은 명세 텍스트(구조 어휘)만,
+# 코드 팔은 분류체계만 본다 — 두 팔이 서로 다른 증거원을 보게 되어 코드 기생도, 부분집합
+# 자명성(개념 ⊇ 코드)도 함께 사라진다. 정의의 근거는 외부 표준(JEDEC · IRDS)이다.
+#
+# 대가는 정직하게 치른다: 초록이 구조를 말하지 않는 특허는 개념이 놓친다.
+
+
+@dataclass(frozen=True)
+class TextCombination:
+    """텍스트 구조식 하나. groups 는 **논리곱**, 각 group 안의 용어는 **논리합**이다.
+
+    HBM(base) = (적층|스택) ∧ (관통전극|TSV|…) ∧ (메모리|DRAM)   ← JEDEC JESD235
+    같은 (개념, 변이)에 행이 여러 개면 그 행들끼리는 **논리합**이다 — 구조식 경로와
+    이름 경로를 한 정의 안에서 합집합으로 쓰기 위해서다.
+    """
+
+    concept_iri: str
+    variant: str
+    groups: tuple[tuple[str, ...], ...]
+
+    def matches(self, text: str) -> bool:
+        hay = text.lower()
+        return bool(self.groups) and all(
+            any(_term_in(term, hay) for term in group) for group in self.groups
+        )
+
+
+def parse_text_definition(expr: str) -> tuple[tuple[str, ...], ...]:
+    """'가|나 AND 다' → (('가','나'), ('다',)). 코드 정규화를 하지 않는다 — 용어이지 코드가 아니다."""
+    return tuple(
+        tuple(t.strip() for t in group.split("|") if t.strip())
+        for group in expr.split(" AND ")
+        if group.strip()
+    )
+
+
+def load_si_combinations(
+    path: Path = SI_CONCEPTS, variant: str = DEFAULT_VARIANT
+) -> list[TextCombination]:
+    if variant not in VARIANTS:
+        raise ValueError(f"알 수 없는 variant: {variant!r} (허용: {VARIANTS})")
+    df = pd.read_csv(path)
+    df = df[df["variant"] == variant]
+    return [
+        TextCombination(
+            concept_iri=str(r["concept_iri"]).strip(),
+            variant=variant,
+            groups=parse_text_definition(str(r["definition"])),
+        )
+        for _, r in df.iterrows()
+    ]
+
+
+def si_devices(text: str, combos: list[TextCombination]) -> list[str]:
+    """특허 1건이 가리키는 신기술 개념 — **텍스트만** 본다 (PLAN-009)."""
+    return sorted({c.concept_iri for c in combos if c.matches(text)})
