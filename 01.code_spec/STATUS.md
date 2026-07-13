@@ -1,6 +1,6 @@
 # 진행 실적
 
-*최종 갱신: 2026-07-13 · 근거: `pytest`(99 passed) · `make h2` · `make h1` · L1/L2/L3 통과한 G₁ · SDKB 커밋 `ad7fe3d`*
+*최종 갱신: 2026-07-13 · 근거: `pytest`(112 passed) · `make h2` · `make h1` · L1/L2/L3 통과한 G₁ · SDKB 커밋 `ad7fe3d`*
 
 새 세션은 이 문서부터 읽는다. 온톨로지 용어가 낯설면 [GLOSSARY.md](GLOSSARY.md) 를 먼저 본다.
 

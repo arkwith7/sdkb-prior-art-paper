@@ -35,6 +35,10 @@ collect-extended:
 profile-extended:
 	uv run python -m sdkb_paper.preprocess.profile --period extended
 
+# PLAN-009 · H2 의 외부 준거 (DART 정기보고서). 문서는 data/raw/dart/ 에 캐시된다.
+dart:
+	uv run python -c "from sdkb_paper.collect.dart import build; d=build(); print(f'✓ 보고서 {len(d)}건')"
+
 # 델타 트리플 생성 + 게이트 통과분만 병합 → graph_v1 (= G₁, H1 의 "after")
 merge:
 	uv run python -m sdkb_paper.ontology.delta
