@@ -13,6 +13,7 @@ import pandas as pd
 from sdkb_paper.analysis.timeseries import (
     DEFINITIONS,
     N_MIN,
+    detect_year,
     THETA,
     WINDOW_END,
     WINDOW_START,
@@ -36,6 +37,7 @@ LEADTIME_CSV = PROCESSED / "h2_leadtime.csv"
 REPORT_MD = PROCESSED / "h2_report.md"
 PREDECESSOR_CSV = PROCESSED / "h2_predecessor_codes.csv"
 PLAN009_CSV = PROCESSED / "h2_plan009_matrix.csv"
+REFERENCE_CSV = PROCESSED / "h2_dart_reference.csv"
 
 # §4.5 민감도 — 사전 정의 (PLAN-006). 결과를 보고 추가하지 않는다.
 THETAS = (1.5, 2.0, 3.0)
@@ -223,6 +225,58 @@ def run_plan009(union: pd.DataFrame, cases: pd.DataFrame) -> dict:
     return {"matrix": pd.DataFrame(rows), "leads": leads_by_cell, "pred": pred}
 
 
+def run_reference(union: pd.DataFrame, cases: pd.DataFrame) -> pd.DataFrame:
+    """**외부 준거(DART) 대비 선행 시차** — 특허로 특허를 검증하지 않는다 (PLAN-009 §3-3).
+
+    두 팔의 머리끝 비교(부호검정)는 이 데이터에서 성립하지 않는다. 코드 팔이 **양방향으로**
+    무효이기 때문이다:
+      · 현재 분류 — H10 코드가 소급 부여돼 **부당하게 이르다** (GAA 전용 코드가 2012년 출원에
+        붙어 있다 — 실제로 부여된 것이 아니라 나중에 재분류된 것이다)
+      · 당시 분류 — BigQuery 스냅샷이 2017-10 부터라 **해상도 바닥이 2017** 이다
+    따라서 각 팔을 **말뭉치 밖의 준거**(회사 자신의 공시)에 대어 잰다.
+
+    준거 사례는 4건이므로 부호검정 최소 p = 0.0625 다 — **α=0.05 에 도달할 수 없다.**
+    이것은 검정이 아니라 **서술(descriptive)** 이며, 그 사실을 사전에 선언했다.
+    """
+    from sdkb_paper.collect.dart import TERM_COUNTS, earliest_reference, load_terms
+
+    if not TERM_COUNTS.exists():
+        return pd.DataFrame()
+
+    ref = earliest_reference(pd.read_parquet(TERM_COUNTS), load_terms())
+    pred = (
+        pd.read_csv(PREDECESSOR_CSV).set_index("case_id")["predecessor_code"].to_dict()
+        if PREDECESSOR_CSV.exists() else {}
+    )
+    window = WINDOWS["extended"]
+    cpc = prepare(union, use_cpc=True)
+    assigned = assign_concepts(cpc, definition="si")
+
+    rows = []
+    for case in cases.itertuples():
+        if case.case_id == "fowlp":  # si 정의에 없다 (사전 배제)
+            continue
+        r = ref.get(case.concept_iri)
+        pcode = pred.get(case.case_id)
+        years = {
+            "개념 (si · 텍스트 전용)": detect_year(
+                concept_series(cpc, case.concept_iri, assigned, window), window=window
+            ),
+            "코드 (현재 분류)": detect_year(code_series(cpc, case.control_code, window), window=window),
+            "코드 (당시 선행코드)": (
+                detect_year(code_series(cpc, pcode, window), window=window)
+                if isinstance(pcode, str) else None
+            ),
+        }
+        rows.append({
+            "case_id": case.case_id,
+            "dart_reference_year": r,
+            **{f"{k} 탐지": v for k, v in years.items()},
+            **{f"{k} 선행": (r - v if (r and v) else None) for k, v in years.items()},
+        })
+    return pd.DataFrame(rows)
+
+
 def main() -> int:
     raw = pd.read_parquet(DELTA_PARQUET)
     union = union_corpus()
@@ -233,6 +287,7 @@ def main() -> int:
     cor = run(prepare(raw, use_cpc=True), cases)    # B 교정: IPC ∪ CPC (두 팔 같은 데이터)
     vin = run_vintage(prepare(raw, use_cpc=False), cases)  # C 당시 분류 (텍스트는 시점 불변)
     p9 = run_plan009(union, cases)  # PLAN-009: 창 × 정의 × 코드팔 행렬
+    dart = run_reference(union, cases)  # PLAN-009: 외부 준거 대비 선행 시차
 
     PROCESSED.mkdir(parents=True, exist_ok=True)
     pd.concat(
@@ -374,9 +429,34 @@ B p = {cor["bidir_test"].p_value:.4g} (사례 2건뿐 — **검정이 아니라 
   영향을 받는다 (§5.3).
 - **잔여 좌측절단**: FinFET·GAA·MRAM 의 학술적 기원은 1990년대다. 산업 출원의 부상은 창 안에
   있지만 이 한계는 §5.3 에 적는다.
+
+## 왜 개념 vs 코드 부호검정이 이 데이터에서 성립하지 않는가
+
+코드 팔이 **양방향으로 무효**다. 어느 쪽을 써도 비교가 성립하지 않는다.
+
+| 코드 팔 | 무효의 방향 | 증거 |
+|---|---|---|
+| **현재 분류** | **부당하게 이르다** — 소급 재분류 | GAA 전용 코드(`H10D30/6735`)가 **2012년 출원**에 붙어 있다. 그때 부여된 것이 아니라 2021년 이후 재분류된 것이다 |
+| **당시 분류** | **해상도 바닥이 2017** | BigQuery 동결 스냅샷이 2017-10 부터만 존재한다. 교정 창에서는 2017년 관측자가 이미 모든 사례를 탐지할 만큼 성숙한 출원연도를 보므로, **여섯 사례 중 넷이 2017/2017 동률**이 된다 |
+
+그래서 두 팔을 **말뭉치 밖의 준거**에 각각 대어 잰다.
+
+## 외부 준거(DART 공시) 대비 선행 시차 — 서술적 타당성 점검
+
+{_md_table(dart) if len(dart) else "(DART 미수집 — `python -m sdkb_paper.collect.dart`)"}
+
+> **검정이 아니다.** 준거 사례가 4건이라 부호검정의 최소 p 는 **0.0625** 로 α=0.05 에 도달할 수
+> **없다**. 이 한계는 결과를 보기 전에 선언됐다 (PLAN-009 §3-4). 유의성을 주장하지 않는다.
+
+**좌측절단이 원인이었다는 것이 여기서 실증된다.** 사전등록 창(2010–2023)에서 si 개념은 HBM 을
+2016년(공시 2014년보다 **2년 늦게**), TSV 를 2019년(공시 2012년보다 **7년 늦게**) 탐지했다.
+창을 부상 이전으로 되돌리자 같은 정의가 HBM 2009 · TSV 2009 로 **공시를 3–5년 앞선다.**
+정의는 한 글자도 바뀌지 않았다 — **창만 바뀌었다.**
 """
     REPORT_MD.write_text(report, encoding="utf-8")
     p9["matrix"].to_csv(PLAN009_CSV, index=False)
+    if len(dart):
+        dart.to_csv(REFERENCE_CSV, index=False)
     fig = fig_h2_timeseries(cor["ts"], cor["leads"])
     fig_pre = fig_h2_timeseries(
         pre["ts"], pre["leads"], out=FIGURES / "fig4b_h2_timeseries_preregistered.png"
