@@ -1,12 +1,19 @@
-"""KIPRIS Plus Open API 수집기.
+"""KIPRIS Plus 고급검색 수집기 (PLAN-002).
 
-설계 원칙
-- 모든 응답은 로컬 SQLite 캐시에 저장 → 재실행 시 API 를 다시 때리지 않음 (증분 수집)
-- 재시도(backoff) 내장, 무제한 자격이어도 서버 예의상 요청 간격 유지
-- 원시 XML 을 그대로 캐시하고, 파싱은 별도 단계로 분리 (파서 버그 시 재수집 불필요)
+계약은 실물 응답으로 확인한 것이다 (2026-07-13):
+  ENDPOINT  patUtiModInfoSearchSevice/getAdvancedSearch
+  파라미터   applicant · ipcNumber · applicationDate(YYYYMMDD~YYYYMMDD) · numOfRows(≤500)
+            · pageNo · patent/utility · ServiceKey
+  응답      <item> 아래 applicationNumber(하이픈 없음) · applicationDate(YYYYMMDD)
+            · applicantName · inventionTitle · ipcNumber('|' 구분) · astrtCont
+            · openDate · registerDate · registerStatus
 
-주의: ENDPOINT/파라미터 명은 발급받은 API 명세(활용 신청한 서비스)에 맞춰
-반드시 확인·조정할 것. 아래 값은 특허 검색용 대표 서비스 기준의 골격이다.
+주의
+- `applicant` 는 **부분일치**다. '삼성전자주식회사' 로 질의해도 삼성디스플레이가 섞여 나온다.
+  applicantName 정확일치 필터는 preprocess 의 책임이다 (수집기는 가져오기만 한다).
+- **CPC 는 응답에 없다 — IPC 만 온다.**
+
+모든 응답을 sqlite 에 캐시한다. 재실행해도 API 를 다시 때리지 않는다(증분 수집).
 """
 from __future__ import annotations
 
@@ -22,25 +29,25 @@ import requests
 
 from sdkb_paper.config import RAW_KIPRIS, get_secret
 
-BASE_URL = "http://plus.kipris.or.kr/kipo-api/kipi"
-# TODO: 활용 신청한 서비스명으로 확인 (예: 특허실용신안 검색 서비스)
-SEARCH_ENDPOINT = f"{BASE_URL}/patUtiModInfoSearchSevice/getAdvancedSearch"
-
-DEFAULT_ROWS = 100  # 페이지당 건수 (명세 허용 최대치로 조정)
+ENDPOINT = "http://plus.kipris.or.kr/kipo-api/kipi/patUtiModInfoSearchSevice/getAdvancedSearch"
+PAGE_SIZE = 500  # 실측 상한 (500 초과 요청은 500 으로 잘린다)
 REQUEST_INTERVAL_SEC = 0.2
-MAX_RETRIES = 5
+MAX_RETRIES = 4
 
 
-@dataclass
+@dataclass(frozen=True)
 class KiprisRecord:
-    """파싱된 특허 1건 (필요 필드만 우선 정의, 명세 보고 확장)."""
-
     application_number: str
-    title: str
-    applicant: str
+    applicant_name: str
     application_date: str  # YYYYMMDD
-    ipc: str
+    invention_title: str
+    ipc_number: str  # '|' 구분
     abstract: str
+    open_date: str
+    register_date: str
+    register_status: str
+    query_applicant: str  # 출처 추적 — 어느 질의가 이 행을 가져왔는가
+    query_ipc: str
 
 
 class KiprisClient:
@@ -50,91 +57,93 @@ class KiprisClient:
         self.cache = sqlite3.connect(cache_db or RAW_KIPRIS / "kipris_cache.sqlite")
         self.cache.execute(
             "CREATE TABLE IF NOT EXISTS responses ("
-            " key TEXT PRIMARY KEY, url TEXT, params TEXT,"
+            " key TEXT PRIMARY KEY, params TEXT,"
             " fetched_at TEXT DEFAULT CURRENT_TIMESTAMP, body TEXT)"
         )
         self.session = requests.Session()
 
-    # --- 저수준: 캐시 우선 GET -------------------------------------------
-    def _get(self, url: str, params: dict) -> str:
-        key_src = url + "?" + "&".join(f"{k}={v}" for k, v in sorted(params.items()))
+    def _get(self, params: dict) -> str:
+        key_src = "&".join(f"{k}={v}" for k, v in sorted(params.items()))
         key = hashlib.sha256(key_src.encode()).hexdigest()
         row = self.cache.execute("SELECT body FROM responses WHERE key=?", (key,)).fetchone()
         if row:
             return row[0]
 
-        last_err: Exception | None = None
+        last: Exception | None = None
         for attempt in range(MAX_RETRIES):
             try:
                 resp = self.session.get(
-                    url, params={**params, "ServiceKey": self.api_key}, timeout=30
+                    ENDPOINT, params={**params, "ServiceKey": self.api_key}, timeout=60
                 )
                 resp.raise_for_status()
-                body = resp.text
+                # 실패 응답을 캐시하면 재실행해도 에러가 되돌아온다 — 성공만 캐시한다.
+                code = _result_code(resp.text)
+                if code != "00":
+                    raise RuntimeError(f"KIPRIS resultCode={code}")
                 self.cache.execute(
-                    "INSERT OR REPLACE INTO responses (key, url, params, body) VALUES (?,?,?,?)",
-                    (key, url, key_src, body),
+                    "INSERT OR REPLACE INTO responses (key, params, body) VALUES (?,?,?)",
+                    (key, key_src, resp.text),
                 )
                 self.cache.commit()
                 time.sleep(REQUEST_INTERVAL_SEC)
-                return body
-            except requests.RequestException as e:  # 지수 백오프 재시도
-                last_err = e
+                return resp.text
+            except (requests.RequestException, RuntimeError) as e:
+                last = e
                 time.sleep(2**attempt)
-        raise RuntimeError(f"KIPRIS request failed after {MAX_RETRIES} retries") from last_err
+        raise RuntimeError(f"KIPRIS 요청 실패: {key_src}") from last
 
-    # --- 고수준: 검색 페이지네이션 ----------------------------------------
-    def search(self, query: str, max_pages: int | None = None) -> Iterator[KiprisRecord]:
-        """검색식으로 전 페이지 순회하며 레코드를 yield.
+    def _params(self, applicant: str, ipc: str, date_range: str, rows: int, page: int) -> dict:
+        return {
+            "applicant": applicant,
+            "ipcNumber": ipc,
+            "applicationDate": date_range,
+            "numOfRows": rows,
+            "pageNo": page,
+            "patent": "true",
+            "utility": "false",
+        }
 
-        query 예 (명세 확인 후 조정):
-            'AP=[삼성전자]*IPC=[H01L]' 류의 KIPRIS 검색식
-        """
+    def total_count(self, applicant: str, ipc: str, date_range: str) -> int:
+        body = self._get(self._params(applicant, ipc, date_range, 1, 1))
+        el = ET.fromstring(body).find(".//totalCount")
+        return int(el.text) if el is not None and el.text else 0
+
+    def search(self, applicant: str, ipc: str, date_range: str) -> Iterator[KiprisRecord]:
+        """출원인 × IPC × 출원일 범위로 전 페이지를 순회한다."""
         page = 1
         while True:
-            body = self._get(
-                SEARCH_ENDPOINT,
-                {"word": query, "numOfRows": DEFAULT_ROWS, "pageNo": page},
-            )
-            items = self._parse_items(body)
+            body = self._get(self._params(applicant, ipc, date_range, PAGE_SIZE, page))
+            items = _parse(body, applicant, ipc)
             if not items:
-                break
+                return
             yield from items
             page += 1
-            if max_pages and page > max_pages:
-                break
-
-    @staticmethod
-    def _parse_items(xml_body: str) -> list[KiprisRecord]:
-        """응답 XML → 레코드. 태그명은 실제 응답 샘플을 보고 맞출 것."""
-        root = ET.fromstring(xml_body)
-        records: list[KiprisRecord] = []
-        for item in root.iter("item"):
-
-            def txt(tag: str) -> str:
-                el = item.find(tag)
-                return (el.text or "").strip() if el is not None else ""
-
-            records.append(
-                KiprisRecord(
-                    application_number=txt("applicationNumber"),
-                    title=txt("inventionTitle"),
-                    applicant=txt("applicantName"),
-                    application_date=txt("applicationDate"),
-                    ipc=txt("ipcNumber"),
-                    abstract=txt("astrtCont"),
-                )
-            )
-        return records
 
 
-def collect_to_parquet(query: str, out_name: str, max_pages: int | None = None) -> Path:
-    """검색 결과를 parquet 로 저장하고 MANIFEST 갱신을 잊지 말 것."""
-    import pandas as pd
+def _result_code(body: str) -> str:
+    el = ET.fromstring(body).find(".//resultCode")
+    return (el.text or "").strip() if el is not None and el.text else "??"
 
-    client = KiprisClient()
-    df = pd.DataFrame([r.__dict__ for r in client.search(query, max_pages=max_pages)])
-    out = RAW_KIPRIS / f"{out_name}.parquet"
-    df.to_parquet(out, index=False)
-    print(f"saved {len(df)} records -> {out}")
-    return out
+
+def _text(item: ET.Element, tag: str) -> str:
+    el = item.find(tag)
+    return (el.text or "").strip() if el is not None and el.text else ""
+
+
+def _parse(body: str, applicant: str, ipc: str) -> list[KiprisRecord]:
+    return [
+        KiprisRecord(
+            application_number=_text(item, "applicationNumber"),
+            applicant_name=_text(item, "applicantName"),
+            application_date=_text(item, "applicationDate"),
+            invention_title=_text(item, "inventionTitle"),
+            ipc_number=_text(item, "ipcNumber"),
+            abstract=_text(item, "astrtCont"),
+            open_date=_text(item, "openDate"),
+            register_date=_text(item, "registerDate"),
+            register_status=_text(item, "registerStatus"),
+            query_applicant=applicant,
+            query_ipc=ipc,
+        )
+        for item in ET.fromstring(body).iter("item")
+    ]

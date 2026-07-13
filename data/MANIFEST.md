@@ -66,4 +66,40 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 
 | 일시 | 소스 | 검색식/쿼리 | 건수 | 저장 파일 | 그래프 반영 버전 |
 |---|---|---|---:|---|---|
-| (예) 2026-08-01 | KIPRIS | AP=[삼성전자]*IPC=[H01L] | 12,345 | raw/kipris/samsung_h01l.parquet | graph_v1.ttl |
+| 2026-07-13 | KIPRIS Plus `getAdvancedSearch` | `applicant=삼성전자주식회사 ∪ 에스케이하이닉스 주식회사` × `ipcNumber ∈ {룰 테이블의 18개 클래스}` × `applicationDate=20100101~20251231` (patent=true, utility=false) | 원시 50,514행 → 델타 후보 34,521 → **병합 24,053** | `raw/kipris/patents_raw.parquet` · `interim/patents_delta.parquet` (둘 다 gitignore) | `graph_v1.ttl` |
+
+**재현 절차**: `make collect && make profile && make merge` (응답은 `raw/kipris/kipris_cache.sqlite`
+에 캐시되므로 재실행해도 API 를 다시 때리지 않는다).
+
+**IPC 18개 클래스**는 손으로 고른 목록이 아니라 `mappings/code_to_concept.csv` 의 코드 접두어에서
+파생한다(`collect.ipc_classes()`). 룰과 수집 범위가 어긋나면 룰 없는 코드를 수집해 게이트에서
+전량 버리거나, 룰 있는 코드를 빠뜨려 커버리지가 이유 없이 비기 때문이다.
+
+**수집 규모의 감가 이력** (프로파일이 코드로 생성: `data/profiles/kipris_samsung_hynix.md`)
+
+| 단계 | 건수 | 왜 줄었는가 |
+|---|---:|---|
+| 원시 수집 | 50,514 | 클래스 × 출원인 질의의 합 (한 특허가 여러 클래스에 잡힘) |
+| 출원인 정확일치 | 47,500 | KIPRIS `applicant` 는 **부분일치** — 삼성디스플레이 등 계열사 제거 |
+| 출원번호 중복 제거 | 34,608 | 클래스 간 중복 |
+| G₀ 겹침 제외 | 34,521 | **−87건** (삼성 51 · 하이닉스 36). SIRP 거절특허로 이미 G₀ 에 있다 — 넣으면 H1 의 before/after 가 같은 특허를 센다 |
+| 룰 매핑 성공 | **24,053** | 개념 ≥1 (L1 델타 shape 통과 조건). 미매핑 10,468 은 병합하지 않고 보고한다 |
+
+> **미매핑 10,468건(30.3%)의 정체.** 대부분이 G11C 메모리 **회로** 코드(입출력·타이밍·전원·테스트)와
+> 의도적 미매핑 그룹(H10W29 범용부품 · H10P72 웨이퍼 핸들링 · H10B80 적층조립)이다. SDKB 에 회로
+> 설계 축이 없다 — 이것은 데이터의 한계가 아니라 **온톨로지 범위의 경계**다. 자세한 이유는
+> `mappings/PROVENANCE.md`.
+
+> **최근 연도는 절단되어 있다.** 2024년 3,884건 → 2025년 423건은 출원 감소가 아니라 **출원 후
+> 18개월 비공개**다. H2 시계열은 이 구간을 절단으로 명시해야 한다.
+
+## 3. 파생 그래프 (커밋하지 않는다 — 결정적으로 재생성된다)
+
+`data/processed/` 는 gitignore 다. `graph_v0`·`delta_v1`·`graph_v1` 은 스냅샷과 코드에서
+결정적으로 재조립되므로 파일 자체를 커밋하지 않고 **재현 절차와 서명**을 기록한다.
+
+| 그래프 | 트리플 | 만드는 법 | 게이트 |
+|---|---:|---|---|
+| `graph_v0` (G₀) | 26,973 | `make baseline` | L1(완화)·L2·L3 |
+| `delta_v1` | 367,585 | `make merge` 1단계 — 특허 24,053건 | L1(엄격): 개념 ≥1 |
+| `graph_v1` (G₁) | **394,022** | `make merge` 2단계 | L1 통과 · **L2 HermiT consistent=True** · L3 CQ 8/8 |

@@ -146,3 +146,20 @@ def test_rule_coverage_flags_euv_duv_gap(baseline: Graph):
     df = rule_coverage(baseline)
     gaps = set(df[~df["has_rule"]].index.get_level_values("label"))
     assert {"EUV Lithography", "DUV Lithography"} <= gaps
+
+
+def test_every_rule_points_to_a_real_sdkb_concept(baseline: Graph):
+    """룰의 concept_iri 는 전부 SDKB 스냅샷에 실재해야 한다 (CLAUDE.md §1.4 — 어휘를 발명하지 않는다).
+
+    실재하지 않는 IRI 는 게이트가 잡지 못한다 — SHACL 은 '개념 링크가 1개 이상 있는가'를
+    볼 뿐 그 대상이 실재하는지 묻지 않으므로, 오타 하나가 조용히 유령 노드를 만든다.
+    (실제로 device/rram 오타를 이 검사로 잡았다 — SDKB 의 IRI 는 device/reram 이다.)
+    """
+    import pandas as pd
+    from rdflib import URIRef
+
+    from sdkb_paper.config import CODE_MAPPING
+
+    iris = pd.read_csv(CODE_MAPPING)["concept_iri"].unique()
+    missing = [i for i in iris if (URIRef(i), None, None) not in baseline]
+    assert not missing, f"SDKB 에 없는 개념 IRI: {missing}"
