@@ -20,6 +20,13 @@ from rdflib import RDF, RDFS, XSD, Graph, Literal, URIRef
 from rdflib.namespace import SKOS
 
 from sdkb_paper.config import ONT, PATENT_NS, PROCESSED, SDKB_DATA, bind_namespaces
+from sdkb_paper.ontology.emerging import (
+    DEFAULT_VARIANT,
+    alias_labels,
+    emerging_devices,
+    load_aliases,
+    load_combinations,
+)
 from sdkb_paper.ontology.mapping import load_code_mapping, map_codes_to_concepts
 from sdkb_paper.preprocess.profile import DELTA as DELTA_PARQUET
 
@@ -45,16 +52,34 @@ def ipc_iri(code: str) -> URIRef:
     return SDKB_DATA["ipc/" + code.strip().replace(" ", "_").replace("/", "-")]
 
 
-def build_delta(df: pd.DataFrame) -> Graph:
+def build_delta(df: pd.DataFrame, variant: str = DEFAULT_VARIANT) -> Graph:
+    """룰 매핑 + 신기술 인식 레이어(PLAN-004)로 델타를 만든다.
+
+    신기술 레이어는 **디바이스 축에만** 링크를 더한다 — 공정 축을 건드리지 않으므로 H1 의
+    커버리지 수치는 변하지 않아야 한다(회귀 테스트로 고정).
+    """
     g = Graph()
     bind_namespaces(g)
     g.add((ACTIVITY, RDF.type, PROV_ACTIVITY))
     g.add((ACTIVITY, RDFS.label, Literal("KIPRIS Samsung/SK hynix ingest (PLAN-002)")))
 
     table = load_code_mapping()
+    aliases = load_aliases(variant=variant)
+    combos = load_combinations(variant=variant)
+
+    # 별칭을 그래프에 실체화한다 — SDKB 의 라벨 설계(prefLabel@en 기준 · altLabel@ko 별칭)를
+    # 신기술 개념에서도 성립시킨다. gaa_fet 은 altLabel 이 0개였고 hbm 은 영문 하나뿐이었다.
+    for iri, term, lang in alias_labels(variant=variant):
+        g.add((URIRef(iri), SKOS.altLabel, Literal(term, lang=lang)))
+
     for row in df.sort_values("application_number").itertuples():
         codes = [c.strip() for c in row.ipc_codes if c.strip()]
         hits = map_codes_to_concepts(codes, table)
+
+        # 1층(별칭) + 2층(조합). 텍스트는 parquet 에만 있고 그래프에는 링크만 남는다 (§1.3).
+        text = f"{row.invention_title or ''} {row.abstract or ''}"
+        hits["device"] = sorted(set(hits["device"]) | set(emerging_devices(codes, text, aliases, combos)))
+
         if not (hits["process"] or hits["device"]):
             continue  # 미매핑은 델타에 넣지 않는다 — 게이트를 통과할 수 없다
 

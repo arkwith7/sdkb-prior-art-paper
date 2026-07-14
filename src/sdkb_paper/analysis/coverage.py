@@ -1,18 +1,31 @@
-"""H1: 공정 단계별 특허 커버리지 — 보강 전/후 비교.
+"""H1 — 공정 단계별 개념 커버리지: 보강 전(G₀) vs 후(G₁).
 
-관측 단위는 SDKB 의 공정 계층 두 층위다:
-  - process    (8개)  ont:Process     — 거친 단위. 검정 표본이 안정적이지만 공백 해상도가 낮다.
-  - subprocess (12개) ont:SubProcess  — 세밀한 단위. 공백이 선명하게 드러난다.
-두 층위를 같이 보고해야 "보강이 어디를 메웠는가"를 논증할 수 있다.
+관측 단위는 **공정 단계 s** 이지 특허가 아니다. SDKB 의 공정 계층 두 층위를 모두 센다:
+  - process    (11개) ont:Process     — SemiKong Table 7 의 L1 그룹
+  - subprocess (38개) ont:SubProcess  — L2 모듈 + SDKB 고유 유닛
+
+C(s) = s 에 ont:realizesProcess 로 **직접** 연결된 고유 특허 수. 부모 공정으로 roll-up 하지
+않는다 — 올리면 같은 특허가 두 층위에 이중 계상되어 표본이 부풀려진다.
+
+H1 은 두 표본 집합으로 병기 보고된다 (PLAN-001 §3.5 · PLAN-005):
+  - 확장 49      — 현재 어휘 전량
+  - 복원 이전 20 — SemiKong Table 7 복원 전의 공정 (mappings/process_scope_legacy20.csv)
+복원된 단계는 G₀ 에서 C₀(s)=0 이라 H1 에 구조적으로 유리하다. 그 편향을 독자가 직접
+판별할 수 있어야 검정이 정직하다.
 
 SDKB 는 rdfs:label 이 아니라 skos:prefLabel(en) / skos:altLabel(ko) 을 쓴다.
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from rdflib import Graph
+from scipy.stats import wilcoxon
+
+from sdkb_paper.config import LEGACY_SCOPE
 
 # 층위를 VALUES 로 명시 — RDFS 추론 없이 Process/SubProcess 를 각각 집계한다.
 # (SubProcess ⊑ Process 라서 추론을 켜면 SubProcess 가 두 층위에 이중 계상된다.)
@@ -20,7 +33,7 @@ from rdflib import Graph
 COVERAGE_SPARQL = """
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-SELECT ?level ?step ?stepLabel (COUNT(?patent) AS ?n)
+SELECT ?level ?step ?stepLabel (COUNT(DISTINCT ?patent) AS ?n)
 WHERE {
   VALUES (?stepType ?level) { (ont:Process "process") (ont:SubProcess "subprocess") }
   ?step a ?stepType ; skos:prefLabel ?stepLabel .
@@ -31,7 +44,7 @@ GROUP BY ?level ?step ?stepLabel
 
 
 def coverage_by_process_step(graph_path: Path) -> pd.DataFrame:
-    """(level, step) 별 특허 수. 인덱스는 IRI — 레이블은 표시용 컬럼."""
+    """(level, step) 별 고유 특허 수. 인덱스는 IRI — 레이블은 표시용 컬럼."""
     g = Graph().parse(graph_path)
     rows = [
         {"level": str(r.level), "step": str(r.step), "label": str(r.stepLabel), "patents": int(r.n)}
@@ -45,15 +58,7 @@ def coverage_by_process_step(graph_path: Path) -> pd.DataFrame:
 
 
 def compare_coverage(before: Path, after: Path) -> pd.DataFrame:
-    """보강 전/후 커버리지 표 + 검정용 데이터.
-
-    before 는 baseline(graph_v0, 특허 0건)이므로 모든 단계가 0 에서 출발한다.
-
-    통계 검정은 **층위별로 따로** 한다 — SubProcess 는 Process 에 중첩되어 독립 관측이 아니다:
-        from scipy.stats import wilcoxon
-        sub = df.loc["subprocess"]
-        wilcoxon(sub["after"], sub["before"], alternative="greater")
-    """
+    """보강 전/후 커버리지 표. 컬럼 계약: label · before · after · delta (viz 가 의존한다)."""
     b, a = coverage_by_process_step(before), coverage_by_process_step(after)
     df = pd.DataFrame({
         "label": a["label"].combine_first(b["label"]),
@@ -63,3 +68,80 @@ def compare_coverage(before: Path, after: Path) -> pd.DataFrame:
     df[["before", "after"]] = df[["before", "after"]].fillna(0).astype(int)
     df["delta"] = df["after"] - df["before"]
     return df.sort_values(["level", "delta"], ascending=[True, False])
+
+
+def legacy_scope_iris(path: Path = LEGACY_SCOPE) -> set[str]:
+    """복원 이전 공정 20개의 IRI. 손으로 고르지 않는다 — 커밋 스냅샷에서 동결된 목록이다."""
+    return set(pd.read_csv(path)["iri"])
+
+
+def restrict(df: pd.DataFrame, iris: set[str]) -> pd.DataFrame:
+    """표본 집합을 IRI 목록으로 제한한다 (인덱스 level 2 = step IRI)."""
+    return df[df.index.get_level_values("step").isin(iris)]
+
+
+@dataclass(frozen=True)
+class WilcoxonResult:
+    """H1 의 검정 결과. 사전 확정: 단측(greater) · α=0.05 · 표본 단위는 공정 단계.
+
+    **효과크기로 rank-biserial r 을 보고하지 않는다.** 병합은 특허를 더하기만 하므로
+    (G₁ = G₀ ∪ 델타) 어떤 단계도 특허를 잃을 수 없다 — Δ<0 이 구조적으로 불가능하고
+    r 은 항상 +1 이 된다. 계산된 값이 아니라 설계의 귀결이므로 보고하면 독자를 오도한다.
+    대신 **증가한 단계의 비율**과 **증가한 단계의 중앙값 증가폭**으로 크기를 말한다.
+    검정이 묻는 것은 "증가 방향인가"가 아니라 "증가한 단계가 충분히 많은가"이다 (§5.3).
+    """
+
+    scope: str
+    n: int              # 표본 크기 (공정 단계 수)
+    n_tied: int         # delta = 0 인 쌍 (zero_method="wilcox" 로 제외됨)
+    n_positive: int
+    n_negative: int
+    median_delta: float          # 전 단계의 중앙값 — 동점이 과반이면 0 이 된다
+    median_delta_positive: float  # 증가한 단계만의 중앙값 증가폭
+    statistic: float | None   # W (scipy 의 단측 검정 통계량)
+    p_value: float | None
+
+    @property
+    def share_increased(self) -> float:
+        """증가한 단계의 비율. H1 이 실패할 수 있는 유일한 경로가 이 값이 작은 경우다."""
+        return self.n_positive / self.n if self.n else 0.0
+
+    @property
+    def rejects_null(self) -> bool:
+        """H₀(median ≤ 0) 를 기각하는가 = 논문의 H1 이 지지되는가."""
+        return self.p_value is not None and self.p_value < 0.05
+
+
+def wilcoxon_h1(df: pd.DataFrame, scope: str) -> WilcoxonResult:
+    """H1: 비영 차이의 유사중앙값(C₁(s) − C₀(s)) > 0 — Wilcoxon 부호순위, 단측.
+
+    동점 쌍(delta=0)은 zero_method="wilcox" 로 제외된다 — 그래서 검정이 말하는 것은
+    **비영 차이의 유사중앙값**이지 전 단계의 리터럴 중앙값이 아니다. 동점이 과반이면
+    median_delta 는 0 인데 검정은 기각할 수 있다. 둘 다 보고한다 (숨기면 모순으로 읽힌다).
+    유효 쌍이 없으면 검정 없이 그 사실을 남긴다.
+    """
+    d = df["delta"].to_numpy()
+    nz = d[d != 0]
+    pos = d[d > 0]
+    med_pos = float(np.median(pos)) if pos.size else 0.0
+
+    if nz.size == 0:
+        return WilcoxonResult(
+            scope=scope, n=len(d), n_tied=len(d), n_positive=0, n_negative=0,
+            median_delta=float(np.median(d)) if len(d) else 0.0,
+            median_delta_positive=med_pos, statistic=None, p_value=None,
+        )
+
+    res = wilcoxon(nz, alternative="greater", zero_method="wilcox")
+
+    return WilcoxonResult(
+        scope=scope,
+        n=len(d),
+        n_tied=int((d == 0).sum()),
+        n_positive=int((d > 0).sum()),
+        n_negative=int((d < 0).sum()),
+        median_delta=float(np.median(d)),
+        median_delta_positive=med_pos,
+        statistic=float(res.statistic),
+        p_value=float(res.pvalue),
+    )

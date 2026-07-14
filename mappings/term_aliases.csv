@@ -1,0 +1,50 @@
+term,concept_iri,lang,variant,source,rationale,status
+HBM,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD235 (High Bandwidth Memory DRAM),표준 규격의 약칭,frozen-2026-07-13
+High Bandwidth Memory,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD235,표준 규격의 정식 명칭,frozen-2026-07-13
+HBM2,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD235,세대 표기,frozen-2026-07-13
+HBM2E,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD235,세대 표기,frozen-2026-07-13
+HBM3,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD238 (High Bandwidth Memory DRAM 3),세대 표기,frozen-2026-07-13
+HBM3E,https://w3id.org/sdkb/data/device/hbm,en,base,JEDEC JESD238,세대 표기,frozen-2026-07-13
+고대역폭 메모리,https://w3id.org/sdkb/data/device/hbm,ko,base,JEDEC JESD235 의 국문 통용 역어,KIPRIS 명세는 국문이다 — 국문 별칭이 없으면 이름 경로가 작동하지 않는다,frozen-2026-07-13
+고대역폭메모리,https://w3id.org/sdkb/data/device/hbm,ko,base,JEDEC JESD235 의 국문 통용 역어,띄어쓰기 변이,frozen-2026-07-13
+gate-all-around,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/6735 (제목이 'e.g. gate-all-around'),코드 제목이 명명한 용어,frozen-2026-07-13
+gate all around,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/6735,하이픈 변이,frozen-2026-07-13
+GAA,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/6735,통용 약어,frozen-2026-07-13
+게이트 올 어라운드,https://w3id.org/sdkb/data/device/gaa_fet,ko,base,CPC-2026.01 H10D30/6735 의 국문 음차,국문 명세 대응,frozen-2026-07-13
+MBCFET,https://w3id.org/sdkb/data/device/gaa_fet,en,base,삼성전자 3nm 공정 발표 (Multi-Bridge Channel FET = 적층 나노시트 채널 GAA),기업이 부르는 상표명. 이름을 다르게 부르는 대표 사례,frozen-2026-07-13
+나노시트,https://w3id.org/sdkb/data/device/gaa_fet,ko,base,"CPC-2026.01 H10D30/501 = 'FETs having stacked nanowire, nanosheet or nanoribbon channels'",적층 나노시트 채널 FET 이 GAA 구현이라는 것은 스킴 제목이 직접 말한다 — 우리 해석이 아니다,frozen-2026-07-13
+nanosheet,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/501,같음,frozen-2026-07-13
+나노리본,https://w3id.org/sdkb/data/device/gaa_fet,ko,base,CPC-2026.01 H10D30/501,같음,frozen-2026-07-13
+nanoribbon,https://w3id.org/sdkb/data/device/gaa_fet,en,base,CPC-2026.01 H10D30/501,같음,frozen-2026-07-13
+나노와이어,https://w3id.org/sdkb/data/device/gaa_fet,ko,loose,CPC-2026.01 H10D30/501,"스킴은 나노와이어를 나노시트와 같은 그룹에 두지만, 명세의 '나노와이어'는 채널이 아닌 구조(성장·센서)를 가리킬 수 있다 — 정밀도 위험이 있어 base 에서 뺀다",frozen-2026-07-13
+nanowire,https://w3id.org/sdkb/data/device/gaa_fet,en,loose,CPC-2026.01 H10D30/501,같음,frozen-2026-07-13
+FinFET,https://w3id.org/sdkb/data/device/finfet,en,base,CPC-2026.01 H10D30/62 = 'Fin field-effect transistors [FinFET]',코드 제목이 명명,frozen-2026-07-13
+핀펫,https://w3id.org/sdkb/data/device/finfet,ko,base,CPC-2026.01 H10D30/62 의 국문 음차,국문 명세 대응,frozen-2026-07-13
+fin field-effect transistor,https://w3id.org/sdkb/data/device/finfet,en,base,CPC-2026.01 H10D30/62,정식 명칭,frozen-2026-07-13
+3D NAND,https://w3id.org/sdkb/data/device/3d_nand,en,base,"CPC-2026.01 H10B43/20 ('three-dimensional [3D] arrangements') + H10B43/35 ('e.g. NAND')",같은 서브트리(H10B43)의 두 제목이 명명한 '3D' 와 'NAND' 의 결합,frozen-2026-07-13
+3D V-NAND,https://w3id.org/sdkb/data/device/3d_nand,en,base,SDKB device/3d_nand prefLabel@en,온톨로지 자신의 라벨,frozen-2026-07-13
+V-NAND,https://w3id.org/sdkb/data/device/3d_nand,en,base,삼성전자 V-NAND 양산(2013) 제품 공식 명칭,기업이 부르는 이름 — 명세는 제품명을 쓴다,frozen-2026-07-13
+3D 낸드,https://w3id.org/sdkb/data/device/3d_nand,ko,base,CPC-2026.01 H10B43/20·43/35 의 국문 표기,KIPRIS 명세는 국문이다 — 국문 별칭이 없으면 이름 경로가 작동하지 않는다,frozen-2026-07-13
+3차원 낸드,https://w3id.org/sdkb/data/device/3d_nand,ko,base,CPC-2026.01 H10B43/20·43/35 의 국문 역어,'three-dimensional' 의 국문 역어 변이,frozen-2026-07-13
+수직 낸드,https://w3id.org/sdkb/data/device/3d_nand,ko,base,V-NAND (Vertical NAND) 의 국문 역어,제품 공식 명칭의 국문 역어,frozen-2026-07-13
+MRAM,https://w3id.org/sdkb/data/device/mram,en,base,"CPC-2026.01 H10B61/00 = 'Magnetic memory devices, e.g. magnetoresistive RAM [MRAM] devices'",코드 제목이 명명,frozen-2026-07-13
+magnetoresistive RAM,https://w3id.org/sdkb/data/device/mram,en,base,CPC-2026.01 H10B61/00 (제목 원문) · SDKB device/mram altLabel@en,코드 제목이 명명한 정식 명칭,frozen-2026-07-13
+magnetoresistive random access memory,https://w3id.org/sdkb/data/device/mram,en,base,CPC-2026.01 H10B61/00 'magnetoresistive RAM' 의 비축약 표기,RAM 을 풀어 쓴 변이,frozen-2026-07-13
+eMRAM,https://w3id.org/sdkb/data/device/mram,en,base,삼성전자 eMRAM 양산(2019) 제품 공식 명칭,임베디드 MRAM — 기업이 부르는 이름,frozen-2026-07-13
+엠램,https://w3id.org/sdkb/data/device/mram,ko,base,SDKB device/mram altLabel@ko (실측),온톨로지에 이미 있는 국문 별칭,frozen-2026-07-13
+자기저항 메모리,https://w3id.org/sdkb/data/device/mram,ko,base,CPC-2026.01 H10B61/00 'magnetoresistive ... memory' 의 국문 역어,국문 명세 대응,frozen-2026-07-13
+STT-MRAM,https://w3id.org/sdkb/data/device/mram,en,loose,업계 통용 명칭 (스핀전달토크 MRAM),"스킴 제목에도 제품 공식 명칭에도 없다 — 근거 등급이 낮아 base 에서 뺀다 (나노와이어와 같은 처리)",frozen-2026-07-13
+스핀전달토크,https://w3id.org/sdkb/data/device/mram,ko,loose,업계 통용 명칭,같음,frozen-2026-07-13
+FOWLP,https://w3id.org/sdkb/data/device/fan_out_wlp,en,base,CPC-2026.01 H10W70/09 (제목이 'e.g. fan-out wafer level package [FOWLP] RDLs'),코드 제목이 명명,frozen-2026-07-13
+fan-out wafer level package,https://w3id.org/sdkb/data/device/fan_out_wlp,en,base,CPC-2026.01 H10W70/09 (제목 원문),코드 제목이 명명한 정식 명칭,frozen-2026-07-13
+fan-out wafer-level packaging,https://w3id.org/sdkb/data/device/fan_out_wlp,en,base,SDKB device/fan_out_wlp prefLabel@en,온톨로지 자신의 라벨,frozen-2026-07-13
+팬아웃 웨이퍼 레벨 패키지,https://w3id.org/sdkb/data/device/fan_out_wlp,ko,base,CPC-2026.01 H10W70/09 의 국문 역어,국문 명세 대응,frozen-2026-07-13
+팬아웃,https://w3id.org/sdkb/data/device/fan_out_wlp,ko,loose,CPC-2026.01 H10W70/655 'Fan-out layouts' 의 국문 음차,"'팬아웃' 단독은 디지털 회로의 팬아웃(구동 가능 부하 수)을 가리킬 수 있다 — 정밀도 위험이 있어 base 에서 뺀다",frozen-2026-07-13
+fan-out,https://w3id.org/sdkb/data/device/fan_out_wlp,en,loose,CPC-2026.01 H10W70/655,같음,frozen-2026-07-13
+TSV,https://w3id.org/sdkb/data/device/tsv,en,base,CPC-2026.01 H10W20/211 (제목이 'e.g. TSVs') · SDKB device/tsv prefLabel@en,코드 제목이 명명,frozen-2026-07-13
+through-silicon via,https://w3id.org/sdkb/data/device/tsv,en,base,CPC-2026.01 H10W20/20 (제목이 'e.g. through-silicon vias [TSV]') · SDKB altLabel@en,코드 제목이 명명한 정식 명칭,frozen-2026-07-13
+through silicon via,https://w3id.org/sdkb/data/device/tsv,en,base,CPC-2026.01 H10W20/20 · SDKB altLabel@en,하이픈 변이,frozen-2026-07-13
+through-semiconductor via,https://w3id.org/sdkb/data/device/tsv,en,base,CPC-2026.01 H10W20/211 (제목 원문),스킴이 쓰는 표기,frozen-2026-07-13
+실리콘 관통 전극,https://w3id.org/sdkb/data/device/tsv,ko,base,SDKB device/tsv altLabel@ko (실측),온톨로지에 이미 있는 국문 별칭,frozen-2026-07-13
+실리콘 관통 비아,https://w3id.org/sdkb/data/device/tsv,ko,base,CPC-2026.01 H10W20/20 의 국문 역어,국문 명세 대응 (어순 변이),frozen-2026-07-13
+관통 실리콘 비아,https://w3id.org/sdkb/data/device/tsv,ko,base,CPC-2026.01 H10W20/20 의 국문 역어,어순 변이,frozen-2026-07-13

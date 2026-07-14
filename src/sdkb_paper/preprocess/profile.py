@@ -8,7 +8,7 @@
 """
 from __future__ import annotations
 
-from pathlib import Path
+import argparse
 
 import pandas as pd
 
@@ -26,6 +26,20 @@ from sdkb_paper.preprocess.clean import (
 RAW = RAW_KIPRIS / "patents_raw.parquet"
 DELTA = INTERIM / "patents_delta.parquet"
 PROFILE = DATA / "profiles" / "kipris_samsung_hynix.md"
+
+# PLAN-009 · 좌측절단 교정분 (2005–2009). **G₁ 에 병합되지 않는다** — H2 시계열 전용이다.
+# 정제 규칙은 main 과 **동일**하다(정규화 → 정확일치 → dedup → G₀ 겹침 제거). 기간마다 규칙이
+# 다르면 시계열의 앞뒤가 다른 자로 재어진다. G₀ 겹침은 104건(0.4%)이라 규칙을 바꿀 이유가 없다.
+PERIODS = {
+    "main": (RAW, DELTA, PROFILE, "KIPRIS 삼성전자·SK하이닉스 특허 (PLAN-002)", True),
+    "extended": (
+        RAW_KIPRIS / "patents_2005_2009.parquet",
+        INTERIM / "patents_2005_2009.parquet",
+        DATA / "profiles" / "kipris_2005_2009.md",
+        "KIPRIS 삼성전자·SK하이닉스 특허 2005–2009 (PLAN-009 · H2 좌측절단 교정)",
+        False,
+    ),
+}
 
 COLUMN_MEANING = {
     "application_number": ("출원번호 (하이픈 제거, 키)", "KIPRIS applicationNumber"),
@@ -75,7 +89,8 @@ def _md_table(rows: list[tuple], header: tuple) -> str:
     return line
 
 
-def build(raw_path: Path = RAW) -> pd.DataFrame:
+def build(period: str = "main") -> pd.DataFrame:
+    raw_path, delta_path, profile_path, title, merged = PERIODS[period]
     raw = pd.read_parquet(raw_path)
     norm = normalize(raw)
     kept = filter_applicants(norm)
@@ -85,20 +100,22 @@ def build(raw_path: Path = RAW) -> pd.DataFrame:
     delta = add_mapping(delta)
 
     INTERIM.mkdir(parents=True, exist_ok=True)
-    delta.to_parquet(DELTA, index=False)
+    delta.to_parquet(delta_path, index=False)
 
-    PROFILE.parent.mkdir(parents=True, exist_ok=True)
-    PROFILE.write_text(_render(raw, norm, kept, uniq, overlap, delta), encoding="utf-8")
+    profile_path.parent.mkdir(parents=True, exist_ok=True)
+    profile_path.write_text(
+        _render(raw, norm, kept, uniq, overlap, delta, title, merged), encoding="utf-8"
+    )
     return delta
 
 
-def _render(raw, norm, kept, uniq, overlap, delta) -> str:
+def _render(raw, norm, kept, uniq, overlap, delta, title, merged) -> str:
     mapped = delta[(delta.n_process > 0) | (delta.n_device > 0)]
     by_app = delta.groupby("applicant_name").size()
     ov_app = overlap.groupby("applicant_name").size() if len(overlap) else pd.Series(dtype=int)
     years = delta["application_date"].dt.year
 
-    s = ["# 프로파일 — KIPRIS 삼성전자·SK하이닉스 특허 (PLAN-002)\n",
+    s = [f"# 프로파일 — {title}\n",
          "> 이 파일은 `python -m sdkb_paper.preprocess.profile` 이 생성한다. 손으로 고치지 않는다.\n",
          "\n## 1. 구조 (structure)\n\n",
          _md_table(
@@ -114,7 +131,9 @@ def _render(raw, norm, kept, uniq, overlap, delta) -> str:
              ("출원인 정확일치 후", f"{len(kept):,}", "계열사·타사 제외 (부분일치 부작용 제거)"),
              ("출원번호 중복 제거 후", f"{len(uniq):,}", "한 특허가 여러 IPC 클래스에 잡힌다"),
              ("G₀ 겹침 제외", f"−{len(overlap):,}", "SIRP 거절특허로 이미 G₀ 에 있음 (H1 오염 방지)"),
-             ("**델타 후보**", f"**{len(delta):,}**", "병합 대상"),
+             ("**정제 후 특허**", f"**{len(delta):,}**",
+              "G₁ 병합 대상" if merged else
+              "**G₁ 에 병합되지 않는다** — H2 시계열 전용 (PLAN-009 §2). G₁ 과 H1 은 불변이다"),
              ("└ 룰 매핑됨", f"{len(mapped):,} ({len(mapped)/max(len(delta),1):.1%})",
               "개념 ≥1 — L1(델타) 통과 조건"),
              ("└ 미매핑", f"{len(delta)-len(mapped):,}", "룰의 한계로 탈락. 정직하게 보고한다"),
@@ -133,9 +152,14 @@ def _render(raw, norm, kept, uniq, overlap, delta) -> str:
          _md_table([(y, f"{n:,}", _trunc_flag(y, n, years))
                     for y, n in years.value_counts().sort_index().items()],
                    ("연도", "건수", "비고")),
-         "\n> **최근 연도는 절단(truncation)되어 있다.** 특허는 출원 후 18개월이 지나야 공개되므로, "
-         "최근 2년의 출원 건수는 아직 다 드러나지 않았다. **감소가 아니라 미공개다.** "
-         "H2 의 시계열은 이 구간을 추세 판단에서 제외하거나 절단을 명시해야 한다 (§4.4·§4.5).\n",
+         # 우측 절단 경고는 최근 출원이 담긴 수집분에만 해당한다 (2005–2009 분은 전량 공개됐다).
+         ("\n> **최근 연도는 절단(truncation)되어 있다.** 특허는 출원 후 18개월이 지나야 공개되므로, "
+          "최근 2년의 출원 건수는 아직 다 드러나지 않았다. **감소가 아니라 미공개다.** "
+          "H2 의 시계열은 이 구간을 추세 판단에서 제외하거나 절단을 명시해야 한다 (§4.4·§4.5).\n"
+          if years.max() >= 2024 else
+          "\n> **이 구간에 우측 절단은 없다** — 2005–2009 출원은 전량 공개됐다. 대신 **좌측**을 보라: "
+          "2005년(관측창의 첫 해)은 직전 3년 후행창이 없으므로 상대성장 규칙의 기저가 정의되지 "
+          "않는다. 탐지는 창시작+3년(2008)부터 가능하다 (PLAN-009 §3-1).\n"),
          "\n### IPC 클래스 상위 (질의 클래스 기준, 중복 계수)\n\n",
          _md_table([(c, f"{n:,}") for c, n in delta["query_ipc"].value_counts().head(10).items()],
                    ("IPC 클래스", "건수")),
@@ -160,9 +184,15 @@ def _render(raw, norm, kept, uniq, overlap, delta) -> str:
 
 
 def main() -> int:
-    delta = build()
-    print(f"✓ 델타 후보 {len(delta):,}건 → {DELTA.relative_to(ROOT)}")
-    print(f"✓ 프로파일 → {PROFILE.relative_to(ROOT)}")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--period", choices=sorted(PERIODS), default="main",
+                    help="main=2010–2025 (G₁ 의 원천) · extended=2005–2009 (PLAN-009 · H2 전용)")
+    args = ap.parse_args()
+
+    _, delta_path, profile_path, *_ = PERIODS[args.period]
+    delta = build(args.period)
+    print(f"✓ 정제 후 특허 {len(delta):,}건 → {delta_path.relative_to(ROOT)}")
+    print(f"✓ 프로파일 → {profile_path.relative_to(ROOT)}")
     return 0
 
 

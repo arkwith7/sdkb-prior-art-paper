@@ -1,0 +1,29 @@
+concept_iri,variant,definition,source,rationale,status
+https://w3id.org/sdkb/data/device/hbm,strict,적층|스택|stack AND 관통전극|관통 실리콘|실리콘 관통|through-silicon|through silicon|tsv AND dram|디램,JEDEC JESD235 (High Bandwidth Memory DRAM),표준 문구 그대로 — '3D-stacked DRAM dies interconnected by through-silicon vias'. 세 구성요소(적층 · 관통전극 · DRAM)를 모두 요구한다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/hbm,base,적층|스택|stack AND 관통전극|관통 실리콘|실리콘 관통|through-silicon|through silicon|tsv AND 메모리|memory|dram|디램,JEDEC JESD235,DRAM 을 '메모리' 일반으로 완화. 국문 명세가 DRAM 을 '메모리'로만 적는 경우를 담는다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/hbm,base,hbm|고대역폭 메모리|고대역폭메모리|high bandwidth memory,JEDEC JESD235 (표준 명칭),이름을 쓴 특허의 경로 (행 단위 OR). 구조식과 합집합이다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/hbm,loose,적층|스택|stack AND 관통전극|관통 실리콘|실리콘 관통|through-silicon|through silicon|tsv,JEDEC JESD235,메모리 요구를 뺀 상한 변이 — 3D 집적 일반까지 넓어진다. base 가 아니다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/hbm,loose,hbm|고대역폭 메모리|고대역폭메모리|high bandwidth memory,JEDEC JESD235 (표준 명칭),,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/tsv,strict,관통전극|through-silicon via|through silicon via|tsv,JEDEC JESD235 · SEMI 3D-IC 용어,이름 자체가 구조어다 — TSV 는 '기판을 관통하는 전극'을 뜻한다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/tsv,base,관통전극|through-silicon via|through silicon via|tsv|실리콘 관통|관통 실리콘|관통 비아|관통 배선,SEMI 3D-IC 용어,국문 명세의 표기 변형을 담는다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/tsv,loose,관통전극|through-silicon via|through silicon via|tsv|실리콘 관통|관통 실리콘|관통 비아|관통 배선|기판 관통|관통 홀,SEMI 3D-IC 용어,상한 변이 — '기판 관통'은 TSV 가 아닌 관통 구조까지 담는다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/3d_nand,strict,수직 채널|수직형 채널|수직채널|vertical channel AND 낸드|nand,IRDS More Moore (3D NAND) · Toshiba BiCS (2007),표준 구조 그대로 — 수직 채널을 갖는 낸드 셀 어레이,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/3d_nand,base,수직|vertical|3차원|3d AND 낸드|nand AND 적층|스택|stack,IRDS More Moore (3D NAND),수직성·낸드·적층 세 요소를 요구한다. '수직 채널'이라는 특정 표기에 의존하지 않는다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/3d_nand,base,v-nand|vnand|3d nand|3차원 낸드|수직형 낸드,제조사 표준 명칭 (Samsung V-NAND),이름을 쓴 특허의 경로 (행 단위 OR),frozen-2026-07-13
+https://w3id.org/sdkb/data/device/3d_nand,loose,낸드|nand AND 적층|스택|stack,IRDS More Moore,상한 변이 — 수직성을 빼면 적층 낸드 패키지까지 들어온다. base 가 아니다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/3d_nand,loose,v-nand|vnand|3d nand|3차원 낸드|수직형 낸드,제조사 표준 명칭,,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/gaa_fet,strict,gaa|게이트 올 어라운드|게이트올어라운드|gate-all-around|gate all around|mbcfet|엠비씨펫,IRDS More Moore (gate-all-around),표준 정의의 명칭 — '게이트가 채널을 완전히 둘러싼다',frozen-2026-07-13
+https://w3id.org/sdkb/data/device/gaa_fet,base,gaa|게이트 올 어라운드|게이트올어라운드|gate-all-around|gate all around|mbcfet|엠비씨펫|나노시트|나노 시트|nanosheet|나노와이어|나노 와이어|nanowire,IRDS More Moore — GAA 의 구현체가 나노시트·나노와이어 채널이다,구조 어휘를 더한다. 나노시트 채널 FET 이 곧 GAA 구현이다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/gaa_fet,loose,gaa|게이트 올 어라운드|게이트올어라운드|gate-all-around|gate all around|mbcfet|엠비씨펫|나노시트|나노 시트|nanosheet|나노와이어|나노 와이어|nanowire|채널을 둘러싸는|둘러싸는 게이트|멀티브리지|multi-bridge,IRDS More Moore,상한 변이 — 서술적 표현까지 담는다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/mram,strict,mram|엠램|자기저항 메모리|자기 저항 메모리|magnetoresistive random access memory,JEDEC 용어 (MRAM),표준 명칭,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/mram,base,mram|엠램|자기저항 메모리|자기 저항 메모리|magnetoresistive random access memory,JEDEC 용어 (MRAM),,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/mram,base,mtj|자기터널접합|자기 터널 접합|magnetic tunnel junction AND 메모리|memory,MRAM 의 구성 소자는 자기터널접합(MTJ)이다,구조 어휘 경로 (행 단위 OR) — MTJ 를 쓴 메모리 특허,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/mram,loose,mram|엠램|자기저항 메모리|자기 저항 메모리|magnetoresistive random access memory,JEDEC 용어 (MRAM),,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/mram,loose,mtj|자기터널접합|자기 터널 접합|magnetic tunnel junction AND 메모리|memory,MRAM 의 구성 소자는 MTJ 다,,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/mram,loose,스핀 토크|스핀토크|spin transfer torque|stt,STT-MRAM 은 MRAM 의 쓰기 방식이다,상한 변이 — 쓰기 방식 용어까지 담는다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/finfet,strict,finfet|fin fet|핀펫|핀 펫,IEEE/IRDS 용어 (FinFET),표준 명칭,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/finfet,base,finfet|fin fet|핀펫|핀 펫,IEEE/IRDS 용어 (FinFET),,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/finfet,base,핀 구조|핀형|핀 형|fin structure AND 트랜지스터|transistor|전계효과|전계 효과,FinFET 의 구조는 핀 형태의 채널을 갖는 전계효과 트랜지스터다,구조 어휘 경로 (행 단위 OR),frozen-2026-07-13
+https://w3id.org/sdkb/data/device/finfet,loose,finfet|fin fet|핀펫|핀 펫,IEEE/IRDS 용어 (FinFET),,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/finfet,loose,핀 구조|핀형|핀 형|fin structure AND 트랜지스터|transistor|전계효과|전계 효과,FinFET 의 구조 정의,,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/finfet,loose,이중 게이트|더블 게이트|double gate|삼중 게이트|트라이 게이트|tri-gate,FinFET 의 계보 (비평면 다중게이트 채널),상한 변이 — FinFET 이전의 다중게이트 구조까지 담는다,frozen-2026-07-13

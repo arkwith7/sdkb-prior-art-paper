@@ -1,0 +1,8 @@
+case_id,concept_iri,concept_label,control_code,control_title,evidence,evidence_source,subset_flag,status
+hbm,https://w3id.org/sdkb/data/device/hbm,high-bandwidth memory,H10B80/00,Assemblies of multiple devices comprising at least one memory device covered by this subclass,HBM 표준 제정 (2013),JEDEC JESD235,FALSE,frozen-2026-07-13
+gaa,https://w3id.org/sdkb/data/device/gaa_fet,gate-all-around field-effect transistor,H10D30/6735,"{having gates fully surrounding the channels, e.g. gate-all-around}",삼성전자 3nm MBCFET 양산 (2022),제조사 양산 발표,TRUE,frozen-2026-07-13
+finfet,https://w3id.org/sdkb/data/device/finfet,FinFET,H10D30/62,Fin field-effect transistors [FinFET],14nm FinFET 양산 (2015),제조사 양산 발표,TRUE,frozen-2026-07-13
+3d_nand,https://w3id.org/sdkb/data/device/3d_nand,3D V-NAND,H10B43/27,"the channels comprising vertical portions, e.g. U-shaped channels",삼성전자 V-NAND 양산 (2013),제조사 양산 발표,TRUE,frozen-2026-07-13
+mram,https://w3id.org/sdkb/data/device/mram,MRAM,H10B61/00,"Magnetic memory devices, e.g. magnetoresistive RAM [MRAM] devices",삼성전자 eMRAM 양산 (2019),제조사 양산 발표,TRUE,frozen-2026-07-13
+fowlp,https://w3id.org/sdkb/data/device/fan_out_wlp,fan-out wafer-level packaging,H10W70/09,"extending onto an encapsulation that laterally surrounds the chip or wafer, e.g. fan-out wafer level package [FOWLP] RDLs",파운드리 팬아웃 패키지 양산 (TSMC InFO 2016 · 삼성 PLP 2019),제조사 양산 발표,FALSE,frozen-2026-07-13
+tsv,https://w3id.org/sdkb/data/device/tsv,TSV,H10W20/211,"{Through-semiconductor vias, e.g. TSVs}",3D 집적 상용화 (2010년대) — HBM 표준이 TSV 적층을 전제한다,JEDEC JESD235,TRUE,frozen-2026-07-13

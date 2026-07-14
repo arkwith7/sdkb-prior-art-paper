@@ -1,6 +1,7 @@
 # secrets
 .env
 *.key
+starry-runner-310008-c753058e2590.json
 
 # data — 원문/대용량은 절대 커밋하지 않음 (MANIFEST.md와 samples/만 예외)
 data/raw/

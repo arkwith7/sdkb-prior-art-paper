@@ -75,3 +75,208 @@ SDKB 의 후공정 개념 세 개는 `skos:broader` 없이 평면이라(`Back-En
 > 삭제했다. 그 판단은 SDKB 에 배선 개념이 없던 시점의 것이고, PLAN-001 §3.5 가 SemiKong
 > Table 7 의 후공정 그룹(Metallization · Interconnect Patterning · Advanced Packaging)을
 > 복원하면서 근거가 소멸했다. 룰 16개를 추가했다(공정 9 · 소자 7).
+
+---
+
+# 신기술 인식 레이어의 출처 (PLAN-004 · 2026-07-13 동결)
+
+`term_aliases.csv`(1층 별칭)와 `emerging_concepts.csv`(2층 조합 정의)의 근거다.
+**두 파일은 시계열을 보기 전에 동결됐다** — 커밋 해시가 사전등록(pre-registration)의 증거다.
+대상 기술과 정의식은 우리 데이터 분포가 아니라 **외부 원천**에서 왔다 (CLAUDE.md §1.2).
+
+## 왜 이 레이어가 필요한가 (실측)
+
+| 사실 | 값 |
+|---|---|
+| GAA 전용 코드(`H10D30/6735`·`H10D30/501`)를 받은 삼성·SK하이닉스 특허 | **0건** |
+| HBM — 명세에 이름을 쓴 특허 | 32건 |
+| HBM — 조합 정의(base)로 잡히는 특허 | **209건** (그중 이름을 쓴 것은 **4건**) |
+| FinFET — 코드 135건 · 텍스트 36건 | **교집합 2건** (두 경로가 거의 겹치지 않는다) |
+| SDKB 의 `device/gaa_fet` altLabel | **0개** (`device/hbm` 은 영문 1개뿐) |
+
+신기술은 **코드로도 이름으로도 잡히지 않는다.** 이것이 H2 의 장애물이자 H2 의 논지
+("코드 단위는 늦다")에 대한 관측 증거다.
+
+## 코드 제목 (verbatim · CPC 2026.01 공식 스킴 HTML 직접 파싱)
+
+요약 모델을 거치지 않았다 (이 문서 상단의 원칙).
+
+| 코드 | 공식 제목 |
+|---|---|
+| H10B 80/00 | Assemblies of multiple devices comprising at least one memory device covered by this subclass |
+| H10W 20/00 | Interconnections in chips, wafers or substrates |
+| H10W 20/20 | Interconnections within wafers or substrates, e.g. through-silicon vias [TSV] |
+| H10W 20/211 | {Through-semiconductor vias, e.g. TSVs} |
+| H10W 20/023 | {the interconnections being through-semiconductor vias} |
+| H10W 20/40 | Interconnections external to wafers or substrates, e.g. back-end-of-line [BEOL] metallisations … |
+| H10W 90/00 | Package configurations |
+| H10D 30/62 | Fin field-effect transistors [FinFET] |
+| H10D 30/6735 | {having gates fully surrounding the channels, e.g. gate-all-around} |
+| H10D 30/501 | {FETs having stacked nanowire, nanosheet or nanoribbon channels} |
+| H01L 25/065 | the devices being of a type provided for in group H10D 89/00 |
+| H01L 25/0657 | {Stacked arrangements of devices} |
+
+**H10B 80/00 의 WARNING (verbatim):**
+> Group H10B 80/00 is incomplete pending reclassification of documents from group H10W 90/00.
+> Groups H10W 90/00 and H10B 80/00 should be considered in order to perform a complete search.
+
+## 조합 정의가 이 제목들에서 나온 방식
+
+- **HBM(base) = (H10B80 ∨ H10W90) ∧ (H10W20/20 ∨ H10W20/211 ∨ H10W20/023)**
+  적층 메모리 어셈블리 ∧ TSV. TSV 쪽은 **제목이 TSV 를 명시한 코드만** 넣었다 —
+  `H10W20` 전체는 "배선 일반"(BEOL·레이아웃 포함)이라 TSV 가 아니다.
+  H10W90 을 적층 집합에 넣는 것은 위 WARNING 의 지시다(우리 판단이 아니다).
+- **GAA(base) = H10D30/6735 ∨ H10D30/501.** 두 코드 모두 우리 코퍼스에서 0건이다 —
+  그래서 GAA 는 1층(별칭)이 담당한다. "적층 나노시트 채널 FET = GAA 구현"은 우리 해석이
+  아니라 `H10D30/501` 의 제목이 직접 말하는 것이다.
+
+> **위 §"매핑하지 않는 코드" 표의 H10W90 항목과 충돌하지 않는다.** 그 표는
+> "H10W90 **단독으로** `device/hbm` 을 부여하지 않는다"는 규칙이고, 지금도 유효하다.
+> 조합 정의는 H10W90 **∧ TSV** 일 때만 HBM 을 부여한다 — 적층 일반은 여전히 HBM 이 아니다.
+
+## 별칭의 출처
+
+- HBM 계열: **JEDEC JESD235**(HBM/HBM2/HBM2E) · **JESD238**(HBM3/HBM3E) 의 표준 명칭.
+- GAA 계열: CPC `H10D30/6735`·`H10D30/501` 의 제목이 명명한 용어(gate-all-around ·
+  nanosheet · nanoribbon) + 삼성 3nm 공정의 **MBCFET**(Multi-Bridge Channel FET).
+- 국문 별칭은 **SDKB 의 라벨 설계**(prefLabel@en 기준 · altLabel@ko 별칭, 실측 en 630 / ko 428)를
+  따른다. 신기술 개념만 이 체계에서 비어 있었으므로(`gaa_fet` altLabel 0개), base 별칭을
+  `skos:altLabel`(언어 태그 포함)로 **G₁ 에 실체화**한다. G₀ 는 건드리지 않는다.
+- `나노와이어`/`nanowire` 는 **loose 변이 전용**이다. 스킴은 나노시트와 같은 그룹에 두지만,
+  명세의 "나노와이어"가 채널이 아닌 구조를 가리킬 수 있어 정밀도 위험이 있다.
+
+## 민감도 변이 (§4.5 — 사전 정의)
+
+| 개념 | strict | base | loose |
+|---|---:|---:|---:|
+| HBM | 74건 | **209건** | 1,018건 |
+| GAA (코드) | 0건 | 0건 | 135건(FinFET 포함 시) |
+
+결론이 정의에 민감하면 **그 사실 자체를 보고한다.**
+
+---
+
+# H2 검증 사례의 출처 (PLAN-006 · 2026-07-13 동결)
+
+`h2_cases.csv` 는 H2 의 검증 사례 7건과 각 사례의 **대조 코드**(코드 단위 시계열)를 담는다.
+**시계열을 계산하기 전에 동결됐다** — 커밋 해시가 사전등록의 증거다.
+
+## 왜 3건이 아니라 7건인가
+
+PLAN-004 가 동결한 사례는 HBM·GAA·FinFET **3건**인데, 단측 부호검정은 **3/3 전부 개념이 앞서도
+p = 0.125** 다. α=0.05 에 **구조적으로 도달할 수 없다** — 결과를 보기 전에 이미 정해진 사실이다.
+사례를 늘리는 것이 정당한 이유는 **아직 어떤 시계열도 계산하지 않았기** 때문이다. 선정은 우리
+데이터 분포가 아니라 SDKB 어휘 · CPC 2026.01 스킴 원문 · 외부 부상 근거만으로 이루어졌다.
+
+## 선정 기준 (a priori · 결과 무관)
+
+1. 개념이 **SDKB 에 실재**한다 (Device 34 ∪ Process 49). 새 어휘를 만들지 않는다 (CLAUDE.md §1.4).
+2. 부상이 **사후적으로 확인**된다 (표준 제정 · 양산 발표).
+3. **CPC 스킴 원문이 기술명을 제목에 명시한 전용 단일 코드**가 존재한다.
+4. 두 출원인(삼성 · SK하이닉스)의 **포트폴리오 범위** 안이다.
+
+**사전 배제(결과 보기 전).** **EUV** — 전용 코드가 광원(`G03F7/70033`)과 마스크(`G03F1/22`)로
+갈라져 기준 3을 만족하지 않는다. 선택지가 둘이면 유리한 쪽을 고를 자유도가 생긴다.
+**SiC MOSFET · GaN HEMT · 이미지센서** — 기준 4 밖.
+
+## 대조 코드 제목 (verbatim · CPC 2026.01 공식 스킴 HTML 직접 파싱)
+
+요약 모델을 거치지 않았다 (이 문서 상단의 원칙). 2026-07-13 취득 · `cpc-H10B.html` · `cpc-H10W.html`.
+
+| 코드 | 공식 제목 |
+|---|---|
+| H10B 43/27 | the channels comprising vertical portions, e.g. U-shaped channels |
+| H10B 43/20 | characterised by three-dimensional [3D] arrangements, e.g. with cells on different height levels |
+| H10B 43/35 | with cell select transistors, e.g. NAND |
+| H10B 61/00 | Magnetic memory devices, e.g. magnetoresistive RAM [MRAM] devices |
+| H10W 70/09 | extending onto an encapsulation that laterally surrounds the chip or wafer, e.g. fan-out wafer level package [FOWLP] RDLs |
+| H10W 70/655 | Fan-out layouts |
+
+(HBM `H10B80/00` · GAA `H10D30/6735` · FinFET `H10D30/62` · TSV `H10W20/211` 의 제목은 이 문서
+위쪽 PLAN-004 표에 이미 있다.)
+
+## 별칭의 출처 (신규 4개 개념)
+
+PLAN-006 의 규율: 별칭은 **CPC 스킴 원문 제목이 명시한 기술명 + 표준/양산 공식 명칭**에서만 온다.
+
+- **3D NAND** — 스킴은 `H10B43/20` 에서 'three-dimensional [3D]' 를, `H10B43/35` 에서 'NAND' 를
+  명명한다(같은 서브트리). 제품 공식 명칭은 삼성 **V-NAND**(2013 양산)다.
+- **MRAM** — `H10B61/00` 제목이 'magnetoresistive RAM [MRAM]' 을 명명한다. 제품 공식 명칭은
+  삼성 **eMRAM**(2019 양산). 국문 '엠램'은 **SDKB 가 이미 가진 altLabel@ko** 다.
+- **FOWLP** — `H10W70/09` 제목이 'fan-out wafer level package [FOWLP]' 를 명명한다.
+- **TSV** — `H10W20/211` 제목이 'TSVs' 를, `H10W20/20` 이 'through-silicon vias [TSV]' 를 명명한다.
+  국문 '실리콘 관통 전극'은 **SDKB 의 altLabel@ko** 다.
+
+**loose 로 강등한 별칭** (나노와이어와 같은 처리 — 근거 등급이 낮거나 다의어라 base 에서 뺀다):
+
+| 용어 | 왜 base 가 아닌가 |
+|---|---|
+| `STT-MRAM` · `스핀전달토크` | 업계 통용어일 뿐 **스킴 제목에도 제품 공식 명칭에도 없다** |
+| `팬아웃` · `fan-out` | 단독으로는 디지털 회로의 **팬아웃(구동 가능 부하 수)** 을 가리킬 수 있다 — 정밀도 위험 |
+
+## 구조적 비대칭 — 숨기지 않는다
+
+7건 중 **5건(GAA·FinFET·3D NAND·MRAM·TSV)은 대조 코드가 개념의 0층 룰 안에 이미 들어 있다.**
+개념 집합 ⊇ 코드 집합이므로 **개념이 코드보다 늦게 탐지되는 것이 구조적으로 불가능**하다.
+HBM(룰 0건 · 조합 정의)과 FOWLP(대조 코드 `H10W70/09` 가 룰에 없다 — 룰은 `H10W70/655`)만이
+개념이 늦을 수도 있는 **진짜 양방향 사례**다.
+
+`subset_flag` 는 손으로 적은 값이 아니라 **룰 테이블에서 유도해 대조**한다
+(`tests/test_h2_cases.py::test_subset_flag_is_derived_not_asserted`). §4.5 는 **대조 코드를 개념
+시계열에서 제거한 재검정**을 사전 규정한다 — 부분집합 관계가 결론을 만들지 않았음을 보이기 위해서다.
+
+---
+
+# 분류체계 독립 정의 — `si_concepts.csv` (PLAN-009 · 2026-07-13 동결)
+
+## 왜 새 정의가 필요한가
+
+위의 조합 정의(`emerging_concepts.csv`)는 **분류코드로 개념을 정의한다**. 그런데 PLAN-007 이
+그 코드(H10 스킴)가 **전량 2021년 이후 신설되어 과거 특허에 소급 부여**된다는 것을 밝혔다.
+개념이 코드에 기생하면 **개념은 코드보다 앞설 수 없다** — H2 는 검정되기 전에 진다.
+
+실측이 그것을 확인했다: 0층 룰 테이블이 사례 7건 중 **6건**의 개념을 신설 H10 코드로 매핑하고
+있었고(GAA·FinFET·3D NAND·MRAM·FOWLP·TSV), 그 코드가 곧 대조 코드였다 — `subset_flag` 의 정체다.
+
+## 무엇을 바꿨는가
+
+**si 정의는 분류코드를 일절 보지 않는다.**
+
+```
+개념 팔 (si) = 명세 텍스트의 구조 어휘만    ← 분류코드 0개
+코드 팔      = 분류체계만                   ← 텍스트 0개
+```
+
+두 팔이 **서로 다른 증거원**을 보게 되어 코드 기생과 부분집합 자명성(개념 ⊇ 코드)이 함께
+사라진다. 이것이 온톨로지의 주장 자체다 — 코드가 신설되기를 기다리지 않고 개념을 표현한다.
+계약은 `tests/test_si_concepts.py::test_si_definitions_contain_no_classification_codes` 가 지킨다.
+
+**대가는 정직하게 치른다**: 초록이 구조를 말하지 않는 특허는 개념이 놓친다.
+
+## 정의의 근거 (외부 표준 · 우리 데이터 분포가 아니다)
+
+| 개념 | 표준 원천 | 표준이 말하는 구조 |
+|---|---|---|
+| HBM | **JEDEC JESD235** (High Bandwidth Memory DRAM) | "3D-stacked DRAM dies interconnected by **through-silicon vias**" → 적층 ∧ 관통전극 ∧ DRAM |
+| TSV | JEDEC JESD235 · SEMI 3D-IC 용어 | 기판을 **관통하는** 전극 — 이름 자체가 구조어다 |
+| 3D NAND | IRDS More Moore · Toshiba BiCS (2007) | **수직 채널**을 갖는 **적층** 낸드 셀 어레이 |
+| GAA | IRDS More Moore | 게이트가 **채널을 완전히 둘러싼다** → 구현체가 나노시트·나노와이어 |
+| MRAM | JEDEC 용어 | **자기터널접합(MTJ)** 을 기억소자로 쓰는 메모리 |
+| FinFET | IEEE/IRDS 용어 | **핀 형태 채널**을 갖는 전계효과 트랜지스터 |
+
+**FOWLP 는 사전 배제**했다 — '팬아웃' 어휘가 **전 말뭉치 21건**이라 어떤 정의로도 시계열이
+서지 않는다. 결과를 보고 뺀 것이 아니라 **텍스트 가용성 관찰**에서 뺐다 (PLAN-009 §1).
+
+## 자인하는 자유도
+
+**영문 표준을 한국어 특허 표기로 옮기는 번역은 우리의 선택이다.** 은폐하지 않는다:
+- 용어별 출처를 CSV `source` 컬럼에 남긴다.
+- **strict / base / loose 3변이를 함께 동결**한다 — 표준 문구에 얼마나 충실한가의 사다리다
+  (strict = 표준 문구 그대로 · loose = 상한). 결과를 보고 유리한 변이를 고르지 않고
+  **세 변이 전부를 민감도로 보고**한다 (논문 §4.5).
+- 같은 (개념, 변이)의 여러 행은 **논리합**이다 — 구조식 경로와 이름 경로의 합집합.
+
+## 동결 시점
+
+이 정의는 **2005–2009 추가 수집(PLAN-009 §6-3) 이전에, 어떤 시계열도 보기 전에** 커밋됐다.
+순서를 뒤집으면 사전등록이 아니다. 커밋 해시가 그 증거다.

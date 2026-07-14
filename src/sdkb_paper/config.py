@@ -29,7 +29,26 @@ MAPPINGS = ROOT / "mappings"
 # IPC/CPC 접두어 -> SDKB 개념 IRI. 개념 축은 Process ∪ Device 이므로 공정 전용이 아니다 —
 # axis 컬럼이 realizesProcess 와 concernsDevice 를 가른다.
 CODE_MAPPING = MAPPINGS / "code_to_concept.csv"
+# 신기술 인식 레이어 (PLAN-004). 신기술은 코드로도 이름으로도 잡히지 않는다 — GAA 전용 코드는
+# 부여 0건이고, HBM 은 조합으로 잡히는 특허의 대다수가 명세에 이름을 쓰지 않는다.
+# 두 파일은 **시계열을 보기 전에 동결**됐다 (외부 원천 = JEDEC · CPC 공식 스킴 원문).
+TERM_ALIASES = MAPPINGS / "term_aliases.csv"          # 1층 · 별칭
+EMERGING_CONCEPTS = MAPPINGS / "emerging_concepts.csv"  # 2층 · 조합 정의 (strict/base/loose)
+SI_CONCEPTS = MAPPINGS / "si_concepts.csv"            # 분류체계 독립 정의 (PLAN-009 · 텍스트 전용)
+DART_TERMS = MAPPINGS / "dart_terms.csv"     # DART 준거 용어 (PLAN-009 · 동결)
+# H2′ 의 대조군: 기술의 **명칭** 키워드 (PLAN-010 · 동결). 명세 텍스트는 소급 재작성되지
+# 않으므로 이 대조군은 **시점 유효**하다 — 분류코드가 무효였던 이유를 피해 간다.
+NAME_BASELINE = MAPPINGS / "name_baseline.csv"
+# H2 의 검증 사례 7건 (PLAN-006). 개념 시계열과 대조할 CPC 코드가 사례마다 하나씩 고정돼 있다.
+# **시계열을 보기 전에 동결**됐다 — 사례 선정은 우리 데이터 분포가 아니라 SDKB 어휘 · CPC 공식
+# 스킴 원문 · 외부 부상 근거(JEDEC 표준 · 양산 발표)만으로 이루어졌다. 커밋 해시가 사전등록이다.
+H2_CASES = MAPPINGS / "h2_cases.csv"
+# H1 의 두 번째 표본 집합: SemiKong Table 7 복원 **이전**의 공정 20개.
+# 복원된 단계는 G₀ 에서 C₀(s)=0 이라 H1 에 유리하다 — 그 편향을 독자가 판별할 수 있도록
+# 확장 49 와 병기 보고한다 (scripts/freeze_legacy_scope.py 가 커밋 스냅샷에서 생성).
+LEGACY_SCOPE = MAPPINGS / "process_scope_legacy20.csv"
 FIGURES = ROOT / "paper" / "figures"
+TABLES = ROOT / "paper" / "tables"
 
 # vendoring 원본. 스냅샷을 갱신할 때만 쓰인다 — 분석/게이트는 EXTERNAL_SDKB 만 본다.
 SDKB_HOME = Path(os.environ.get("SDKB_HOME", Path.home() / "Dev" / "sdkb"))
