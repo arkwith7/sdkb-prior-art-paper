@@ -96,6 +96,27 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 **재현 절차**: `make cpc && make cpc-vintage` (GCP 서비스계정 필요 —
 `GOOGLE_APPLICATION_CREDENTIALS`). 스캔량 ≈ 16.5 GB + 6×16 GB (무료 한도 1 TB/월 내).
 
+### 2-2. DOCDB 패밀리 (BigQuery `patents-public-data`) — §4.5 강건성 (PLAN-011)
+
+| 일시 | 소스 | 쿼리 | 건수 | 저장 파일 | 쓰이는 곳 |
+|---|---|---|---:|---|---|
+| 2026-07-14 | BQ `patents.publications` | KR 출원 **64,936**건(델타 34,521 ∪ 2005–09 29,415 ∪ G₀ 1,000)의 `family_id` | 69,798행 · 출원 **63,679 / 64,936 (98.1%)** | `raw/bigquery/family_map.parquet` (gitignore) | **§4.5 표 7** — H1·H2′ 패밀리 dedup 전후 |
+
+**재현 절차**: `make family && make robustness`. 프로파일은 `data/profiles/family_dedup.md`.
+
+> **왜 G₀ 의 1,000건까지 질의했는가.** 델타 특허가 G₀ 특허와 **같은 패밀리**일 수 있다. 그때
+> 그것은 새 발명이 아니라 G₀ 에 이미 있는 발명의 국내 중복 출원이다. G₀ 는 동결이므로 건드리지
+> 않고 **델타 쪽을 뺀다**(실측 1건) — H1 의 before 는 한 트리플도 움직이지 않는다.
+
+> **패밀리당 말뭉치 출원이 평균 1.00건이다.** KR 단일 관할만 수집했으므로 대부분의 특허가 자기
+> 패밀리의 유일한 KR 구성원이다. 그래서 패밀리 dedup 이 지우는 것은 델타 34,521 중 **178건(0.52%)**,
+> H2′ 유니온 63,936 중 **198건(0.31%)** 뿐이고, **H1·H2′ 의 결론은 하나도 바뀌지 않았다.**
+> 이것은 dedup 을 안 해도 된다는 뜻이 아니라, **해봤더니 결론이 그것에 의존하지 않더라**는 뜻이다.
+
+> **한 출원에 `family_id` 가 둘 붙는 경우가 9.6%(6,119건)다.** id 하나로 그룹핑하면 같은 발명이
+> 두 패밀리로 쪼개져 dedup 이 헛돈다 — 공유 id 로 이어지는 출원들을 **연결성분**으로 묶는다
+> (`preprocess/family.py`).
+
 **왜 CPC 를 따로 받았는가.** KIPRIS `getAdvancedSearch` 는 **IPC 만** 준다. 그런데 H2 대조 코드
 2개(`H10D30/6735` GAA · `H10W20/211` TSV)는 CPC 전용 코드(스킴에서 중괄호 표기)라 IPC 말뭉치에
 **존재할 수 없다** — 34,521건에서 출현 0회였다.

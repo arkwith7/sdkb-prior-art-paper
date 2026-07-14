@@ -106,5 +106,21 @@ cpc-vintage:
 h2:
 	uv run python -m sdkb_paper.analysis.h2_cli
 
+# §4.5 강건성 — 패밀리(DOCDB) 중복 제거 전후 비교.
+#   family     — BigQuery 에서 DOCDB family_id 조인 (GCP 인증 필요). KIPRIS 원데이터에는
+#                우선권·패밀리 필드가 없어 이 조인 외에는 패밀리를 정직하게 잴 방법이 없다.
+#   robustness — dedup 된 델타로 G₁ 을 다시 짓고(같은 게이트 통과) H1·H2′ 를 **재검정**한다.
+#                검정 방법·임계값·개념 정의는 불변 — 바뀌는 것은 입력 말뭉치 하나뿐이다.
+family:
+	uv run python -m sdkb_paper.collect.bq_family
+
+robustness:
+	uv run python -m sdkb_paper.analysis.robustness_cli
+
+# §4.5 강건성 — 출원인별 분리 재검정. G₁ 은 두 출원인이므로, 보강 효과가 한 회사 때문에
+# 나온 것인지 확인한다. G₀ 는 두 팔의 공통 before 다 (쪼개면 baseline 이 움직인다).
+by-applicant:
+	uv run python -m sdkb_paper.analysis.applicant_cli
+
 figures:
 	uv run python -m sdkb_paper.viz.figures
