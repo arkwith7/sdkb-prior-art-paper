@@ -28,29 +28,39 @@ from sdkb_paper.validate.shacl_gate import validate_graph
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 26973
+EXPECTED_TRIPLES = 43745    # 2026-07-14 재동결 (SDKB d4dff61) — 구 26,973
 EXPECTED_PROCESS = 11       # SemiKong Table 7 의 L1 그룹 10개 (Patterning 이 리소/식각 둘로 갈림)
 EXPECTED_SUBPROCESS = 38    # Table 7 의 L2 모듈 + SDKB 고유 유닛
 EXPECTED_DEVICE = 34        # H2 의 개념 축은 Process ∪ Device (HBM·GAA 는 Device 다)
 EXPECTED_PATENTS = 1000     # SIRP 거절특허 — G₀ 는 "현행 SDKB" 다 (특허 0건이 아니다)
+                            # 인용문헌 3,763건은 ont:Patent 로 타입하지 않는다 (서지가 없다)
 
-# H1 의 before: 49개 공정 단계 중 16개가 커버되어 있고 33개가 공백이다.
+# H1 의 before: 49개 공정 단계 중 **20개**가 커버되어 있고 29개가 공백이다.
 #
-# 공백이 4 → 33 으로 뛴 것은 상류 SDKB 가 SemiKong Table 7 의 그룹 1·9·10(기판준비·어드밴스드
-# 모듈·**후공정**)을 통째로 빠뜨리고 있었기 때문이다. 복원 후 그 단계들은 G₀ 에서 전부 비어 있다 —
-# SDKB 가 그 어휘로 특허를 매핑한 적이 없으므로 당연하다.
+# ⚠ 이 값은 16 이었다. 16 은 **틀린 값이었다** (2026-07-14 발견).
 #
-# 이것은 H1 에 **구조적으로 유리한 조건**이다: 새로 복원된 단계는 C₀(s)=0 이라 G₁ 이 채우기만 하면
-# 이긴다. 그래서 논문은 H1 을 **두 집합으로 보고한다** — 확장 집합(49)과 기존 집합(20). 독자가
-# "새로 추가한 단계 덕분에 산 결과인가"를 직접 판별할 수 있어야 한다 (§4.5).
-EXPECTED_COVERED_STEPS = 16
-EXPECTED_UNCOVERED_STEPS = 33
+# `sdkb-abox-patents.ttl` 은 상류에서 gitignore 되는 빌드 산출물인데, `make vendor` 가 재빌드를
+# 강제하지 않고 디스크에 있던 파일을 그대로 복사했다. 그 파일은 공정 어휘 복원(SDKB `ad7fe3d`,
+# 공정 20 → 49) **이전에** 빌드된 것이라, 복원된 어휘로는 텍스트 추출이 한 번도 돌지 않았다.
+# 그래서 annealing·metallization·oxidation·passivation 네 단계는 **실제로 특허가 있는데도**
+# C₀(s)=0 으로 기록됐다. PROVENANCE 의 sha256 은 이것을 못 잡는다 — 해시는 파일이 바뀌지
+# 않았음만 보장하지 옳게 빌드됐음을 보장하지 않는다.
+#
+# 재빌드하니 realizesProcess 1,557 → 1,565 · concernsDevice 162 → 181 (잃은 링크 0).
+# 즉 **H1 의 before 가 낮게 잡혀 검정이 실제보다 쉬웠다.** 재발 방지는 vendor 의
+# _reject_stale_artifacts() 와 Makefile 의 상류 재빌드 의존이다.
+#
+# 복원된 단계가 G₀ 에서 비어 있다는 구조적 편향은 여전하다 — 그래서 논문은 H1 을 **두 집합으로
+# 보고한다**: 확장 집합(49)과 기존 집합(20). 독자가 "새로 추가한 단계 덕분에 산 결과인가"를
+# 직접 판별할 수 있어야 한다 (§4.5).
+EXPECTED_COVERED_STEPS = 20
+EXPECTED_UNCOVERED_STEPS = 29
 
 # G₀ 의 CQ 서명 — 논문 §4.2 의 before 열.
 #
 # 8개 CQ 가 **모두 응답한다**. 그래서 §3.4.2 가 쓰려던 이진 지표("G₀ 응답 불가 → G₁ 응답 가능
 # 비율")는 분모가 0 이라 정의되지 않는다. 보강 효과는 **응답 완전성**(결과 행 수)으로 잰다:
-# CQ06 의 커버리지 공백 29개가 G₁ 에서 줄어드는가, CQ01 의 커버 공정 16개가 늘어나는가.
+# CQ06 의 커버리지 공백이 G₁ 에서 줄어드는가, CQ01 의 커버 공정 20개가 늘어나는가.
 CQ_MUST_ANSWER = {
     "CQ01_patents_per_process_step",
     "CQ02_recent_patents_by_step",
@@ -63,7 +73,7 @@ CQ_MUST_ANSWER = {
 }
 
 # 완전성 지표의 before 값. G₁ 과 비교되는 수치이므로 여기서 고정한다.
-EXPECTED_CONCEPTS_WITHOUT_RECENT = 61   # CQ06 — 개념 83개 중 2021년 이후 출원 전무
+EXPECTED_CONCEPTS_WITHOUT_RECENT = 58   # CQ06 — 개념 83개 중 2021년 이후 출원 전무 (구 61)
 EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴리오 분석에 쓸 수 없다
 
 

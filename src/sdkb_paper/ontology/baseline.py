@@ -25,6 +25,12 @@ BASELINE_PARTS = [
     "sdkb-foresight.ttl",
     "sdkb-core-data.ttl",
     "sdkb-abox-patents.ttl",   # SIRP 거절특허 1,000건 — H1 의 before
+    # 인력·문제 축 (Expert 110 · Problem 226). 상류가 `make abox` 로 만드는데
+    # 이 논문이 vendor 하지 않아 G₀ 에서 통째로 빠져 있었다 (PLAN-013 §6.5).
+    # 특허를 더하지 않으므로 H1 의 C₀(s) 는 움직이지 않는다 — 그래도 재실행해 확인한다.
+    "sdkb-abox-experts-problems.ttl",
+    # 소부장 벤더 축 (KSIA 회원사 326). 특허를 더하지 않으므로 C₀(s) 는 움직이지 않는다.
+    "sdkb-abox-vendors.ttl",
 ]
 
 # G₀ 의 서명. 스냅샷을 의도적으로 갱신하면 바뀐다 — 그때는 data/MANIFEST.md 와

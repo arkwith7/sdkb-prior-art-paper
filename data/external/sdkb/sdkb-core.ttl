@@ -100,6 +100,31 @@ ont:changeSet a owl:DatatypeProperty ;
     rdfs:comment "Release version tag for change tracking."@en ;
     rdfs:range xsd:string .
 
+ont:clientCountry a owl:DatatypeProperty ;
+    rdfs:label "clientCountry"@en ;
+    rdfs:comment "ISO country code of the SME that raised the problem."@en ;
+    rdfs:domain ont:Problem ;
+    rdfs:range xsd:string .
+
+ont:companyType a owl:DatatypeProperty ;
+    rdfs:label "companyType"@en ;
+    rdfs:comment "Value-chain role of a company (materials | equipment | parts | fabless | foundry …). Used both for the SME that raised a problem and for a KSIA-listed vendor."@en ;
+    rdfs:domain [ a owl:Class ;
+            owl:unionOf ( ont:Problem ont:Vendor ) ] ;
+    rdfs:range xsd:string .
+
+ont:complianceFlag a owl:DatatypeProperty ;
+    rdfs:label "complianceFlag"@en ;
+    rdfs:comment "Whether the expert profile is subject to compliance review."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:boolean .
+
+ont:complianceSensitivity a owl:DatatypeProperty ;
+    rdfs:label "complianceSensitivity"@en ;
+    rdfs:comment "Disclosure sensitivity of the problem: public | restricted | confidential."@en ;
+    rdfs:domain ont:Problem ;
+    rdfs:range xsd:string .
+
 ont:confidence a owl:DatatypeProperty ;
     rdfs:label "confidence"@en ;
     rdfs:comment "Confidence score (0.0–1.0) from expert/literature."@en ;
@@ -168,11 +193,24 @@ ont:hasEquipment a owl:ObjectProperty ;
     rdfs:range ont:Equipment ;
     skos:exactMatch <http://w3id.org/SemicONTO/hasEquipment> .
 
+ont:hasEquipmentExperience a owl:ObjectProperty ;
+    rdfs:label "hasEquipmentExperience"@en ;
+    rdfs:comment "Hands-on equipment experience of an expert."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range [ a owl:Class ;
+            owl:unionOf ( ont:Equipment ont:EquipmentClass ont:Vendor ont:Metrology ) ] .
+
 ont:hasEquipmentState a owl:ObjectProperty ;
     rdfs:label "hasEquipmentState"@en ;
     rdfs:comment "Current equipment state per SEMI E10."@en ;
     rdfs:domain ont:Equipment ;
     rdfs:range gov:EquipmentState .
+
+ont:hasMaterialExpertise a owl:ObjectProperty ;
+    rdfs:label "hasMaterialExpertise"@en ;
+    rdfs:comment "Material expertise of an expert."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range ont:Material .
 
 ont:hasMeasuredProperty a owl:ObjectProperty ;
     rdfs:label "hasMeasuredProperty"@en ;
@@ -201,6 +239,13 @@ ont:hasParameter a owl:ObjectProperty ;
     rdfs:domain ont:SubProcess ;
     rdfs:range ont:Parameter .
 
+ont:hasProcessExpertise a owl:ObjectProperty ;
+    rdfs:label "hasProcessExpertise"@en ;
+    rdfs:comment "Process (or technology-node) expertise of an expert."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range [ a owl:Class ;
+            owl:unionOf ( ont:Process ont:TechnologyNode ) ] .
+
 ont:hasProperty a owl:ObjectProperty ;
     rdfs:label "hasProperty"@en ;
     rdfs:comment "Links a material to one of its measurable properties."@en ;
@@ -213,6 +258,13 @@ ont:hasSVHC a owl:ObjectProperty ;
     rdfs:comment "Material linked to SCIP reporting rule."@en ;
     rdfs:domain ont:Material ;
     rdfs:range gov:SCIPRule .
+
+ont:hasSkill a owl:ObjectProperty ;
+    rdfs:label "hasSkill"@en ;
+    rdfs:comment "Skill possessed by an expert."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range [ a owl:Class ;
+            owl:unionOf ( ont:Skill ont:Mitigation ) ] .
 
 ont:hasSubStep a owl:ObjectProperty,
         owl:TransitiveProperty ;
@@ -246,6 +298,19 @@ ont:interpretationType a owl:DatatypeProperty ;
     rdfs:comment "Interpretation: verbatim | mapped | author-defined."@en ;
     rdfs:range xsd:string .
 
+ont:involvesEquipment a owl:ObjectProperty ;
+    rdfs:label "involvesEquipment"@en ;
+    rdfs:comment "Equipment implicated by an SME problem."@en ;
+    rdfs:domain ont:Problem ;
+    rdfs:range [ a owl:Class ;
+            owl:unionOf ( ont:Equipment ont:EquipmentClass ont:Metrology ) ] .
+
+ont:involvesProcess a owl:ObjectProperty ;
+    rdfs:label "involvesProcess"@en ;
+    rdfs:comment "Process implicated by an SME problem."@en ;
+    rdfs:domain ont:Problem ;
+    rdfs:range ont:Process .
+
 ont:isDueTo a owl:ObjectProperty ;
     rdfs:label "isDueTo"@en ;
     rdfs:comment "Causal link from failure to root cause."@en ;
@@ -278,6 +343,12 @@ ont:mitigatedBy a owl:ObjectProperty ;
             owl:unionOf ( ont:FailureMode ont:RootCause ) ] ;
     rdfs:range ont:Mitigation .
 
+ont:mitigationProvidesSkill a owl:ObjectProperty ;
+    rdfs:label "mitigationProvidesSkill"@en ;
+    rdfs:comment "Skill through which a mitigation is actionable."@en ;
+    rdfs:domain ont:Mitigation ;
+    rdfs:range ont:Skill .
+
 ont:notAllowedWith a owl:ObjectProperty ;
     rdfs:label "notAllowedWith"@en ;
     rdfs:comment "Material not permitted in a sub-process."@en ;
@@ -296,11 +367,24 @@ ont:probability a owl:DatatypeProperty ;
     rdfs:comment "Conditional probability of cause→failure (optional)."@en ;
     rdfs:range xsd:decimal .
 
+ont:problemCategory a owl:DatatypeProperty ;
+    rdfs:label "problemCategory"@en ;
+    rdfs:comment "Category of the SME problem (defect_reduction | contamination | yield_improvement …)."@en ;
+    rdfs:domain ont:Problem ;
+    rdfs:range xsd:string .
+
 ont:providedBy a owl:ObjectProperty ;
     rdfs:label "providedBy"@en ;
     rdfs:comment "Equipment supplied by vendor."@en ;
     rdfs:domain ont:Equipment ;
     rdfs:range ont:Vendor .
+
+ont:region a owl:DatatypeProperty ;
+    rdfs:label "region"@en ;
+    rdfs:comment "Geographic region of an expert or of the SME that raised a problem."@en ;
+    rdfs:domain [ a owl:Class ;
+            owl:unionOf ( ont:Expert ont:Problem ) ] ;
+    rdfs:range xsd:string .
 
 ont:relevantForTechNode a owl:ObjectProperty ;
     rdfs:label "relevantForTechNode"@en ;
@@ -402,14 +486,6 @@ ont:Donor a owl:Class ;
     rdfs:subClassOf ont:Dopant ;
     skos:exactMatch <http://w3id.org/SemicONTO/Donor> .
 
-ont:Skill a owl:Class ;
-    rdfs:label "Skill"@en ;
-    rdfs:comment "A human competency required for a process or mitigation."@en .
-
-ont:TechnologyNode a owl:Class ;
-    rdfs:label "TechnologyNode"@en ;
-    rdfs:comment "A semiconductor technology generation (e.g. 7nm, 3nm)."@en .
-
 gov:NISTOutcome a owl:Class ;
     rdfs:label "NISTOutcome"@en ;
     rdfs:comment "A desired security outcome from NIST IR 8546."@en .
@@ -441,14 +517,6 @@ ont:MaterialProperty a owl:Class ;
     skos:closeMatch <http://qudt.org/schema/qudt/Quantity> ;
     skos:exactMatch <http://w3id.org/SemicONTO/MaterialProperty> .
 
-ont:Mitigation a owl:Class ;
-    rdfs:label "Mitigation"@en ;
-    rdfs:comment "A corrective or preventive action for a failure mode."@en .
-
-ont:Process a owl:Class ;
-    rdfs:label "Process"@en ;
-    rdfs:comment "A major semiconductor manufacturing process (e.g. Lithography, Etch)."@en .
-
 ont:RootCause a owl:Class ;
     rdfs:label "RootCause"@en ;
     rdfs:comment "An identified root cause of a failure mode."@en .
@@ -459,15 +527,19 @@ ont:Semiconductor a owl:Class ;
     rdfs:subClassOf ont:Material ;
     skos:exactMatch <http://w3id.org/SemicONTO/Semiconductor> .
 
-ont:Vendor a owl:Class ;
-    rdfs:label "Vendor"@en ;
-    rdfs:comment "A supplier or manufacturer of equipment or materials."@en .
+ont:TechnologyNode a owl:Class ;
+    rdfs:label "TechnologyNode"@en ;
+    rdfs:comment "A semiconductor technology generation (e.g. 7nm, 3nm)."@en .
 
 ont:Parameter a owl:Class ;
     rdfs:label "Parameter"@en ;
     rdfs:comment "A measurable process parameter (e.g. temperature, pressure)."@en ;
     rdfs:subClassOf ont:Quantity ;
     skos:closeMatch <http://qudt.org/schema/qudt/Quantity> .
+
+ont:Skill a owl:Class ;
+    rdfs:label "Skill"@en ;
+    rdfs:comment "A human competency required for a process or mitigation."@en .
 
 ont:ExtrinsicSemiconductor a owl:Class ;
     rdfs:label "ExtrinsicSemiconductor"@en ;
@@ -479,14 +551,34 @@ ont:FailureMode a owl:Class ;
     rdfs:label "FailureMode"@en ;
     rdfs:comment "A defect or failure observed in manufacturing."@en .
 
-ont:Metrology a owl:Class ;
-    rdfs:label "Metrology"@en ;
-    rdfs:comment "A measurement or inspection method."@en .
+ont:Mitigation a owl:Class ;
+    rdfs:label "Mitigation"@en ;
+    rdfs:comment "A corrective or preventive action for a failure mode."@en .
+
+ont:Process a owl:Class ;
+    rdfs:label "Process"@en ;
+    rdfs:comment "A major semiconductor manufacturing process (e.g. Lithography, Etch)."@en .
 
 ont:Quantity a owl:Class ;
     rdfs:label "Quantity"@en ;
     rdfs:comment "An abstract measurable quantity with a numeric value and unit. Generalizes process Parameter and MaterialProperty."@en ;
     skos:exactMatch <http://qudt.org/schema/qudt/Quantity> .
+
+ont:Vendor a owl:Class ;
+    rdfs:label "Vendor"@en ;
+    rdfs:comment "A supplier or manufacturer of equipment or materials."@en .
+
+ont:Expert a owl:Class ;
+    rdfs:label "Expert"@en ;
+    rdfs:comment "A domain expert with a curated competency profile (인력 축)."@en .
+
+ont:Metrology a owl:Class ;
+    rdfs:label "Metrology"@en ;
+    rdfs:comment "A measurement or inspection method."@en .
+
+ont:Problem a owl:Class ;
+    rdfs:label "Problem"@en ;
+    rdfs:comment "A technical problem posed by a materials/parts/equipment SME (소부장 실문제)."@en .
 
 ont:Equipment a owl:Class ;
     rdfs:label "Equipment"@en ;

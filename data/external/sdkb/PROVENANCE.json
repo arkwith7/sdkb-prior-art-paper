@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "786218c94c74ed57aaee9e2225f9b329d1b2f789",
-  "source_commit_date": "2026-07-12T23:56:31+09:00",
+  "source_commit": "d4dff61ab5db3582f9648e02d908d65c8b7bd1d0",
+  "source_commit_date": "2026-07-14T16:19:01+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-12T14:56:43+00:00",
+  "vendored_at": "2026-07-14T07:30:37+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
@@ -18,13 +18,13 @@
       "file": "sdkb-core.ttl",
       "source_path": "ontology/sdkb-core.ttl",
       "role": "TBox: 제조 코어(Process/SubProcess/Equipment/Material/Device/FailureMode)",
-      "sha256": "2e350f2376d40a0190b984cefc834b7705b440bafd3347b258daf1d82d27af2e"
+      "sha256": "0606bd1a65162ca263cf444066cf9cf1ec008d0f47db83b690e261b71c16ded4"
     },
     {
       "file": "sdkb-patent.ttl",
       "source_path": "ontology/sdkb-patent.ttl",
       "role": "TBox: 특허 모듈(Patent/IPC/realizesProcess/concernsDevice)",
-      "sha256": "3b8822c923e91a5f21bb3628e4dd5fc802c88dcecc4158502609a2721a737473"
+      "sha256": "15998c4b1e7cfa7ed9d714f16d7ab6ffa8f94e34912ed86839789c008b695247"
     },
     {
       "file": "sdkb-foresight.ttl",
@@ -42,7 +42,19 @@
       "file": "sdkb-abox-patents.ttl",
       "source_path": "ontology/sdkb-abox-patents.ttl",
       "role": "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다",
-      "sha256": "f13186095003a9e600e9f1920bceee8f8bebef1941d6812897e93765b226c2d1"
+      "sha256": "1733a6352fd3624f6edce8beaa322498da9e515acb05c0c05490723bd1b51692"
+    },
+    {
+      "file": "sdkb-abox-experts-problems.ttl",
+      "source_path": "ontology/sdkb-abox-experts-problems.ttl",
+      "role": "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축",
+      "sha256": "44d8d409364a8c0b61b58cbb024108d4de3c05055a4f634e659c79116ae04982"
+    },
+    {
+      "file": "sdkb-abox-vendors.ttl",
+      "source_path": "ontology/sdkb-abox-vendors.ttl",
+      "role": "ABox: KSIA 회원사 326 — 소부장 벤더 축",
+      "sha256": "0864e92eda52ba7aae53ae43cd07c1f17684c3ebf360dc1125819493d8fdca41"
     },
     {
       "file": "semiconductor_v0_3.json",

@@ -39,6 +39,8 @@ VENDOR_FILES: list[tuple[str, str]] = [
     ("ontology/sdkb-foresight.ttl", "TBox: 예측 모듈(Scenario/Signal/STEEPVE) — H2 의 기반"),
     ("ontology/sdkb-core-data.ttl", "ABox: 도메인 인스턴스 (공정 20 · 디바이스 31 …)"),
     ("ontology/sdkb-abox-patents.ttl", "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다"),
+    ("ontology/sdkb-abox-experts-problems.ttl", "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축"),
+    ("ontology/sdkb-abox-vendors.ttl", "ABox: KSIA 회원사 326 — 소부장 벤더 축"),
     ("data/semiconductor_v0_3.json", "ABox 의 커밋된 원천(=재현 기준점)"),
     ("data/schema_report.json", "원천의 sha256 + 노드/엣지 카운트"),
 ]
@@ -111,6 +113,62 @@ def verify_snapshot(dest: Path = EXTERNAL_SDKB) -> list[str]:
     return problems
 
 
+# 산출물 → 그것을 만드는 입력(생성기 + 원천 데이터). make 의 의존관계와 같은 뜻이다.
+# 입력이 산출물보다 새로우면 그 산출물은 낡은 것이다.
+ARTIFACT_INPUTS: dict[str, list[str]] = {
+    "ontology/sdkb-core.ttl": ["scripts/build_owl.py"],
+    "ontology/sdkb-core-data.ttl": [
+        "scripts/convert_rdf.py", "data/semiconductor_v0_3.json",
+    ],
+    "ontology/sdkb-abox-patents.ttl": [
+        "scripts/build_abox_patents.py",
+        "data/patents/rejected_patents_meta.parquet",
+        "data/patents/prior_art_edges.parquet",
+    ],
+    "ontology/sdkb-abox-experts-problems.ttl": [
+        "scripts/build_abox_experts_problems.py", "data/semiconductor_v0_3.json",
+    ],
+    "ontology/sdkb-abox-vendors.ttl": [
+        "scripts/build_abox_vendors_ksia.py",
+        "data/vendors/ksia_member_industry_list_20260714.csv",
+        "ontology/sdkb-abox-patents.ttl",
+    ],
+}
+
+
+def _reject_stale_artifacts(sdkb_home: Path) -> None:
+    """입력보다 오래된 빌드 산출물을 거부한다.
+
+    이 가드가 없어서 실제로 사고가 났다 (2026-07-14). vendor 대상 TTL 중 다수는 상류에서
+    **gitignore 되는 빌드 산출물**이라 git 이 지켜주지 않는다. 그런데 vendor 는 파일이
+    존재하는지만 보고 디스크에 있는 것을 그대로 복사했다. 그 결과 공정 어휘 복원
+    (SDKB `ad7fe3d`, 공정 20 → 49) **이전에 빌드된** sdkb-abox-patents.ttl 이 그대로 얼려졌고,
+    복원된 네 단계(annealing·metallization·oxidation·passivation)는 실제로 특허가 있는데도
+    G₀ 에서 C₀(s)=0 으로 기록됐다 — **H1 의 before 가 낮게 잡혀 검정이 실제보다 쉬웠다.**
+
+    PROVENANCE 의 sha256 은 이것을 못 잡는다: 해시는 파일이 *바뀌지 않았음*만 보장하지
+    *옳게 빌드됐음*을 보장하지 않는다.
+    """
+    stale = []
+    for rel, inputs in ARTIFACT_INPUTS.items():
+        art = sdkb_home / rel
+        if not art.exists():
+            continue
+        built = art.stat().st_mtime
+        for dep in inputs:
+            src = sdkb_home / dep
+            if src.exists() and src.stat().st_mtime > built:
+                stale.append(f"{rel}  ← {dep} 가 더 새롭다")
+
+    if stale:
+        raise SystemExit(
+            "[vendor] 빌드 산출물이 입력보다 낡았다 — 최신 어휘·데이터가 반영되지 않았다.\n  "
+            + "\n  ".join(stale)
+            + "\n\n  스냅샷의 sha256 은 '바뀌지 않았음'만 보장하지 '옳게 빌드됐음'을 보장하지 않는다.\n"
+            f"  cd {sdkb_home} && make owl convert abox abox-patents abox-vendors"
+        )
+
+
 def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
     if not (sdkb_home / ".git").exists():
         raise SystemExit(f"[vendor] SDKB git repo 를 찾을 수 없음: {sdkb_home}")
@@ -123,6 +181,7 @@ def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
             + f"\n\n  cd {sdkb_home} && make owl convert   # 를 먼저 실행할 것"
         )
 
+    _reject_stale_artifacts(sdkb_home)
     report = _verify_source(sdkb_home)
     commit = _git(sdkb_home, "rev-parse", "HEAD")
     dirty = bool(_git(sdkb_home, "status", "--porcelain"))

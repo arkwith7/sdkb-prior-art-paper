@@ -10,10 +10,14 @@ test:
 	uv run pytest -q
 
 # 근간 온톨로지(SDKB) 스냅샷을 data/external/sdkb/ 로 vendor.
-# SDKB 쪽에서 `make owl convert` 를 먼저 돌려야 한다 (TTL 은 빌드 산출물이라 git 에 없다).
+# 상류 TTL 은 **gitignore 되는 빌드 산출물**이라 git 이 최신성을 지켜주지 않는다.
+# 그래서 vendor 하기 전에 상류에서 반드시 재빌드한다 — 디스크에 남아 있던 낡은 산출물을
+# 그대로 얼리는 사고가 실제로 있었다 (2026-07-14 · G₀ 의 C₀ 가 16 이 아니라 20 이었다).
 # SDKB_HOME 으로 원본 위치를 바꿀 수 있다: make vendor SDKB_HOME=/path/to/sdkb
+SDKB_HOME ?= $(HOME)/Dev/sdkb
 vendor:
-	uv run python -m sdkb_paper.ontology.vendor $(if $(SDKB_HOME),--sdkb-home $(SDKB_HOME),)
+	$(MAKE) -C $(SDKB_HOME) owl convert abox abox-patents abox-vendors
+	uv run python -m sdkb_paper.ontology.vendor --sdkb-home $(SDKB_HOME)
 
 # baseline 그래프(graph_v0 = H1 의 "before") 를 스냅샷에서 조립. 결정적 산출물.
 baseline:
