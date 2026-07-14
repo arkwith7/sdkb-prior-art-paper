@@ -30,7 +30,7 @@ from sdkb_paper.analysis.timeseries import (
     sign_test,
     vintage_lead_times,
 )
-from sdkb_paper.config import FIGURES, NAME_BASELINE, PROCESSED
+from sdkb_paper.config import FIGURES, NAME_BASELINE, PROCESSED, TABLES
 from sdkb_paper.preprocess.profile import DELTA as DELTA_PARQUET
 from sdkb_paper.viz.figures import fig_h2_timeseries
 
@@ -41,6 +41,11 @@ PREDECESSOR_CSV = PROCESSED / "h2_predecessor_codes.csv"
 PLAN009_CSV = PROCESSED / "h2_plan009_matrix.csv"
 REFERENCE_CSV = PROCESSED / "h2_dart_reference.csv"
 H2PRIME_CSV = PROCESSED / "h2prime_matrix.csv"
+
+# 논문 표 (§4.4). **손으로 옮기지 않는다** — 이 함수가 생성한 파일이 원고의 원천이다.
+TABLE6 = TABLES / "table6_h2_code_arm.md"
+TABLE7 = TABLES / "table7_h2prime_name_arm.md"
+TABLE8 = TABLES / "table8_dart_reference.md"
 
 # §4.5 민감도 — 사전 정의 (PLAN-006). 결과를 보고 추가하지 않는다.
 THETAS = (1.5, 2.0, 3.0)
@@ -353,6 +358,63 @@ def run_reference(union: pd.DataFrame, cases: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def write_paper_tables(p9: dict, h2p: dict, dart: pd.DataFrame) -> None:
+    """논문 §4.4 의 표 6·7·8 을 생성한다 (CLAUDE.md §1.1 — 수치는 코드의 출력이다)."""
+    TABLES.mkdir(parents=True, exist_ok=True)
+
+    TABLE6.write_text(
+        "# 표 6 · H2 — 개념 단위 vs **분류코드** 단위 조기탐지 (단측 부호검정)\n\n"
+        "여덟 셀 전부를 싣는다 — 유리한 셀을 고르지 않는다. **전부 기각 실패다.**\n\n"
+        "그러나 이 검정은 **성립하지 않는다**. 코드 대조군이 양방향으로 무효이기 때문이다:\n"
+        "(a) 현재 분류는 소급 재분류라 부당하게 이르다 — 3D NAND 전용 코드가 2008년 출원에,\n"
+        "GAA 전용 코드가 2012년 출원에 붙어 있다. (b) 당시 분류는 BigQuery 동결 스냅샷이\n"
+        "2017-10 부터라 해상도 바닥이 2017 이다 — 교정 창에서는 여섯 사례 중 넷이 동률이 된다.\n"
+        "이 무효성이 본 연구의 방법론적 발견이며 §5.3 에 자인한다.\n\n"
+        + _md_table(p9["matrix"].drop(columns=["window_id"])) + "\n",
+        encoding="utf-8",
+    )
+
+    TABLE7.write_text(
+        "# 표 7 · H2′ — 개념 단위 vs **명칭 키워드** 단위 조기탐지 (단측 부호검정)\n\n"
+        "분류코드가 시간적으로 무효라 **시점 유효한 대조군**으로 다시 검정한다. 명세 텍스트는\n"
+        "소급 재작성되지 않는다 — 2010년 특허의 초록은 지금도 2010년의 초록이다. 대조군은 그\n"
+        "기술의 **명칭**으로 검색하는 것이며(온톨로지 없는 실무자가 하는 일), 신호 규칙\n"
+        "(θ=2.0 · n_min=3 · 후행창 3년)은 **손대지 않았다 — 대조군만 갈아끼웠다.**\n\n"
+        "`si_struct` 는 개념 정의에서 **명칭 용어를 뺀 구조 전용**이라 대조군과 **서로소**다.\n"
+        "부분집합 자명성(개념 ⊇ 이름)이 결론을 만들지 않았음을 보인다.\n\n"
+        + _md_table(h2p["matrix"]) + "\n\n"
+        "## 교정 창 · 구조 전용 개념 (서로소 · 주 결과)\n\n"
+        + _md_table(h2p["leads"][("extended", "si_struct")]) + "\n\n"
+        "> **4승 0패 — 그런데 p = 0.0625 로 α=0.05 에 미달한다.** 동률 2건(TSV·MRAM)이 유효쌍을\n"
+        "> 6 → 4 로 깎았고, 4전 4승의 최소 p 가 0.0625 이기 때문이다. **\"기각\"이 아니라\n"
+        "> \"표본 부족\"이다.** 유효쌍이 4 이하면 α 도달이 구조적으로 불가능하다는 것은 사례를\n"
+        "> 동결한 시점부터 코드에 명시돼 있었다.\n>\n"
+        "> **유의하게 만들 수 있었으나 하지 않았다**: FOWLP 재투입(7전 7승 p=0.0078) · 동률을\n"
+        "> 개념 승으로 계수(6전 6승 p=0.0156) · θ 하향. 전부 p-hacking 이다.\n\n"
+        "**p 값 없이도 남는 것**: HBM 은 개념이 2009년, 명칭('HBM')이 **2020년**이다 — 11년 차이다.\n"
+        "특허는 HBM 을 만들면서 그것을 HBM 이라 부르지 않았다. 3D NAND 는 명칭으로 **끝내 탐지되지\n"
+        "않는다.** 이것이 온톨로지가 하는 일이고, 부호검정이 필요 없는 사실이다.\n",
+        encoding="utf-8",
+    )
+
+    if len(dart):
+        TABLE8.write_text(
+            "# 표 8 · 외부 준거(DART 공시) 대비 선행 시차 — **검정이 아니라 서술**\n\n"
+            "특허로 특허를 검증할 수 없다. 두 팔이 같은 말뭉치에서 나오므로, 어느 쪽이 빨라도\n"
+            "그것이 현실의 부상과 맞는지는 말뭉치 안에서 알 수 없다. 그래서 **말뭉치 밖의 준거**에\n"
+            "각 팔을 대어 잰다 — 사업보고서는 **제출 시점의 기록이고 소급 수정되지 않는다**.\n\n"
+            "준거 규칙(동결): 기술 T 의 준거 연도 = 그 용어가 **연 1회 이상** 등장하는 **최초 연도**\n"
+            "(원제출본만). 사전 배제: MRAM(사업계획 상용구) · FinFET(산발) · FOWLP.\n\n"
+            + _md_table(dart) + "\n\n"
+            "> **준거 사례가 4건이라 부호검정 최소 p = 0.0625 — α=0.05 에 도달할 수 없다.** 이 한계는\n"
+            "> 결과를 보기 전에 선언했다. **유의성을 주장하지 않는다.**\n\n"
+            "개념(si)은 **4/4 선행**(중앙 4.5년), 당시 유효한 코드는 **1/3**(중앙 −1년)이다.\n"
+            "하이닉스 HBM 공시(2014)와 삼성(2017)의 차이가 '하이닉스가 원조'라는 외부 사실과\n"
+            "일치한다는 점이 준거의 타당성을 뒷받침한다.\n",
+            encoding="utf-8",
+        )
+
+
 def main() -> int:
     raw = pd.read_parquet(DELTA_PARQUET)
     union = union_corpus()
@@ -577,6 +639,7 @@ B p = {cor["bidir_test"].p_value:.4g} (사례 2건뿐 — **검정이 아니라 
     if len(dart):
         dart.to_csv(REFERENCE_CSV, index=False)
     h2p["matrix"].to_csv(H2PRIME_CSV, index=False)
+    write_paper_tables(p9, h2p, dart)
     fig = fig_h2_timeseries(cor["ts"], cor["leads"])
     fig_pre = fig_h2_timeseries(
         pre["ts"], pre["leads"], out=FIGURES / "fig4b_h2_timeseries_preregistered.png"
