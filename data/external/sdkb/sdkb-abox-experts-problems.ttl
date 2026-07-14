@@ -5,11 +5,11 @@
 <https://w3id.org/sdkb/data/expert/EXP_001> a ont:Expert ;
     rdfs:label "김태훈" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/etch>,
@@ -28,12 +28,10 @@
 <https://w3id.org/sdkb/data/expert/EXP_002> a ont:Expert ;
     rdfs:label "박지현" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asm>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -48,11 +46,11 @@
 <https://w3id.org/sdkb/data/expert/EXP_003> a ont:Expert ;
     rdfs:label "이승우" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/hardmask_etch>,
@@ -64,11 +62,11 @@
 <https://w3id.org/sdkb/data/expert/EXP_004> a ont:Expert ;
     rdfs:label "최재호" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/subprocess/ald>,
         <https://w3id.org/sdkb/data/subprocess/cvd>,
@@ -81,12 +79,10 @@
 <https://w3id.org/sdkb/data/expert/EXP_005> a ont:Expert ;
     rdfs:label "김영수" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asm>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/diffusion>,
         <https://w3id.org/sdkb/data/process/implant>,
@@ -105,8 +101,8 @@
     rdfs:label "노승현" ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/defect_inspection>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/subprocess/advanced_packaging>,
         <https://w3id.org/sdkb/data/subprocess/defect_inspection>,
@@ -117,8 +113,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_007> a ont:Expert ;
     rdfs:label "임소영" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/ald>,
@@ -134,9 +130,9 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -151,8 +147,8 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/hardmask_etch>,
@@ -164,9 +160,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_010> a ont:Expert ;
     rdfs:label "전호영" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/subprocess/advanced_packaging>,
         <https://w3id.org/sdkb/data/subprocess/duv_lithography>,
@@ -180,8 +176,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_011> a ont:Expert ;
     rdfs:label "김하늘" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/subprocess/annealing> ;
@@ -191,8 +187,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_012> a ont:Expert ;
     rdfs:label "황수정" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/lithography> ;
     ont:region "USA" .
@@ -200,8 +196,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_013> a ont:Expert ;
     rdfs:label "최동현" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/clean>,
         <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/etch>,
@@ -215,8 +211,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_014> a ont:Expert ;
     rdfs:label "강태영" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/subprocess/annealing> ;
@@ -230,9 +226,9 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -247,17 +243,17 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/metrology> ;
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_017> a ont:Expert ;
     rdfs:label "김서연" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/clean>,
         <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -269,9 +265,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_018> a ont:Expert ;
     rdfs:label "한예원" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
     ont:region "Taiwan" .
@@ -279,9 +275,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_019> a ont:Expert ;
     rdfs:label "강현수" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -294,9 +290,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_020> a ont:Expert ;
     rdfs:label "한예원" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/lithography>,
@@ -308,8 +304,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_021> a ont:Expert ;
     rdfs:label "송지은" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/lithography> ;
     ont:hasSkill <https://w3id.org/sdkb/data/mitigation/chamber_clean>,
@@ -319,9 +315,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_022> a ont:Expert ;
     rdfs:label "강현수" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
     ont:region "Korea" .
@@ -329,8 +325,7 @@
 <https://w3id.org/sdkb/data/expert/EXP_023> a ont:Expert ;
     rdfs:label "한예원" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/duv_lithography>,
@@ -341,9 +336,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_024> a ont:Expert ;
     rdfs:label "신동욱" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/metrology> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
@@ -352,9 +347,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_025> a ont:Expert ;
     rdfs:label "최동현" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/lithography>,
@@ -365,18 +360,18 @@
 <https://w3id.org/sdkb/data/expert/EXP_026> a ont:Expert ;
     rdfs:label "장승호" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_027> a ont:Expert ;
     rdfs:label "문지현" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/clean>,
         <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/deposition>,
@@ -388,8 +383,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_028> a ont:Expert ;
     rdfs:label "전호영" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/technode/5nm> ;
@@ -399,9 +394,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_029> a ont:Expert ;
     rdfs:label "정수빈" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/subprocess/advanced_packaging>,
@@ -411,8 +406,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_030> a ont:Expert ;
     rdfs:label "서준석" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/lithography> ;
@@ -423,9 +418,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_031> a ont:Expert ;
     rdfs:label "오승민" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/technode/7nm> ;
@@ -435,8 +430,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_032> a ont:Expert ;
     rdfs:label "김서연" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/subprocess/ald>,
@@ -451,9 +446,8 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/metrology> ;
@@ -462,8 +456,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_034> a ont:Expert ;
     rdfs:label "윤미경" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
     ont:region "Korea" .
@@ -471,8 +465,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_035> a ont:Expert ;
     rdfs:label "강현수" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch> ;
     ont:hasSkill <https://w3id.org/sdkb/data/mitigation/chamber_clean>,
         <https://w3id.org/sdkb/data/skill/endpoint_detection> ;
@@ -481,9 +475,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_036> a ont:Expert ;
     rdfs:label "이준석" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/metrology> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
@@ -492,9 +486,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_037> a ont:Expert ;
     rdfs:label "윤서진" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/technode/3nm> ;
     ont:region "Korea" .
@@ -502,9 +496,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_038> a ont:Expert ;
     rdfs:label "황수정" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/etch> ;
     ont:hasSkill <https://w3id.org/sdkb/data/mitigation/chamber_clean>,
@@ -518,9 +512,9 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/metrology> ;
     ont:region "USA" .
@@ -528,9 +522,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_040> a ont:Expert ;
     rdfs:label "신승우" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/technode/5nm> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
@@ -539,8 +533,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_041> a ont:Expert ;
     rdfs:label "이수연" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/clean>,
         <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/deposition>,
@@ -552,8 +546,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_042> a ont:Expert ;
     rdfs:label "한예원" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/subprocess/euv_lithography>,
@@ -564,8 +558,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_043> a ont:Expert ;
     rdfs:label "윤서진" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/duv_lithography>,
@@ -576,8 +570,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_044> a ont:Expert ;
     rdfs:label "송지은" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/subprocess/annealing> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
@@ -586,8 +580,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_045> a ont:Expert ;
     rdfs:label "문예린" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/clean>,
         <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/deposition>,
@@ -600,8 +594,7 @@
 <https://w3id.org/sdkb/data/expert/EXP_046> a ont:Expert ;
     rdfs:label "강현수" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/subprocess/annealing> ;
@@ -611,9 +604,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_047> a ont:Expert ;
     rdfs:label "황지민" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/technode/3nm>,
         <https://w3id.org/sdkb/data/technode/5nm> ;
     ont:region "USA" .
@@ -621,8 +614,7 @@
 <https://w3id.org/sdkb/data/expert/EXP_048> a ont:Expert ;
     rdfs:label "조민수" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/implant> ;
     ont:region "Taiwan" .
@@ -634,9 +626,9 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/metrology> ;
     ont:region "China" .
@@ -644,9 +636,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_050> a ont:Expert ;
     rdfs:label "김서연" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/subprocess/packaging> ;
@@ -657,17 +649,17 @@
 <https://w3id.org/sdkb/data/expert/EXP_051> a ont:Expert ;
     rdfs:label "최동현" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_052> a ont:Expert ;
     rdfs:label "이예은" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/duv_lithography>,
@@ -678,8 +670,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_053> a ont:Expert ;
     rdfs:label "문예린" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -691,8 +683,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_054> a ont:Expert ;
     rdfs:label "문예린" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography> ;
     ont:region "Singapore" .
 
@@ -703,9 +695,9 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/technode/3nm> ;
@@ -714,9 +706,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_056> a ont:Expert ;
     rdfs:label "이예은" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/duv_lithography>,
@@ -731,17 +723,16 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/metrology> ;
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_058> a ont:Expert ;
     rdfs:label "박현민" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
     ont:region "Korea" .
@@ -749,9 +740,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_059> a ont:Expert ;
     rdfs:label "이예은" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/clean>,
         <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/implant>,
@@ -763,8 +754,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_060> a ont:Expert ;
     rdfs:label "강현수" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/advanced_packaging>,
         <https://w3id.org/sdkb/data/technode/5nm>,
@@ -775,9 +766,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_061> a ont:Expert ;
     rdfs:label "정민호" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -789,8 +779,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_062> a ont:Expert ;
     rdfs:label "조태현" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/technode/5nm> ;
@@ -800,9 +790,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_063> a ont:Expert ;
     rdfs:label "윤미경" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
     ont:region "Korea" .
@@ -810,9 +800,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_064> a ont:Expert ;
     rdfs:label "한예원" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/metrology> ;
@@ -827,16 +816,16 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/metrology> ;
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_066> a ont:Expert ;
     rdfs:label "박영희" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -848,18 +837,17 @@
 <https://w3id.org/sdkb/data/expert/EXP_067> a ont:Expert ;
     rdfs:label "문지현" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch> ;
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_068> a ont:Expert ;
     rdfs:label "이하은" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -871,8 +859,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_069> a ont:Expert ;
     rdfs:label "김다영" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/kla>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/kla>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/metrology> ;
@@ -883,9 +871,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_070> a ont:Expert ;
     rdfs:label "조민수" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -897,17 +885,16 @@
 <https://w3id.org/sdkb/data/expert/EXP_071> a ont:Expert ;
     rdfs:label "이하은" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_072> a ont:Expert ;
     rdfs:label "윤미경" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/technode/3nm> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
@@ -916,8 +903,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_073> a ont:Expert ;
     rdfs:label "송지은" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/subprocess/annealing> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
@@ -926,8 +913,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_074> a ont:Expert ;
     rdfs:label "류소희" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -939,9 +926,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_075> a ont:Expert ;
     rdfs:label "송지은" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -953,17 +939,16 @@
 <https://w3id.org/sdkb/data/expert/EXP_076> a ont:Expert ;
     rdfs:label "안미라" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_077> a ont:Expert ;
     rdfs:label "이준석" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/subprocess/packaging> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
@@ -972,8 +957,7 @@
 <https://w3id.org/sdkb/data/expert/EXP_078> a ont:Expert ;
     rdfs:label "김하늘" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/metrology> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
     ont:region "China" .
@@ -981,8 +965,7 @@
 <https://w3id.org/sdkb/data/expert/EXP_079> a ont:Expert ;
     rdfs:label "최영진" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
     ont:region "Korea" .
@@ -990,8 +973,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_080> a ont:Expert ;
     rdfs:label "이준석" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
     ont:region "China" .
@@ -999,9 +982,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_081> a ont:Expert ;
     rdfs:label "전민재" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/subprocess/ald>,
         <https://w3id.org/sdkb/data/subprocess/cvd>,
@@ -1011,8 +993,7 @@
 <https://w3id.org/sdkb/data/expert/EXP_082> a ont:Expert ;
     rdfs:label "조민수" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/subprocess/ald>,
@@ -1023,9 +1004,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_083> a ont:Expert ;
     rdfs:label "장승호" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -1039,8 +1020,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_084> a ont:Expert ;
     rdfs:label "황지민" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/annealing>,
@@ -1055,8 +1036,8 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/metrology> ;
     ont:region "Singapore" .
@@ -1064,8 +1045,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_086> a ont:Expert ;
     rdfs:label "신동욱" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/subprocess/ald>,
@@ -1081,8 +1062,8 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/process/metrology> ;
@@ -1091,9 +1072,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_088> a ont:Expert ;
     rdfs:label "황수정" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
     ont:region "USA" .
@@ -1101,9 +1082,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_089> a ont:Expert ;
     rdfs:label "문예린" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -1116,8 +1097,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_090> a ont:Expert ;
     rdfs:label "백준호" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
@@ -1129,27 +1110,27 @@
 <https://w3id.org/sdkb/data/expert/EXP_091> a ont:Expert ;
     rdfs:label "문예린" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_092> a ont:Expert ;
     rdfs:label "류현정" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/defect_analysis> ;
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_093> a ont:Expert ;
     rdfs:label "윤미경" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/duv_lithography>,
@@ -1161,8 +1142,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_094> a ont:Expert ;
     rdfs:label "전호영" ;
     ont:complianceFlag true ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/technode/5nm> ;
     ont:hasSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> ;
@@ -1171,9 +1152,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_095> a ont:Expert ;
     rdfs:label "문예린" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/screen>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
         <https://w3id.org/sdkb/data/process/implant>,
         <https://w3id.org/sdkb/data/subprocess/ald>,
@@ -1184,8 +1164,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_096> a ont:Expert ;
     rdfs:label "강태영" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/lam_research>,
-        <https://w3id.org/sdkb/data/vendor/tokyo_electron> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/lam_research>,
+        <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/implant>,
@@ -1196,9 +1176,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_097> a ont:Expert ;
     rdfs:label "장승호" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/technode/3nm> ;
     ont:hasSkill <https://w3id.org/sdkb/data/mitigation/chamber_clean>,
@@ -1212,9 +1192,9 @@
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/ellipsometry>,
         <https://w3id.org/sdkb/data/metrology/overlay>,
-        <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+        <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/packaging> ;
     ont:region "Taiwan" .
@@ -1222,8 +1202,8 @@
 <https://w3id.org/sdkb/data/expert/EXP_099> a ont:Expert ;
     rdfs:label "임지혜" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch>,
         <https://w3id.org/sdkb/data/process/metrology>,
         <https://w3id.org/sdkb/data/subprocess/advanced_packaging>,
@@ -1236,9 +1216,9 @@
 <https://w3id.org/sdkb/data/expert/EXP_100> a ont:Expert ;
     rdfs:label "홍성수" ;
     ont:complianceFlag false ;
-    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/vendor/applied_materials>,
-        <https://w3id.org/sdkb/data/vendor/asml>,
-        <https://w3id.org/sdkb/data/vendor/kla> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
+        <https://w3id.org/sdkb/data/organization/asml>,
+        <https://w3id.org/sdkb/data/organization/kla> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/clean>,
         <https://w3id.org/sdkb/data/process/cmp>,
         <https://w3id.org/sdkb/data/process/implant>,

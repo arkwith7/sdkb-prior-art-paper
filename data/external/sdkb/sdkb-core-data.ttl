@@ -405,7 +405,7 @@
     skos:prefLabel "3M CMP Pad"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/cmp_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/3m> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/3m_innovative_properties_company> .
 
 <https://w3id.org/sdkb/data/equipment/alarm_system> a ont:Equipment ;
     dcterms:bibliographicCitation "Author-defined generic/facilities equipment" ;
@@ -426,7 +426,7 @@
     skos:prefLabel "Applied Materials Centura"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/deposition_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/applied_materials> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/applied_materials> .
 
 <https://w3id.org/sdkb/data/equipment/amat_endura> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Applied Materials" ;
@@ -436,7 +436,7 @@
     skos:prefLabel "Applied Materials Endura"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/deposition_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/applied_materials> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/applied_materials> .
 
 <https://w3id.org/sdkb/data/equipment/amat_reflexion> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Applied Materials" ;
@@ -446,7 +446,7 @@
     skos:prefLabel "Applied Materials Reflexion LK"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/cmp_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/applied_materials> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/applied_materials> .
 
 <https://w3id.org/sdkb/data/equipment/amat_semvision> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Applied Materials" ;
@@ -456,7 +456,7 @@
     skos:prefLabel "Applied Materials SEMVision"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/defect_inspection> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/applied_materials> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/applied_materials> .
 
 <https://w3id.org/sdkb/data/equipment/amat_vantage> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Applied Materials" ;
@@ -466,7 +466,7 @@
     skos:prefLabel "Applied Materials Producer Vantage"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/deposition_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/applied_materials> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/applied_materials> .
 
 <https://w3id.org/sdkb/data/equipment/asm_pulsar> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Asm" ;
@@ -476,7 +476,7 @@
     skos:prefLabel "ASM Pulsar"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/deposition_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/asm> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/asm_ip_holding_b_v> .
 
 <https://w3id.org/sdkb/data/equipment/asml_nxt> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Asml" ;
@@ -486,7 +486,7 @@
     skos:prefLabel "ASML NXT"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/scanner> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/asml> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/asml> .
 
 <https://w3id.org/sdkb/data/equipment/asml_scanner> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Asml" ;
@@ -496,7 +496,7 @@
     skos:prefLabel "ASML Lithography Scanner"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/scanner> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/asml> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/asml> .
 
 <https://w3id.org/sdkb/data/equipment/axcelis_implanter> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Axcelis" ;
@@ -506,7 +506,7 @@
     skos:prefLabel "Axcelis Implanter"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/implanter> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/axcelis> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/axcelis> .
 
 <https://w3id.org/sdkb/data/equipment/bruker_ellipsometer> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Bruker" ;
@@ -516,7 +516,7 @@
     skos:prefLabel "Bruker Ellipsometer"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/overlay_metrology> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/bruker> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/bruker> .
 
 <https://w3id.org/sdkb/data/equipment/cabot_slurry> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Cabot" ;
@@ -526,7 +526,7 @@
     skos:prefLabel "Cabot CMP Slurry"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/cmp_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/cabot> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/cabot> .
 
 <https://w3id.org/sdkb/data/equipment/coater_track> a ont:Equipment ;
     dcterms:bibliographicCitation "Author-defined generic/facilities equipment" ;
@@ -569,7 +569,7 @@
     skos:prefLabel "Ebara Frex"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/cmp_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/ebara> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/ebara> .
 
 <https://w3id.org/sdkb/data/equipment/exhaust_line> a ont:Equipment ;
     dcterms:bibliographicCitation "Author-defined generic/facilities equipment" ;
@@ -634,7 +634,7 @@
     skos:prefLabel "Hitachi Etcher"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/etcher> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/hitachi> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/hitachi_high_tech> .
 
 <https://w3id.org/sdkb/data/equipment/hitachi_sem> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Hitachi" ;
@@ -644,7 +644,7 @@
     skos:prefLabel "Hitachi CD-SEM"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/cd_sem> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/hitachi> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/hitachi_high_tech> .
 
 <https://w3id.org/sdkb/data/equipment/implanter> a ont:Equipment ;
     dcterms:bibliographicCitation "Author-defined generic/facilities equipment" ;
@@ -665,7 +665,7 @@
     skos:prefLabel "KLA Inspector"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/defect_inspection> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/kla> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/kla> .
 
 <https://w3id.org/sdkb/data/equipment/kla_overlay> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Kla" ;
@@ -675,7 +675,7 @@
     skos:prefLabel "KLA Overlay Metrology"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/overlay_metrology> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/kla> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/kla> .
 
 <https://w3id.org/sdkb/data/equipment/lam_2300> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Lam Research" ;
@@ -685,7 +685,7 @@
     skos:prefLabel "Lam Research 2300"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/etcher> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/lam_research> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/lam_research> .
 
 <https://w3id.org/sdkb/data/equipment/lam_etcher> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Lam Research" ;
@@ -695,7 +695,7 @@
     skos:prefLabel "Lam Research Etcher"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/etcher> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/lam_research> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/lam_research> .
 
 <https://w3id.org/sdkb/data/equipment/lam_flex> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Lam Research" ;
@@ -705,7 +705,7 @@
     skos:prefLabel "Lam Research Flex"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/etcher> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/lam_research> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/lam_research> .
 
 <https://w3id.org/sdkb/data/equipment/mattson_rtp> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Mattson" ;
@@ -715,7 +715,7 @@
     skos:prefLabel "Mattson RTP"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/deposition_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/mattson> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/mattson_technology> .
 
 <https://w3id.org/sdkb/data/equipment/monitoring_system> a ont:Equipment ;
     dcterms:bibliographicCitation "Author-defined generic/facilities equipment" ;
@@ -747,7 +747,7 @@
     skos:prefLabel "SCREEN Developer"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/track> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/screen> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/screen_holdings> .
 
 <https://w3id.org/sdkb/data/equipment/scrubber> a ont:Equipment ;
     dcterms:bibliographicCitation "Author-defined generic/facilities equipment" ;
@@ -779,7 +779,7 @@
     skos:prefLabel "Tokyo Electron Alpha"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/etcher> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/tokyo_electron> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> .
 
 <https://w3id.org/sdkb/data/equipment/tel_coater> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Tokyo Electron" ;
@@ -789,7 +789,7 @@
     skos:prefLabel "Tokyo Electron Track"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/track> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/tokyo_electron> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> .
 
 <https://w3id.org/sdkb/data/equipment/tel_formula> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Tokyo Electron" ;
@@ -799,7 +799,7 @@
     skos:prefLabel "Tokyo Electron Formula"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/etcher> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/tokyo_electron> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> .
 
 <https://w3id.org/sdkb/data/equipment/tel_tactras> a ont:Equipment ;
     dcterms:bibliographicCitation "Public product catalog of Tokyo Electron" ;
@@ -809,7 +809,7 @@
     skos:prefLabel "Tokyo Electron Tactras"@en ;
     ont:interpretationType "mapped" ;
     ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/deposition_tool> ;
-    ont:providedBy <https://w3id.org/sdkb/data/vendor/tokyo_electron> .
+    ont:providedBy <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> .
 
 <https://w3id.org/sdkb/data/equipment/vacuum_pump> a ont:Equipment ;
     dcterms:bibliographicCitation "Author-defined generic/facilities equipment" ;
@@ -1223,7 +1223,7 @@
     skos:prefLabel "Ellipsometry"@en ;
     ont:interpretationType "mapped" .
 
-<https://w3id.org/sdkb/data/org/samsung_electronics> a ont:Organization ;
+<https://w3id.org/sdkb/data/organization/samsung_electronics> a ont:Organization ;
     dcterms:bibliographicCitation "Wikidata; Korea MOTIE National Core Technology designation" ;
     dcterms:license "CC0 (Wikidata); Government Public Notice (MOTIE)" ;
     dcterms:source "wikidata" ;
@@ -1234,7 +1234,17 @@
     skos:prefLabel "Samsung Electronics"@en ;
     ont:interpretationType "verbatim" .
 
-<https://w3id.org/sdkb/data/org/sk_hynix> a ont:Organization ;
+<https://w3id.org/sdkb/data/organization/semes> a ont:Vendor ;
+    dcterms:bibliographicCitation "SEMES corporate site (https://www.semes.com)" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    rdfs:seeAlso <https://www.semes.com> ;
+    skos:definition "한국 반도체 장비 제조사 (Samsung 계열). 식각·세정·트랙·포토 장비를 공급하며 한국 소부장 생태계의 핵심 벤더."@en ;
+    skos:prefLabel "SEMES Co., Ltd."@en ;
+    ont:interpretationType "verbatim" ;
+    ont:validationRequired false .
+
+<https://w3id.org/sdkb/data/organization/sk_hynix> a ont:Organization ;
     dcterms:bibliographicCitation "Wikidata; Korea MOTIE National Core Technology designation" ;
     dcterms:license "CC0 (Wikidata); Government Public Notice (MOTIE)" ;
     dcterms:source "wikidata" ;
@@ -1476,16 +1486,6 @@
     skos:definition "Example technology node."@en ;
     skos:prefLabel "7nm"@en ;
     ont:interpretationType "verbatim" .
-
-<https://w3id.org/sdkb/data/vendor/semes> a ont:Vendor ;
-    dcterms:bibliographicCitation "SEMES corporate site (https://www.semes.com)" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    rdfs:seeAlso <https://www.semes.com> ;
-    skos:definition "한국 반도체 장비 제조사 (Samsung 계열). 식각·세정·트랙·포토 장비를 공급하며 한국 소부장 생태계의 핵심 벤더."@en ;
-    skos:prefLabel "SEMES Co., Ltd."@en ;
-    ont:interpretationType "verbatim" ;
-    ont:validationRequired false .
 
 <https://w3id.org/sdkb/data/equipment_class/cd_sem> a ont:EquipmentClass ;
     dcterms:bibliographicCitation "15 CFR Part 774, Supplement No. 1 to Part 774, Category 3B" ;
@@ -1796,6 +1796,70 @@
     skos:prefLabel "Thickness Optimization"@en ;
     ont:interpretationType "author-defined" ;
     ont:validationRequired true .
+
+<https://w3id.org/sdkb/data/organization/3m_innovative_properties_company> a ont:Vendor ;
+    dcterms:bibliographicCitation "3M public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "CMP consumables and materials"@en ;
+    skos:prefLabel "3M"@en ;
+    ont:interpretationType "verbatim" .
+
+<https://w3id.org/sdkb/data/organization/asm_ip_holding_b_v> a ont:Vendor ;
+    dcterms:bibliographicCitation "ASM International public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "ALD and epitaxy equipment"@en ;
+    skos:prefLabel "ASM International"@en ;
+    ont:interpretationType "verbatim" .
+
+<https://w3id.org/sdkb/data/organization/axcelis> a ont:Vendor ;
+    dcterms:bibliographicCitation "Axcelis Technologies public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "Ion implantation equipment"@en ;
+    skos:prefLabel "Axcelis Technologies"@en ;
+    ont:interpretationType "verbatim" .
+
+<https://w3id.org/sdkb/data/organization/bruker> a ont:Vendor ;
+    dcterms:bibliographicCitation "Bruker public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "Metrology and analytical equipment"@en ;
+    skos:prefLabel "Bruker"@en ;
+    ont:interpretationType "verbatim" .
+
+<https://w3id.org/sdkb/data/organization/cabot> a ont:Vendor ;
+    dcterms:bibliographicCitation "Cabot Microelectronics public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "CMP consumables"@en ;
+    skos:prefLabel "Cabot Microelectronics"@en ;
+    ont:interpretationType "verbatim" .
+
+<https://w3id.org/sdkb/data/organization/ebara> a ont:Vendor ;
+    dcterms:bibliographicCitation "Ebara public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "CMP equipment"@en ;
+    skos:prefLabel "Ebara"@en ;
+    ont:interpretationType "verbatim" .
+
+<https://w3id.org/sdkb/data/organization/mattson_technology> a ont:Vendor ;
+    dcterms:bibliographicCitation "Mattson Technology public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "Thermal processing equipment"@en ;
+    skos:prefLabel "Mattson Technology"@en ;
+    ont:interpretationType "verbatim" .
+
+<https://w3id.org/sdkb/data/organization/screen_holdings> a ont:Vendor ;
+    dcterms:bibliographicCitation "SCREEN Semiconductor Solutions public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "Coater/developer equipment"@en ;
+    skos:prefLabel "SCREEN Semiconductor Solutions"@en ;
+    ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/parameter/bias_power> a ont:Parameter ;
     dcterms:bibliographicCitation "IEEE IRDS 2022 Edition, More Moore Chapter; SEMI E10-0814" ;
@@ -2221,70 +2285,6 @@
     skos:prefLabel "Wet Cleaning"@en ;
     ont:interpretationType "mapped" .
 
-<https://w3id.org/sdkb/data/vendor/3m> a ont:Vendor ;
-    dcterms:bibliographicCitation "3M public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "CMP consumables and materials"@en ;
-    skos:prefLabel "3M"@en ;
-    ont:interpretationType "verbatim" .
-
-<https://w3id.org/sdkb/data/vendor/asm> a ont:Vendor ;
-    dcterms:bibliographicCitation "ASM International public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "ALD and epitaxy equipment"@en ;
-    skos:prefLabel "ASM International"@en ;
-    ont:interpretationType "verbatim" .
-
-<https://w3id.org/sdkb/data/vendor/axcelis> a ont:Vendor ;
-    dcterms:bibliographicCitation "Axcelis Technologies public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "Ion implantation equipment"@en ;
-    skos:prefLabel "Axcelis Technologies"@en ;
-    ont:interpretationType "verbatim" .
-
-<https://w3id.org/sdkb/data/vendor/bruker> a ont:Vendor ;
-    dcterms:bibliographicCitation "Bruker public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "Metrology and analytical equipment"@en ;
-    skos:prefLabel "Bruker"@en ;
-    ont:interpretationType "verbatim" .
-
-<https://w3id.org/sdkb/data/vendor/cabot> a ont:Vendor ;
-    dcterms:bibliographicCitation "Cabot Microelectronics public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "CMP consumables"@en ;
-    skos:prefLabel "Cabot Microelectronics"@en ;
-    ont:interpretationType "verbatim" .
-
-<https://w3id.org/sdkb/data/vendor/ebara> a ont:Vendor ;
-    dcterms:bibliographicCitation "Ebara public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "CMP equipment"@en ;
-    skos:prefLabel "Ebara"@en ;
-    ont:interpretationType "verbatim" .
-
-<https://w3id.org/sdkb/data/vendor/mattson> a ont:Vendor ;
-    dcterms:bibliographicCitation "Mattson Technology public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "Thermal processing equipment"@en ;
-    skos:prefLabel "Mattson Technology"@en ;
-    ont:interpretationType "verbatim" .
-
-<https://w3id.org/sdkb/data/vendor/screen> a ont:Vendor ;
-    dcterms:bibliographicCitation "SCREEN Semiconductor Solutions public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "Coater/developer equipment"@en ;
-    skos:prefLabel "SCREEN Semiconductor Solutions"@en ;
-    ont:interpretationType "verbatim" .
-
 <https://w3id.org/sdkb/data/equipment_class/implanter> a ont:EquipmentClass ;
     dcterms:bibliographicCitation "15 CFR Part 774, Supplement No. 1 to Part 774, Category 3B" ;
     dcterms:license "Public Domain (U.S. Government Work)" ;
@@ -2405,6 +2405,14 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/chamber_conditioning> ;
     ont:validationRequired true .
 
+<https://w3id.org/sdkb/data/organization/hitachi_high_tech> a ont:Vendor ;
+    dcterms:bibliographicCitation "Hitachi High-Tech public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "Etch and metrology equipment"@en ;
+    skos:prefLabel "Hitachi High-Tech"@en ;
+    ont:interpretationType "verbatim" .
+
 <https://w3id.org/sdkb/data/parameter/rf_power> a ont:Parameter ;
     dcterms:bibliographicCitation "IEEE IRDS 2022 Edition, More Moore Chapter; SEMI E10-0814" ;
     dcterms:license "Free with IEEE account (IRDS); Proprietary (SEMI)" ;
@@ -2523,14 +2531,6 @@
     ont:interpretationType "author-defined" ;
     ont:validationRequired true .
 
-<https://w3id.org/sdkb/data/vendor/hitachi> a ont:Vendor ;
-    dcterms:bibliographicCitation "Hitachi High-Tech public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "Etch and metrology equipment"@en ;
-    skos:prefLabel "Hitachi High-Tech"@en ;
-    ont:interpretationType "verbatim" .
-
 <https://w3id.org/sdkb/data/equipment_class/defect_inspection> a ont:EquipmentClass ;
     dcterms:bibliographicCitation "15 CFR Part 774, Supplement No. 1 to Part 774, Category 3B" ;
     dcterms:license "Public Domain (U.S. Government Work)" ;
@@ -2540,7 +2540,7 @@
     skos:prefLabel "Defect Inspection"@en ;
     ont:confidence 0.7 ;
     ont:interpretationType "mapped" ;
-    ont:madeBy <https://w3id.org/sdkb/data/vendor/kla> .
+    ont:madeBy <https://w3id.org/sdkb/data/organization/kla> .
 
 <https://w3id.org/sdkb/data/material/sin> a ont:Material ;
     dcterms:bibliographicCitation "Venugopal et al. 2024, Scientific Data 11:217" ;
@@ -2565,6 +2565,23 @@
     skos:definition "SiO2 dielectric material."@en ;
     skos:prefLabel "Silicon Dioxide"@en ;
     ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/organization/asml> a ont:Vendor ;
+    dcterms:bibliographicCitation "ASML public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:altLabel "에이에스엠엘"@ko ;
+    skos:definition "Lithography tool vendor."@en ;
+    skos:prefLabel "ASML"@en ;
+    ont:interpretationType "verbatim" .
+
+<https://w3id.org/sdkb/data/organization/kla> a ont:Vendor ;
+    dcterms:bibliographicCitation "KLA public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:definition "Inspection and metrology vendor."@en ;
+    skos:prefLabel "KLA"@en ;
+    ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/rootcause/charging> a ont:RootCause ;
     dcterms:bibliographicCitation "Bahr et al. 2025, J. Industrial Information Integration; FMEA triple: FailureMode→FailureCause" ;
@@ -2721,23 +2738,6 @@
         <https://w3id.org/sdkb/data/material/tungsten> ;
     ont:validationRequired true .
 
-<https://w3id.org/sdkb/data/vendor/asml> a ont:Vendor ;
-    dcterms:bibliographicCitation "ASML public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:altLabel "에이에스엠엘"@ko ;
-    skos:definition "Lithography tool vendor."@en ;
-    skos:prefLabel "ASML"@en ;
-    ont:interpretationType "verbatim" .
-
-<https://w3id.org/sdkb/data/vendor/kla> a ont:Vendor ;
-    dcterms:bibliographicCitation "KLA public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:definition "Inspection and metrology vendor."@en ;
-    skos:prefLabel "KLA"@en ;
-    ont:interpretationType "verbatim" .
-
 <https://w3id.org/sdkb/data/equipment_class/scanner> a ont:EquipmentClass ;
     dcterms:bibliographicCitation "15 CFR Part 774, Supplement No. 1 to Part 774, Category 3B" ;
     dcterms:license "Public Domain (U.S. Government Work)" ;
@@ -2749,7 +2749,7 @@
         1.0 ;
     ont:incompatibleWith <https://w3id.org/sdkb/data/material/copper> ;
     ont:interpretationType "mapped" ;
-    ont:madeBy <https://w3id.org/sdkb/data/vendor/asml> ;
+    ont:madeBy <https://w3id.org/sdkb/data/organization/asml> ;
     ont:validationRequired true .
 
 <https://w3id.org/sdkb/data/equipment_class/track> a ont:EquipmentClass ;
@@ -2761,7 +2761,7 @@
     skos:prefLabel "Coater/Developer Track"@en ;
     ont:confidence 0.7 ;
     ont:interpretationType "mapped" ;
-    ont:madeBy <https://w3id.org/sdkb/data/vendor/tokyo_electron> .
+    ont:madeBy <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> .
 
 <https://w3id.org/sdkb/data/material/photoresist_arF> a ont:Material ;
     dcterms:bibliographicCitation "Venugopal et al. 2024, Scientific Data 11:217" ;
@@ -2773,6 +2773,15 @@
     skos:definition "193nm ArF photoresist."@en ;
     skos:prefLabel "ArF Photoresist"@en ;
     ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/organization/lam_research> a ont:Vendor ;
+    dcterms:bibliographicCitation "Lam Research public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:altLabel "LAM"@en ;
+    skos:definition "Etch and deposition vendor."@en ;
+    skos:prefLabel "Lam Research"@en ;
+    ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/rootcause/temperature_drift> a ont:RootCause ;
     dcterms:bibliographicCitation "Bahr et al. 2025, J. Industrial Information Integration; FMEA triple: FailureMode→FailureCause" ;
@@ -2834,15 +2843,6 @@
     ont:usesMaterial <https://w3id.org/sdkb/data/material/hf_acid> ;
     ont:validationRequired true .
 
-<https://w3id.org/sdkb/data/vendor/lam_research> a ont:Vendor ;
-    dcterms:bibliographicCitation "Lam Research public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:altLabel "LAM"@en ;
-    skos:definition "Etch and deposition vendor."@en ;
-    skos:prefLabel "Lam Research"@en ;
-    ont:interpretationType "verbatim" .
-
 <https://w3id.org/sdkb/data/material/copper> a ont:Material ;
     dcterms:bibliographicCitation "Venugopal et al. 2024, Scientific Data 11:217" ;
     dcterms:license "CC-BY-4.0" ;
@@ -2853,6 +2853,15 @@
     skos:definition "Cu interconnect metal."@en ;
     skos:prefLabel "Copper"@en ;
     ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/organization/tokyo_electron_limited> a ont:Vendor ;
+    dcterms:bibliographicCitation "Tokyo Electron public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:altLabel "TEL"@en ;
+    skos:definition "Coat/develop, etch, deposition vendor."@en ;
+    skos:prefLabel "Tokyo Electron"@en ;
+    ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/subprocess/euv_lithography> a ont:SubProcess ;
     dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A" ;
@@ -2878,15 +2887,6 @@
         <https://w3id.org/sdkb/data/material/sin> ;
     ont:validationRequired true .
 
-<https://w3id.org/sdkb/data/vendor/tokyo_electron> a ont:Vendor ;
-    dcterms:bibliographicCitation "Tokyo Electron public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:altLabel "TEL"@en ;
-    skos:definition "Coat/develop, etch, deposition vendor."@en ;
-    skos:prefLabel "Tokyo Electron"@en ;
-    ont:interpretationType "verbatim" .
-
 <https://w3id.org/sdkb/data/equipment_class/cmp_tool> a ont:EquipmentClass ;
     dcterms:bibliographicCitation "15 CFR Part 774, Supplement No. 1 to Part 774, Category 3B" ;
     dcterms:license "Public Domain (U.S. Government Work)" ;
@@ -2910,6 +2910,15 @@
     ont:interpretationType "mapped" ;
     ont:validationRequired true .
 
+<https://w3id.org/sdkb/data/organization/applied_materials> a ont:Vendor ;
+    dcterms:bibliographicCitation "Applied Materials public corporate information" ;
+    dcterms:license "Public information" ;
+    dcterms:source "vendor_public" ;
+    skos:altLabel "AMAT"@en ;
+    skos:definition "Deposition, etch, CMP, metrology vendor."@en ;
+    skos:prefLabel "Applied Materials"@en ;
+    ont:interpretationType "verbatim" .
+
 <https://w3id.org/sdkb/data/subprocess/cvd> a ont:SubProcess ;
     dcterms:bibliographicCitation "Nguyen et al. 2024, arXiv:2411.13802, Appendix A" ;
     dcterms:license "Apache-2.0" ;
@@ -2931,15 +2940,6 @@
         <https://w3id.org/sdkb/data/material/teOs> ;
     ont:validationRequired true .
 
-<https://w3id.org/sdkb/data/vendor/applied_materials> a ont:Vendor ;
-    dcterms:bibliographicCitation "Applied Materials public corporate information" ;
-    dcterms:license "Public information" ;
-    dcterms:source "vendor_public" ;
-    skos:altLabel "AMAT"@en ;
-    skos:definition "Deposition, etch, CMP, metrology vendor."@en ;
-    skos:prefLabel "Applied Materials"@en ;
-    ont:interpretationType "verbatim" .
-
 <https://w3id.org/sdkb/data/equipment_class/etcher> a ont:EquipmentClass ;
     dcterms:bibliographicCitation "15 CFR Part 774, Supplement No. 1 to Part 774, Category 3B" ;
     dcterms:license "Public Domain (U.S. Government Work)" ;
@@ -2951,7 +2951,7 @@
         0.9 ;
     ont:incompatibleWith <https://w3id.org/sdkb/data/material/copper> ;
     ont:interpretationType "mapped" ;
-    ont:madeBy <https://w3id.org/sdkb/data/vendor/lam_research> ;
+    ont:madeBy <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:validationRequired true .
 
 <https://w3id.org/sdkb/data/subprocess/plasma_etch> a ont:SubProcess ;
@@ -2998,7 +2998,7 @@
     skos:prefLabel "Deposition Tool"@en ;
     ont:confidence 0.7 ;
     ont:interpretationType "mapped" ;
-    ont:madeBy <https://w3id.org/sdkb/data/vendor/applied_materials> .
+    ont:madeBy <https://w3id.org/sdkb/data/organization/applied_materials> .
 
 <https://w3id.org/sdkb/data/vendor/generic> a ont:Vendor ;
     dcterms:bibliographicCitation "Generic Equipment public corporate information" ;

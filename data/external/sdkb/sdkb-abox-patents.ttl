@@ -32995,8 +32995,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/3m_innovative_properties_company> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "쓰리엠 이노베이티브 프로퍼티즈 컴파니"@ko ;
-    skos:prefLabel "3M INNOVATIVE PROPERTIES COMPANY"@en ;
+    skos:altLabel "3M INNOVATIVE PROPERTIES COMPANY"@en,
+        "쓰리엠 이노베이티브 프로퍼티즈 컴파니"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/organization/ace_nanochem> a ont:Organization ;
@@ -33856,8 +33856,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/mattson_technology> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "매슨 테크놀로지 인크"@ko ;
-    skos:prefLabel "MATTSON TECHNOLOGY, INC."@en ;
+    skos:altLabel "MATTSON TECHNOLOGY, INC."@en,
+        "매슨 테크놀로지 인크"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/organization/max_film> a ont:Organization ;
@@ -34185,8 +34185,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/screen_holdings> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "가부시키가이샤 스크린 홀딩스"@ko ;
-    skos:prefLabel "SCREEN Holdings Co., Ltd."@en ;
+    skos:altLabel "SCREEN Holdings Co., Ltd."@en,
+        "가부시키가이샤 스크린 홀딩스"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/organization/semiconductor_components_industries_l_l_c> a ont:Organization ;
@@ -35077,8 +35077,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/hitachi_high_tech> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "주식회사 히타치하이테크"@ko ;
-    skos:prefLabel "Hitachi High-Tech Corporation"@en ;
+    skos:altLabel "Hitachi High-Tech Corporation"@en,
+        "주식회사 히타치하이테크"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/organization/ifu_co> a ont:Organization ;
@@ -35822,8 +35822,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/asm_ip_holding_b_v> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "에이에스엠 아이피 홀딩 비.브이."@ko ;
-    skos:prefLabel "ASM IP Holding B.V."@en ;
+    skos:altLabel "ASM IP Holding B.V."@en,
+        "에이에스엠 아이피 홀딩 비.브이."@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/organization/basf_se> a ont:Organization ;
@@ -36189,11 +36189,11 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/ulvac> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "가부시키가이샤 아루박"@ko,
+    skos:altLabel "ULVAC. Inc"@en,
+        "가부시키가이샤 아루박"@ko,
         "가부시키가이샤 알박"@ko,
         "울박, 인크"@ko ;
-    skos:prefLabel "ULVAC, INC."@en,
-        "ULVAC. Inc"@en ;
+    skos:prefLabel "ULVAC, INC."@en ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/ipc/G02F_1-1368> a ont:IPCSymbol ;
@@ -36311,8 +36311,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/semes> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "세메스 주식회사"@ko ;
-    skos:prefLabel "SEMES CO., LTD."@en ;
+    skos:altLabel "SEMES CO., LTD."@en,
+        "세메스 주식회사"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/ipc/C23C_14-58> a ont:IPCSymbol ;
@@ -36348,8 +36348,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "도쿄엘렉트론가부시키가이샤"@ko ;
-    skos:prefLabel "TOKYO ELECTRON LIMITED"@en ;
+    skos:altLabel "TOKYO ELECTRON LIMITED"@en,
+        "도쿄엘렉트론가부시키가이샤"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/ipc/H01L_21-56> a ont:IPCSymbol ;
@@ -36380,8 +36380,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/lam_research> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "램 리써치 코포레이션"@ko ;
-    skos:prefLabel "LAM RESEARCH CORPORATION"@en ;
+    skos:altLabel "LAM RESEARCH CORPORATION"@en,
+        "램 리써치 코포레이션"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/organization/samsung_display> a ont:Organization ;
@@ -36445,8 +36445,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/applied_materials> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "어플라이드 머티어리얼스, 인코포레이티드"@ko ;
-    skos:prefLabel "Applied Materials, Inc."@en ;
+    skos:altLabel "Applied Materials, Inc."@en,
+        "어플라이드 머티어리얼스, 인코포레이티드"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/ipc/C23C_16-44> a ont:IPCSymbol ;
@@ -36519,8 +36519,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/samsung_electronics> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "삼성전자주식회사"@ko ;
-    skos:prefLabel "SAMSUNG ELECTRONICS CO., LTD."@en ;
+    skos:altLabel "SAMSUNG ELECTRONICS CO., LTD."@en,
+        "삼성전자주식회사"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/ipc/C23C_16-455> a ont:IPCSymbol ;
@@ -36535,8 +36535,8 @@ HBr 가스, Cl2 가스 및 HCl 가스 중 어느 하나 또는 이들의 혼합 
 <https://w3id.org/sdkb/data/organization/sk_hynix> a ont:Organization ;
     dcterms:license "KIPRIS terms — academic use, no redistribution of full text"^^xsd:string ;
     dcterms:source "KIPRIS Plus API (getBibliographyDetailInfoSearch)"^^xsd:string ;
-    skos:altLabel "에스케이하이닉스 주식회사"@ko ;
-    skos:prefLabel "SK hynix Inc."@en ;
+    skos:altLabel "SK hynix Inc."@en,
+        "에스케이하이닉스 주식회사"@ko ;
     ont:interpretationType "verbatim" .
 
 <https://w3id.org/sdkb/data/ipc/C23C_14-34> a ont:IPCSymbol ;

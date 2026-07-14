@@ -27,20 +27,33 @@ SDKB 원본(~/Dev/sdkb) ──(사람이 make vendor)──> data/external/sdkb/
 **결정적이다.** 같은 스냅샷 → 같은 그래프(바이트 단위 동일).
 → `test_baseline_is_deterministic` (두 번 조립해 sha256 비교)
 
-**서명 (`make baseline` 출력, SDKB 커밋 `ad7fe3d`)**
+**서명 (`make baseline` 출력, SDKB 커밋 `581360a` · 2026-07-14 출원인 정체성 통합)**
 
 | 항목 | 값 | 이것이 깨지면 |
 |---|---:|---|
-| 트리플 | 26,973 | 스냅샷이나 조립이 바뀌었다 |
+| 트리플 | 43,712 | 스냅샷이나 조립이 바뀌었다 |
 | Process / SubProcess | 11 / 38 | **H1 의 관측 단위(n=49)가 바뀐다** |
 | Device | 34 | H2 의 개념 축이 바뀐다 |
 | Patent | 1,000 | SIRP 가 빠졌거나 상류가 바뀌었다 |
 | 출원일 보유 | 1,000 (100%) | H2 시계열의 전제가 깨진다 |
-| 출원인(Organization) | 353 | CQ08(포트폴리오)이 무너진다 |
-| **커버된 공정 / 공백** | **16 / 33** | **H1 의 before 가 움직인다** |
+| 출원인(Organization) | 351 | CQ08(포트폴리오)이 무너진다 |
+| Vendor | 340 | CQ13(공급 벤더)이 무너진다 |
+| **커버된 공정 / 공백** | **20 / 29** | **H1 의 before 가 움직인다** |
+| **회사 IRI 스킴** | **`data:organization/` 단일** | **IP-R&D 질의가 조용히 절반만 답한다** |
+
+> **회사 하나 = IRI 하나.** 상류는 같은 회사에 **역할에 따라 다른 IRI** 를 줬었다 — 큐레이션
+> 기업 `data:org/`, 장비 공급사 `data:vendor/`, 특허 출원인 `data:organization/`. 역할은 이미
+> `rdf:type`(`ont:Organization`·`ont:Vendor`)이 말하는데 IRI 접두사가 그것을 중복하면서
+> **정체성만 깼다**. 갈라진 채로는 "이 회사가 공급하는 장비와 이 회사의 특허"라는 IP-R&D 의
+> 핵심 질의가 **에러 없이 0행**을 낸다. 11쌍을 병합했다(근거: SDKB `mappings/org_identity_crosswalk.csv`).
+> 유일한 예외는 `data:vendor/generic` — 실재 회사가 아닌 자리표시자다.
+>
+> **특허 엣지는 한 건도 움직이지 않았다** (`assignedTo` 1,053 불변) — 갈라져 있던 `org/`·`vendor/`
+> 노드는 in-edge 가 0 이었기 때문이다. 그래서 **C₀ 20/49 도 H1 의 p 값도 불변**이다.
 
 → `test_baseline_observation_units`, `test_baseline_patents_have_filing_dates`,
-`test_baseline_patents_have_applicants`, `test_baseline_coverage_is_not_vacuous`
+`test_baseline_patents_have_applicants`, `test_baseline_coverage_is_not_vacuous`,
+`test_baseline_company_identity_is_unified`
 
 **커버리지가 자명하지 않다.** `0 < C₀ < 전체` 를 테스트가 강제한다. C₀=0 이면 어떤 보강도
 유의해져 H1 이 검정이 아니게 된다.

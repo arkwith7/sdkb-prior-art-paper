@@ -17,7 +17,7 @@ import shutil
 import subprocess
 
 import pytest
-from rdflib import RDF
+from rdflib import RDF, URIRef
 
 from sdkb_paper.config import EXTERNAL_SDKB, ONT, QUERIES_CQ
 from sdkb_paper.ontology.baseline import build_baseline, summarize
@@ -28,7 +28,10 @@ from sdkb_paper.validate.shacl_gate import validate_graph
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 43745    # 2026-07-14 재동결 (SDKB d4dff61) — 구 26,973
+EXPECTED_TRIPLES = 43712    # 2026-07-14 출원인 정체성 통합 (SDKB 581360a) — 구 43,745 / 26,973
+                            # −33: 역할별로 갈라져 있던 회사 노드 11쌍이 organization/ 하나로
+                            # 접혔다 (data:org/samsung_electronics 등은 assignedTo in-edge 가
+                            # 0 이었으므로 **특허 엣지는 한 건도 움직이지 않았다** — C₀ 불변).
 EXPECTED_PROCESS = 11       # SemiKong Table 7 의 L1 그룹 10개 (Patterning 이 리소/식각 둘로 갈림)
 EXPECTED_SUBPROCESS = 38    # Table 7 의 L2 모듈 + SDKB 고유 유닛
 EXPECTED_DEVICE = 34        # H2 의 개념 축은 Process ∪ Device (HBM·GAA 는 Device 다)
@@ -185,6 +188,37 @@ def test_baseline_patents_have_applicants(graph_v0):
     assert len(with_org & pats) == EXPECTED_PATENTS_WITH_APPLICANT
     for _, o in g.subject_objects(ONT["assignedTo"]):
         assert (o, RDF.type, ONT["Organization"]) in g, f"assignedTo 의 객체가 Organization 이 아니다: {o}"
+
+
+def test_baseline_company_identity_is_unified(graph_v0):
+    """회사 하나 = IRI 하나 — IP-R&D 질의(RQ3)의 선결 조건.
+
+    상류는 같은 회사에 **역할에 따라 다른 IRI** 를 줬었다: 큐레이션 기업 `data:org/`,
+    장비 공급사 `data:vendor/`, 특허 출원인 `data:organization/`. 역할은 이미
+    rdf:type(ont:Organization·ont:Vendor)이 말하는데 IRI 접두사가 그것을 중복하면서
+    정체성만 깼다.
+
+    갈라진 채로 두면 "이 회사가 공급하는 장비와 이 회사의 특허 포트폴리오"라는 질의가
+    **에러 없이 0행**을 낸다 — data:vendor/lam_research 는 장비를 공급하고
+    data:organization/lam_research 는 특허 19건을 갖는 다른 노드였다.
+    상류가 이 상태로 되돌아가면 이 테스트가 잡는다 (SDKB 581360a · org_identity_crosswalk.csv).
+    """
+    g, _ = graph_v0
+    data = str(ONT).replace("/ont/", "/data/")
+    companies = set(g.subjects(RDF.type, ONT["Organization"])) | set(
+        g.subjects(RDF.type, ONT["Vendor"])
+    )
+    # 유일한 예외는 "미상 공급사" 자리표시자다 — 실재 회사가 아니므로 정체성을 주지 않는다.
+    placeholder = {f"{data}vendor/generic"}
+    strays = {str(s) for s in companies if not str(s).startswith(f"{data}organization/")}
+    assert strays == placeholder, f"organization/ 밖의 회사 노드: {sorted(strays)}"
+
+    # 병합의 요점: 공급 역할과 특허 포트폴리오가 같은 노드에 붙는다.
+    lam = URIRef(f"{data}organization/lam_research")
+    assert (lam, RDF.type, ONT["Vendor"]) in g, "lam_research 에 공급 역할이 없다"
+    assert (lam, RDF.type, ONT["Organization"]) in g, "lam_research 에 출원인 역할이 없다"
+    assert list(g.subjects(ONT["providedBy"], lam)), "lam_research 가 장비를 공급하지 않는다"
+    assert list(g.subjects(ONT["assignedTo"], lam)), "lam_research 가 특허를 갖지 않는다"
 
 
 @pytest.mark.skipif(shutil.which("java") is None, reason="HermiT 는 Java 가 필요하다")
