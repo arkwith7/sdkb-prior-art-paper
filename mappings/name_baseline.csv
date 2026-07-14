@@ -1,0 +1,7 @@
+case_id,concept_iri,terms,source,rationale,status
+hbm,https://w3id.org/sdkb/data/device/hbm,hbm|고대역폭 메모리|고대역폭메모리|high bandwidth memory,JEDEC JESD235 표준 명칭,실무자가 온톨로지 없이 검색할 때 치는 말,frozen-2026-07-13
+tsv,https://w3id.org/sdkb/data/device/tsv,tsv|through-silicon via|through silicon via|실리콘 관통 전극,JEDEC/SEMI 표준 명칭,"이 사례는 **이름과 구조가 거의 같다**(TSV = '기판을 관통하는 전극'). 대조가 약할 수밖에 없고, 그 사실을 그대로 보고한다",frozen-2026-07-13
+3d_nand,https://w3id.org/sdkb/data/device/3d_nand,v-nand|vnand|3d nand|3차원 낸드|수직형 낸드,제조사 표준 명칭 (Samsung V-NAND),,frozen-2026-07-13
+gaa,https://w3id.org/sdkb/data/device/gaa_fet,gaa|게이트 올 어라운드|게이트올어라운드|gate-all-around|gate all around|mbcfet|엠비씨펫,IRDS 용어 · 제조사 명칭(MBCFET),,frozen-2026-07-13
+mram,https://w3id.org/sdkb/data/device/mram,mram|엠램|자기저항 메모리|자기 저항 메모리|magnetoresistive random access memory,JEDEC 용어,,frozen-2026-07-13
+finfet,https://w3id.org/sdkb/data/device/finfet,finfet|fin fet|핀펫|핀 펫,IEEE/IRDS 용어,,frozen-2026-07-13

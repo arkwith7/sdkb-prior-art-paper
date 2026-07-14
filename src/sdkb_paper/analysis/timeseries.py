@@ -23,9 +23,12 @@ from sdkb_paper.ontology.emerging import (
     emerging_devices,
     load_aliases,
     load_combinations,
+    load_name_terms,
     load_si_combinations,
     si_devices,
+    strip_name_terms,
 )
+from sdkb_paper.ontology.emerging import _term_in
 from sdkb_paper.ontology.mapping import _norm_code, load_code_mapping
 
 # 동결된 관측창과 신호 규칙 (PLAN-006). 결과를 보고 바꾸지 않는다.
@@ -43,6 +46,13 @@ DEFAULT_WINDOW = WINDOWS["prereg"]
 #   legacy — 0층 룰(분류코드) ∪ 1층 별칭 ∪ 2층 코드조합.  사전등록 경로. **코드에 기생한다.**
 #   si     — 텍스트 구조 어휘만. 분류코드를 일절 보지 않는다.
 DEFINITIONS = ("legacy", "si")
+
+# H2′ (PLAN-010) — **시점 유효한 대조군**. 코드가 아니라 기술의 **명칭**으로 검색하기.
+# 명세 텍스트는 소급 재작성되지 않으므로 이 대조군은 분류코드가 무효였던 이유를 피해 간다.
+#   si        — 온톨로지 전체 (구조 ∪ 명칭). 명칭 대조군을 **포함한다**(개념 ⊇ 이름)
+#   si_struct — 정의에서 **명칭 용어를 뺀** 구조 전용 개념. 대조군과 **서로소**다
+# 주 검정은 si, 강건성은 si_struct 로 낸다 — 부분집합 자명성이 결론을 만들지 않았음을 보인다.
+H2P_DEFINITIONS = ("si", "si_struct")
 # C 경로(PLAN-007)의 **관측 시점** 하한. BigQuery 동결 스냅샷이 2017-10 부터 존재한다 —
 # 그 이전의 분류 상태는 복원할 수 없으므로 "2016년에 이미 알 수 있었는가"는 묻지 않는다.
 OBS_START = 2017
@@ -102,7 +112,7 @@ def _patent_concepts(row, table, aliases, combos, exclude_code: str | None,
     빼도 결론이 서는지 본다. 부분집합 관계(개념 ⊇ 코드)가 결론을 만들지 않았음을 보이기 위해서.
     """
     text = f"{row.invention_title or ''} {row.abstract or ''}"
-    if definition == "si":
+    if definition in ("si", "si_struct"):
         # **분류코드를 일절 보지 않는다** (PLAN-009). 0층 룰이 사례 7건 중 6건의 개념을 신설
         # H10 코드로 매핑하고 있었고, 그 코드는 소급 부여된다 — 개념이 코드보다 앞설 수 없었다.
         return set(si_devices(text, combos))
@@ -128,6 +138,34 @@ def _map(codes: list[str], table: dict[str, list[tuple[str, str]]]) -> set[str]:
     }
 
 
+def _si_or_legacy_combos(definition: str, variant: str):
+    """정의 축에 따라 조합 테이블을 고른다. si_struct 는 si 에서 명칭 용어를 뺀 것이다."""
+    if definition == "si":
+        return load_si_combinations(variant=variant)
+    if definition == "si_struct":
+        return strip_name_terms(load_si_combinations(variant=variant), load_name_terms())
+    return load_combinations(variant=variant)
+
+
+def name_series(
+    df: pd.DataFrame, concept_iri: str, names: dict[str, list[str]],
+    window: tuple[int, int] = DEFAULT_WINDOW,
+) -> pd.Series:
+    """**명칭 대조군** 시계열 (H2′) — 그 기술의 이름을 명세에 쓴 특허의 연도별 건수.
+
+    온톨로지 없는 실무자가 하는 일이다: 'HBM' 으로 검색. 명세 텍스트는 소급 재작성되지
+    않으므로 **시점 유효**하다 — 분류코드가 무효였던 바로 그 이유를 피해 간다.
+    """
+    terms = names.get(concept_iri, [])
+    years = [
+        row.application_date.year
+        for row in df.itertuples()
+        if any(_term_in(t, f"{row.invention_title or ''} {row.abstract or ''}".lower())
+               for t in terms)
+    ]
+    return annual_counts(pd.Series(years, dtype="int64"), window)
+
+
 def assign_concepts(
     df: pd.DataFrame,
     variant: str = DEFAULT_VARIANT,
@@ -139,10 +177,7 @@ def assign_concepts(
     """
     table = load_code_mapping()
     aliases = load_aliases(variant=variant)
-    combos = (
-        load_si_combinations(variant=variant) if definition == "si"
-        else load_combinations(variant=variant)
-    )
+    combos = _si_or_legacy_combos(definition, variant)
     return pd.Series(
         [
             _patent_concepts(row, table, aliases, combos, exclude_code, definition)

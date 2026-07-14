@@ -36,6 +36,9 @@ TERM_ALIASES = MAPPINGS / "term_aliases.csv"          # 1층 · 별칭
 EMERGING_CONCEPTS = MAPPINGS / "emerging_concepts.csv"  # 2층 · 조합 정의 (strict/base/loose)
 SI_CONCEPTS = MAPPINGS / "si_concepts.csv"            # 분류체계 독립 정의 (PLAN-009 · 텍스트 전용)
 DART_TERMS = MAPPINGS / "dart_terms.csv"     # DART 준거 용어 (PLAN-009 · 동결)
+# H2′ 의 대조군: 기술의 **명칭** 키워드 (PLAN-010 · 동결). 명세 텍스트는 소급 재작성되지
+# 않으므로 이 대조군은 **시점 유효**하다 — 분류코드가 무효였던 이유를 피해 간다.
+NAME_BASELINE = MAPPINGS / "name_baseline.csv"
 # H2 의 검증 사례 7건 (PLAN-006). 개념 시계열과 대조할 CPC 코드가 사례마다 하나씩 고정돼 있다.
 # **시계열을 보기 전에 동결**됐다 — 사례 선정은 우리 데이터 분포가 아니라 SDKB 어휘 · CPC 공식
 # 스킴 원문 · 외부 부상 근거(JEDEC 표준 · 양산 발표)만으로 이루어졌다. 커밋 해시가 사전등록이다.

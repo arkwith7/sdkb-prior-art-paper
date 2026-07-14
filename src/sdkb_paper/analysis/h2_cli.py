@@ -12,6 +12,8 @@ import pandas as pd
 
 from sdkb_paper.analysis.timeseries import (
     DEFINITIONS,
+    H2P_DEFINITIONS,
+    name_series,
     N_MIN,
     detect_year,
     THETA,
@@ -28,7 +30,7 @@ from sdkb_paper.analysis.timeseries import (
     sign_test,
     vintage_lead_times,
 )
-from sdkb_paper.config import FIGURES, PROCESSED
+from sdkb_paper.config import FIGURES, NAME_BASELINE, PROCESSED
 from sdkb_paper.preprocess.profile import DELTA as DELTA_PARQUET
 from sdkb_paper.viz.figures import fig_h2_timeseries
 
@@ -38,6 +40,7 @@ REPORT_MD = PROCESSED / "h2_report.md"
 PREDECESSOR_CSV = PROCESSED / "h2_predecessor_codes.csv"
 PLAN009_CSV = PROCESSED / "h2_plan009_matrix.csv"
 REFERENCE_CSV = PROCESSED / "h2_dart_reference.csv"
+H2PRIME_CSV = PROCESSED / "h2prime_matrix.csv"
 
 # §4.5 민감도 — 사전 정의 (PLAN-006). 결과를 보고 추가하지 않는다.
 THETAS = (1.5, 2.0, 3.0)
@@ -225,6 +228,79 @@ def run_plan009(union: pd.DataFrame, cases: pd.DataFrame) -> dict:
     return {"matrix": pd.DataFrame(rows), "leads": leads_by_cell, "pred": pred}
 
 
+def run_h2prime(union: pd.DataFrame) -> dict:
+    """**H2′ — 시점 유효한 대조군으로 다시 세운 조기탐지 검정** (PLAN-010).
+
+    코드 대조군은 이 데이터에서 무효다(소급 재분류 · 2017 해상도 바닥). 그러나 **명세 텍스트는
+    소급 재작성되지 않는다** — 2010년 특허의 초록은 지금도 2010년의 초록이다. 그래서 대조군을
+    기술의 **명칭 키워드**로 세운다. 온톨로지 없는 실무자가 실제로 하는 일이고, 온톨로지가
+    이겨야 할 상대다.
+
+    두 정의를 **함께** 낸다 (사전등록):
+      si        — 온톨로지 전체(구조 ∪ 명칭). 대조군을 **포함한다**(개념 ⊇ 이름)
+      si_struct — 명칭을 뺀 **구조 전용**. 대조군과 **서로소**다 → 진짜 양방향 비교
+
+    si_struct 가 논지의 핵심이다: **특허는 기술을 이름으로 부르기 전에 구조로 말한다.**
+    """
+    from sdkb_paper.ontology.emerging import load_name_terms
+
+    names = load_name_terms()
+    cases = pd.read_csv(NAME_BASELINE)
+    df = prepare(union, use_cpc=False)  # 두 팔 모두 텍스트만 본다 — 분류 데이터가 필요 없다
+
+    rows, leads_by_cell = [], {}
+    for wname, window in WINDOWS.items():
+        for definition in H2P_DEFINITIONS:
+            assigned = assign_concepts(df, definition=definition)
+            leads = []
+            for case in cases.itertuples():
+                cs = concept_series(df, case.concept_iri, assigned, window)
+                ns = name_series(df, case.concept_iri, names, window)
+                cy = detect_year(cs, window=window)
+                ny = detect_year(ns, window=window)
+
+                if cy is None and ny is None:
+                    outcome, lead = "both_undetected", pd.NA
+                elif ny is None:
+                    outcome, lead = "concept_first", window[1] - cy  # 하한 (우편향 절단)
+                elif cy is None:
+                    outcome, lead = "name_first", pd.NA
+                elif cy < ny:
+                    outcome, lead = "concept_first", ny - cy
+                elif cy > ny:
+                    outcome, lead = "name_first", ny - cy
+                else:
+                    outcome, lead = "tie", 0
+
+                leads.append({
+                    "case_id": case.case_id,
+                    "concept_total": int(cs.sum()),
+                    "name_total": int(ns.sum()),
+                    "concept_year": cy,
+                    "name_year": ny,
+                    "lead": lead,
+                    "lead_is_lower_bound": ny is None and cy is not None,
+                    "outcome": outcome,
+                })
+
+            lf = pd.DataFrame(leads)
+            # sign_test 는 concept_first/code_first 를 센다 — 같은 규약으로 이름을 맞춘다.
+            t = sign_test(lf.assign(outcome=lf["outcome"].replace({"name_first": "code_first"})))
+            leads_by_cell[(wname, definition)] = lf
+            rows.append({
+                "window": f"{window[0]}–{window[1]}",
+                "definition": definition,
+                "disjoint": definition == "si_struct",
+                "n_cases": len(cases),
+                "n_pairs": t.n_pairs,
+                "concept_first": t.n_concept_first,
+                "name_first": t.n_code_first,
+                "p": t.p_value,
+                "rejects": t.rejects,
+            })
+    return {"matrix": pd.DataFrame(rows), "leads": leads_by_cell}
+
+
 def run_reference(union: pd.DataFrame, cases: pd.DataFrame) -> pd.DataFrame:
     """**외부 준거(DART) 대비 선행 시차** — 특허로 특허를 검증하지 않는다 (PLAN-009 §3-3).
 
@@ -288,6 +364,7 @@ def main() -> int:
     vin = run_vintage(prepare(raw, use_cpc=False), cases)  # C 당시 분류 (텍스트는 시점 불변)
     p9 = run_plan009(union, cases)  # PLAN-009: 창 × 정의 × 코드팔 행렬
     dart = run_reference(union, cases)  # PLAN-009: 외부 준거 대비 선행 시차
+    h2p = run_h2prime(union)  # PLAN-010: H2′ — 시점 유효한 명칭 대조군
 
     PROCESSED.mkdir(parents=True, exist_ok=True)
     pd.concat(
@@ -452,11 +529,54 @@ B p = {cor["bidir_test"].p_value:.4g} (사례 2건뿐 — **검정이 아니라 
 2016년(공시 2014년보다 **2년 늦게**), TSV 를 2019년(공시 2012년보다 **7년 늦게**) 탐지했다.
 창을 부상 이전으로 되돌리자 같은 정의가 HBM 2009 · TSV 2009 로 **공시를 3–5년 앞선다.**
 정의는 한 글자도 바뀌지 않았다 — **창만 바뀌었다.**
+
+---
+
+# PLAN-010 — H2′ · 시점 유효한 대조군으로 다시 세운 조기탐지 검정
+
+**대조군을 바꾼 이유는 결과가 아니라 도구다.** 분류코드는 소급 재분류되므로 조기탐지의 준거가
+될 수 없다(위에서 실증). 반면 **명세 텍스트는 소급 재작성되지 않는다** — 2010년 특허의 초록은
+지금도 2010년의 초록이다. 그래서 대조군을 그 기술의 **명칭 키워드**로 세운다.
+
+> **H2′** — 개념 단위 시계열은 **동일 기술의 명칭 키워드** 단위 시계열보다 신흥기술 신호를
+> 조기에 포착한다.
+
+이것은 온톨로지 없는 실무자가 실제로 하는 일("HBM 으로 검색")이고, 온톨로지가 이겨야 할 상대다.
+**신호 규칙(θ=2.0 · n_min=3 · 후행창 3년)은 손대지 않았다 — 대조군만 갈아끼웠다.**
+
+{_md_table(h2p["matrix"])}
+
+**주 검정은 `si`, 강건성은 `si_struct` 다.** si 정의는 구조 ∪ 명칭이라 대조군을 **포함한다**
+(개념 ⊇ 이름) — 코드에서 겪은 부분집합 자명성이 여기서도 생긴다. `si_struct` 는 정의에서
+**명칭 용어를 뺀** 구조 전용 개념이라 대조군과 **서로소**이고, 그때 비교는 진짜 양방향이 된다.
+그리고 그것이 이 논문의 논지 자체다 — **특허는 기술을 이름으로 부르기 전에 구조로 말한다.**
+
+## 교정 창 · 구조 전용 개념 (서로소 · 주 결과)
+
+{_md_table(h2p["leads"][("extended", "si_struct")])}
+
+## 교정 창 · 온톨로지 전체 (개념 ⊇ 이름)
+
+{_md_table(h2p["leads"][("extended", "si")])}
+
+## 정직성 (숨기지 않는다)
+
+- **대조군 교체는 사후(post-hoc)다.** 코드 대조군에서 결과가 나오지 않은 것을 **본 뒤에**
+  대조군을 바꿨다. 이것이 HARKing 이 **아닌** 근거는 하나뿐이다 — 교체의 동기가 p 값이 아니라
+  **코드 대조군의 시간적 무효성**(소급 재분류 · 2017 해상도 바닥)이라는 것. 그 무효성은 위에
+  독립적으로 실증돼 있다.
+- **우리는 이미 명칭 어휘의 분포를 봤다** (HBM 이름이 전 말뭉치 31건 · 2010–15년 0건).
+  그 관측을 본 뒤에 이 대조군을 사전등록했다는 사실을 논문에 적는다.
+- **사전등록한 H2(코드 대조군)를 지우지 않는다.** 위에 여덟 셀 전부 있다.
+- **신호 규칙은 불변**이다. 유의성을 만들려 임계값을 만지지 않았다.
+- **TSV 는 대조가 약하다** — 이 기술은 이름과 구조가 거의 같다('TSV' = 기판을 관통하는 전극).
+  결과를 보고 뺀 것이 아니라 사전에 그렇게 적었다 (`mappings/name_baseline.csv`).
 """
     REPORT_MD.write_text(report, encoding="utf-8")
     p9["matrix"].to_csv(PLAN009_CSV, index=False)
     if len(dart):
         dart.to_csv(REFERENCE_CSV, index=False)
+    h2p["matrix"].to_csv(H2PRIME_CSV, index=False)
     fig = fig_h2_timeseries(cor["ts"], cor["leads"])
     fig_pre = fig_h2_timeseries(
         pre["ts"], pre["leads"], out=FIGURES / "fig4b_h2_timeseries_preregistered.png"

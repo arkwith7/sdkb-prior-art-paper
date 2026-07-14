@@ -28,7 +28,12 @@ from pathlib import Path
 
 import pandas as pd
 
-from sdkb_paper.config import EMERGING_CONCEPTS, SI_CONCEPTS, TERM_ALIASES
+from sdkb_paper.config import (
+    EMERGING_CONCEPTS,
+    NAME_BASELINE,
+    SI_CONCEPTS,
+    TERM_ALIASES,
+)
 from sdkb_paper.ontology.mapping import _norm_code
 
 # 기본 변이. 민감도 분석은 strict/loose 로 같은 함수를 다시 돌린다 (§4.5).
@@ -217,3 +222,43 @@ def load_si_combinations(
 def si_devices(text: str, combos: list[TextCombination]) -> list[str]:
     """특허 1건이 가리키는 신기술 개념 — **텍스트만** 본다 (PLAN-009)."""
     return sorted({c.concept_iri for c in combos if c.matches(text)})
+
+
+# ── H2′ · 명칭 대조군과 구조 전용 개념 (PLAN-010) ─────────────────────────
+#
+# 코드 대조군이 시간적으로 무효라(소급 재분류 · 2017 해상도 바닥) H2 를 검정할 수 없었다.
+# **명세 텍스트는 소급 재작성되지 않는다** — 2010년 특허의 초록은 지금도 2010년의 초록이다.
+# 그래서 시점 유효한 대조군을 하나 더 세운다: 그 기술의 **명칭**으로 검색하기.
+# 온톨로지 없는 실무자가 실제로 하는 일이고, 온톨로지가 이겨야 할 대상이다.
+
+
+def load_name_terms(path: Path = NAME_BASELINE) -> dict[str, list[str]]:
+    """{개념 IRI: [명칭 용어...]} — H2′ 의 대조군."""
+    df = pd.read_csv(path)
+    return {
+        str(r["concept_iri"]).strip(): [t.strip() for t in str(r["terms"]).split("|") if t.strip()]
+        for _, r in df.iterrows()
+    }
+
+
+def strip_name_terms(
+    combos: list[TextCombination], names: dict[str, list[str]]
+) -> list[TextCombination]:
+    """개념 정의에서 **명칭 용어를 뺀다** — 구조 어휘만 남긴 개념 (H2′ 의 강건성 검정).
+
+    왜 필요한가: si 정의는 구조 ∪ 명칭이라 명칭 대조군을 **포함한다**(개념 ⊇ 이름). 그대로
+    비교하면 부분집합 자명성이 다시 들어온다 — PLAN-006 이 코드에서 겪은 그 함정이다.
+    명칭을 빼면 두 팔이 **서로소**가 되고, 그때 비교는 진짜 양방향이 된다.
+
+    그리고 그것이 이 논문의 논지 자체다 — **특허는 기술을 이름으로 부르기 전에 구조로 말한다.**
+    용어가 전부 빠져 빈 그룹이 생기면 그 조합은 발화할 수 없으므로 **버린다**(명칭 전용 행).
+    """
+    out = []
+    for c in combos:
+        drop = {t.lower() for t in names.get(c.concept_iri, [])}
+        groups = tuple(
+            tuple(t for t in group if t.lower() not in drop) for group in c.groups
+        )
+        if all(groups) and groups:  # 빈 그룹이 하나라도 있으면 이 조합은 성립하지 않는다
+            out.append(TextCombination(c.concept_iri, c.variant, groups))
+    return out
