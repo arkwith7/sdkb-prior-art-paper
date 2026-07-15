@@ -27,11 +27,12 @@ SDKB 원본(~/Dev/sdkb) ──(사람이 make vendor)──> data/external/sdkb/
 **결정적이다.** 같은 스냅샷 → 같은 그래프(바이트 단위 동일).
 → `test_baseline_is_deterministic` (두 번 조립해 sha256 비교)
 
-**서명 (`make baseline` 출력, SDKB 커밋 `581360a` · 2026-07-14 출원인 정체성 통합)**
+**서명 (`make baseline` 출력, SDKB 커밋 `23d07a1` · 2026-07-14 Expert·Problem 라벨 규약 교정)**
 
 | 항목 | 값 | 이것이 깨지면 |
 |---|---:|---|
-| 트리플 | 43,712 | 스냅샷이나 조립이 바뀌었다 |
+| 트리플 | 43,812 | 스냅샷이나 조립이 바뀌었다 |
+| Expert / Problem 의 `skos:prefLabel` | 110 / 226 (`rdfs:label` 0) | **인력·문제 질의가 IRI 만 돌려준다** |
 | Process / SubProcess | 11 / 38 | **H1 의 관측 단위(n=49)가 바뀐다** |
 | Device | 34 | H2 의 개념 축이 바뀐다 |
 | Patent | 1,000 | SIRP 가 빠졌거나 상류가 바뀌었다 |

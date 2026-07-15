@@ -22,8 +22,11 @@ PREFIXES = """
 """
 
 GOOD_DELTA = PREFIXES + """
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 pat:1020240000001 a ont:Patent ;
+    skos:prefLabel "플라즈마 식각 장치"@ko ;
     ont:applicationNumber "1020240000001" ;
+    ont:patentOffice "KR" ;
     ont:filingDate "2024-02-01"^^xsd:date ;
     ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
 """

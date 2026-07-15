@@ -51,7 +51,9 @@ def test_graph_gate_allows_patent_with_no_concept_link():
     그것을 통과시켜야 한다 — 통과시키지 않으면 G₀ 자체가 조립되지 않는다."""
     g = _sample_plus("""
         pat:9999999999998 a ont:Patent ;
+            skos:prefLabel "레거시 디바이스 특허"@ko ;
             ont:applicationNumber "9999999999998" ;
+            ont:patentOffice "KR" ;
             ont:filingDate "2022-05-01"^^xsd:date .
     """)
     conforms, report = validate_graph(g, SHAPES_GRAPH)

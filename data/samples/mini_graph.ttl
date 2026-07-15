@@ -50,6 +50,7 @@ ont:SubProcess rdfs:subClassOf ont:Process .
 pat:1020200000001 a ont:Patent ;
     skos:prefLabel "플라즈마 식각 균일도 개선 방법"@ko ;
     ont:applicationNumber "1020200000001" ;
+    ont:patentOffice "KR" ;
     ont:filingDate "2020-03-02"^^xsd:date ;
     ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
     ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
@@ -58,6 +59,7 @@ pat:1020200000001 a ont:Patent ;
 pat:1020210000002 a ont:Patent ;
     skos:prefLabel "EUV 마스크 결함 검사 장치"@ko ;
     ont:applicationNumber "1020210000002" ;
+    ont:patentOffice "KR" ;
     ont:filingDate "2021-07-15"^^xsd:date ;
     ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
     ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
@@ -67,8 +69,147 @@ pat:1020210000002 a ont:Patent ;
 pat:1020230000003 a ont:Patent ;
     skos:prefLabel "HBM 적층용 식각 공정 슬러리 조성물"@ko ;
     ont:applicationNumber "1020230000003" ;
+    ont:patentOffice "KR" ;
     ont:filingDate "2023-01-20"^^xsd:date ;
     ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
     ont:hasIPC <https://w3id.org/sdkb/data/ipc/H10B12-00> ;
     ont:concernsDevice <https://w3id.org/sdkb/data/device/hbm> ;
     ont:realizesProcess <https://w3id.org/sdkb/data/process/etch> .
+
+# ---------------------------------------------------------------------------
+# IP-R&D 축 (CQ09–CQ14) — 2026-07-14 · SPEC-004 단계 3.
+#
+# CQ 를 늘리면 픽스처도 늘어야 한다. mini_graph 의 계약은 "어떤 CQ 도 vacuous 하게
+# 통과하지 않는다" 이고(SPEC-003), 그 계약이 곧 100% 를 요구하는 진짜 게이트의 근거다.
+# 아래는 G₀ 에 실재하는 축(선행기술·인력·문제·공급망)의 **최소 합성 복제**다.
+# ---------------------------------------------------------------------------
+
+# 선행기술 · 거절 (CQ09) — 인용 문헌은 서지가 없으므로 ont:Patent 로 타입하지 않는다.
+# G₀ 도 인용 3,763건을 그렇게 다룬다.
+<https://w3id.org/sdkb/data/patent/us_US7000001> rdfs:label "Prior art: plasma etch endpoint detection" .
+
+# 거절특허이자 CQ10 의 선행기술 후보(2013년 출원 · plasma_etch)를 겸한다.
+pat:1020130000004 a ont:Patent, ont:RejectedPatent ;
+    skos:prefLabel "플라즈마 식각 종점 검출 방법"@ko ;
+    ont:applicationNumber "1020130000004" ;
+    ont:patentOffice "KR" ;
+    ont:filingDate "2013-05-10"^^xsd:date ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> ;
+    ont:rejectedFor ont:Rejection_Inventiveness ;
+    ont:hasPriorArt <https://w3id.org/sdkb/data/patent/us_US7000001> ;
+    ont:hasPriorArtExaminer <https://w3id.org/sdkb/data/patent/us_US7000001> ;
+    ont:abstractText "합성 초록 — 플라즈마 식각 종점 검출." ;
+    ont:firstClaimText "청구항 1: 플라즈마 식각 종점을 검출하는 방법." ;
+    ont:examinationStatus "거절결정(일반)" ;
+    ont:publicationNumber "1020140000004" ;
+    ont:processFamily "etch" ;
+    ont:valueChainStage "fab" .
+
+# 인력 (CQ11) — 공정이 요구하는 스킬과 전문가가 보유한 스킬이 만나야 한다.
+# 인스턴스의 이름은 skos:prefLabel 이다 (SDKB `23d07a1` 에서 Expert·Problem 도 규약에 맞췄다 —
+# 그 이전에는 rdfs:label 만 있어 이 질의가 IRI 만 돌려줬다).
+<https://w3id.org/sdkb/data/skill/endpoint_detection> a ont:Skill ;
+    skos:prefLabel "Endpoint Detection"@en .
+
+<https://w3id.org/sdkb/data/subprocess/plasma_etch>
+    ont:requiresSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> .
+
+<https://w3id.org/sdkb/data/expert/EXP_M01> a ont:Expert ;
+    skos:prefLabel "전문가 M01"@ko ;
+    skos:altLabel "Expert M01"@en ;
+    ont:hasSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> ;
+    ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/etch> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment/lam_kiyo> .
+
+# 소부장 실문제 (CQ12)
+<https://w3id.org/sdkb/data/problem/PROB_M01> a ont:Problem ;
+    skos:prefLabel "Particle increase in etch chamber"@en ;
+    ont:problemCategory "contamination" ;
+    ont:involvesProcess <https://w3id.org/sdkb/data/process/etch> ;
+    ont:involvesEquipment <https://w3id.org/sdkb/data/equipment/lam_kiyo> ;
+    ont:requiresSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> .
+
+# 공급망 (CQ13·CQ14) — 회사 하나 = IRI 하나. 공급 역할과 출원인 역할은 rdf:type 이 말한다.
+<https://w3id.org/sdkb/data/organization/lam_research> a ont:Organization, ont:Vendor ;
+    skos:prefLabel "Lam Research"@en ;
+    ont:companyType "장비업체" .
+
+<https://w3id.org/sdkb/data/equipment_class/etcher> a ont:EquipmentClass ;
+    skos:prefLabel "Etcher"@en ;
+    ont:madeBy <https://w3id.org/sdkb/data/organization/lam_research> .
+
+<https://w3id.org/sdkb/data/equipment/lam_kiyo> a ont:Equipment ;
+    skos:prefLabel "Lam Kiyo"@en ;
+    ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/etcher> ;
+    ont:providedBy <https://w3id.org/sdkb/data/organization/lam_research> .
+
+<https://w3id.org/sdkb/data/subprocess/plasma_etch>
+    ont:usesEquipmentClass <https://w3id.org/sdkb/data/equipment_class/etcher> .
+
+# 공급사의 특허 — 이 조인(공급 역할 ↔ 출원인 역할)이 정체성 통합 이전에는 0행이었다.
+pat:1020190000005 a ont:Patent ;
+    skos:prefLabel "식각 챔버 플라즈마 균일도 제어 장치"@ko ;
+    ont:applicationNumber "1020190000005" ;
+    ont:patentOffice "KR" ;
+    ont:filingDate "2019-11-08"^^xsd:date ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/lam_research> ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
+
+# ---------------------------------------------------------------------------
+# 불량 인과 · 재료 · 계측 축 (CQ15–CQ22) — 2026-07-14 · SPEC-004 단계 4.
+# CQ 를 늘리면 픽스처도 늘어야 한다. 어떤 CQ 도 vacuous 하게 통과하지 않는다는 계약(SPEC-003)이
+# 100% 를 요구하는 진짜 게이트의 근거다.
+# ---------------------------------------------------------------------------
+
+# 불량 인과 사슬 (CQ15): 문제 → 불량 → (공정) → 근본원인 → 완화 → 스킬
+<https://w3id.org/sdkb/data/failure_mode/micro_trenching> a ont:FailureMode ;
+    skos:prefLabel "Micro-trenching"@en ;
+    ont:occursAtProcessStep <https://w3id.org/sdkb/data/subprocess/plasma_etch> ;
+    ont:isDueTo <https://w3id.org/sdkb/data/root_cause/charging> .
+
+<https://w3id.org/sdkb/data/root_cause/charging> a ont:RootCause ;
+    skos:prefLabel "Charging"@en ;
+    ont:mitigatedBy <https://w3id.org/sdkb/data/mitigation/recipe_tuning> .
+
+<https://w3id.org/sdkb/data/mitigation/recipe_tuning> a ont:Mitigation ;
+    skos:prefLabel "Recipe Tuning"@en ;
+    ont:mitigationProvidesSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> .
+
+<https://w3id.org/sdkb/data/problem/PROB_M01>
+    ont:exhibitsFailureMode <https://w3id.org/sdkb/data/failure_mode/micro_trenching> ;
+    ont:involvesMaterial <https://w3id.org/sdkb/data/material/euv_photoresist> .
+
+# 재료 · 금기 (CQ16·CQ17)
+<https://w3id.org/sdkb/data/material/euv_photoresist> a ont:Material ;
+    skos:prefLabel "EUV Photoresist"@en ;
+    ont:incompatibleWith <https://w3id.org/sdkb/data/material/hydrofluoric_acid> .
+
+<https://w3id.org/sdkb/data/material/hydrofluoric_acid> a ont:Material ;
+    skos:prefLabel "Hydrofluoric Acid"@en .
+
+<https://w3id.org/sdkb/data/subprocess/plasma_etch>
+    ont:usesMaterial <https://w3id.org/sdkb/data/material/euv_photoresist> ;
+    ont:hasParameter <https://w3id.org/sdkb/data/parameter/bias_power> ;
+    ont:measuredBy <https://w3id.org/sdkb/data/metrology/cd_sem> .
+
+<https://w3id.org/sdkb/data/expert/EXP_M01>
+    ont:hasMaterialExpertise <https://w3id.org/sdkb/data/material/euv_photoresist> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/etcher> .
+
+# 공정 제어 · 계측 (CQ19)
+<https://w3id.org/sdkb/data/parameter/bias_power> a ont:Parameter ;
+    skos:prefLabel "Bias Power"@en .
+<https://w3id.org/sdkb/data/metrology/cd_sem> a ont:Metrology ;
+    skos:prefLabel "CD-SEM"@en .
+
+# 특허 ↔ 스킬 · 장비클래스 · 기술노드 (CQ18·CQ22)
+<https://w3id.org/sdkb/data/technology_node/n3> a ont:TechnologyNode ;
+    skos:prefLabel "3nm"@en .
+
+pat:1020200000001
+    ont:concernsSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> ;
+    ont:realizesEquipmentClass <https://w3id.org/sdkb/data/equipment_class/etcher> ;
+    ont:concernsTechnologyNode <https://w3id.org/sdkb/data/technology_node/n3> .

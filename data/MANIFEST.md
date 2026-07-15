@@ -24,7 +24,10 @@ make baseline                       # graph_v0 재조립
 |---|---|---|---|---:|---|
 | 2026-07-11 | [semiconductor-knowledge-base](https://github.com/arkwith7/semiconductor-knowledge-base) (CDLA-Permissive-2.0) | `e64f90cc74ec` | TBox: core·patent·foresight / ABox: core-data (SIRP 제외) | 3,201 트리플 | (폐기) |
 | 2026-07-12 | 〃 | `4fca29c3f6e2` | TBox: core·patent·foresight / ABox: core-data + **SIRP 특허 1,000건** | 24,566 트리플 | (대체됨) |
-| 2026-07-12 | 〃 | `ad7fe3d2ecc6` | 〃 + **SemiKong Table 7 공정 어휘 복원**(그룹 1·9·10) + 소자 3개 | 26,973 트리플 | `graph_v0.ttl` |
+| 2026-07-12 | 〃 | `ad7fe3d2ecc6` | 〃 + **SemiKong Table 7 공정 어휘 복원**(그룹 1·9·10) + 소자 3개 | 26,973 트리플 | (대체됨) |
+| 2026-07-14 | 〃 | `d4dff61…` | 〃 + **상류 지식 적재**(선행기술·거절·초록·청구항·인력·문제·KSIA 벤더) + **낡은 특허 A-Box 재빌드** | 43,745 트리플 | (대체됨) |
+| 2026-07-14 | 〃 | `581360a…` | 〃 + **출원인 정체성 통합**(회사 하나 = IRI 하나 · 11쌍 병합) | 43,712 트리플 | (대체됨) |
+| 2026-07-14 | 〃 | `23d07a140cec` | 〃 + **Expert·Problem 라벨 규약 교정**(`rdfs:label` → `skos:prefLabel`, 전문가 EN 표기 `altLabel` 100) | **43,812 트리플** | `graph_v0.ttl` |
 
 **G₀ 정의 변경 (2026-07-12).** 이전 스냅샷은 SIRP 특허 ABox 를 의도적으로 제외해 baseline 을
 특허 0건으로 두었다. 그러면 모든 공정 단계에서 C₀(s)=0 이 되어 **H1 이 기각될 수 없는 자명한

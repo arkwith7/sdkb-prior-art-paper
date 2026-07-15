@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "581360a5a20c9501eb2344ae6ee19e44a238d5aa",
-  "source_commit_date": "2026-07-14T19:44:14+09:00",
+  "source_commit": "024e98efeda53b8aabfe1961036552f67d407570",
+  "source_commit_date": "2026-07-14T23:31:31+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-14T10:44:28+00:00",
+  "vendored_at": "2026-07-14T14:34:58+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
@@ -18,7 +18,7 @@
       "file": "sdkb-core.ttl",
       "source_path": "ontology/sdkb-core.ttl",
       "role": "TBox: 제조 코어(Process/SubProcess/Equipment/Material/Device/FailureMode)",
-      "sha256": "0606bd1a65162ca263cf444066cf9cf1ec008d0f47db83b690e261b71c16ded4"
+      "sha256": "5bf7f9f488a72292170a75d05a1011cd56a12ac1f4ada23a07c4ce6658194f91"
     },
     {
       "file": "sdkb-patent.ttl",
@@ -42,13 +42,13 @@
       "file": "sdkb-abox-patents.ttl",
       "source_path": "ontology/sdkb-abox-patents.ttl",
       "role": "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다",
-      "sha256": "4629c47e64a4b9d13bef4e8b62c7f70833fea1b7d306fb931920e5cba66b5d07"
+      "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089"
     },
     {
       "file": "sdkb-abox-experts-problems.ttl",
       "source_path": "ontology/sdkb-abox-experts-problems.ttl",
       "role": "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축",
-      "sha256": "f551af14294ecb54885dac6c6efa4ea9511f44f760aa9199c70a02c831430dde"
+      "sha256": "7079bc94b43ba8e40129e8d1c1ac16d410b3e242e6d2e5a2de2514be7564c85b"
     },
     {
       "file": "sdkb-abox-vendors.ttl",

@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq gate h1 h2 cpc cpc-vintage figures
+.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq vocab gate h1 h2 cpc cpc-vintage figures
 
 setup:
 	uv sync --all-extras
@@ -86,8 +86,16 @@ cq: baseline
 	uv run python -m sdkb_paper.validate.cq_runner data/processed/graph_v0.ttl --report --min-pass 0
 	uv run python -m sdkb_paper.validate.cq_runner data/samples/mini_graph.ttl --report
 
-# 머지 전 전체 게이트: 스냅샷 무결성 + baseline 재조립 + L1 + L2 + L3
-gate: snapshot validate reason cq
+# 어휘 검증 커버리지 (논문 §3.4.2 지표 ii) — CQ 가 어휘의 몇 %를 실제로 심문하는가.
+#   **게이트가 아니라 측정이다**(--min-cov 0). 임계값을 세우면 커버리지를 올리려고 CQ 를
+#   지어내게 되고, 그것은 CQ 를 태스크에서 도출한다는 프로토콜(SPEC-004)을 배신한다.
+#   낮은 값이 나오는 것 자체가 결과다 — "CQ 8/8 · 100%" 가 공허한 게이트임을 드러낸다.
+vocab: baseline
+	uv run python -m sdkb_paper.validate.vocab_coverage data/processed/graph_v0.ttl --report
+	uv run python -m sdkb_paper.validate.vocab_coverage data/samples/mini_graph.ttl --report
+
+# 머지 전 전체 게이트: 스냅샷 무결성 + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
+gate: snapshot validate reason cq vocab
 
 # H1 검정 — 공정 단계별 커버리지 (Wilcoxon 단측). 게이트를 통과한 두 스냅샷을 읽기만 한다.
 # 표본 집합은 확장 49 와 복원 이전 20 **양쪽**으로 병기 보고된다 (PLAN-005).

@@ -24,11 +24,16 @@ from sdkb_paper.ontology.baseline import build_baseline, summarize
 from sdkb_paper.ontology.vendor import verify_snapshot
 from sdkb_paper.validate.cq_runner import run_cqs
 from sdkb_paper.validate.shacl_gate import validate_graph
+from sdkb_paper.validate.vocab_coverage import measure
 
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 43712    # 2026-07-14 출원인 정체성 통합 (SDKB 581360a) — 구 43,745 / 26,973
+EXPECTED_TRIPLES = 43814    # 2026-07-15 ConstraintType prefLabel (SDKB 024e98e) — 구 43,812
+                            # +2: hardConstraint·softConstraint 의 skos:prefLabel. Expert·Problem·특허
+                            # +100: rdfs:label → skos:prefLabel 는 술어 교체라 净 0 이고,
+                            # 전문가의 EN 표기 100개가 skos:altLabel 로 **새로 들어왔다**.
+                            # 특허 엣지·개념 링크는 한 건도 안 움직인다 (C₀ 20/49 불변 · H1 p 불변).
                             # −33: 역할별로 갈라져 있던 회사 노드 11쌍이 organization/ 하나로
                             # 접혔다 (data:org/samsung_electronics 등은 assignedTo in-edge 가
                             # 0 이었으므로 **특허 엣지는 한 건도 움직이지 않았다** — C₀ 불변).
@@ -74,10 +79,46 @@ CQ_MUST_ANSWER = {
     "CQ07_device_process_crosswalk",
     "CQ08_applicant_process_portfolio",
 }
+# SPEC-004 단계 3·4 의 IP-R&D CQ 는 EXPECTED_IPRD_ROWS 아래에 정의하고 여기에 합친다
+# (행 수까지 고정하므로 목록을 두 벌 유지하지 않는다). 22개 **모두 G₀ 에서 응답해야 정상이다** —
+# 응답하지 못하면 온톨로지 결함이지 "G₁ 이 고칠 CQ" 가 아니다 (SPEC-004 §6).
 
 # 완전성 지표의 before 값. G₁ 과 비교되는 수치이므로 여기서 고정한다.
 EXPECTED_CONCEPTS_WITHOUT_RECENT = 58   # CQ06 — 개념 83개 중 2021년 이후 출원 전무 (구 61)
 EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴리오 분석에 쓸 수 없다
+
+# G₀ 의 **어휘 검증 커버리지** 서명 (논문 §3.4.2 지표 ii · §4.2 · SPEC-004).
+# 이 숫자가 논문 본문에 인쇄된다 — 조용히 움직이면 논문이 틀린다. 그래서 여기서 얼린다.
+#
+# CQ 8개(손으로 고른 것) 시절: 술어 5/53 = 9.4% · 클래스 4/25 = 16.0% — 특허 축 하나의 100%.
+# CQ 22개(태스크에서 도출 · SPEC-004 P1–P5): 아래. 올린 방법은 임계값이 아니라 태스크다.
+EXPECTED_VOCAB_PREDICATES = (36, 53)  # CQ 검증 67.9%
+EXPECTED_VOCAB_CLASSES = (18, 25)     # CQ 검증 72.0%
+
+# **게이트 커버리지 = CQ ∪ SHACL.** 목표는 커버리지 90% 가 아니라 "아무도 안 보는 어휘 = 0" 이다.
+# 서지·프로비넌스는 CQ 가 아니라 SHACL 이 본다 (bibliographic_shape.ttl).
+EXPECTED_GATE_PREDICATES = (53, 53)   # 100% — 아무도 안 보는 술어 0
+EXPECTED_GATE_CLASSES = (25, 25)      # 100% — 아무도 안 보는 클래스 0
+
+# G₀ 의 IP-R&D CQ before 값 (§4.2 의 G₀ 열). G₁ 과 비교되는 수치이므로 여기서 고정한다.
+EXPECTED_IPRD_ROWS = {
+    "CQ09_rejection_prior_art": 414,             # 거절 근거가 기록된 특허
+    "CQ10_prior_art_candidates_by_concept": 8,   # plasma_etch · 2015 이전 출원
+    "CQ11_experts_for_process_skill": 66,
+    "CQ12_problem_process_equipment_expert": 4967,
+    "CQ13_value_chain_vendor_portfolio": 21,     # 정체성 통합 이전에는 **0 행**이었다
+    "CQ14_value_chain_role_distribution": 18,
+    # SPEC-004 단계 4 — 불량 인과·재료·계측 축 (2026-07-15). 여섯도 G₀ 에서 응답해야 정상이다.
+    "CQ15_failure_causal_chain": 6,
+    "CQ16_material_incompatibility": 3,
+    "CQ17_material_problem_expert": 35,
+    "CQ18_patents_by_skill": 10,
+    "CQ19_process_control_and_metrology": 6,
+    "CQ20_experts_by_equipment": 15,
+    "CQ21_process_hierarchy_portfolio": 38,
+    "CQ22_patent_equipment_and_technode": 9,
+}
+CQ_MUST_ANSWER |= set(EXPECTED_IPRD_ROWS)
 
 
 @pytest.fixture(scope="module")
@@ -173,6 +214,51 @@ def test_baseline_cq_signature(graph_v0):
     assert results["CQ01_patents_per_process_step"].rows == EXPECTED_COVERED_STEPS
     assert results["CQ03_uncovered_process_steps"].rows == EXPECTED_UNCOVERED_STEPS
     assert results["CQ06_concepts_without_recent_patents"].rows == EXPECTED_CONCEPTS_WITHOUT_RECENT
+
+
+def test_baseline_iprd_cq_signature(graph_v0):
+    """§4.2 의 G₀ 열 — 태스크에서 도출한 IP-R&D CQ 의 before 값.
+
+    CQ13 이 0 을 반환하면 회사 정체성이 다시 쪼개진 것이다(공급 역할과 출원인 역할이 다른
+    IRI 로 갈라지면 이 조인은 **에러 없이 0행**을 낸다 — 그것이 이 지표의 존재 이유다).
+    """
+    _, path = graph_v0
+    results = {r.name: r.rows for r in run_cqs(path, QUERIES_CQ)}
+    for name, expected in EXPECTED_IPRD_ROWS.items():
+        assert results[name] == expected, f"{name}: {results[name]} != {expected}"
+
+
+def test_baseline_vocab_coverage_signature(graph_v0):
+    """어휘 검증 커버리지를 수치로 고정한다 (논문 §3.4.2 · §4.2).
+
+    CQ 를 늘리면 이 상수를 함께 고쳐야 하고, 그때 논문의 표도 같이 움직인다.
+    그 강제가 이 테스트의 존재 이유다.
+    """
+    _, path = graph_v0
+    cov = measure(path, QUERIES_CQ)
+
+    assert (len(cov.verified_predicates), len(cov.predicates_used)) == EXPECTED_VOCAB_PREDICATES
+    assert (len(cov.verified_classes), len(cov.classes_used)) == EXPECTED_VOCAB_CLASSES
+
+    # **게이트 커버리지(CQ ∪ SHACL) = 100% · 아무도 안 보는 어휘 0.** 이것이 이 사이클의 핵심
+    # 결과다 — 목표는 커버리지 90% 가 아니라 "검증되지 않는 어휘가 없다" 이다.
+    assert (len(cov.gated_predicates), len(cov.predicates_used)) == EXPECTED_GATE_PREDICATES
+    assert (len(cov.gated_classes), len(cov.classes_used)) == EXPECTED_GATE_CLASSES
+    assert not cov.ungated_predicates(), f"아무도 안 보는 술어: {cov.ungated_predicates()}"
+    assert not cov.ungated_classes(), f"아무도 안 보는 클래스: {cov.ungated_classes()}"
+
+    # 태스크에서 도출한 CQ 가 실제로 그 축들을 심문하는가 (SPEC-004 단계 3·4 의 성과)
+    verified = cov.verified_predicates
+    for local in ("hasPriorArtExaminer", "rejectedFor", "hasProcessExpertise", "hasSkill",
+                  "requiresSkill", "involvesProcess", "involvesEquipment", "companyType",
+                  "providedBy", "madeBy", "usesEquipmentClass",
+                  "exhibitsFailureMode", "isDueTo", "mitigatedBy", "involvesMaterial",
+                  "concernsSkill", "hasEquipmentExperience", "hasSubprocess"):
+        assert str(ONT[local]) in verified, f"{local} 이 미검증이다 — CQ 가 깨졌다"
+
+    # 서지·프로비넌스는 CQ 가 아니라 **SHACL** 이 본다 (기능이 아니라 제약이므로).
+    assert str(ONT["abstractText"]) not in cov.verified_predicates      # CQ 는 안 본다
+    assert str(ONT["abstractText"]) in cov.shacl_predicates             # SHACL 이 본다
 
 
 def test_baseline_patents_have_applicants(graph_v0):

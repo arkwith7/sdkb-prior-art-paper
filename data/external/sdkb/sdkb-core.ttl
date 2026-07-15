@@ -158,7 +158,8 @@ ont:granularity a owl:DatatypeProperty ;
 
 ont:hardConstraint a owl:NamedIndividual,
         ont:ConstraintType ;
-    rdfs:label "hardConstraint"@en .
+    rdfs:label "hardConstraint"@en ;
+    skos:prefLabel "Hard Constraint"@en .
 
 ont:hasAcceptor a owl:ObjectProperty ;
     rdfs:label "hasAcceptor"@en ;
@@ -422,7 +423,8 @@ ont:securityLevel a owl:DatatypeProperty ;
 
 ont:softConstraint a owl:NamedIndividual,
         ont:ConstraintType ;
-    rdfs:label "softConstraint"@en .
+    rdfs:label "softConstraint"@en ;
+    skos:prefLabel "Soft Constraint"@en .
 
 ont:standardRef a owl:ObjectProperty ;
     rdfs:label "standardRef"@en ;

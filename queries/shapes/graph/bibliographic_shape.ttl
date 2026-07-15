@@ -1,0 +1,115 @@
+# L1 — 서지·프로비넌스·거버넌스 어휘의 **구조 검증** (2026-07-14 · SPEC-004 §3.2).
+#
+# 왜 여기 있는가: 이 술어들은 **CQ 가 물을 질문이 아니다.** "출원번호가 있는가"·"신뢰도가
+# 0~1 인가"는 기능(질의 가능성)이 아니라 **제약**의 문제다. 커버리지를 채우려고 이걸 CQ 로
+# 만들면 응답률 100% + 커버리지 90% 짜리 **더 정교한 vacuous gate** 가 될 뿐이다.
+#
+# 그래서 규칙은 "커버리지 90%" 가 아니라 **"아무도 안 보는 술어 = 0"** 이다:
+# 모든 술어는 CQ(기능) 또는 SHACL(구조) 중 **최소 한 층**이 봐야 한다.
+#
+# ⚠ 이 shape 는 G₀·G₁ **양쪽**에 걸린다. 델타(KIPRIS) 특허는 초록·청구항·심사상태를 갖지
+#    않으므로 그것들을 ont:Patent 전체에 요구하면 병합 게이트가 깨진다. SIRP 코퍼스에만 있는
+#    필드는 **ont:RejectedPatent** 를 타깃으로 요구한다 (델타 특허는 이 타입이 아니다).
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix ont:     <https://w3id.org/sdkb/ont/> .
+@prefix pat:     <https://w3id.org/sdkb/data/patent/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# ── 모든 특허 (G₀ · G₁) ────────────────────────────────────────────────
+# 제목은 skos:prefLabel 이다. rdfs:label 로 넣는 바람에 G₀ 의 특허 1,000건과 델타 24,179건의
+# 제목이 **질의에 잡히지 않았다** — 선행기술 질의가 사람이 읽을 수 없는 IRI 만 돌려줬다.
+# 이 shape 이 그 재발을 막는다 (상류 SDKB `e0ef011` · 이 저장소 `delta.py` 를 함께 고쳤다).
+pat:PatentBibliographyShape a sh:NodeShape ;
+    sh:targetClass ont:Patent ;
+    sh:property [
+        sh:path skos:prefLabel ;
+        sh:minCount 1 ; sh:datatype rdf:langString ;
+        sh:message "특허는 발명의 명칭을 skos:prefLabel(언어태그)로 가져야 한다 — rdfs:label 이 아니다" ;
+    ] ;
+    sh:property [
+        sh:path ont:patentOffice ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:in ( "KR" "US" "JP" "EP" "WO" "CN" "OTHER" ) ;
+    ] ;
+    sh:property [
+        sh:path ont:publicationDate ;
+        sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "공개일은 xsd:date 다 — 출원일(filingDate)과 혼동하면 H2 시계열이 오염된다" ;
+    ] .
+
+# ── SIRP 거절특허에만 있는 필드 (G₀) ───────────────────────────────────
+# 델타(KIPRIS) 특허는 ont:RejectedPatent 가 아니므로 이 요구를 받지 않는다.
+pat:RejectedPatentContentShape a sh:NodeShape ;
+    sh:targetClass ont:RejectedPatent ;
+    sh:property [ sh:path ont:abstractText       ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ont:firstClaimText     ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ont:examinationStatus  ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ont:publicationNumber  ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ont:processFamily      ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ont:valueChainStage    ; sh:minCount 1 ; sh:datatype xsd:string ] .
+
+# ── 분류코드 ───────────────────────────────────────────────────────────
+# IPCSymbol 은 prefLabel 이 아니라 notation 으로 식별된다 (코드는 이름이 아니라 표기다).
+pat:IPCSymbolShape a sh:NodeShape ;
+    sh:targetClass ont:IPCSymbol ;
+    sh:property [
+        sh:path skos:notation ;
+        sh:minCount 1 ;
+        sh:message "IPCSymbol 은 skos:notation 이 있어야 한다 (예: 'H01L 21/3065')" ;
+    ] .
+
+# ── 회사 (출원인 = 공급사 — 회사 하나 = IRI 하나) ──────────────────────
+# prefLabel 이 회사당 하나여야 한다. 라벨이 갈라지면 CQ08 이 같은 회사를 두 행으로 쪼갠다
+# (ULVAC 유령 행이 그랬다 — 표기 2개가 둘 다 prefLabel 이었다).
+pat:OrganizationShape a sh:NodeShape ;
+    sh:targetClass ont:Organization ;
+    sh:property [
+        sh:path skos:prefLabel ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "회사의 prefLabel 은 정확히 하나다 — 갈라지면 포트폴리오 질의가 같은 회사를 쪼갠다" ;
+    ] .
+
+# ── 프로비넌스·거버넌스 (해석 유형 · 신뢰도 · 규제 플래그) ──────────────
+# 값이 있을 때 **형식**을 강제한다. 없는 것을 요구하지 않는다 — 상류가 이 필드를 모든 노드에
+# 채우지는 않으며, 없는 값을 지어내는 것은 날조다 (CLAUDE.md §1.2).
+ont:InterpretationTypeShape a sh:NodeShape ;
+    sh:targetSubjectsOf ont:interpretationType ;
+    sh:property [
+        sh:path ont:interpretationType ;
+        sh:in ( "verbatim" "mapped" "author-defined" ) ;
+        sh:message "interpretationType 은 verbatim · mapped · author-defined 중 하나다" ;
+    ] .
+
+ont:ConfidenceShape a sh:NodeShape ;
+    sh:targetSubjectsOf ont:confidence ;
+    sh:property [
+        sh:path ont:confidence ;
+        sh:datatype xsd:decimal ; sh:minInclusive 0.0 ; sh:maxInclusive 1.0 ;
+        sh:message "confidence 는 [0.0, 1.0] 의 decimal 이다" ;
+    ] .
+
+# 전문가·문제의 규제·지역 속성 — 값이 있으면 형식을 검사한다.
+ont:ComplianceShape a sh:NodeShape ;
+    sh:targetClass ont:Expert, ont:Problem ;
+    sh:property [ sh:path ont:complianceFlag        ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path ont:validationRequired    ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path ont:region                ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ont:clientCountry         ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ont:complianceSensitivity ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ont:problemCategory       ; sh:datatype xsd:string ] .
+
+# ── 값 어휘(value vocabulary) — 열거형 노드도 이름이 있어야 한다 ────────
+# RejectionType(거절유형) · OptionType(대응옵션) · ConstraintType(제약강도) ·
+# STEEPVEDimension(거시요인) · Semiconductor(재료). 인스턴스는 적지만(1–7개) 질의 결과에
+# **값으로 등장**하므로 이름이 없으면 답이 읽히지 않는다 — ConstraintType 2건이 rdfs:label
+# 만 갖고 있었고(상류 `024e98e` 에서 교정), 그래서 이 shape 이 필요하다.
+ont:ValueVocabularyShape a sh:NodeShape ;
+    sh:targetClass ont:RejectionType, ont:OptionType, ont:ConstraintType,
+                   ont:STEEPVEDimension, ont:Semiconductor ;
+    sh:property [
+        sh:path skos:prefLabel ;
+        sh:minCount 1 ;
+        sh:message "값 어휘 노드도 skos:prefLabel 이 있어야 한다 — 질의 결과에 값으로 등장한다" ;
+    ] .

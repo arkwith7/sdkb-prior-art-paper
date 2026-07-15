@@ -5,7 +5,7 @@
     rdfs:label · ont:applicationNumber · ont:filingDate(xsd:date) · ont:publicationDate
     ont:patentOffice · ont:assignedTo(→ 기존 organization) · ont:hasIPC(→ ont:IPCSymbol)
     ont:realizesProcess / ont:concernsDevice   ← 룰 매핑 결과
-    ont:source · ont:license · prov:wasGeneratedBy
+    dcterms:source · dcterms:license · prov:wasGeneratedBy
 
 두 가지를 넣지 **않는다**:
 - **초록 원문.** KIPRIS 는 학술 이용·비재배포 조건이다 (CLAUDE.md §1.3). 텍스트 매칭은
@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import pandas as pd
 from rdflib import RDF, RDFS, XSD, Graph, Literal, URIRef
-from rdflib.namespace import SKOS
+from rdflib.namespace import DCTERMS, SKOS
 
 from sdkb_paper.config import ONT, PATENT_NS, PROCESSED, SDKB_DATA, bind_namespaces
 from sdkb_paper.ontology.emerging import (
@@ -85,12 +85,18 @@ def build_delta(df: pd.DataFrame, variant: str = DEFAULT_VARIANT) -> Graph:
 
         p = PATENT_NS[f"kr_{row.application_number}"]
         g.add((p, RDF.type, ONT.Patent))
-        g.add((p, RDFS.label, Literal(row.invention_title)))
+        # 특허의 이름은 발명의 명칭이고, 인스턴스의 이름은 skos:prefLabel 이다 — rdfs:label 이
+        # 아니다 (CLAUDE.md §1.4). 상류 SDKB 도 같은 결함이 있어 함께 고쳤다 (SDKB e0ef011).
+        # 이걸 어기면 선행기술 질의가 제목 없이 IRI 만 돌려준다. KIPRIS 원문은 국문이다.
+        g.add((p, SKOS.prefLabel, Literal(row.invention_title, lang="ko")))
         g.add((p, ONT.applicationNumber, Literal(row.application_number, datatype=XSD.string)))
         g.add((p, ONT.filingDate, Literal(row.application_date.date().isoformat(), datatype=XSD.date)))
         g.add((p, ONT.patentOffice, Literal("KR")))
-        g.add((p, ONT.source, Literal(SOURCE, datatype=XSD.string)))
-        g.add((p, ONT.license, Literal(LICENSE, datatype=XSD.string)))
+        # 출처·라이선스는 dcterms 다. ont:source · ont:license 는 **우리가 발명한 술어**였고
+        # (SDKB TBox 에 없다) 그래서 G₁ 의 ont: 술어가 53 → 55 로 부풀어 있었다 — 어휘를
+        # 발명하지 않는다 (CLAUDE.md §1.4). 상류 특허 A-Box 도 dcterms 를 쓴다.
+        g.add((p, DCTERMS.source, Literal(SOURCE, datatype=XSD.string)))
+        g.add((p, DCTERMS.license, Literal(LICENSE, datatype=XSD.string)))
         g.add((p, WAS_GENERATED_BY, ACTIVITY))
 
         if row.open_date:

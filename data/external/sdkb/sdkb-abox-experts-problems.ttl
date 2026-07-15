@@ -1,9 +1,10 @@
 @prefix ont: <https://w3id.org/sdkb/ont/> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <https://w3id.org/sdkb/data/expert/EXP_001> a ont:Expert ;
-    rdfs:label "김태훈" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김태훈"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -26,7 +27,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_002> a ont:Expert ;
-    rdfs:label "박지현" ;
+    skos:altLabel "Park, [Given Name]"@en ;
+    skos:prefLabel "박지현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla>,
@@ -44,7 +46,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_003> a ont:Expert ;
-    rdfs:label "이승우" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이승우"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -60,7 +63,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_004> a ont:Expert ;
-    rdfs:label "최재호" ;
+    skos:altLabel "Choi, [Given Name]"@en ;
+    skos:prefLabel "최재호"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -77,7 +81,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_005> a ont:Expert ;
-    rdfs:label "김영수" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김영수"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla>,
@@ -98,7 +103,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_006> a ont:Expert ;
-    rdfs:label "노승현" ;
+    skos:altLabel "노승현"@en ;
+    skos:prefLabel "노승현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/defect_inspection>,
         <https://w3id.org/sdkb/data/organization/applied_materials>,
@@ -111,7 +117,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_007> a ont:Expert ;
-    rdfs:label "임소영" ;
+    skos:altLabel "Lim, [Given Name]"@en ;
+    skos:prefLabel "임소영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -124,7 +131,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_008> a ont:Expert ;
-    rdfs:label "강태영" ;
+    skos:altLabel "Kang, [Given Name]"@en ;
+    skos:prefLabel "강태영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -141,7 +149,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_009> a ont:Expert ;
-    rdfs:label "박현민" ;
+    skos:altLabel "Park, [Given Name]"@en ;
+    skos:prefLabel "박현민"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -158,7 +167,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_010> a ont:Expert ;
-    rdfs:label "전호영" ;
+    skos:altLabel "Jeon, [Given Name]"@en ;
+    skos:prefLabel "전호영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -174,7 +184,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_011> a ont:Expert ;
-    rdfs:label "김하늘" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김하늘"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -185,7 +196,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_012> a ont:Expert ;
-    rdfs:label "황수정" ;
+    skos:altLabel "Hwang, [Given Name]"@en ;
+    skos:prefLabel "황수정"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -194,7 +206,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_013> a ont:Expert ;
-    rdfs:label "최동현" ;
+    skos:altLabel "Choi, [Given Name]"@en ;
+    skos:prefLabel "최동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -209,7 +222,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_014> a ont:Expert ;
-    rdfs:label "강태영" ;
+    skos:altLabel "Kang, [Given Name]"@en ;
+    skos:prefLabel "강태영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -220,7 +234,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_015> a ont:Expert ;
-    rdfs:label "류현정" ;
+    skos:altLabel "Ryu, [Given Name]"@en ;
+    skos:prefLabel "류현정"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -237,7 +252,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_016> a ont:Expert ;
-    rdfs:label "임소영" ;
+    skos:altLabel "Lim, [Given Name]"@en ;
+    skos:prefLabel "임소영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -250,7 +266,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_017> a ont:Expert ;
-    rdfs:label "김서연" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김서연"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -263,7 +280,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_018> a ont:Expert ;
-    rdfs:label "한예원" ;
+    skos:altLabel "Han, [Given Name]"@en ;
+    skos:prefLabel "한예원"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla>,
@@ -273,7 +291,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_019> a ont:Expert ;
-    rdfs:label "강현수" ;
+    skos:altLabel "Kang, [Given Name]"@en ;
+    skos:prefLabel "강현수"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -288,7 +307,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_020> a ont:Expert ;
-    rdfs:label "한예원" ;
+    skos:altLabel "Han, [Given Name]"@en ;
+    skos:prefLabel "한예원"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -302,7 +322,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_021> a ont:Expert ;
-    rdfs:label "송지은" ;
+    skos:altLabel "Song, [Given Name]"@en ;
+    skos:prefLabel "송지은"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -313,7 +334,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_022> a ont:Expert ;
-    rdfs:label "강현수" ;
+    skos:altLabel "Kang, [Given Name]"@en ;
+    skos:prefLabel "강현수"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla>,
@@ -323,7 +345,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_023> a ont:Expert ;
-    rdfs:label "한예원" ;
+    skos:altLabel "Han, [Given Name]"@en ;
+    skos:prefLabel "한예원"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography>,
@@ -334,7 +357,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_024> a ont:Expert ;
-    rdfs:label "신동욱" ;
+    skos:altLabel "Shin, [Given Name]"@en ;
+    skos:prefLabel "신동욱"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla>,
@@ -345,7 +369,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_025> a ont:Expert ;
-    rdfs:label "최동현" ;
+    skos:altLabel "Choi, [Given Name]"@en ;
+    skos:prefLabel "최동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -358,7 +383,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_026> a ont:Expert ;
-    rdfs:label "장승호" ;
+    skos:altLabel "Jang, [Given Name]"@en ;
+    skos:prefLabel "장승호"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla>,
@@ -367,7 +393,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_027> a ont:Expert ;
-    rdfs:label "문지현" ;
+    skos:altLabel "문지현"@en ;
+    skos:prefLabel "문지현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -381,7 +408,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_028> a ont:Expert ;
-    rdfs:label "전호영" ;
+    skos:altLabel "Jeon, [Given Name]"@en ;
+    skos:prefLabel "전호영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -392,7 +420,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_029> a ont:Expert ;
-    rdfs:label "정수빈" ;
+    skos:altLabel "Jung, [Given Name]"@en ;
+    skos:prefLabel "정수빈"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -404,7 +433,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_030> a ont:Expert ;
-    rdfs:label "서준석" ;
+    skos:altLabel "Seo, [Given Name]"@en ;
+    skos:prefLabel "서준석"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -416,7 +446,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_031> a ont:Expert ;
-    rdfs:label "오승민" ;
+    skos:altLabel "Oh, [Given Name]"@en ;
+    skos:prefLabel "오승민"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -428,7 +459,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_032> a ont:Expert ;
-    rdfs:label "김서연" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김서연"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -440,7 +472,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_033> a ont:Expert ;
-    rdfs:label "백동현" ;
+    skos:altLabel "백동현"@en ;
+    skos:prefLabel "백동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -454,7 +487,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_034> a ont:Expert ;
-    rdfs:label "윤미경" ;
+    skos:altLabel "Yoon, [Given Name]"@en ;
+    skos:prefLabel "윤미경"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -463,7 +497,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_035> a ont:Expert ;
-    rdfs:label "강현수" ;
+    skos:altLabel "Kang, [Given Name]"@en ;
+    skos:prefLabel "강현수"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -473,7 +508,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_036> a ont:Expert ;
-    rdfs:label "이준석" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이준석"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research>,
@@ -484,7 +520,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_037> a ont:Expert ;
-    rdfs:label "윤서진" ;
+    skos:altLabel "Yoon, [Given Name]"@en ;
+    skos:prefLabel "윤서진"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -494,7 +531,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_038> a ont:Expert ;
-    rdfs:label "황수정" ;
+    skos:altLabel "Hwang, [Given Name]"@en ;
+    skos:prefLabel "황수정"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -506,7 +544,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_039> a ont:Expert ;
-    rdfs:label "강현수" ;
+    skos:altLabel "Kang, [Given Name]"@en ;
+    skos:prefLabel "강현수"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -520,7 +559,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_040> a ont:Expert ;
-    rdfs:label "신승우" ;
+    skos:altLabel "Shin, [Given Name]"@en ;
+    skos:prefLabel "신승우"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -531,7 +571,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_041> a ont:Expert ;
-    rdfs:label "이수연" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이수연"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -544,7 +585,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_042> a ont:Expert ;
-    rdfs:label "한예원" ;
+    skos:altLabel "Han, [Given Name]"@en ;
+    skos:prefLabel "한예원"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -556,7 +598,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_043> a ont:Expert ;
-    rdfs:label "윤서진" ;
+    skos:altLabel "Yoon, [Given Name]"@en ;
+    skos:prefLabel "윤서진"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -568,7 +611,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_044> a ont:Expert ;
-    rdfs:label "송지은" ;
+    skos:altLabel "Song, [Given Name]"@en ;
+    skos:prefLabel "송지은"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -578,7 +622,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_045> a ont:Expert ;
-    rdfs:label "문예린" ;
+    skos:altLabel "문예린"@en ;
+    skos:prefLabel "문예린"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -592,7 +637,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_046> a ont:Expert ;
-    rdfs:label "강현수" ;
+    skos:altLabel "Kang, [Given Name]"@en ;
+    skos:prefLabel "강현수"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
@@ -602,7 +648,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_047> a ont:Expert ;
-    rdfs:label "황지민" ;
+    skos:altLabel "Hwang, [Given Name]"@en ;
+    skos:prefLabel "황지민"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -612,7 +659,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_048> a ont:Expert ;
-    rdfs:label "조민수" ;
+    skos:altLabel "Cho, [Given Name]"@en ;
+    skos:prefLabel "조민수"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
@@ -620,7 +668,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_049> a ont:Expert ;
-    rdfs:label "이예은" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이예은"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -634,7 +683,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_050> a ont:Expert ;
-    rdfs:label "김서연" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김서연"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -647,7 +697,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_051> a ont:Expert ;
-    rdfs:label "최동현" ;
+    skos:altLabel "Choi, [Given Name]"@en ;
+    skos:prefLabel "최동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -656,7 +707,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_052> a ont:Expert ;
-    rdfs:label "이예은" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이예은"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -668,7 +720,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_053> a ont:Expert ;
-    rdfs:label "문예린" ;
+    skos:altLabel "문예린"@en ;
+    skos:prefLabel "문예린"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -681,7 +734,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_054> a ont:Expert ;
-    rdfs:label "문예린" ;
+    skos:altLabel "문예린"@en ;
+    skos:prefLabel "문예린"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/lam_research>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -689,7 +743,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_055> a ont:Expert ;
-    rdfs:label "송지은" ;
+    skos:altLabel "Song, [Given Name]"@en ;
+    skos:prefLabel "송지은"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -704,7 +759,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_056> a ont:Expert ;
-    rdfs:label "이예은" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이예은"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -717,7 +773,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_057> a ont:Expert ;
-    rdfs:label "윤미경" ;
+    skos:altLabel "Yoon, [Given Name]"@en ;
+    skos:prefLabel "윤미경"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -729,7 +786,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_058> a ont:Expert ;
-    rdfs:label "박현민" ;
+    skos:altLabel "Park, [Given Name]"@en ;
+    skos:prefLabel "박현민"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -738,7 +796,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_059> a ont:Expert ;
-    rdfs:label "이예은" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이예은"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research>,
@@ -752,7 +811,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_060> a ont:Expert ;
-    rdfs:label "강현수" ;
+    skos:altLabel "Kang, [Given Name]"@en ;
+    skos:prefLabel "강현수"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -764,7 +824,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_061> a ont:Expert ;
-    rdfs:label "정민호" ;
+    skos:altLabel "Jung, [Given Name]"@en ;
+    skos:prefLabel "정민호"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -777,7 +838,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_062> a ont:Expert ;
-    rdfs:label "조태현" ;
+    skos:altLabel "Cho, [Given Name]"@en ;
+    skos:prefLabel "조태현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -788,7 +850,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_063> a ont:Expert ;
-    rdfs:label "윤미경" ;
+    skos:altLabel "Yoon, [Given Name]"@en ;
+    skos:prefLabel "윤미경"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -798,7 +861,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_064> a ont:Expert ;
-    rdfs:label "한예원" ;
+    skos:altLabel "Han, [Given Name]"@en ;
+    skos:prefLabel "한예원"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -810,7 +874,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_065> a ont:Expert ;
-    rdfs:label "김다영" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -822,7 +887,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_066> a ont:Expert ;
-    rdfs:label "박영희" ;
+    skos:altLabel "Park, [Given Name]"@en ;
+    skos:prefLabel "박영희"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -835,7 +901,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_067> a ont:Expert ;
-    rdfs:label "문지현" ;
+    skos:altLabel "문지현"@en ;
+    skos:prefLabel "문지현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla>,
@@ -844,7 +911,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_068> a ont:Expert ;
-    rdfs:label "이하은" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이하은"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -857,7 +925,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_069> a ont:Expert ;
-    rdfs:label "김다영" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/kla>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -869,7 +938,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_070> a ont:Expert ;
-    rdfs:label "조민수" ;
+    skos:altLabel "Cho, [Given Name]"@en ;
+    skos:prefLabel "조민수"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research>,
@@ -883,7 +953,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_071> a ont:Expert ;
-    rdfs:label "이하은" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이하은"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -891,7 +962,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_072> a ont:Expert ;
-    rdfs:label "윤미경" ;
+    skos:altLabel "Yoon, [Given Name]"@en ;
+    skos:prefLabel "윤미경"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -901,7 +973,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_073> a ont:Expert ;
-    rdfs:label "송지은" ;
+    skos:altLabel "Song, [Given Name]"@en ;
+    skos:prefLabel "송지은"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -911,7 +984,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_074> a ont:Expert ;
-    rdfs:label "류소희" ;
+    skos:altLabel "Ryu, [Given Name]"@en ;
+    skos:prefLabel "류소희"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -924,7 +998,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_075> a ont:Expert ;
-    rdfs:label "송지은" ;
+    skos:altLabel "Song, [Given Name]"@en ;
+    skos:prefLabel "송지은"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -937,7 +1012,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_076> a ont:Expert ;
-    rdfs:label "안미라" ;
+    skos:altLabel "Ahn, [Given Name]"@en ;
+    skos:prefLabel "안미라"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -945,7 +1021,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_077> a ont:Expert ;
-    rdfs:label "이준석" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이준석"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -955,7 +1032,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_078> a ont:Expert ;
-    rdfs:label "김하늘" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김하늘"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/metrology> ;
@@ -963,7 +1041,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_079> a ont:Expert ;
-    rdfs:label "최영진" ;
+    skos:altLabel "Choi, [Given Name]"@en ;
+    skos:prefLabel "최영진"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography> ;
@@ -971,7 +1050,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_080> a ont:Expert ;
-    rdfs:label "이준석" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이준석"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -980,7 +1060,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_081> a ont:Expert ;
-    rdfs:label "전민재" ;
+    skos:altLabel "Jeon, [Given Name]"@en ;
+    skos:prefLabel "전민재"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -991,7 +1072,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_082> a ont:Expert ;
-    rdfs:label "조민수" ;
+    skos:altLabel "Cho, [Given Name]"@en ;
+    skos:prefLabel "조민수"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
@@ -1002,7 +1084,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_083> a ont:Expert ;
-    rdfs:label "장승호" ;
+    skos:altLabel "Jang, [Given Name]"@en ;
+    skos:prefLabel "장승호"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1018,7 +1101,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_084> a ont:Expert ;
-    rdfs:label "황지민" ;
+    skos:altLabel "Hwang, [Given Name]"@en ;
+    skos:prefLabel "황지민"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -1030,7 +1114,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_085> a ont:Expert ;
-    rdfs:label "김다영" ;
+    skos:altLabel "Kim, [Given Name]"@en ;
+    skos:prefLabel "김다영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -1043,7 +1128,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_086> a ont:Expert ;
-    rdfs:label "신동욱" ;
+    skos:altLabel "Shin, [Given Name]"@en ;
+    skos:prefLabel "신동욱"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -1056,7 +1142,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_087> a ont:Expert ;
-    rdfs:label "백동현" ;
+    skos:altLabel "백동현"@en ;
+    skos:prefLabel "백동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -1070,7 +1157,8 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_088> a ont:Expert ;
-    rdfs:label "황수정" ;
+    skos:altLabel "Hwang, [Given Name]"@en ;
+    skos:prefLabel "황수정"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1080,7 +1168,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_089> a ont:Expert ;
-    rdfs:label "문예린" ;
+    skos:altLabel "문예린"@en ;
+    skos:prefLabel "문예린"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1095,7 +1184,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_090> a ont:Expert ;
-    rdfs:label "백준호" ;
+    skos:altLabel "백준호"@en ;
+    skos:prefLabel "백준호"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -1108,7 +1198,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_091> a ont:Expert ;
-    rdfs:label "문예린" ;
+    skos:altLabel "문예린"@en ;
+    skos:prefLabel "문예린"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research>,
@@ -1117,7 +1208,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_092> a ont:Expert ;
-    rdfs:label "류현정" ;
+    skos:altLabel "Ryu, [Given Name]"@en ;
+    skos:prefLabel "류현정"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1126,7 +1218,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_093> a ont:Expert ;
-    rdfs:label "윤미경" ;
+    skos:altLabel "Yoon, [Given Name]"@en ;
+    skos:prefLabel "윤미경"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1140,7 +1233,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_094> a ont:Expert ;
-    rdfs:label "전호영" ;
+    skos:altLabel "Jeon, [Given Name]"@en ;
+    skos:prefLabel "전호영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -1150,7 +1244,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_095> a ont:Expert ;
-    rdfs:label "문예린" ;
+    skos:altLabel "문예린"@en ;
+    skos:prefLabel "문예린"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -1162,7 +1257,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_096> a ont:Expert ;
-    rdfs:label "강태영" ;
+    skos:altLabel "Kang, [Given Name]"@en ;
+    skos:prefLabel "강태영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/lam_research>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -1174,7 +1270,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_097> a ont:Expert ;
-    rdfs:label "장승호" ;
+    skos:altLabel "Jang, [Given Name]"@en ;
+    skos:prefLabel "장승호"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1186,7 +1283,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_098> a ont:Expert ;
-    rdfs:label "이준석" ;
+    skos:altLabel "Lee, [Given Name]"@en ;
+    skos:prefLabel "이준석"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -1200,7 +1298,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_099> a ont:Expert ;
-    rdfs:label "임지혜" ;
+    skos:altLabel "Lim, [Given Name]"@en ;
+    skos:prefLabel "임지혜"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -1214,7 +1313,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_100> a ont:Expert ;
-    rdfs:label "홍성수" ;
+    skos:altLabel "홍성수"@en ;
+    skos:prefLabel "홍성수"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1229,7 +1329,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/expert/EXP_101> a ont:Expert ;
-    rdfs:label "박재현" ;
+    skos:prefLabel "박재현"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/metrology/overlay> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/subprocess/euv_lithography>,
@@ -1238,43 +1338,43 @@
     ont:region "Suwon" .
 
 <https://w3id.org/sdkb/data/expert/EXP_102> a ont:Expert ;
-    rdfs:label "이수정" ;
+    skos:prefLabel "이수정"@ko ;
     ont:complianceFlag true ;
     ont:hasMaterialExpertise <https://w3id.org/sdkb/data/material/hfO2> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/subprocess/ald> ;
     ont:region "Icheon" .
 
 <https://w3id.org/sdkb/data/expert/EXP_103> a ont:Expert ;
-    rdfs:label "김민석" ;
+    skos:prefLabel "김민석"@ko ;
     ont:complianceFlag true ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/subprocess/ald>,
         <https://w3id.org/sdkb/data/technode/3nm> ;
     ont:region "Hwaseong" .
 
 <https://w3id.org/sdkb/data/expert/EXP_104> a ont:Expert ;
-    rdfs:label "정현우" ;
+    skos:prefLabel "정현우"@ko ;
     ont:complianceFlag true ;
     ont:region "Seoul" .
 
 <https://w3id.org/sdkb/data/expert/EXP_105> a ont:Expert ;
-    rdfs:label "오지연" ;
+    skos:prefLabel "오지연"@ko ;
     ont:complianceFlag true ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/subprocess/advanced_packaging> ;
     ont:region "Hwaseong" .
 
 <https://w3id.org/sdkb/data/expert/EXP_106> a ont:Expert ;
-    rdfs:label "최동훈" ;
+    skos:prefLabel "최동훈"@ko ;
     ont:complianceFlag true ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/subprocess/euv_lithography> ;
     ont:region "Suwon" .
 
 <https://w3id.org/sdkb/data/expert/EXP_107> a ont:Expert ;
-    rdfs:label "한승준" ;
+    skos:prefLabel "한승준"@ko ;
     ont:complianceFlag true ;
     ont:region "Icheon" .
 
 <https://w3id.org/sdkb/data/expert/EXP_108> a ont:Expert ;
-    rdfs:label "강태민" ;
+    skos:prefLabel "강태민"@ko ;
     ont:complianceFlag false ;
     ont:hasMaterialExpertise <https://w3id.org/sdkb/data/material/copper>,
         <https://w3id.org/sdkb/data/material/low_k_dielectric> ;
@@ -1282,7 +1382,7 @@
     ont:region "Seoul" .
 
 <https://w3id.org/sdkb/data/expert/EXP_109> a ont:Expert ;
-    rdfs:label "윤혜성" ;
+    skos:prefLabel "윤혜성"@ko ;
     ont:complianceFlag false ;
     ont:hasMaterialExpertise <https://w3id.org/sdkb/data/material/hfO2>,
         <https://w3id.org/sdkb/data/material/sio2> ;
@@ -1291,7 +1391,7 @@
     ont:region "Suwon" .
 
 <https://w3id.org/sdkb/data/expert/EXP_110> a ont:Expert ;
-    rdfs:label "임지원" ;
+    skos:prefLabel "임지원"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment/amat_endura> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/cmp>,
@@ -1305,7 +1405,7 @@
 <https://w3id.org/sdkb/data/mitigation/recipe_tuning> ont:mitigationProvidesSkill <https://w3id.org/sdkb/data/skill/recipe_tuning> .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_001> a ont:Problem ;
-    rdfs:label "Intermittent device failure above 80°C with no pattern" ;
+    skos:prefLabel "Intermittent device failure above 80°C with no pattern"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "fabless" ;
     ont:complianceSensitivity "public" ;
@@ -1313,7 +1413,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_002> a ont:Problem ;
-    rdfs:label "Component swelling and discoloration after 500h at 95% humidity" ;
+    skos:prefLabel "Component swelling and discoloration after 500h at 95% humidity"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -1321,7 +1421,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_003> a ont:Problem ;
-    rdfs:label "Write latency doubles after 10K program/erase cycles" ;
+    skos:prefLabel "Write latency doubles after 10K program/erase cycles"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "foundry" ;
     ont:complianceSensitivity "public" ;
@@ -1329,7 +1429,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_004> a ont:Problem ;
-    rdfs:label "Noise floor rises on read path above 1GHz operation" ;
+    skos:prefLabel "Noise floor rises on read path above 1GHz operation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "fabless" ;
     ont:complianceSensitivity "public" ;
@@ -1337,7 +1437,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_005> a ont:Problem ;
-    rdfs:label "Catastrophic delamination events occurring stochastically in fab" ;
+    skos:prefLabel "Catastrophic delamination events occurring stochastically in fab"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment_supplier" ;
     ont:complianceSensitivity "public" ;
@@ -1346,7 +1446,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_006> a ont:Problem ;
-    rdfs:label "Systematic center-to-edge pattern density dependency across 300mm" ;
+    skos:prefLabel "Systematic center-to-edge pattern density dependency across 300mm"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "foundry" ;
     ont:complianceSensitivity "public" ;
@@ -1354,7 +1454,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_007> a ont:Problem ;
-    rdfs:label "Soft failures at low supply voltage (0.6V) not reproducible at nominal" ;
+    skos:prefLabel "Soft failures at low supply voltage (0.6V) not reproducible at nominal"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "fabless" ;
     ont:complianceSensitivity "public" ;
@@ -1362,7 +1462,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_008> a ont:Problem ;
-    rdfs:label "Haze formation on substrate surface after wet cleaning step" ;
+    skos:prefLabel "Haze formation on substrate surface after wet cleaning step"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -1370,7 +1470,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_009> a ont:Problem ;
-    rdfs:label "Sudden shift in electrical parametric test distribution in week 3" ;
+    skos:prefLabel "Sudden shift in electrical parametric test distribution in week 3"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "foundry" ;
     ont:complianceSensitivity "public" ;
@@ -1378,7 +1478,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/OT_PROB_010> a ont:Problem ;
-    rdfs:label "Early life failure rate spikes at 100-200h burn-in — no wear-out" ;
+    skos:prefLabel "Early life failure rate spikes at 100-200h burn-in — no wear-out"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "fabless" ;
     ont:complianceSensitivity "public" ;
@@ -1386,7 +1486,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/PROB_001> a ont:Problem ;
-    rdfs:label "Need to optimize deposition process for cost reduction" ;
+    skos:prefLabel "Need to optimize deposition process for cost reduction"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "confidential" ;
@@ -1399,7 +1499,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/film_stress_control> .
 
 <https://w3id.org/sdkb/data/problem/PROB_002> a ont:Problem ;
-    rdfs:label "Implementation support for AI_process_control" ;
+    skos:prefLabel "Implementation support for AI_process_control"@en ;
     ont:clientCountry "DE" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -1412,7 +1512,7 @@
         <https://w3id.org/sdkb/data/skill/slurry_management> .
 
 <https://w3id.org/sdkb/data/problem/PROB_003> a ont:Problem ;
-    rdfs:label "Gradual yield drop in deposition after material lot change" ;
+    skos:prefLabel "Gradual yield drop in deposition after material lot change"@en ;
     ont:clientCountry "MY" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "confidential" ;
@@ -1425,7 +1525,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/film_stress_control> .
 
 <https://w3id.org/sdkb/data/problem/PROB_004> a ont:Problem ;
-    rdfs:label "Need to optimize etching process for defect reduction" ;
+    skos:prefLabel "Need to optimize etching process for defect reduction"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "confidential" ;
@@ -1436,7 +1536,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_005> a ont:Problem ;
-    rdfs:label "Need to optimize diffusion process for cost reduction" ;
+    skos:prefLabel "Need to optimize diffusion process for cost reduction"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -1449,7 +1549,7 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/problem/PROB_006> a ont:Problem ;
-    rdfs:label "TEL_Coater showing temperature_variation" ;
+    skos:prefLabel "TEL_Coater showing temperature_variation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "confidential" ;
@@ -1462,7 +1562,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_007> a ont:Problem ;
-    rdfs:label "Implementation support for selective_deposition" ;
+    skos:prefLabel "Implementation support for selective_deposition"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -1473,7 +1573,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_008> a ont:Problem ;
-    rdfs:label "Significant yield drop in CMP after equipment PM" ;
+    skos:prefLabel "Significant yield drop in CMP after equipment PM"@en ;
     ont:clientCountry "SG" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -1485,7 +1585,7 @@
         <https://w3id.org/sdkb/data/skill/slurry_management> .
 
 <https://w3id.org/sdkb/data/problem/PROB_009> a ont:Problem ;
-    rdfs:label "Gradual yield drop in deposition after recipe change" ;
+    skos:prefLabel "Gradual yield drop in deposition after recipe change"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "confidential" ;
@@ -1497,7 +1597,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_010> a ont:Problem ;
-    rdfs:label "Significant yield drop in lithography after material lot change" ;
+    skos:prefLabel "Significant yield drop in lithography after material lot change"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "restricted" ;
@@ -1510,7 +1610,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/mask_engineering> .
 
 <https://w3id.org/sdkb/data/problem/PROB_011> a ont:Problem ;
-    rdfs:label "particle contamination in process chamber" ;
+    skos:prefLabel "particle contamination in process chamber"@en ;
     ont:clientCountry "NL" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "confidential" ;
@@ -1526,7 +1626,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_012> a ont:Problem ;
-    rdfs:label "organic contamination in exhaust system" ;
+    skos:prefLabel "organic contamination in exhaust system"@en ;
     ont:clientCountry "US" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "confidential" ;
@@ -1540,7 +1640,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_013> a ont:Problem ;
-    rdfs:label "Gradual yield drop in diffusion after facility maintenance" ;
+    skos:prefLabel "Gradual yield drop in diffusion after facility maintenance"@en ;
     ont:clientCountry "SG" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -1552,7 +1652,7 @@
     ont:region "SEA" .
 
 <https://w3id.org/sdkb/data/problem/PROB_014> a ont:Problem ;
-    rdfs:label "particle contamination in process chamber" ;
+    skos:prefLabel "particle contamination in process chamber"@en ;
     ont:clientCountry "TW" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "restricted" ;
@@ -1567,7 +1667,7 @@
         <https://w3id.org/sdkb/data/skill/mask_engineering> .
 
 <https://w3id.org/sdkb/data/problem/PROB_015> a ont:Problem ;
-    rdfs:label "Need to optimize deposition process for uniformity" ;
+    skos:prefLabel "Need to optimize deposition process for uniformity"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -1579,7 +1679,7 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/problem/PROB_016> a ont:Problem ;
-    rdfs:label "Implementation support for AI_process_control" ;
+    skos:prefLabel "Implementation support for AI_process_control"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "confidential" ;
@@ -1590,7 +1690,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_017> a ont:Problem ;
-    rdfs:label "LAM_Flex showing RF_mismatch" ;
+    skos:prefLabel "LAM_Flex showing RF_mismatch"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "confidential" ;
@@ -1602,7 +1702,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/plasma_diagnostics> .
 
 <https://w3id.org/sdkb/data/problem/PROB_018> a ont:Problem ;
-    rdfs:label "ionic contamination in exhaust system" ;
+    skos:prefLabel "ionic contamination in exhaust system"@en ;
     ont:clientCountry "TW" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -1615,7 +1715,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_019> a ont:Problem ;
-    rdfs:label "metallic contamination in chemical lines" ;
+    skos:prefLabel "metallic contamination in chemical lines"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "confidential" ;
@@ -1628,7 +1728,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_020> a ont:Problem ;
-    rdfs:label "particle contamination in wafer surface" ;
+    skos:prefLabel "particle contamination in wafer surface"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "public" ;
@@ -1642,7 +1742,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_021> a ont:Problem ;
-    rdfs:label "metallic contamination in exhaust system" ;
+    skos:prefLabel "metallic contamination in exhaust system"@en ;
     ont:clientCountry "FR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -1658,7 +1758,7 @@
         <https://w3id.org/sdkb/data/skill/mask_engineering> .
 
 <https://w3id.org/sdkb/data/problem/PROB_022> a ont:Problem ;
-    rdfs:label "Need to optimize lithography process for cost reduction" ;
+    skos:prefLabel "Need to optimize lithography process for cost reduction"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -1670,7 +1770,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_023> a ont:Problem ;
-    rdfs:label "Implementation support for atomic_layer_etching" ;
+    skos:prefLabel "Implementation support for atomic_layer_etching"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -1683,7 +1783,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_024> a ont:Problem ;
-    rdfs:label "Need to optimize CMP process for uniformity" ;
+    skos:prefLabel "Need to optimize CMP process for uniformity"@en ;
     ont:clientCountry "US" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "confidential" ;
@@ -1696,7 +1796,7 @@
         <https://w3id.org/sdkb/data/skill/slurry_management> .
 
 <https://w3id.org/sdkb/data/problem/PROB_025> a ont:Problem ;
-    rdfs:label "Significant yield drop in metrology after material lot change" ;
+    skos:prefLabel "Significant yield drop in metrology after material lot change"@en ;
     ont:clientCountry "TW" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "public" ;
@@ -1708,7 +1808,7 @@
     ont:region "SEA" .
 
 <https://w3id.org/sdkb/data/problem/PROB_026> a ont:Problem ;
-    rdfs:label "Critical yield drop in CMP after recipe change" ;
+    skos:prefLabel "Critical yield drop in CMP after recipe change"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -1719,7 +1819,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/slurry_management> .
 
 <https://w3id.org/sdkb/data/problem/PROB_027> a ont:Problem ;
-    rdfs:label "Cabot_Slurry showing chamber_drift" ;
+    skos:prefLabel "Cabot_Slurry showing chamber_drift"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "public" ;
@@ -1731,7 +1831,7 @@
         <https://w3id.org/sdkb/data/skill/slurry_management> .
 
 <https://w3id.org/sdkb/data/problem/PROB_028> a ont:Problem ;
-    rdfs:label "metallic contamination in process chamber" ;
+    skos:prefLabel "metallic contamination in process chamber"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -1746,7 +1846,7 @@
         <https://w3id.org/sdkb/data/skill/slurry_management> .
 
 <https://w3id.org/sdkb/data/problem/PROB_029> a ont:Problem ;
-    rdfs:label "Need to optimize metrology process for cost reduction" ;
+    skos:prefLabel "Need to optimize metrology process for cost reduction"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "public" ;
@@ -1759,7 +1859,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/metrology_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_030> a ont:Problem ;
-    rdfs:label "Implementation support for AI_process_control" ;
+    skos:prefLabel "Implementation support for AI_process_control"@en ;
     ont:clientCountry "MY" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -1772,7 +1872,7 @@
     ont:region "SEA" .
 
 <https://w3id.org/sdkb/data/problem/PROB_031> a ont:Problem ;
-    rdfs:label "Implementation support for AI_process_control" ;
+    skos:prefLabel "Implementation support for AI_process_control"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -1783,7 +1883,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/plasma_diagnostics> .
 
 <https://w3id.org/sdkb/data/problem/PROB_032> a ont:Problem ;
-    rdfs:label "Implementation support for EUV_lithography" ;
+    skos:prefLabel "Implementation support for EUV_lithography"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "restricted" ;
@@ -1793,7 +1893,7 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/problem/PROB_033> a ont:Problem ;
-    rdfs:label "Gradual yield drop in metrology after material lot change" ;
+    skos:prefLabel "Gradual yield drop in metrology after material lot change"@en ;
     ont:clientCountry "US" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -1804,7 +1904,7 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/problem/PROB_034> a ont:Problem ;
-    rdfs:label "Implementation support for AI_process_control" ;
+    skos:prefLabel "Implementation support for AI_process_control"@en ;
     ont:clientCountry "TW" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -1816,7 +1916,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/plasma_diagnostics> .
 
 <https://w3id.org/sdkb/data/problem/PROB_035> a ont:Problem ;
-    rdfs:label "Need to optimize deposition process for cost reduction" ;
+    skos:prefLabel "Need to optimize deposition process for cost reduction"@en ;
     ont:clientCountry "BE" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "confidential" ;
@@ -1828,7 +1928,7 @@
     ont:region "Europe" .
 
 <https://w3id.org/sdkb/data/problem/PROB_036> a ont:Problem ;
-    rdfs:label "organic contamination in process chamber" ;
+    skos:prefLabel "organic contamination in process chamber"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -1844,7 +1944,7 @@
         <https://w3id.org/sdkb/data/skill/metrology_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_037> a ont:Problem ;
-    rdfs:label "metallic contamination in process chamber" ;
+    skos:prefLabel "metallic contamination in process chamber"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -1860,7 +1960,7 @@
         <https://w3id.org/sdkb/data/skill/film_stress_control> .
 
 <https://w3id.org/sdkb/data/problem/PROB_038> a ont:Problem ;
-    rdfs:label "Need to optimize etching process for throughput" ;
+    skos:prefLabel "Need to optimize etching process for throughput"@en ;
     ont:clientCountry "IE" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -1872,7 +1972,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/plasma_diagnostics> .
 
 <https://w3id.org/sdkb/data/problem/PROB_039> a ont:Problem ;
-    rdfs:label "organic contamination in exhaust system" ;
+    skos:prefLabel "organic contamination in exhaust system"@en ;
     ont:clientCountry "VN" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -1888,7 +1988,7 @@
         <https://w3id.org/sdkb/data/skill/slurry_management> .
 
 <https://w3id.org/sdkb/data/problem/PROB_040> a ont:Problem ;
-    rdfs:label "Gradual yield drop in deposition after facility maintenance" ;
+    skos:prefLabel "Gradual yield drop in deposition after facility maintenance"@en ;
     ont:clientCountry "TW" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "restricted" ;
@@ -1902,7 +2002,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/film_stress_control> .
 
 <https://w3id.org/sdkb/data/problem/PROB_041> a ont:Problem ;
-    rdfs:label "Implementation support for AI_process_control" ;
+    skos:prefLabel "Implementation support for AI_process_control"@en ;
     ont:clientCountry "US" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -1914,7 +2014,7 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/problem/PROB_042> a ont:Problem ;
-    rdfs:label "Need to optimize deposition process for throughput" ;
+    skos:prefLabel "Need to optimize deposition process for throughput"@en ;
     ont:clientCountry "SG" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -1926,7 +2026,7 @@
     ont:region "SEA" .
 
 <https://w3id.org/sdkb/data/problem/PROB_043> a ont:Problem ;
-    rdfs:label "Implementation support for AI_process_control" ;
+    skos:prefLabel "Implementation support for AI_process_control"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -1937,7 +2037,7 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/problem/PROB_044> a ont:Problem ;
-    rdfs:label "Gradual yield drop in diffusion after facility maintenance" ;
+    skos:prefLabel "Gradual yield drop in diffusion after facility maintenance"@en ;
     ont:clientCountry "US" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -1948,7 +2048,7 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/problem/PROB_045> a ont:Problem ;
-    rdfs:label "Need to optimize metrology process for cost reduction" ;
+    skos:prefLabel "Need to optimize metrology process for cost reduction"@en ;
     ont:clientCountry "TW" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "public" ;
@@ -1958,7 +2058,7 @@
     ont:region "SEA" .
 
 <https://w3id.org/sdkb/data/problem/PROB_046> a ont:Problem ;
-    rdfs:label "Implementation support for AI_process_control" ;
+    skos:prefLabel "Implementation support for AI_process_control"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "confidential" ;
@@ -1969,7 +2069,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_047> a ont:Problem ;
-    rdfs:label "Implementation support for EUV_lithography" ;
+    skos:prefLabel "Implementation support for EUV_lithography"@en ;
     ont:clientCountry "FI" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "restricted" ;
@@ -1980,7 +2080,7 @@
     ont:region "Europe" .
 
 <https://w3id.org/sdkb/data/problem/PROB_048> a ont:Problem ;
-    rdfs:label "organic contamination in exhaust system" ;
+    skos:prefLabel "organic contamination in exhaust system"@en ;
     ont:clientCountry "TW" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -1994,7 +2094,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_049> a ont:Problem ;
-    rdfs:label "Significant yield drop in lithography after facility maintenance" ;
+    skos:prefLabel "Significant yield drop in lithography after facility maintenance"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "parts" ;
     ont:complianceSensitivity "public" ;
@@ -2008,7 +2108,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/mask_engineering> .
 
 <https://w3id.org/sdkb/data/problem/PROB_050> a ont:Problem ;
-    rdfs:label "Critical yield drop in diffusion after material lot change" ;
+    skos:prefLabel "Critical yield drop in diffusion after material lot change"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2021,7 +2121,7 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/problem/PROB_051> a ont:Problem ;
-    rdfs:label "Vacuum Pump Exhaust Line Rupture Due to TEMAZ Decomposition" ;
+    skos:prefLabel "Vacuum Pump Exhaust Line Rupture Due to TEMAZ Decomposition"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "restricted" ;
@@ -2033,7 +2133,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_052> a ont:Problem ;
-    rdfs:label "ZrO2 Powder Accumulation in Exhaust Lines Causing Flow Restriction" ;
+    skos:prefLabel "ZrO2 Powder Accumulation in Exhaust Lines Causing Flow Restriction"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2046,7 +2146,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_053> a ont:Problem ;
-    rdfs:label "Oxidation Control in TEMAZ Handling Systems" ;
+    skos:prefLabel "Oxidation Control in TEMAZ Handling Systems"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2057,7 +2157,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_054> a ont:Problem ;
-    rdfs:label "Real-time Risk Factor Detection Using Multi-sensor Integration" ;
+    skos:prefLabel "Real-time Risk Factor Detection Using Multi-sensor Integration"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2068,7 +2168,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_055> a ont:Problem ;
-    rdfs:label "Hazardous Gas Leak Detection in Clean Room" ;
+    skos:prefLabel "Hazardous Gas Leak Detection in Clean Room"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2078,7 +2178,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_056> a ont:Problem ;
-    rdfs:label "Center Pattern Defect Root Cause Analysis" ;
+    skos:prefLabel "Center Pattern Defect Root Cause Analysis"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2087,7 +2187,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_057> a ont:Problem ;
-    rdfs:label "Donut Pattern Defect Root Cause Analysis" ;
+    skos:prefLabel "Donut Pattern Defect Root Cause Analysis"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2098,7 +2198,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_058> a ont:Problem ;
-    rdfs:label "Edge_Loc Pattern Defect Root Cause Analysis" ;
+    skos:prefLabel "Edge_Loc Pattern Defect Root Cause Analysis"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2109,7 +2209,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_059> a ont:Problem ;
-    rdfs:label "Edge_Ring Pattern Defect Root Cause Analysis" ;
+    skos:prefLabel "Edge_Ring Pattern Defect Root Cause Analysis"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2118,7 +2218,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_060> a ont:Problem ;
-    rdfs:label "Loc Pattern Defect Root Cause Analysis" ;
+    skos:prefLabel "Loc Pattern Defect Root Cause Analysis"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2127,7 +2227,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_061> a ont:Problem ;
-    rdfs:label "Random Pattern Defect Root Cause Analysis" ;
+    skos:prefLabel "Random Pattern Defect Root Cause Analysis"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2137,7 +2237,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_062> a ont:Problem ;
-    rdfs:label "Scratch Pattern Defect Root Cause Analysis" ;
+    skos:prefLabel "Scratch Pattern Defect Root Cause Analysis"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2147,7 +2247,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_063> a ont:Problem ;
-    rdfs:label "Near_full Pattern Defect Root Cause Analysis" ;
+    skos:prefLabel "Near_full Pattern Defect Root Cause Analysis"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2159,7 +2259,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_064> a ont:Problem ;
-    rdfs:label "Photoresist Bubble Formation During Spin Coating" ;
+    skos:prefLabel "Photoresist Bubble Formation During Spin Coating"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2169,7 +2269,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_065> a ont:Problem ;
-    rdfs:label "Void Formation in Metal Deposition" ;
+    skos:prefLabel "Void Formation in Metal Deposition"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2181,7 +2281,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_066> a ont:Problem ;
-    rdfs:label "Pattern CD Variation Across Wafer" ;
+    skos:prefLabel "Pattern CD Variation Across Wafer"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2191,7 +2291,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_067> a ont:Problem ;
-    rdfs:label "Micro-trenching at Etch Interface" ;
+    skos:prefLabel "Micro-trenching at Etch Interface"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2202,7 +2302,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_068> a ont:Problem ;
-    rdfs:label "Ion Channeling in Crystal Lattice" ;
+    skos:prefLabel "Ion Channeling in Crystal Lattice"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2214,7 +2314,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_069> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2226,7 +2326,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_070> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2238,7 +2338,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_071> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2250,7 +2350,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_072> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2262,7 +2362,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_073> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2274,7 +2374,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_074> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2286,7 +2386,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_075> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2298,7 +2398,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_076> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2310,7 +2410,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_077> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2322,7 +2422,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_078> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2334,7 +2434,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_079> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2346,7 +2446,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_080> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2358,7 +2458,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_081> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2370,7 +2470,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_082> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2382,7 +2482,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_083> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2394,7 +2494,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_084> a ont:Problem ;
-    rdfs:label "3nm lithography: Random defects from photon shot noise" ;
+    skos:prefLabel "3nm lithography: Random defects from photon shot noise"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2403,7 +2503,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_085> a ont:Problem ;
-    rdfs:label "5nm etch: LER control in multi-patterning" ;
+    skos:prefLabel "5nm etch: LER control in multi-patterning"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2412,7 +2512,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_086> a ont:Problem ;
-    rdfs:label "7nm deposition: High aspect ratio gap fill" ;
+    skos:prefLabel "7nm deposition: High aspect ratio gap fill"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2421,7 +2521,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_087> a ont:Problem ;
-    rdfs:label "3nm CMP: Topography control in advanced Cu damascene" ;
+    skos:prefLabel "3nm CMP: Topography control in advanced Cu damascene"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2430,7 +2530,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_088> a ont:Problem ;
-    rdfs:label "3nm lithography: Random defects from photon shot noise" ;
+    skos:prefLabel "3nm lithography: Random defects from photon shot noise"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2439,7 +2539,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_089> a ont:Problem ;
-    rdfs:label "5nm etch: LER control in multi-patterning" ;
+    skos:prefLabel "5nm etch: LER control in multi-patterning"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2448,7 +2548,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_090> a ont:Problem ;
-    rdfs:label "7nm deposition: High aspect ratio gap fill" ;
+    skos:prefLabel "7nm deposition: High aspect ratio gap fill"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2457,7 +2557,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_091> a ont:Problem ;
-    rdfs:label "3nm CMP: Topography control in advanced Cu damascene" ;
+    skos:prefLabel "3nm CMP: Topography control in advanced Cu damascene"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2466,7 +2566,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_092> a ont:Problem ;
-    rdfs:label "3nm lithography: Random defects from photon shot noise" ;
+    skos:prefLabel "3nm lithography: Random defects from photon shot noise"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2475,7 +2575,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_093> a ont:Problem ;
-    rdfs:label "5nm etch: LER control in multi-patterning" ;
+    skos:prefLabel "5nm etch: LER control in multi-patterning"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2484,7 +2584,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_094> a ont:Problem ;
-    rdfs:label "7nm deposition: High aspect ratio gap fill" ;
+    skos:prefLabel "7nm deposition: High aspect ratio gap fill"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2493,7 +2593,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_095> a ont:Problem ;
-    rdfs:label "3nm CMP: Topography control in advanced Cu damascene" ;
+    skos:prefLabel "3nm CMP: Topography control in advanced Cu damascene"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2502,7 +2602,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_096> a ont:Problem ;
-    rdfs:label "3nm lithography: Random defects from photon shot noise" ;
+    skos:prefLabel "3nm lithography: Random defects from photon shot noise"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2511,7 +2611,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_097> a ont:Problem ;
-    rdfs:label "5nm etch: LER control in multi-patterning" ;
+    skos:prefLabel "5nm etch: LER control in multi-patterning"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2520,7 +2620,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_098> a ont:Problem ;
-    rdfs:label "7nm deposition: High aspect ratio gap fill" ;
+    skos:prefLabel "7nm deposition: High aspect ratio gap fill"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2529,7 +2629,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_099> a ont:Problem ;
-    rdfs:label "3nm CMP: Topography control in advanced Cu damascene" ;
+    skos:prefLabel "3nm CMP: Topography control in advanced Cu damascene"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2538,7 +2638,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_100> a ont:Problem ;
-    rdfs:label "3nm lithography: Random defects from photon shot noise" ;
+    skos:prefLabel "3nm lithography: Random defects from photon shot noise"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2547,7 +2647,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_101> a ont:Problem ;
-    rdfs:label "5nm etch: LER control in multi-patterning" ;
+    skos:prefLabel "5nm etch: LER control in multi-patterning"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2556,7 +2656,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_102> a ont:Problem ;
-    rdfs:label "7nm deposition: High aspect ratio gap fill" ;
+    skos:prefLabel "7nm deposition: High aspect ratio gap fill"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2565,7 +2665,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_103> a ont:Problem ;
-    rdfs:label "3nm CMP: Topography control in advanced Cu damascene" ;
+    skos:prefLabel "3nm CMP: Topography control in advanced Cu damascene"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
@@ -2574,7 +2674,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_104> a ont:Problem ;
-    rdfs:label "AMAT_Endura: chamber_seasoning_drift" ;
+    skos:prefLabel "AMAT_Endura: chamber_seasoning_drift"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2584,7 +2684,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_105> a ont:Problem ;
-    rdfs:label "LAM_2300: RF_matching_network_degradation" ;
+    skos:prefLabel "LAM_2300: RF_matching_network_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2594,7 +2694,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_106> a ont:Problem ;
-    rdfs:label "ASML_NXT: overlay_degradation" ;
+    skos:prefLabel "ASML_NXT: overlay_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2604,7 +2704,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_107> a ont:Problem ;
-    rdfs:label "TEL_Tactras: heater_element_failure" ;
+    skos:prefLabel "TEL_Tactras: heater_element_failure"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2614,7 +2714,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_108> a ont:Problem ;
-    rdfs:label "AMAT_Endura: chamber_seasoning_drift" ;
+    skos:prefLabel "AMAT_Endura: chamber_seasoning_drift"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2624,7 +2724,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_109> a ont:Problem ;
-    rdfs:label "LAM_2300: RF_matching_network_degradation" ;
+    skos:prefLabel "LAM_2300: RF_matching_network_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2634,7 +2734,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_110> a ont:Problem ;
-    rdfs:label "ASML_NXT: overlay_degradation" ;
+    skos:prefLabel "ASML_NXT: overlay_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2644,7 +2744,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_111> a ont:Problem ;
-    rdfs:label "TEL_Tactras: heater_element_failure" ;
+    skos:prefLabel "TEL_Tactras: heater_element_failure"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2654,7 +2754,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_112> a ont:Problem ;
-    rdfs:label "AMAT_Endura: chamber_seasoning_drift" ;
+    skos:prefLabel "AMAT_Endura: chamber_seasoning_drift"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2664,7 +2764,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_113> a ont:Problem ;
-    rdfs:label "LAM_2300: RF_matching_network_degradation" ;
+    skos:prefLabel "LAM_2300: RF_matching_network_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2674,7 +2774,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_114> a ont:Problem ;
-    rdfs:label "ASML_NXT: overlay_degradation" ;
+    skos:prefLabel "ASML_NXT: overlay_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2684,7 +2784,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_115> a ont:Problem ;
-    rdfs:label "TEL_Tactras: heater_element_failure" ;
+    skos:prefLabel "TEL_Tactras: heater_element_failure"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2694,7 +2794,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_116> a ont:Problem ;
-    rdfs:label "AMAT_Endura: chamber_seasoning_drift" ;
+    skos:prefLabel "AMAT_Endura: chamber_seasoning_drift"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2704,7 +2804,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_117> a ont:Problem ;
-    rdfs:label "LAM_2300: RF_matching_network_degradation" ;
+    skos:prefLabel "LAM_2300: RF_matching_network_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2714,7 +2814,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_118> a ont:Problem ;
-    rdfs:label "ASML_NXT: overlay_degradation" ;
+    skos:prefLabel "ASML_NXT: overlay_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2724,7 +2824,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_119> a ont:Problem ;
-    rdfs:label "TEL_Tactras: heater_element_failure" ;
+    skos:prefLabel "TEL_Tactras: heater_element_failure"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2734,7 +2834,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_120> a ont:Problem ;
-    rdfs:label "AMAT_Endura: chamber_seasoning_drift" ;
+    skos:prefLabel "AMAT_Endura: chamber_seasoning_drift"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2744,7 +2844,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_121> a ont:Problem ;
-    rdfs:label "LAM_2300: RF_matching_network_degradation" ;
+    skos:prefLabel "LAM_2300: RF_matching_network_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2754,7 +2854,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_122> a ont:Problem ;
-    rdfs:label "ASML_NXT: overlay_degradation" ;
+    skos:prefLabel "ASML_NXT: overlay_degradation"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2764,7 +2864,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_123> a ont:Problem ;
-    rdfs:label "TEL_Tactras: heater_element_failure" ;
+    skos:prefLabel "TEL_Tactras: heater_element_failure"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -2774,7 +2874,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/PROB_124> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2786,7 +2886,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_125> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2798,7 +2898,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_126> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2810,7 +2910,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_127> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2822,7 +2922,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_128> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2834,7 +2934,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_129> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2846,7 +2946,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_130> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2858,7 +2958,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_131> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2870,7 +2970,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_132> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2882,7 +2982,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_133> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2894,7 +2994,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_134> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2906,7 +3006,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_135> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2918,7 +3018,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_136> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2930,7 +3030,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_137> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2942,7 +3042,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_138> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2954,7 +3054,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_139> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2966,7 +3066,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_140> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2978,7 +3078,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_141> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -2990,7 +3090,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_142> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3002,7 +3102,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_143> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3014,7 +3114,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_144> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3026,7 +3126,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_145> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3038,7 +3138,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_146> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3050,7 +3150,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_147> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3062,7 +3162,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_148> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3074,7 +3174,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_149> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3086,7 +3186,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_150> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3098,7 +3198,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_151> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3110,7 +3210,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_152> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3122,7 +3222,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_153> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3134,7 +3234,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_154> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3146,7 +3246,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_155> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3158,7 +3258,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_156> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3170,7 +3270,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_157> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3182,7 +3282,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_158> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3194,7 +3294,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_159> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3206,7 +3306,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_160> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3218,7 +3318,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_161> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3230,7 +3330,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_162> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3242,7 +3342,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_163> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3254,7 +3354,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_164> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3266,7 +3366,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_165> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3278,7 +3378,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_166> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3290,7 +3390,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_167> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3302,7 +3402,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_168> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3314,7 +3414,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_169> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3326,7 +3426,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_170> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3338,7 +3438,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_171> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3350,7 +3450,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_172> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3362,7 +3462,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_173> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3374,7 +3474,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_174> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3386,7 +3486,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_175> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3398,7 +3498,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_176> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3410,7 +3510,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_177> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3422,7 +3522,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_178> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3434,7 +3534,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_179> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3446,7 +3546,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_180> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3458,7 +3558,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_181> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3470,7 +3570,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_182> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3482,7 +3582,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_183> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3494,7 +3594,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_184> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3506,7 +3606,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_185> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3518,7 +3618,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_186> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3530,7 +3630,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_187> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3542,7 +3642,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_188> a ont:Problem ;
-    rdfs:label "Cross-contamination from CMP to lithography" ;
+    skos:prefLabel "Cross-contamination from CMP to lithography"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3554,7 +3654,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_189> a ont:Problem ;
-    rdfs:label "Cross-contamination from implant to diffusion" ;
+    skos:prefLabel "Cross-contamination from implant to diffusion"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3566,7 +3666,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/PROB_190> a ont:Problem ;
-    rdfs:label "Cross-contamination from metal_deposition to gate_oxide" ;
+    skos:prefLabel "Cross-contamination from metal_deposition to gate_oxide"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3578,7 +3678,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_001> a ont:Problem ;
-    rdfs:label "EUV sub-5nm node process integration consulting (CN client)" ;
+    skos:prefLabel "EUV sub-5nm node process integration consulting (CN client)"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "fabless" ;
     ont:complianceSensitivity "confidential" ;
@@ -3590,7 +3690,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_002> a ont:Problem ;
-    rdfs:label "128-layer NAND 3D cell stacking yield improvement (CN fab + US IP)" ;
+    skos:prefLabel "128-layer NAND 3D cell stacking yield improvement (CN fab + US IP)"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "memory_manufacturer" ;
     ont:complianceSensitivity "confidential" ;
@@ -3602,7 +3702,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_003> a ont:Problem ;
-    rdfs:label "FinFET gate oxide reliability in multi-jurisdiction semiconductor project" ;
+    skos:prefLabel "FinFET gate oxide reliability in multi-jurisdiction semiconductor project"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "foundry" ;
     ont:complianceSensitivity "confidential" ;
@@ -3611,7 +3711,7 @@
     ont:region "CN" .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_004> a ont:Problem ;
-    rdfs:label "DRAM capacitor ALD high-k stack for 1α node (cross-border IP)" ;
+    skos:prefLabel "DRAM capacitor ALD high-k stack for 1α node (cross-border IP)"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "equipment_supplier" ;
     ont:complianceSensitivity "confidential" ;
@@ -3623,7 +3723,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_005> a ont:Problem ;
-    rdfs:label "Advanced packaging heterogeneous integration for AI chip export review" ;
+    skos:prefLabel "Advanced packaging heterogeneous integration for AI chip export review"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "fabless" ;
     ont:complianceSensitivity "confidential" ;
@@ -3633,7 +3733,7 @@
     ont:region "CN" .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_006> a ont:Problem ;
-    rdfs:label "HBM2E memory PHY signal integrity for CN cloud server ODM" ;
+    skos:prefLabel "HBM2E memory PHY signal integrity for CN cloud server ODM"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "memory_manufacturer" ;
     ont:complianceSensitivity "confidential" ;
@@ -3642,7 +3742,7 @@
     ont:region "CN" .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_007> a ont:Problem ;
-    rdfs:label "EUV photomask blank defect for Shenzhen litho facility — ITAR overlap" ;
+    skos:prefLabel "EUV photomask blank defect for Shenzhen litho facility — ITAR overlap"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "confidential" ;
@@ -3656,7 +3756,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/mask_engineering> .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_008> a ont:Problem ;
-    rdfs:label "Cu interconnect BEOL reliability for 3nm node (US-KR-CN tri-party)" ;
+    skos:prefLabel "Cu interconnect BEOL reliability for 3nm node (US-KR-CN tri-party)"@en ;
     ont:clientCountry "CN" ;
     ont:companyType "foundry" ;
     ont:complianceSensitivity "confidential" ;
@@ -3669,7 +3769,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_009> a ont:Problem ;
-    rdfs:label "NCT-sensitive EUV scanner recipe optimization for advanced logic" ;
+    skos:prefLabel "NCT-sensitive EUV scanner recipe optimization for advanced logic"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "fabless" ;
     ont:complianceSensitivity "confidential" ;
@@ -3682,7 +3782,7 @@
         <https://w3id.org/sdkb/data/skill/mask_engineering> .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_010> a ont:Problem ;
-    rdfs:label "1β DRAM cell capacitance scaling with ZAZ high-k dielectric (NCT)" ;
+    skos:prefLabel "1β DRAM cell capacitance scaling with ZAZ high-k dielectric (NCT)"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "memory_manufacturer" ;
     ont:complianceSensitivity "confidential" ;
@@ -3693,7 +3793,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_011> a ont:Problem ;
-    rdfs:label "GAA nanosheet uniformity across 300mm wafer (NCT-controlled IP)" ;
+    skos:prefLabel "GAA nanosheet uniformity across 300mm wafer (NCT-controlled IP)"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "foundry" ;
     ont:complianceSensitivity "restricted" ;
@@ -3705,7 +3805,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_012> a ont:Problem ;
-    rdfs:label "HBM3 through-silicon via (TSV) filling yield for AI HPC memory" ;
+    skos:prefLabel "HBM3 through-silicon via (TSV) filling yield for AI HPC memory"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "memory_manufacturer" ;
     ont:complianceSensitivity "restricted" ;
@@ -3717,7 +3817,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_013> a ont:Problem ;
-    rdfs:label "EUV pellicle lifetime optimization for high-volume manufacturing" ;
+    skos:prefLabel "EUV pellicle lifetime optimization for high-volume manufacturing"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment_supplier" ;
     ont:complianceSensitivity "confidential" ;
@@ -3727,7 +3827,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_014> a ont:Problem ;
-    rdfs:label "V-NAND 238-layer cell array process NCT certification consulting" ;
+    skos:prefLabel "V-NAND 238-layer cell array process NCT certification consulting"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "foundry" ;
     ont:complianceSensitivity "confidential" ;
@@ -3739,7 +3839,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/defect_analysis> .
 
 <https://w3id.org/sdkb/data/problem/SC_PROB_015> a ont:Problem ;
-    rdfs:label "PIM (Processing-In-Memory) DRAM accelerator NCT-level consulting" ;
+    skos:prefLabel "PIM (Processing-In-Memory) DRAM accelerator NCT-level consulting"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "memory_manufacturer" ;
     ont:complianceSensitivity "confidential" ;
@@ -3747,7 +3847,7 @@
     ont:region "KR" .
 
 <https://w3id.org/sdkb/data/problem/prob_051> a ont:Problem ;
-    rdfs:label "CVD - Step Coverage 문제 해결" ;
+    skos:prefLabel "CVD - Step Coverage 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3758,7 +3858,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/prob_052> a ont:Problem ;
-    rdfs:label "Plasma Etch - Micro-trenching 문제 해결" ;
+    skos:prefLabel "Plasma Etch - Micro-trenching 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -3772,7 +3872,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/plasma_diagnostics> .
 
 <https://w3id.org/sdkb/data/problem/prob_053> a ont:Problem ;
-    rdfs:label "Metal CMP - Dishing 문제 해결" ;
+    skos:prefLabel "Metal CMP - Dishing 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "confidential" ;
@@ -3787,7 +3887,7 @@
         <https://w3id.org/sdkb/data/skill/slurry_management> .
 
 <https://w3id.org/sdkb/data/problem/prob_054> a ont:Problem ;
-    rdfs:label "EUV Lithography - LER 문제 해결" ;
+    skos:prefLabel "EUV Lithography - LER 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "restricted" ;
@@ -3802,7 +3902,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/mask_engineering> .
 
 <https://w3id.org/sdkb/data/problem/prob_055> a ont:Problem ;
-    rdfs:label "ALD - Uniformity 문제 해결" ;
+    skos:prefLabel "ALD - Uniformity 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3813,7 +3913,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/prob_056> a ont:Problem ;
-    rdfs:label "Plasma Etch - Particle 문제 해결" ;
+    skos:prefLabel "Plasma Etch - Particle 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -3827,7 +3927,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/plasma_diagnostics> .
 
 <https://w3id.org/sdkb/data/problem/prob_057> a ont:Problem ;
-    rdfs:label "CVD - Uniformity 문제 해결" ;
+    skos:prefLabel "CVD - Uniformity 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "confidential" ;
@@ -3838,7 +3938,7 @@
     ont:region "Korea" .
 
 <https://w3id.org/sdkb/data/problem/prob_058> a ont:Problem ;
-    rdfs:label "DUV Lithography - Overlay Error 문제 해결" ;
+    skos:prefLabel "DUV Lithography - Overlay Error 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "confidential" ;
@@ -3853,7 +3953,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/mask_engineering> .
 
 <https://w3id.org/sdkb/data/problem/prob_059> a ont:Problem ;
-    rdfs:label "Oxide CMP - Dishing 문제 해결" ;
+    skos:prefLabel "Oxide CMP - Dishing 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "public" ;
@@ -3869,7 +3969,7 @@
         <https://w3id.org/sdkb/data/skill/slurry_management> .
 
 <https://w3id.org/sdkb/data/problem/prob_060> a ont:Problem ;
-    rdfs:label "Plasma Etch - LER 문제 해결" ;
+    skos:prefLabel "Plasma Etch - LER 문제 해결"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "equipment" ;
     ont:complianceSensitivity "public" ;
@@ -3883,7 +3983,7 @@
     ont:requiresSkill <https://w3id.org/sdkb/data/skill/plasma_diagnostics> .
 
 <https://w3id.org/sdkb/data/problem/prob_cvd_tin_barrier_001> a ont:Problem ;
-    rdfs:label "CVD TiN Barrier 증착공정 최적화" ;
+    skos:prefLabel "CVD TiN Barrier 증착공정 최적화"@en ;
     ont:clientCountry "KR" ;
     ont:companyType "materials" ;
     ont:complianceSensitivity "restricted" ;
