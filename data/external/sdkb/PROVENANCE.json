@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "024e98efeda53b8aabfe1961036552f67d407570",
-  "source_commit_date": "2026-07-14T23:31:31+09:00",
+  "source_commit": "f65d4cda2265d680b0c0254cffaa7817a9ad350e",
+  "source_commit_date": "2026-07-15T11:51:28+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-14T14:34:58+00:00",
+  "vendored_at": "2026-07-15T02:56:40+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
@@ -55,6 +55,30 @@
       "source_path": "ontology/sdkb-abox-vendors.ttl",
       "role": "ABox: KSIA 회원사 326 — 소부장 벤더 축",
       "sha256": "2bed199d9afc8734ab05f375c34e7f1cd29adf6263157f0ad214cd7f89cf6d54"
+    },
+    {
+      "file": "sdkb-governance.ttl",
+      "source_path": "ontology/sdkb-governance.ttl",
+      "role": "TBox: 규제 코어(hasJurisdiction·controlLevel·subjectToControl·관할개념·EARRule 앵커) — RQ3 수출통제",
+      "sha256": "5da48ee6a916c6cf819e88afe8e6a19bc998ee9743905545da59d6908e86c5d3"
+    },
+    {
+      "file": "sdkb-governance-kr.ttl",
+      "source_path": "ontology/sdkb-governance-kr.ttl",
+      "role": "TBox: KR 규제(NationalCoreTechnology·designatedAsNCT·산업기술보호법)",
+      "sha256": "193136804bc7fa90bdb1f1ed4f56aa427841dfbfa83f598748cd3a3598c4c4dd"
+    },
+    {
+      "file": "sdkb-governance-us-instances.ttl",
+      "source_path": "ontology/sdkb-governance-us-instances.ttl",
+      "role": "ABox: US EAR/CCL 수출통제 8건 + G₀ 개념 연결",
+      "sha256": "ae2b670973a60b6603ba62dfbf452491e6fd14a09938661118436edbc06b1522"
+    },
+    {
+      "file": "sdkb-governance-kr-instances.ttl",
+      "source_path": "ontology/sdkb-governance-kr-instances.ttl",
+      "role": "ABox: KR-ITPA 국가핵심기술 12건 + G₀ 개념 연결",
+      "sha256": "8bf1086788172a351704fa4e943d7b263f7974400787b727879acb532662c559"
     },
     {
       "file": "semiconductor_v0_3.json",

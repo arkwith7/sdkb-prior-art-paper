@@ -166,6 +166,6 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 
 | 그래프 | 트리플 | 만드는 법 | 게이트 |
 |---|---:|---|---|
-| `graph_v0` (G₀) | 26,973 | `make baseline` | L1(완화)·L2·L3 |
+| `graph_v0` (G₀) | **44,192** | `make baseline` (SDKB `f65d4cd`) | L1(완화)·L2·L3 26/26 |
 | `delta_v1` | 370,077 | `make merge` 1단계 — 특허 24,179건 | L1(엄격): 개념 ≥1 |
 | `graph_v1` (G₁) | **396,501** | `make merge` 2단계 | L1 통과 · **L2 HermiT consistent=True** · L3 CQ 8/8 |

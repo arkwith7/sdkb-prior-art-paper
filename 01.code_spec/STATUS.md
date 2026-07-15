@@ -1,6 +1,18 @@
 # 진행 실적
 
-*최종 갱신: 2026-07-15 · 근거: `pytest`(131 passed) · `make gate`(L1·L2·L3 **22/22** · 게이트 커버리지 100%) · `make h1` · `make h2` · SDKB 커밋 `024e98e`*
+*최종 갱신: 2026-07-15 · 근거: `pytest`(131 passed) · `make gate`(L1·L2·L3 **26/26** · 게이트 커버리지 100%) · `make h1` · `make h2` · SDKB 커밋 `024e98e` + 규제 축(미커밋)*
+
+> **PLAN-015 완료 (2026-07-15) — 규제·수출통제 축이 그래프에 들어왔다 (RQ3).** gov: 어휘가
+> TBox 에만 있고 ABox 인스턴스 0 이던 상태를, **US EAR/CCL 8 + KR-ITPA 국가핵심기술 12건**의
+> 통제 인스턴스와 **개념 연결 37건(15/20 통제)**로 채웠다. 미연결 5건(규칙 2 + 음성/LOW 3)은
+> 지어내지 않고 그대로 보고한다(§1.2). 신규 어휘 `gov:controlLevel`·`gov:subjectToControl` 는
+> 상류 SDKB 에 신설했고, 개념↔통제 매핑은 사전동결 크로스워크(`data/compliance/concept_control_crosswalk.csv`)
+> 로만 생성한다. CQ23–26 이 규제 축을 기능 검증하며(**CQ26: 수출통제 대상 거절특허 1,249건**),
+> `queries/shapes/graph/compliance_shape.ttl` 이 살아있는 게이트다.
+>
+> **G₀ 재동결 43,814 → 44,192 (+378). H1 은 한 자리도 안 움직였다** — 규제는 개념에 속성만
+> 더하고 특허↔공정 엣지를 건드리지 않으므로 **C₀ 20/49 불변 · H1 네 표본집합 p 전부 불변**
+> (4.77e-07 · 3.05e-05 · 1.95e-03 · 2.44e-04). PLAN-015 §4 사전등록 그대로다.
 
 새 세션은 이 문서부터 읽는다. 온톨로지 용어가 낯설면 [GLOSSARY.md](GLOSSARY.md) 를,
 소부장 IP-R&D 실무(RQ3 의 태스크가 무엇인가)가 낯설면 [REF-001](REF-001-ip-rnd-domain-framework.md) 을 먼저 본다.
@@ -278,6 +290,7 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 | **PLAN-014 §4 단계 3 · CQ09–14 도출** | 태스크(선행기술·인력·소부장 문제·공급망)에서 6개 도출 → 커버리지 **9.4% → 32.1%**(클래스 16% → 28%). **P5 사전 선언 6/6 적중** · **CQ10 이 RQ2 직접 증거**(선행기술 후보 8 → 90). **CQ13 = 단계 1 정체성 통합의 회귀 감시**. mini_graph 픽스처 확장. **그래프 불변** | (2026-07-14) |
 | **PLAN-014 §4 단계 4 · 게이트 커버리지 100%** | CQ15–22 (불량 인과·재료·계측 등) + **서지 SHACL** → **아무도 안 보는 어휘 0** (술어 53/53 · 클래스 25/25). 라벨 규약 위반 3건(특허 제목·ConstraintType) 상류 교정 · `delta.py` 발명 술어 dcterms 화(G₁ 55→53) · 낡은 특허 shape 2개 교정. **H1·H2 불변** · `951db45` | (2026-07-15) |
 | **PLAN-012 · 출원인별 분리 재검정 (§4.5.2)** | **H1 은 두 회사 각각에서 지지**(삼성 p=4.77e-07 · 하이닉스 p=2.96e-05 · 네 표본집합 전부). 증가폭은 삼성이 6배 주도(185.0 vs 31.0). **H2′ 는 분리로 판정 불가** — 유효쌍 1–2 로 붕괴. **HBM 이 두 팔 모두에서 소실**(합산 29건 → 삼성 20건 미탐지 · 하이닉스 9건 미탐지): 탐지가 상대 성장이라 말뭉치를 쪼개면 사례가 사라진다. `make by-applicant` · 표 8 | (2026-07-14) |
+| **PLAN-015 · 규제·수출통제 축 (RQ3)** | **규제 어휘를 TBox→ABox→살아있는 게이트로 완성**. gov: 인스턴스 0 → **US EAR/CCL 8 + KR-ITPA NCT 12건** · 개념 연결 0 → **37건(15/20 통제)**. 미연결 5건은 규칙 2 + 음성/LOW 3(정직 보고). 신규 어휘 `gov:controlLevel`·`gov:subjectToControl`(상류) + 사전동결 크로스워크. CQ23–26 도출(**CQ26: 수출통제 대상 특허 1,249건**) + `compliance_shape` 살아있는 게이트. **G₀ 재동결 43,814 → 44,192 · H1 네 표본집합 p 전부 불변 · C₀ 20/49 불변 · CQ 26/26 · 게이트 커버리지 100%** | (2026-07-15) |
 
 ### 확정된 스펙
 - [SPEC-001 · 검증 게이트](specs/SPEC-001-validation-gate.md) — 3층 게이트와 두 겹 L1
@@ -392,13 +405,15 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 >
 > ## 🎯 다음 세션 작업 순서 (사용자 확정 · 2026-07-15)
 >
-> **[1] [PLAN-015](plans/PLAN-015-compliance-regulatory-layer.md) — 규제·컴플라이언스 축 최소 실증.**
-> 규제 어휘가 **TBox 에는 있으나 ABox 인스턴스가 0** 이고 `Shape_NCTLeakage` 는 죽어 있다(측정 완료).
-> 근거 데이터 실재: **`~/Dev/kukkukpool/ExpDataSet/us_compliance_standards_v1.json`** (US EAR/CCL
-> 수출통제 · `technology_controls` 8건 중 6건이 G₀ 개념에 연결 가능 — GAA·EUV·CD-SEM 등).
-> 이것을 인스턴스로 적재해 **RQ3(소부장 IP-R&D)의 수출통제 심사**를 질의 가능하게 만든다.
-> 🛑 첫 정지선: 미대응 어휘 4개(control_level·country_group·deemed_export·entity_list)의 상류 확장
-> 여부 승인. 순서·정지선은 PLAN-015 §3.
+> ✅ **[1] [PLAN-015](plans/PLAN-015-compliance-regulatory-layer.md) 완료 (2026-07-15) — 규제·수출통제 축 최소 실증.**
+> 규제 어휘가 **TBox 에만 있고 ABox 0** 이던 것을 **US EAR/CCL 8 + KR-ITPA NCT 12건 · 개념 연결
+> 37건(15/20 통제)**로 채웠다. 사용자 결정대로 **상류 SDKB 확장(`gov:controlLevel`·`gov:subjectToControl`)
+> 후 재vendor + G₀ 재동결**. 근거 데이터는 kukkukpool 마스터(US·KR 둘 다)와 **바이트 동일**한 SDKB
+> `data/compliance/{us,kr}_standards_v1.json`. 개념 매핑은 사전동결 크로스워크로만 — GAA→3A001·EUV→3B001·
+> CD-SEM→3B001.f·식각/증착/CMP/세정→KR-NCT 등 ECCN·NCT 조건이 개념 정의와 겹치는 것만(§1.2).
+> **CQ23–26 + `compliance_shape` 로 규제 축을 게이트 안에.** 상세는 위 "PLAN-015 완료" 블록.
+> **미대응 4개 중 control_level 은 `gov:controlLevel` 로 신설, 나머지 3개(country_group·deemed_export·
+> entity_list)는 문자열 속성으로 최소 표현** — 국가군 노드화·전문가 국적축은 §6 비목표/후속.
 >
 > **[2] [PLAN-014](plans/PLAN-014-ipr-d-framework-and-portability.md) §4 단계 5 — C-2 (소부장 G₂ · RQ3).**
 > 소부장 특허 수집(KSIA 329사) → G₂ → **H1 재적용**. 사전등록: **H1 이 소부장에서 기각될 수 있다**

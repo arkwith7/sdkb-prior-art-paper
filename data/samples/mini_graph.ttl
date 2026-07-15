@@ -7,6 +7,7 @@
 # 인스턴스 IRI 를 꺾쇠로 쓰는 이유: Turtle 접두명의 로컬 파트에는 '/' 가 올 수 없다
 # (data:process/etch 는 문법 오류). SDKB 자신의 core-data.ttl 도 같은 이유로 꺾쇠를 쓴다.
 @prefix ont:  <https://w3id.org/sdkb/ont/> .
+@prefix gov:  <https://w3id.org/sdkb/gov/> .
 @prefix pat:  <https://w3id.org/sdkb/data/patent/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
@@ -213,3 +214,31 @@ pat:1020200000001
     ont:concernsSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> ;
     ont:realizesEquipmentClass <https://w3id.org/sdkb/data/equipment_class/etcher> ;
     ont:concernsTechnologyNode <https://w3id.org/sdkb/data/technology_node/n3> .
+
+# ── 규제·수출통제 축 (PLAN-015 · RQ3) — CQ23·CQ24·CQ25·CQ26 을 exercise ────────
+# 합성 통제 2건: US EAR/CCL(HIGH) 이 EUV·CD-SEM 를, KR-ITPA(CRITICAL·국가핵심기술) 가
+# HBM·식각을 통제한다. compliance_shape 가 이 노드들에 실제로 걸린다.
+gov:JurisdictionUS a skos:Concept ; skos:prefLabel "United States"@en ; skos:notation "US" .
+gov:JurisdictionKR a skos:Concept ; skos:prefLabel "Republic of Korea"@en ; skos:notation "KR" .
+
+<https://w3id.org/sdkb/data/gov/us/tech_control/ccl_3b001> a gov:EARRule ;
+    skos:prefLabel "CCL_3B001"@en ; skos:notation "3B001.a" ;
+    gov:controlLevel "HIGH" ; gov:hasJurisdiction gov:JurisdictionUS .
+
+<https://w3id.org/sdkb/data/gov/kr/tech_control/advanced_packaging> a gov:KRIndustrialTechRule ;
+    skos:prefLabel "Advanced_Packaging"@en ; skos:notation "반도체_NCT_04" ;
+    gov:controlLevel "CRITICAL" ; gov:hasJurisdiction gov:JurisdictionKR ;
+    gov:designatedAsNCT <https://w3id.org/sdkb/data/gov/kr/nct/advanced_packaging> .
+
+<https://w3id.org/sdkb/data/gov/kr/nct/advanced_packaging> a gov:NationalCoreTechnology ;
+    skos:notation "반도체_NCT_04" ; gov:requiresGovApproval true .
+
+# 개념 ↔ 통제 (concept gov:subjectToControl control)
+<https://w3id.org/sdkb/data/subprocess/euv_lithography>
+    gov:subjectToControl <https://w3id.org/sdkb/data/gov/us/tech_control/ccl_3b001> .
+<https://w3id.org/sdkb/data/metrology/cd_sem>
+    gov:subjectToControl <https://w3id.org/sdkb/data/gov/us/tech_control/ccl_3b001> .
+<https://w3id.org/sdkb/data/device/hbm>
+    gov:subjectToControl <https://w3id.org/sdkb/data/gov/kr/tech_control/advanced_packaging> .
+<https://w3id.org/sdkb/data/process/etch>
+    gov:subjectToControl <https://w3id.org/sdkb/data/gov/kr/tech_control/advanced_packaging> .

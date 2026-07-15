@@ -29,7 +29,7 @@ from sdkb_paper.validate.vocab_coverage import measure
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 43814    # 2026-07-15 ConstraintType prefLabel (SDKB 024e98e) — 구 43,812
+EXPECTED_TRIPLES = 44192    # 2026-07-15 규제 축(PLAN-015): governance TBox+인스턴스 +378 — 구 43,814
                             # +2: hardConstraint·softConstraint 의 skos:prefLabel. Expert·Problem·특허
                             # +100: rdfs:label → skos:prefLabel 는 술어 교체라 净 0 이고,
                             # 전문가의 EN 표기 100개가 skos:altLabel 로 **새로 들어왔다**.
@@ -92,12 +92,12 @@ EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴�
 #
 # CQ 8개(손으로 고른 것) 시절: 술어 5/53 = 9.4% · 클래스 4/25 = 16.0% — 특허 축 하나의 100%.
 # CQ 22개(태스크에서 도출 · SPEC-004 P1–P5): 아래. 올린 방법은 임계값이 아니라 태스크다.
-EXPECTED_VOCAB_PREDICATES = (36, 53)  # CQ 검증 67.9%
-EXPECTED_VOCAB_CLASSES = (18, 25)     # CQ 검증 72.0%
+EXPECTED_VOCAB_PREDICATES = (36, 54)  # CQ 검증 66.7% — 규제 축이 ont:securityLevel 1개를 더했다
+EXPECTED_VOCAB_CLASSES = (18, 25)     # CQ 검증 72.0% (규제 클래스는 gov: 라 ont: 측정 밖)
 
 # **게이트 커버리지 = CQ ∪ SHACL.** 목표는 커버리지 90% 가 아니라 "아무도 안 보는 어휘 = 0" 이다.
-# 서지·프로비넌스는 CQ 가 아니라 SHACL 이 본다 (bibliographic_shape.ttl).
-EXPECTED_GATE_PREDICATES = (53, 53)   # 100% — 아무도 안 보는 술어 0
+# 서지·프로비넌스·값어휘는 CQ 가 아니라 SHACL 이 본다 (bibliographic_shape.ttl · compliance_shape.ttl).
+EXPECTED_GATE_PREDICATES = (54, 54)   # 100% — securityLevel 을 compliance_shape 이 게이트
 EXPECTED_GATE_CLASSES = (25, 25)      # 100% — 아무도 안 보는 클래스 0
 
 # G₀ 의 IP-R&D CQ before 값 (§4.2 의 G₀ 열). G₁ 과 비교되는 수치이므로 여기서 고정한다.
@@ -117,6 +117,12 @@ EXPECTED_IPRD_ROWS = {
     "CQ20_experts_by_equipment": 15,
     "CQ21_process_hierarchy_portfolio": 38,
     "CQ22_patent_equipment_and_technode": 9,
+    # PLAN-015 · 규제·수출통제 축 (2026-07-15). RQ3 IP-R&D 산출물 4(라이선싱·기술이전 심사).
+    # gov: 축이라 어휘 커버리지 측정(ont: 한정) 밖이지만, CQ 로 기능 검증한다.
+    "CQ23_concept_export_control": 37,           # 개념↔통제 링크 전량
+    "CQ24_national_core_technology": 12,         # 국가핵심기술(NCT) 지정 개념
+    "CQ25_critical_control_concepts": 7,         # CRITICAL 수준 통제 개념
+    "CQ26_patent_export_control_exposure": 1249, # 수출통제 대상 공정·소자를 구현하는 거절특허
 }
 CQ_MUST_ANSWER |= set(EXPECTED_IPRD_ROWS)
 

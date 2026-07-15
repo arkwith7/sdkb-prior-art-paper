@@ -16,7 +16,7 @@ test:
 # SDKB_HOME 으로 원본 위치를 바꿀 수 있다: make vendor SDKB_HOME=/path/to/sdkb
 SDKB_HOME ?= $(HOME)/Dev/sdkb
 vendor:
-	$(MAKE) -C $(SDKB_HOME) owl convert abox abox-patents abox-vendors
+	$(MAKE) -C $(SDKB_HOME) owl convert abox abox-patents abox-vendors compliance
 	uv run python -m sdkb_paper.ontology.vendor --sdkb-home $(SDKB_HOME)
 
 # baseline 그래프(graph_v0 = H1 의 "before") 를 스냅샷에서 조립. 결정적 산출물.

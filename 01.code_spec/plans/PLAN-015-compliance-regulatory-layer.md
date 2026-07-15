@@ -1,7 +1,28 @@
 # PLAN-015 · 규제·컴플라이언스 축 — 수출통제 인스턴스 적재 (B 최소 실증)
 
-*상태: **설계 대기** (사용자 지시 · 2026-07-15) · 지지 대상: **RQ3(소부장 IP-R&D)** · 논문 §4.6 · §5.3*
+*상태: **✅ 완료 (2026-07-15)** · 지지 대상: **RQ3(소부장 IP-R&D)** · 논문 §4.6 · §5.3*
 *선행: [PLAN-014](PLAN-014-ipr-d-framework-and-portability.md) §4 단계 3·4 완료 (CQ 게이트 커버리지 100%)*
+
+> **완료 요약 (2026-07-15 · SDKB `f65d4cd` · G₀ 44,192).**
+> 사용자 결정대로 **상류 SDKB 확장(`gov:controlLevel`·`gov:subjectToControl`·JurisdictionWASSENAAR)
+> 후 재vendor + G₀ 재동결**. 근거 데이터는 kukkukpool 마스터(US·KR 둘 다)와 바이트 동일한 SDKB
+> `data/compliance/{us,kr}_standards_v1.json`.
+>
+> | 지표 | 결과 |
+> |---|---|
+> | 통제 인스턴스 | US EAR/CCL **8** + KR-ITPA NCT **12** (기존 seed 스크립트 확장) |
+> | 개념 연결 (`gov:subjectToControl`) | **37건 · 15/20 통제** (사전동결 크로스워크) |
+> | 미연결 (정직 보고) | 5건 = 규칙 2(Entity List·Deemed Export) + 음성/LOW 3 |
+> | CQ | CQ23–26 신설 · **CQ26 = 수출통제 대상 거절특허 1,249건** · 26/26 응답 |
+> | 살아있는 게이트 | `queries/shapes/graph/compliance_shape.ttl` (controlLevel·securityLevel·링크 무결성) |
+> | G₀ 재동결 | 43,814 → **44,192** (+378) · **H1 네 표본집합 p 전부 불변 · C₀ 20/49 불변** (§4 사전등록 적중) |
+> | 게이트 | L1 ✅ · L2 HermiT consistent=True ✅ · L3 CQ 26/26 ✅ · 커버리지 100% · pytest 131 |
+>
+> **범위 결정**: 미대응 4개 중 `control_level` 만 `gov:controlLevel` 로 신설(승인 경로).
+> country_group·deemed_export·entity_list 는 문자열/기존 속성으로 최소 표현 — 국가군 노드화·
+> 전문가 국적축(Deemed Export)은 §6 비목표. `gov:Shape_NCTLeakage`(선행기술↔NCT 교차인용)는
+> G₂ 의 조인 데이터를 요구하므로 지금 걸면 vacuous — 대신 실제 적재 데이터에 걸리는
+> compliance_shape 를 세웠다(후속: G₂ 위에서 NCTLeakage). 상세는 [STATUS](../STATUS.md).
 
 > **사용자 결정 (2026-07-15)**: 규제 축을 **한계로 남기지 않고 최소 실증한다.**
 > 근거 데이터는 실재한다 — `~/Dev/kukkukpool/ExpDataSet/us_compliance_standards_v1.json`

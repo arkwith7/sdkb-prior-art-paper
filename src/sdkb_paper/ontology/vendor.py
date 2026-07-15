@@ -41,6 +41,10 @@ VENDOR_FILES: list[tuple[str, str]] = [
     ("ontology/sdkb-abox-patents.ttl", "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다"),
     ("ontology/sdkb-abox-experts-problems.ttl", "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축"),
     ("ontology/sdkb-abox-vendors.ttl", "ABox: KSIA 회원사 326 — 소부장 벤더 축"),
+    ("ontology/sdkb-governance.ttl", "TBox: 규제 코어(hasJurisdiction·controlLevel·subjectToControl·관할개념·EARRule 앵커) — RQ3 수출통제"),
+    ("ontology/sdkb-governance-kr.ttl", "TBox: KR 규제(NationalCoreTechnology·designatedAsNCT·산업기술보호법)"),
+    ("ontology/sdkb-governance-us-instances.ttl", "ABox: US EAR/CCL 수출통제 8건 + G₀ 개념 연결"),
+    ("ontology/sdkb-governance-kr-instances.ttl", "ABox: KR-ITPA 국가핵심기술 12건 + G₀ 개념 연결"),
     ("data/semiconductor_v0_3.json", "ABox 의 커밋된 원천(=재현 기준점)"),
     ("data/schema_report.json", "원천의 sha256 + 노드/엣지 카운트"),
 ]
@@ -132,6 +136,20 @@ ARTIFACT_INPUTS: dict[str, list[str]] = {
         "scripts/build_abox_vendors_ksia.py",
         "data/vendors/ksia_member_industry_list_20260714.csv",
         "ontology/sdkb-abox-patents.ttl",
+    ],
+    # 규제 인스턴스: seed 스크립트 + 마스터 JSON + 사전동결 크로스워크에서 생성된다.
+    # core-data 도 의존이다 — 링크 대상 개념이 사라지면 seed 의 검증이 실패해야 한다.
+    "ontology/sdkb-governance-us-instances.ttl": [
+        "scripts/seed_compliance_governance.py",
+        "data/compliance/us_standards_v1.json",
+        "data/compliance/concept_control_crosswalk.csv",
+        "ontology/sdkb-core-data.ttl",
+    ],
+    "ontology/sdkb-governance-kr-instances.ttl": [
+        "scripts/seed_compliance_governance.py",
+        "data/compliance/kr_standards_v1.json",
+        "data/compliance/concept_control_crosswalk.csv",
+        "ontology/sdkb-core-data.ttl",
     ],
 }
 

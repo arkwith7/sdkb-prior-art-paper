@@ -34,6 +34,10 @@
 | CQ20_experts_by_equipment | 2 | `Equipment` · `EquipmentClass` · `Expert` · `hasEquipmentExperience` |
 | CQ21_process_hierarchy_portfolio | 2 | `hasSubprocess` |
 | CQ22_patent_equipment_and_technode | 2 | `EquipmentClass` · `Patent` · `RootCause` · `TechnologyNode` · `concernsTechnologyNode` · `realizesEquipmentClass` |
+| CQ23_concept_export_control | 4 | — |
+| CQ24_national_core_technology | 2 | — |
+| CQ25_critical_control_concepts | 2 | — |
+| CQ26_patent_export_control_exposure | 3 | `Patent` · `concernsDevice` · `realizesProcess` |
 
 ## 아무도 보지 않는 어휘 (CQ 도 SHACL 도) — **0 이어야 한다**
 

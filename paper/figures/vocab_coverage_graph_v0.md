@@ -5,7 +5,7 @@
 
 | 축 | CQ 검증 | SHACL 검사 | **게이트(합집합)** | 사용됨 | **아무도 안 봄** |
 |---|---:|---:|---:|---:|---:|
-| 술어 | 36 (67.9%) | 18 | **53 (100.0%)** | 53 | **0** |
+| 술어 | 36 (66.7%) | 19 | **54 (100.0%)** | 54 | **0** |
 | 클래스 | 18 (72.0%) | 11 | **25 (100.0%)** | 25 | **0** |
 
 ## CQ 별 검증 어휘
@@ -34,6 +34,10 @@
 | CQ20_experts_by_equipment | 15 | `Equipment` · `EquipmentClass` · `Expert` · `hasEquipmentExperience` |
 | CQ21_process_hierarchy_portfolio | 38 | `hasSubprocess` |
 | CQ22_patent_equipment_and_technode | 9 | `EquipmentClass` · `Patent` · `RootCause` · `TechnologyNode` · `concernsTechnologyNode` · `realizesEquipmentClass` · `relatedToTopic` |
+| CQ23_concept_export_control | 37 | — |
+| CQ24_national_core_technology | 12 | — |
+| CQ25_critical_control_concepts | 7 | — |
+| CQ26_patent_export_control_exposure | 1249 | `Patent` · `concernsDevice` · `realizesProcess` |
 
 ## 아무도 보지 않는 어휘 (CQ 도 SHACL 도) — **0 이어야 한다**
 
@@ -52,7 +56,7 @@
 | `publicationDate` | 1000 | | `Semiconductor` | 1 |
 | `publicationNumber` | 1000 | |  |  |
 | `valueChainStage` | 1000 | |  |  |
-| `interpretationType` | 894 | |  |  |
+| `interpretationType` | 914 | |  |  |
 | `region` | 336 | |  |  |
 | `clientCountry` | 226 | |  |  |
 | `complianceSensitivity` | 226 | |  |  |
@@ -60,3 +64,4 @@
 | `confidence` | 149 | |  |  |
 | `complianceFlag` | 110 | |  |  |
 | `validationRequired` | 108 | |  |  |
+| `securityLevel` | 1 | |  |  |

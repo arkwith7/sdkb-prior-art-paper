@@ -1,0 +1,49 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix ont:  <https://w3id.org/sdkb/ont/> .
+@prefix gov:  <https://w3id.org/sdkb/gov/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# ─────────────────────────────────────────────────────────────────────
+# 규제·수출통제 축의 살아있는 게이트 (RQ3 · PLAN-015 §5).
+#
+# gov:Shape_NCTLeakage(선행기술↔NCT 교차관할 인용)는 G₂ 의 prior-art↔NCT 조인을
+# 요구하므로 지금 걸면 데이터가 0이라 vacuous 하다. 대신 이 논문이 실제로 적재한
+# 규제 데이터 — 통제·통제수준·개념 링크 — 를 검사한다. "검사되지 않는 shape 은
+# shape 이 아니다"(CLAUDE.md §5): 이 shape 은 20개 통제·37개 링크에 실제로 걸린다.
+# ─────────────────────────────────────────────────────────────────────
+
+# control_level 은 통제된 값 어휘다 (마스터 정의의 통제 등급).
+gov:ControlLevelShape a sh:NodeShape ;
+    sh:targetSubjectsOf gov:controlLevel ;
+    sh:property [
+        sh:path gov:controlLevel ;
+        sh:in ( "CRITICAL" "HIGH" "MEDIUM" "LOW" ) ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "controlLevel 은 CRITICAL·HIGH·MEDIUM·LOW 중 하나다" ;
+    ] ;
+    sh:property [
+        sh:path skos:prefLabel ;
+        sh:minCount 1 ;
+        sh:message "수출통제 노드도 skos:prefLabel 이 있어야 한다 — 질의 결과에 값으로 등장한다" ;
+    ] .
+
+# securityLevel(= Entity List 제한 태그)도 통제된 값 어휘다. 이 논문이 처음으로 이 ont:
+# 술어를 G₀ 에 실체화했다 — 게이트 없이 두면 "아무도 안 보는 어휘" 가 된다 (§3.4.5).
+ont:SecurityLevelShape a sh:NodeShape ;
+    sh:targetSubjectsOf ont:securityLevel ;
+    sh:property [
+        sh:path ont:securityLevel ;
+        sh:in ( "PUBLIC" "RESTRICTED" ) ;
+        sh:message "securityLevel 은 PUBLIC · RESTRICTED 중 하나다" ;
+    ] .
+
+# subjectToControl 의 대상은 실제 통제 노드여야 한다 (controlLevel 을 가진). 개념을
+# 존재하지 않는/규제 아닌 노드에 잇는 댕글링 링크를 막는다.
+gov:SubjectToControlShape a sh:NodeShape ;
+    sh:targetObjectsOf gov:subjectToControl ;
+    sh:property [
+        sh:path gov:controlLevel ;
+        sh:minCount 1 ;
+        sh:message "subjectToControl 의 대상은 controlLevel 을 가진 통제 노드여야 한다" ;
+    ] .

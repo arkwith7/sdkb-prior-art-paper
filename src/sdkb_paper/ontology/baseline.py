@@ -31,6 +31,12 @@ BASELINE_PARTS = [
     "sdkb-abox-experts-problems.ttl",
     # 소부장 벤더 축 (KSIA 회원사 326). 특허를 더하지 않으므로 C₀(s) 는 움직이지 않는다.
     "sdkb-abox-vendors.ttl",
+    # 규제 축 (RQ3 수출통제). TBox 2종 + 인스턴스 2종. 개념에 gov:subjectToControl 을
+    # 더할 뿐 특허↔공정 링크를 건드리지 않으므로 C₀(s)·H1 은 불변이어야 한다 — 재실행해 확인한다.
+    "sdkb-governance.ttl",
+    "sdkb-governance-kr.ttl",
+    "sdkb-governance-us-instances.ttl",
+    "sdkb-governance-kr-instances.ttl",
 ]
 
 # G₀ 의 서명. 스냅샷을 의도적으로 갱신하면 바뀐다 — 그때는 data/MANIFEST.md 와
