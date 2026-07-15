@@ -2,7 +2,8 @@
 
 *최종 갱신: 2026-07-15 · 근거: `pytest`(131 passed) · `make gate`(L1·L2·L3 **22/22** · 게이트 커버리지 100%) · `make h1` · `make h2` · SDKB 커밋 `024e98e`*
 
-새 세션은 이 문서부터 읽는다. 온톨로지 용어가 낯설면 [GLOSSARY.md](GLOSSARY.md) 를 먼저 본다.
+새 세션은 이 문서부터 읽는다. 온톨로지 용어가 낯설면 [GLOSSARY.md](GLOSSARY.md) 를,
+소부장 IP-R&D 실무(RQ3 의 태스크가 무엇인가)가 낯설면 [REF-001](REF-001-ip-rnd-domain-framework.md) 을 먼저 본다.
 
 ---
 
