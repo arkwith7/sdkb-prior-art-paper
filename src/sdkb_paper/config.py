@@ -47,6 +47,11 @@ H2_CASES = MAPPINGS / "h2_cases.csv"
 # 복원된 단계는 G₀ 에서 C₀(s)=0 이라 H1 에 유리하다 — 그 편향을 독자가 판별할 수 있도록
 # 확장 49 와 병기 보고한다 (scripts/freeze_legacy_scope.py 가 커밋 스냅샷에서 생성).
 LEGACY_SCOPE = MAPPINGS / "process_scope_legacy20.csv"
+# C-2 소부장 G₂ (RQ3): KSIA 장비 94사 → 기존 G₀ organization 노드 크로스워크.
+# 사전동결 CSV — 결과를 보기 전에 확정했다(h2_cases.csv 와 같은 규율). match_key 는 KIPRIS
+# applicantName 정확일치 필터의 키다(clean.normalize_company_name 로 생성). 94사 전량이 기존
+# G₀ 노드에 매핑되므로 신규 organization 노드는 만들지 않는다 — 정체성 재분열이 없다.
+KSIA_CROSSWALK = MAPPINGS / "ksia_applicant_crosswalk.csv"
 FIGURES = ROOT / "paper" / "figures"
 TABLES = ROOT / "paper" / "tables"
 

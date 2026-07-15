@@ -71,6 +71,8 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 |---|---|---|---:|---|---|
 | 2026-07-13 | KIPRIS Plus `getAdvancedSearch` | `applicant=삼성전자주식회사 ∪ 에스케이하이닉스 주식회사` × `ipcNumber ∈ {룰 테이블의 18개 클래스}` × `applicationDate=20100101~20251231` (patent=true, utility=false) | 원시 50,514행 → 델타 후보 34,521 → **병합 24,179** | `raw/kipris/patents_raw.parquet` · `interim/patents_delta.parquet` (둘 다 gitignore) | `graph_v1.ttl` |
 | 2026-07-13 | KIPRIS Plus `getAdvancedSearch` | 위와 **동일한 검색식** · 기간만 `applicationDate=20050101~20091231` (PLAN-009 · H2 좌측절단 교정) | 원시 41,443행 → 정제 후 **29,415** | `raw/kipris/patents_2005_2009.parquet` · `interim/patents_2005_2009.parquet` (둘 다 gitignore) | **없음 — 병합하지 않는다** |
+| 2026-07-15 | KIPRIS Plus `getAdvancedSearch` | **RQ3 · C-2 소부장.** `applicant ∈ {KSIA 장비 94사}` (질의어=크로스워크 match_key) × `ipcNumber ∈ {18개 클래스}` × `20100101~20251231`. 정확일치 필터는 정규화-정확일치(㈜↔(주)·공동출원 파이프분리) | 원시 32,125행 → 정확일치 25,013 → dedup 16,189 → 정제 16,151 → **매핑 9,152 → 병합 9,141** | `raw/kipris/patents_ksia_equipment_raw.parquet` · `interim/patents_ksia_equipment_delta.parquet` (gitignore) | `graph_v2.ttl` |
+| 2026-07-15 | KIPRIS Plus `getBibliographyDetailInfoSearch` | **초록+전체청구항** (출원번호별 · ServiceKey). 매핑 특허 **9,140건**만 조회(게이트 탈락분 미조회) | 상세 9,140건 · 청구항 **123,091** (평균 11.2·중앙 10·최대 110) | `raw/kipris/patents_ksia_equipment_details.parquet` (gitignore) | `graph_v2.ttl` (`claimText`·`firstClaimText`·`abstractText`·`claimCount`) |
 
 **재현 절차**: `make collect && make profile && make merge` (응답은 `raw/kipris/kipris_cache.sqlite`
 에 캐시되므로 재실행해도 API 를 다시 때리지 않는다).
@@ -166,6 +168,20 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 
 | 그래프 | 트리플 | 만드는 법 | 게이트 |
 |---|---:|---|---|
-| `graph_v0` (G₀) | **44,192** | `make baseline` (SDKB `f65d4cd`) | L1(완화)·L2·L3 26/26 |
+| `graph_v0` (G₀) | **44,202** | `make baseline` (SDKB `edb8ae4`) | L1(완화)·L2·L3 27/27 |
 | `delta_v1` | 370,077 | `make merge` 1단계 — 특허 24,179건 | L1(엄격): 개념 ≥1 |
-| `graph_v1` (G₁) | **396,501** | `make merge` 2단계 | L1 통과 · **L2 HermiT consistent=True** · L3 CQ 8/8 |
+| `graph_v1` (G₁) | **413,730** | `make merge` 2단계 | L1 통과 · **L2 HermiT consistent=True** · L3 CQ |
+| `delta_v2` (소부장) | 288,489 | `make merge CORPUS=ksia-equipment` 1단계 — 특허 **9,141건** · 초록·청구항 포함 | L1(엄격): 개념 ≥1 |
+| `graph_v2` (G₂ · RQ3) | **332,358** | 2단계 — G₀ 위 KSIA 장비 94사 델타 | L1 통과 · **L2 consistent=True** · L3 CQ **27/27** |
+
+> **G₀ 재동결 44,192 → 44,202 (2026-07-15).** 상류 SDKB 에 `ont:claimText`·`ont:claimCount`
+> (IP-R&D FTO 자기완결성 · SDKB `edb8ae4`)를 신설해 재vendor·재동결했다. **+10 = TBox 선언 2개**
+> 뿐이다 — G₀ 의 SIRP 특허는 청구항1만 있어 claimText 사용 0, ABox·엣지 불변. **H1 네 표본집합
+> p 전부 불변**(4.77e-07 · 3.05e-05 · 1.95e-03 · 2.44e-04) · C₀ 20/49 불변.
+>
+> **G₂ (RQ3 · C-2 소부장 외적 타당도).** KSIA 장비 94사 특허를 수집·병합해 프레임워크 재현성을
+> 실증한다. **H1 은 소부장에서도 지지된다**(네 표본집합 전부, 표 5-소부장). 커버 **G₀ 20 → G₂ 26/49**.
+> p 는 G₁ 과 같은데(증가 단계 개수 21 로 매핑 룰 도달범위에 포화 — 코퍼스 무관) **증가폭은 더 크다**
+> (expanded49 증가단계 중앙 Δ **354** vs G₁ 236). 잠들어 있던 공급사 노드 **71곳이 특허·청구항으로
+> 활성화**됐다(assignedTo 받는 조직 351→422). 청구항 전문 **123,091 트리플**(특허당 평균 11.2) —
+> FTO 를 그래프만으로 실행할 수 있다(CQ27 = 84사).

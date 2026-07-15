@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+  <header><resultCode>00</resultCode><resultMsg>NORMAL SERVICE.</resultMsg></header>
+  <body>
+    <item>
+      <biblioSummaryInfoArray>
+        <biblioSummaryInfo>
+          <applicationNumber>1020130025286</applicationNumber>
+          <inventionTitle>웨이퍼 영상 검사 장치</inventionTitle>
+        </biblioSummaryInfo>
+      </biblioSummaryInfoArray>
+      <abstractInfoArray>
+        <abstractInfo>
+          <astrtCont>반도체 웨이퍼의 결함을 검사하기 위해 웨이퍼 영상을 획득, 검사하는 장치.</astrtCont>
+        </abstractInfo>
+      </abstractInfoArray>
+      <claimInfoArray>
+        <claimInfo><claim>1. 웨이퍼 영상 검사 장치로서, 주기적으로 조명광을 발생시키는 광원을 포함하는 장치.</claim></claimInfo>
+        <claimInfo><claim>2. 제 1 항에 있어서, 상기 광원은 펄스 광원인 것을 특징으로 하는 장치.</claim></claimInfo>
+        <claimInfo><claim>3. 제 1 항에 있어서, 이중 거울을 더 포함하는 장치.</claim></claimInfo>
+      </claimInfoArray>
+      <claimCount>3</claimCount>
+    </item>
+  </body>
+</response>

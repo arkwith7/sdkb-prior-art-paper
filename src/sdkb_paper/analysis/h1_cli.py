@@ -16,12 +16,21 @@ from sdkb_paper.analysis.coverage import (
     restrict,
     wilcoxon_h1,
 )
-from sdkb_paper.config import GRAPH_V0, PROCESSED, TABLES
-from sdkb_paper.ontology.delta import GRAPH_V1
+from sdkb_paper.config import FIGURES, GRAPH_V0, PROCESSED, TABLES
+from sdkb_paper.ontology.delta import GRAPH_V1, GRAPH_V2
 from sdkb_paper.viz.figures import fig_h1_coverage
 
 H1_CSV = PROCESSED / "h1_coverage.csv"
 H1_TABLE = TABLES / "table5_h1.md"
+
+# C-2 소부장 G₂ (RQ3): 검정은 PLAN-005 그대로 불변, 바뀌는 건 after 코퍼스 하나뿐이다.
+# 사전등록(§3.3): H1 이 소부장에서 **기각될 수 있다** — 장비사는 특정 공정에 특화돼 있어
+# "전 공정 확장"이 안 나올 수 있다. 기각되면 기각된 대로 §4.6 에 쓴다.
+CORPORA = {
+    "samsung-hynix": (GRAPH_V1, "G₁", H1_CSV, H1_TABLE, "graph_v1.ttl"),
+    "ksia-equipment": (GRAPH_V2, "G₂", PROCESSED / "h1_coverage_ksia.csv",
+                       TABLES / "table5_h1_ksia.md", "graph_v2.ttl"),
+}
 
 
 def _scopes(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
@@ -46,12 +55,20 @@ def _fmt(r: WilcoxonResult) -> str:
 
 
 def main() -> int:
-    df = compare_coverage(GRAPH_V0, GRAPH_V1)
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--corpus", choices=sorted(CORPORA), default="samsung-hynix",
+                    help="samsung-hynix=G₀ vs G₁(주 분석) · ksia-equipment=G₀ vs G₂(RQ3 재현성)")
+    args = ap.parse_args()
+    after_graph, after_label, h1_csv, h1_table, after_file = CORPORA[args.corpus]
+
+    df = compare_coverage(GRAPH_V0, after_graph)
     legacy = legacy_scope_iris()
     df["in_legacy20"] = df.index.get_level_values("step").isin(legacy)
 
     PROCESSED.mkdir(parents=True, exist_ok=True)
-    df.to_csv(H1_CSV)
+    df.to_csv(h1_csv)
 
     results = [wilcoxon_h1(sub, scope) for scope, sub in _scopes(df).items()]
 
@@ -71,17 +88,18 @@ def main() -> int:
         *(_fmt(r) for r in results),
         "",
         f"커버된 단계: G₀ {(df['before'] > 0).sum()} / {len(df)} → "
-        f"G₁ {(df['after'] > 0).sum()} / {len(df)}",
+        f"{after_label} {(df['after'] > 0).sum()} / {len(df)}",
         "",
-        "출처: `make h1` · 입력 graph_v0.ttl · graph_v1.ttl (3층 게이트 통과 스냅샷)",
+        f"출처: `make h1` · 입력 graph_v0.ttl · {after_file} (3층 게이트 통과 스냅샷)",
     ]
     TABLES.mkdir(parents=True, exist_ok=True)
-    H1_TABLE.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    h1_table.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    fig = fig_h1_coverage(df)
+    fig_out = None if args.corpus == "samsung-hynix" else FIGURES / "fig_h1_coverage_ksia.png"
+    fig = fig_h1_coverage(df, out=fig_out)
 
     print("\n".join(lines))
-    print(f"\n✓ {H1_CSV}\n✓ {H1_TABLE}\n✓ {fig}")
+    print(f"\n✓ {h1_csv}\n✓ {h1_table}\n✓ {fig}")
     return 0
 
 

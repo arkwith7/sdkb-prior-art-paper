@@ -29,7 +29,10 @@ from sdkb_paper.validate.vocab_coverage import measure
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 44192    # 2026-07-15 규제 축(PLAN-015): governance TBox+인스턴스 +378 — 구 43,814
+EXPECTED_TRIPLES = 44202    # 2026-07-15 청구항 어휘(C-2 RQ3): ont:claimText·claimCount TBox 선언
+                            # +10 (술어 2개 × 5 트리플) — 구 44,192. G₀ 의 SIRP 특허는 청구항1만
+                            # 있어 claimText 사용 0, ABox·엣지 불변(C₀ 20/49 불변 · H1 p 4자리 불변).
+                            # 그 전: 2026-07-15 규제 축(PLAN-015): governance TBox+인스턴스 +378 — 구 43,814
                             # +2: hardConstraint·softConstraint 의 skos:prefLabel. Expert·Problem·특허
                             # +100: rdfs:label → skos:prefLabel 는 술어 교체라 净 0 이고,
                             # 전문가의 EN 표기 100개가 skos:altLabel 로 **새로 들어왔다**.

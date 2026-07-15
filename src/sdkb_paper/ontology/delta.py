@@ -36,6 +36,8 @@ WAS_GENERATED_BY = URIRef("http://www.w3.org/ns/prov#wasGeneratedBy")
 
 DELTA_TTL = PROCESSED / "delta_v1.ttl"
 GRAPH_V1 = PROCESSED / "graph_v1.ttl"
+DELTA_V2_TTL = PROCESSED / "delta_v2.ttl"
+GRAPH_V2 = PROCESSED / "graph_v2.ttl"
 
 # G₀ 에 이미 있는 조직 인스턴스를 재사용한다 — 새로 만들면 CQ08(출원인 포트폴리오)이 쪼개진다.
 ORG = {
@@ -43,8 +45,19 @@ ORG = {
     "에스케이하이닉스 주식회사": SDKB_DATA["organization/sk_hynix"],
 }
 ACTIVITY = SDKB_DATA["activity/kipris_plan002_ingest"]
+# C-2 소부장 G₂ (RQ3). 출원인은 preprocess 가 붙인 matched_slug(기존 G₀ organization 노드)로
+# 해석한다 — 94사 전량이 이미 G₀ 에 있으므로 신규 노드를 만들지 않는다(정체성 재분열 없음).
+ACTIVITY_KSIA = SDKB_DATA["activity/kipris_ksia_equipment_ingest"]
 SOURCE = "KIPRIS Plus API (getAdvancedSearch)"
 LICENSE = "KIPRIS terms — academic use, no redistribution of full text"
+
+
+def _org_samsung(row) -> URIRef | None:
+    return ORG.get(row.applicant_name)
+
+
+def _org_ksia(row) -> URIRef | None:
+    return SDKB_DATA[f"organization/{row.matched_slug}"]
 
 
 def ipc_iri(code: str) -> URIRef:
@@ -52,16 +65,22 @@ def ipc_iri(code: str) -> URIRef:
     return SDKB_DATA["ipc/" + code.strip().replace(" ", "_").replace("/", "-")]
 
 
-def build_delta(df: pd.DataFrame, variant: str = DEFAULT_VARIANT) -> Graph:
+def build_delta(df: pd.DataFrame, variant: str = DEFAULT_VARIANT,
+                org_of=_org_samsung, activity: URIRef = ACTIVITY,
+                activity_label: str = "KIPRIS Samsung/SK hynix ingest (PLAN-002)",
+                details: dict | None = None) -> Graph:
     """룰 매핑 + 신기술 인식 레이어(PLAN-004)로 델타를 만든다.
 
     신기술 레이어는 **디바이스 축에만** 링크를 더한다 — 공정 축을 건드리지 않으므로 H1 의
     커버리지 수치는 변하지 않아야 한다(회귀 테스트로 고정).
+
+    org_of 는 특허 행 → 출원인 organization IRI 해석기다. 삼성/하이닉스는 이름 사전으로,
+    KSIA 소부장(G₂)은 preprocess 가 붙인 matched_slug 로 기존 G₀ 노드를 가리킨다.
     """
     g = Graph()
     bind_namespaces(g)
-    g.add((ACTIVITY, RDF.type, PROV_ACTIVITY))
-    g.add((ACTIVITY, RDFS.label, Literal("KIPRIS Samsung/SK hynix ingest (PLAN-002)")))
+    g.add((activity, RDF.type, PROV_ACTIVITY))
+    g.add((activity, RDFS.label, Literal(activity_label)))
 
     table = load_code_mapping()
     aliases = load_aliases(variant=variant)
@@ -97,13 +116,30 @@ def build_delta(df: pd.DataFrame, variant: str = DEFAULT_VARIANT) -> Graph:
         # 발명하지 않는다 (CLAUDE.md §1.4). 상류 특허 A-Box 도 dcterms 를 쓴다.
         g.add((p, DCTERMS.source, Literal(SOURCE, datatype=XSD.string)))
         g.add((p, DCTERMS.license, Literal(LICENSE, datatype=XSD.string)))
-        g.add((p, WAS_GENERATED_BY, ACTIVITY))
+        g.add((p, WAS_GENERATED_BY, activity))
 
         if row.open_date:
             g.add((p, ONT.publicationDate, Literal(_iso(row.open_date), datatype=XSD.date)))
-        org = ORG.get(row.applicant_name)
+        org = org_of(row)
         if org is not None:
             g.add((p, ONT.assignedTo, org))
+
+        # IP-R&D FTO 자기완결성: 초록 + 전체 청구항을 실체화한다(§1.3 — 그래프는 gitignore 라
+        # 로컬 전용·비재배포). claimText 는 청구항당 1트리플(번호 보존), firstClaimText 는 청구항1.
+        det = details.get(row.application_number) if details else None
+        if det is not None:
+            # 초록·청구항은 **plain 리터럴**(xsd:string)이다 — TBox range 가 xsd:string 이라
+            # lang 태그(rdf:langString)를 붙이면 range 위반으로 HermiT 가 비일관 판정한다.
+            # G₀ 의 SIRP abstractText/firstClaimText 도 lang 없는 plain 리터럴로 저장돼 있다.
+            if det["abstract"]:
+                g.add((p, ONT.abstractText, Literal(det["abstract"], datatype=XSD.string)))
+            claims = list(det["claims"])
+            if claims:
+                g.add((p, ONT.firstClaimText, Literal(claims[0], datatype=XSD.string)))
+                for c in claims:
+                    g.add((p, ONT.claimText, Literal(c, datatype=XSD.string)))
+            if det["claim_count"]:
+                g.add((p, ONT.claimCount, Literal(int(det["claim_count"]), datatype=XSD.integer)))
 
         for code in codes:
             iri = ipc_iri(code)
@@ -124,13 +160,38 @@ def _iso(yyyymmdd: str) -> str:
 
 
 def main() -> int:
-    df = pd.read_parquet(DELTA_PARQUET)
-    g = build_delta(df)
+    import argparse
+
+    from sdkb_paper.preprocess.profile import KSIA_DELTA
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--corpus", choices=["samsung-hynix", "ksia-equipment"], default="samsung-hynix",
+                    help="samsung-hynix=G₁(PLAN-002) · ksia-equipment=G₂ 소부장(RQ3 · PLAN-014 C-2)")
+    args = ap.parse_args()
+
+    if args.corpus == "ksia-equipment":
+        from sdkb_paper.collect.collect import KSIA_DETAILS
+        df = pd.read_parquet(KSIA_DELTA)
+        details = None
+        if KSIA_DETAILS.exists():
+            dd = pd.read_parquet(KSIA_DETAILS)
+            details = {r.application_number: {"abstract": r.abstract, "claims": r.claims,
+                                             "claim_count": r.claim_count}
+                       for r in dd.itertuples()}
+        g = build_delta(df, org_of=_org_ksia, activity=ACTIVITY_KSIA,
+                        activity_label="KIPRIS KSIA equipment ingest (RQ3 · PLAN-014 C-2)",
+                        details=details)
+        out = DELTA_V2_TTL
+    else:
+        df = pd.read_parquet(DELTA_PARQUET)
+        g = build_delta(df)
+        out = DELTA_TTL
+
     PROCESSED.mkdir(parents=True, exist_ok=True)
-    g.serialize(DELTA_TTL, format="turtle")
+    g.serialize(out, format="turtle")
     n = len(set(g.subjects(RDF.type, ONT.Patent)))
-    print(f"✓ 델타 특허 {n:,}건 · 트리플 {len(g):,} → {DELTA_TTL}")
-    print(f"  (델타 후보 {len(df):,}건 중 미매핑 {len(df)-n:,}건은 넣지 않았다 — 게이트 통과 불가)")
+    print(f"✓ 델타 특허 {n:,}건 · 트리플 {len(g):,} → {out}")
+    print(f"  (델타 후보 {len(df):,}행 중 미매핑 제외 후 특허 {n:,}건 — 미매핑은 게이트 통과 불가)")
     return 0
 
 

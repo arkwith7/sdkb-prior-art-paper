@@ -26,11 +26,11 @@ baseline:
 # 삼성전자·SK하이닉스 특허 수집 (KIPRIS). 응답은 sqlite 캐시 → 재실행해도 API 를 다시 안 때린다.
 # make collect SMOKE=1 이면 클래스 1개만 (파이프라인 관통 검증용)
 collect:
-	uv run python -m sdkb_paper.collect.collect $(if $(SMOKE),--smoke,)
+	uv run python -m sdkb_paper.collect.collect $(if $(SMOKE),--smoke,) $(if $(CORPUS),--corpus $(CORPUS),) $(if $(DETAILS),--details,)
 
 # 정제 + 데이터 프로파일 (CLAUDE.md §4 의무). 논문 표 4 의 원천.
 profile:
-	uv run python -m sdkb_paper.preprocess.profile
+	uv run python -m sdkb_paper.preprocess.profile $(if $(CORPUS),--corpus $(CORPUS),)
 
 # PLAN-009 · H2 좌측절단 교정분 (2005–2009). **G₁ 에 병합되지 않는다** — H2 시계열 전용이다.
 collect-extended:
@@ -45,8 +45,8 @@ dart:
 
 # 델타 트리플 생성 + 게이트 통과분만 병합 → graph_v1 (= G₁, H1 의 "after")
 merge:
-	uv run python -m sdkb_paper.ontology.delta
-	uv run python -m sdkb_paper.ontology.merge_cli
+	uv run python -m sdkb_paper.ontology.delta $(if $(CORPUS),--corpus $(CORPUS),)
+	uv run python -m sdkb_paper.ontology.merge_cli $(if $(CORPUS),--corpus $(CORPUS),)
 
 # IPC/CPC 룰 커버리지 — 특허를 수집하기 전에 매핑의 사각지대를 드러낸다
 mapping:
@@ -100,7 +100,7 @@ gate: snapshot validate reason cq vocab
 # H1 검정 — 공정 단계별 커버리지 (Wilcoxon 단측). 게이트를 통과한 두 스냅샷을 읽기만 한다.
 # 표본 집합은 확장 49 와 복원 이전 20 **양쪽**으로 병기 보고된다 (PLAN-005).
 h1:
-	uv run python -m sdkb_paper.analysis.h1_cli
+	uv run python -m sdkb_paper.analysis.h1_cli $(if $(CORPUS),--corpus $(CORPUS),)
 
 # H2 의 대조군 분류 데이터 (BigQuery patents-public-data · GCP 인증 필요).
 #   cpc         — 현재 스냅샷의 CPC. KIPRIS 는 IPC 만 주는데 대조 코드 2개가 CPC 전용이라

@@ -18,14 +18,20 @@ from sdkb_paper.preprocess.clean import (
     TARGET_APPLICANTS,
     drop_g0_overlap,
     dedup,
+    filter_and_tag_ksia,
     filter_applicants,
     g0_application_numbers,
+    load_ksia_crosswalk,
     normalize,
 )
 
 RAW = RAW_KIPRIS / "patents_raw.parquet"
 DELTA = INTERIM / "patents_delta.parquet"
 PROFILE = DATA / "profiles" / "kipris_samsung_hynix.md"
+
+KSIA_RAW = RAW_KIPRIS / "patents_ksia_equipment_raw.parquet"
+KSIA_DELTA = INTERIM / "patents_ksia_equipment_delta.parquet"
+KSIA_PROFILE = DATA / "profiles" / "kipris_ksia_equipment.md"
 
 # PLAN-009 · 좌측절단 교정분 (2005–2009). **G₁ 에 병합되지 않는다** — H2 시계열 전용이다.
 # 정제 규칙은 main 과 **동일**하다(정규화 → 정확일치 → dedup → G₀ 겹침 제거). 기간마다 규칙이
@@ -99,20 +105,55 @@ def build(period: str = "main") -> pd.DataFrame:
     delta, overlap = drop_g0_overlap(uniq, g0)
     delta = add_mapping(delta)
 
+    app_rows = [(a, f"{delta.groupby('applicant_name').size().get(a, 0):,}",
+                 f"{(overlap.groupby('applicant_name').size().get(a, 0) if len(overlap) else 0):,}")
+                for a in TARGET_APPLICANTS]
+
     INTERIM.mkdir(parents=True, exist_ok=True)
     delta.to_parquet(delta_path, index=False)
 
     profile_path.parent.mkdir(parents=True, exist_ok=True)
     profile_path.write_text(
-        _render(raw, norm, kept, uniq, overlap, delta, title, merged), encoding="utf-8"
+        _render(raw, norm, kept, uniq, overlap, delta, title, merged, app_rows,
+                ("출원인", "델타 건수", "G₀ 겹침(제외됨)")), encoding="utf-8"
     )
     return delta
 
 
-def _render(raw, norm, kept, uniq, overlap, delta, title, merged) -> str:
+def build_ksia() -> pd.DataFrame:
+    """C-2 소부장 G₂ (RQ3). 삼성 경로와 **정제 규칙은 동일**하되 출원인 필터만 정규화-정확일치
+    (filter_and_tag_ksia)로 교체하고, 중복 제거를 (출원번호 × 매칭회사)로 한다 — 공동출원 특허가
+    두 KSIA 회원사 포트폴리오에 함께 속하는 것을 보존하기 위해서다."""
+    cw = load_ksia_crosswalk()
+    key_to_slug = dict(zip(cw["match_key"], cw["org_slug"]))
+    slug_to_name = dict(zip(cw["org_slug"], cw["name_ko"]))
+
+    raw = pd.read_parquet(KSIA_RAW)
+    norm = normalize(raw)
+    kept = filter_and_tag_ksia(norm, key_to_slug)
+    uniq = kept.sort_values(["application_number", "matched_slug"]).drop_duplicates(
+        subset=["application_number", "matched_slug"])
+    g0 = g0_application_numbers()
+    delta, overlap = drop_g0_overlap(uniq, g0)
+    delta = add_mapping(delta)
+
+    cnt = delta.groupby("matched_slug").size().sort_values(ascending=False)
+    ov = overlap.groupby("matched_slug").size() if len(overlap) else pd.Series(dtype=int)
+    app_rows = [(f"{slug_to_name.get(s, s)} (`{s}`)", f"{n:,}", f"{ov.get(s, 0):,}")
+                for s, n in cnt.head(20).items()]
+
+    INTERIM.mkdir(parents=True, exist_ok=True)
+    delta.to_parquet(KSIA_DELTA, index=False)
+    KSIA_PROFILE.parent.mkdir(parents=True, exist_ok=True)
+    KSIA_PROFILE.write_text(
+        _render(raw, norm, kept, uniq, overlap, delta,
+                "KIPRIS KSIA 장비 94사 특허 (RQ3 · PLAN-014 C-2 · G₂)", True, app_rows,
+                ("KSIA 회원사 (상위 20)", "델타 건수", "G₀ 겹침(제외됨)")), encoding="utf-8")
+    return delta
+
+
+def _render(raw, norm, kept, uniq, overlap, delta, title, merged, app_rows, app_header) -> str:
     mapped = delta[(delta.n_process > 0) | (delta.n_device > 0)]
-    by_app = delta.groupby("applicant_name").size()
-    ov_app = overlap.groupby("applicant_name").size() if len(overlap) else pd.Series(dtype=int)
     years = delta["application_date"].dt.year
 
     s = [f"# 프로파일 — {title}\n",
@@ -146,8 +187,7 @@ def _render(raw, norm, kept, uniq, overlap, delta, title, merged) -> str:
                    ("컬럼", "결측/빈값")),
          "\n## 3. 기술통계 (descriptive)\n\n",
          "### 출원인별\n\n",
-         _md_table([(a, f"{by_app.get(a, 0):,}", f"{ov_app.get(a, 0):,}") for a in TARGET_APPLICANTS],
-                   ("출원인", "델타 건수", "G₀ 겹침(제외됨)")),
+         _md_table(app_rows, app_header),
          f"\n### 출원연도 (범위 {years.min()}–{years.max()})\n\n",
          _md_table([(y, f"{n:,}", _trunc_flag(y, n, years))
                     for y, n in years.value_counts().sort_index().items()],
@@ -185,12 +225,18 @@ def _render(raw, norm, kept, uniq, overlap, delta, title, merged) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--corpus", choices=["samsung-hynix", "ksia-equipment"], default="samsung-hynix",
+                    help="samsung-hynix=G₁(PLAN-002) · ksia-equipment=G₂ 소부장(RQ3 · PLAN-014 C-2)")
     ap.add_argument("--period", choices=sorted(PERIODS), default="main",
                     help="main=2010–2025 (G₁ 의 원천) · extended=2005–2009 (PLAN-009 · H2 전용)")
     args = ap.parse_args()
 
-    _, delta_path, profile_path, *_ = PERIODS[args.period]
-    delta = build(args.period)
+    if args.corpus == "ksia-equipment":
+        delta = build_ksia()
+        delta_path, profile_path = KSIA_DELTA, KSIA_PROFILE
+    else:
+        _, delta_path, profile_path, *_ = PERIODS[args.period]
+        delta = build(args.period)
     print(f"✓ 정제 후 특허 {len(delta):,}건 → {delta_path.relative_to(ROOT)}")
     print(f"✓ 프로파일 → {profile_path.relative_to(ROOT)}")
     return 0

@@ -11,12 +11,32 @@
 """
 from __future__ import annotations
 
+import re
+
 import pandas as pd
 import rdflib
 
-from sdkb_paper.config import GRAPH_V0, ONT
+from sdkb_paper.config import GRAPH_V0, KSIA_CROSSWALK, ONT
 
 TARGET_APPLICANTS = ("삼성전자주식회사", "에스케이하이닉스 주식회사")
+
+
+def load_ksia_crosswalk() -> pd.DataFrame:
+    """장비 94사 사전동결 크로스워크 (KSIA명 → G₀ organization slug · match_key)."""
+    return pd.read_csv(KSIA_CROSSWALK, dtype=str)
+
+# 법인격 표기(㈜↔(주)·주식회사 …)와 문장부호·공백을 걷어낸 핵심 토큰. KSIA 명부와 KIPRIS
+# applicantName 의 표기가 달라(㈜넥스틴 vs (주)넥스틴), 삼성용 문자열 정확일치로는 소부장이
+# 전량 탈락한다(스모크 실측 2026-07-15). **이 함수가 정본이다** — 크로스워크의 match_key 도,
+# 런타임 필터도 같은 함수를 써야 한다. 두 쪽이 갈리면 필터가 조용히 0행을 낸다.
+_LEGAL_TOKENS = ("주식회사", "유한회사", "가부시끼가이샤")
+
+
+def normalize_company_name(s: str) -> str:
+    s = s.lower().replace("㈜", "").replace("(주)", "").replace("(유)", "")
+    for t in _LEGAL_TOKENS:
+        s = s.replace(t, "")
+    return re.sub(r"[^0-9a-z가-힣]", "", s)
 
 
 def _digits(s: pd.Series) -> pd.Series:
@@ -40,6 +60,26 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
 def filter_applicants(df: pd.DataFrame, names=TARGET_APPLICANTS) -> pd.DataFrame:
     """applicantName 정확일치. 계열사·공동출원 표기 변형은 버린다."""
     return df[df["applicant_name"].isin(names)]
+
+
+def filter_and_tag_ksia(df: pd.DataFrame, key_to_slug: dict[str, str]) -> pd.DataFrame:
+    """KSIA 코퍼스용 출원인 필터 + 태깅.
+
+    KIPRIS `applicant` 부분일치는 짧은 이름에서 심하게 오염된다(질의 '디아이' → 삼성에스디아이
+    921건 · 실측). 그래서 **정규화-정확일치**로 거른다: 공동출원(`applicantName='A|B'`)은 `|` 로
+    분리해 어느 한 출원인이 타깃 핵심토큰과 정확일치하면 채택하고, 그 회사의 `org_slug` 를
+    `matched_slug` 로 태깅한다 — delta 가 이 열로 기존 G₀ organization 노드에 assignedTo 를 건다.
+
+    한 특허가 둘 이상의 KSIA 회원사 공동출원이면 각 회사로 복제한다(포트폴리오는 양쪽에 속한다).
+    """
+    keys = df["applicant_name"].apply(
+        lambda name: sorted({key_to_slug[normalize_company_name(tok)]
+                             for tok in str(name).split("|")
+                             if normalize_company_name(tok) in key_to_slug})
+    )
+    out = df.assign(matched_slug=keys)
+    out = out[out["matched_slug"].apply(len) > 0].explode("matched_slug", ignore_index=True)
+    return out
 
 
 def dedup(df: pd.DataFrame) -> pd.DataFrame:
