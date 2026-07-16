@@ -27,3 +27,19 @@ https://w3id.org/sdkb/data/device/finfet,base,핀 구조|핀형|핀 형|fin stru
 https://w3id.org/sdkb/data/device/finfet,loose,finfet|fin fet|핀펫|핀 펫,IEEE/IRDS 용어 (FinFET),,frozen-2026-07-13
 https://w3id.org/sdkb/data/device/finfet,loose,핀 구조|핀형|핀 형|fin structure AND 트랜지스터|transistor|전계효과|전계 효과,FinFET 의 구조 정의,,frozen-2026-07-13
 https://w3id.org/sdkb/data/device/finfet,loose,이중 게이트|더블 게이트|double gate|삼중 게이트|트라이 게이트|tri-gate,FinFET 의 계보 (비평면 다중게이트 채널),상한 변이 — FinFET 이전의 다중게이트 구조까지 담는다,frozen-2026-07-13
+https://w3id.org/sdkb/data/device/pcram,strict,pcram|pram|pcm|상변화메모리|상변화 메모리,ITRS ERD (Phase Change Memory) · JEDEC,표준 명칭,frozen-2026-07-16
+https://w3id.org/sdkb/data/device/pcram,base,상변화|phase change|phase-change|칼코게나이드|chalcogenide|gst|ge2sb2te5 AND 메모리|memory,ITRS ERD — 상변화 메모리는 칼코게나이드(GST) 물질의 상변화를 이용한다,구조 어휘 경로 — 명칭과 서로소(칼코게나이드·GST 는 물질이지 이름이 아니다),frozen-2026-07-16
+https://w3id.org/sdkb/data/device/pcram,base,pcram|pram|상변화메모리|상변화 메모리|phase change memory|phase-change random access memory,ITRS ERD (표준 명칭),이름을 쓴 특허의 경로 (행 단위 OR),frozen-2026-07-16
+https://w3id.org/sdkb/data/device/pcram,loose,상변화|phase change|phase-change|칼코게나이드|chalcogenide|gst|ge2sb2te5|게르마늄 안티몬 텔루륨,ITRS ERD,상한 변이 — 물질명만으로도 담는다,frozen-2026-07-16
+https://w3id.org/sdkb/data/device/feram,strict,feram|fram|강유전메모리|강유전체 메모리,ITRS ERD (Ferroelectric Memory) · JEDEC,표준 명칭,frozen-2026-07-16
+https://w3id.org/sdkb/data/device/feram,base,강유전|강유전체|ferroelectric|pzt|sbt AND 메모리|memory,ITRS ERD — 강유전체 커패시터(PZT·SBT·도핑 하프니아)의 분극을 이용한다,구조 어휘 경로 — 명칭과 서로소(강유전체·PZT 는 물질이다),frozen-2026-07-16
+https://w3id.org/sdkb/data/device/feram,base,feram|fram|강유전메모리|강유전체 메모리|강유전 메모리|ferroelectric random access memory,ITRS ERD (표준 명칭),이름을 쓴 특허의 경로 (행 단위 OR),frozen-2026-07-16
+https://w3id.org/sdkb/data/device/feram,loose,강유전|강유전체|ferroelectric|pzt|sbt|분극|polarization,ITRS ERD,상한 변이 — 분극 용어까지 담는다,frozen-2026-07-16
+https://w3id.org/sdkb/data/device/reram,strict,reram|rram|저항변화메모리|저항변화 메모리,ITRS ERD (Resistive RAM),표준 명칭. 이 사례는 구조어(저항변화)와 이름이 거의 같다 — 대조가 약할 수밖에 없다,frozen-2026-07-16
+https://w3id.org/sdkb/data/device/reram,base,저항 변화|resistive switching|resistance change|필라멘트|conductive filament AND 메모리|memory,ITRS ERD — 금속산화막의 저항 스위칭(전도성 필라멘트 형성),구조 어휘 경로 — '저항 변화'(띄어쓰기)·필라멘트는 기제어. 이름(저항변화메모리)과 문자열이 다르다,frozen-2026-07-16
+https://w3id.org/sdkb/data/device/reram,base,reram|rram|저항변화메모리|저항변화 메모리|resistive random access memory,ITRS ERD (표준 명칭),이름을 쓴 특허의 경로 (행 단위 OR),frozen-2026-07-16
+https://w3id.org/sdkb/data/device/reram,loose,저항 변화|resistive switching|resistance change|필라멘트|멤리스터|memristor,ITRS ERD,상한 변이 — 멤리스터까지 담는다,frozen-2026-07-16
+https://w3id.org/sdkb/data/device/interposer,strict,interposer|인터포저,SEMI 3D-IC · JEDEC 2.5D,표준 명칭. 이 사례도 구조어와 이름이 거의 같다(인터포저=중간기판) — 대조가 약하다,frozen-2026-07-16
+https://w3id.org/sdkb/data/device/interposer,base,인터포저|interposer|중간 기판|중간기판 AND 재배선|redistribution|관통전극|tsv,SEMI 3D-IC — 실리콘 인터포저는 TSV·재배선으로 다이를 나란히 연결한다,구조 어휘 경로,frozen-2026-07-16
+https://w3id.org/sdkb/data/device/interposer,base,interposer|인터포저|2.5d|cowos|실리콘 인터포저,SEMI 3D-IC (표준 명칭),이름을 쓴 특허의 경로 (행 단위 OR),frozen-2026-07-16
+https://w3id.org/sdkb/data/device/interposer,loose,인터포저|interposer|중간 기판|중간기판|실리콘 브리지|silicon bridge|emib,SEMI 3D-IC,상한 변이 — 실리콘 브리지 방식까지 담는다,frozen-2026-07-16

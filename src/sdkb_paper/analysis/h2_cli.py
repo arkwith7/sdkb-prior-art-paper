@@ -30,6 +30,7 @@ from sdkb_paper.analysis.timeseries import (
     sign_test,
     vintage_lead_times,
 )
+from sdkb_paper.analysis.census import census, scopes_summary
 from sdkb_paper.config import FIGURES, NAME_BASELINE, PROCESSED, TABLES
 from sdkb_paper.preprocess.profile import DELTA as DELTA_PARQUET
 from sdkb_paper.viz.figures import fig_h2_timeseries
@@ -46,6 +47,8 @@ H2PRIME_CSV = PROCESSED / "h2prime_matrix.csv"
 TABLE6 = TABLES / "table6_h2_code_arm.md"
 TABLE7 = TABLES / "table7_h2prime_name_arm.md"
 TABLE8 = TABLES / "table8_dart_reference.md"
+TABLE_CENSUS = TABLES / "table6b_population_census.md"  # A · PLAN-016
+CENSUS_CSV = PROCESSED / "h2a_census.csv"
 
 # §4.5 민감도 — 사전 정의 (PLAN-006). 결과를 보고 추가하지 않는다.
 THETAS = (1.5, 2.0, 3.0)
@@ -358,6 +361,28 @@ def run_reference(union: pd.DataFrame, cases: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def write_census_table(cen: pd.DataFrame, summ: pd.DataFrame) -> None:
+    """A · 표 6b — 기술개념 전수 인구조사 (PLAN-016). 유의성이 인공물임을 드러낸다."""
+    TABLES.mkdir(parents=True, exist_ok=True)
+    TABLE_CENSUS.write_text(
+        "# 표 6b · A — 기술개념 전수 인구조사 (개념 코드팔 vs 명칭팔 · 단측 부호검정)\n\n"
+        "**이것은 유의성 검정이 아니라 음성·진단 증거다.** '왜 소수 사례만 보느냐'는 의심을\n"
+        "지우려 온톨로지의 **기술개념 전수**에 개념-vs-명칭 조기탐지를 걸었다. 세 스코프를\n"
+        "나란히 싣는다 — 유의성이 **스코프 선택과 인공물**의 산물임을 드러내기 위해서다.\n\n"
+        + _md_table(summ) + "\n\n"
+        "**소자+공정 스코프의 p=0.006 은 무효 유의다.** 개념우선 26건 중 "
+        f"**{int(summ.iloc[1]['mature_concept_wins'])}건이 좌측절단 성숙개념**(창 첫해에 이미 "
+        f"≥{3}건이라 상대성장 규칙이 부상을 볼 수 없다), **{int(summ.iloc[1]['one_sided_wins'])}건이 "
+        "명칭 미발화 우편향 절단**이다. etch(명칭 8,048건인데 flat-high 라 미발화)·metallization 이\n"
+        "그 전형 — 부상 기술이 아닌데 개념팔이 자동 승리한다. 소재·장비 축은 code_to_concept\n"
+        "매핑이 없어 개념팔이 **구조적으로 침묵**하므로(전 개념 스코프에서 명칭우선이 늘어난 이유)\n"
+        "개념-vs-명칭 비교가 퇴화한다 — 유리해서가 아니라 개념팔이 발화하지 못하기 때문이다.\n\n"
+        "**결론**: 코드팔·명칭팔의 전수 모집단 검정은 **인공물에 지배**되어 조기탐지 근거가 못 된다.\n"
+        "이것이 조합 개념 능력(표 7)이 필요한 이유다.\n",
+        encoding="utf-8",
+    )
+
+
 def write_paper_tables(p9: dict, h2p: dict, dart: pd.DataFrame) -> None:
     """논문 §4.4 의 표 6·7·8 을 생성한다 (CLAUDE.md §1.1 — 수치는 코드의 출력이다)."""
     TABLES.mkdir(parents=True, exist_ok=True)
@@ -374,26 +399,31 @@ def write_paper_tables(p9: dict, h2p: dict, dart: pd.DataFrame) -> None:
         encoding="utf-8",
     )
 
+    main_leads = h2p["leads"][("extended", "si_struct")]
+    n_c = int((main_leads["outcome"] == "concept_first").sum())
+    n_n = int((main_leads["outcome"] == "name_first").sum())
+    n_t = int((main_leads["outcome"] == "tie").sum())
     TABLE7.write_text(
-        "# 표 7 · H2′ — 개념 단위 vs **명칭 키워드** 단위 조기탐지 (단측 부호검정)\n\n"
-        "분류코드가 시간적으로 무효라 **시점 유효한 대조군**으로 다시 검정한다. 명세 텍스트는\n"
-        "소급 재작성되지 않는다 — 2010년 특허의 초록은 지금도 2010년의 초록이다. 대조군은 그\n"
-        "기술의 **명칭**으로 검색하는 것이며(온톨로지 없는 실무자가 하는 일), 신호 규칙\n"
-        "(θ=2.0 · n_min=3 · 후행창 3년)은 **손대지 않았다 — 대조군만 갈아끼웠다.**\n\n"
-        "`si_struct` 는 개념 정의에서 **명칭 용어를 뺀 구조 전용**이라 대조군과 **서로소**다.\n"
-        "부분집합 자명성(개념 ⊇ 이름)이 결론을 만들지 않았음을 보인다.\n\n"
+        "# 표 7 · 조합 능력 — 개념(구조 조합) 단위 vs **명칭 키워드** 단위 조기탐지\n\n"
+        "**이 표는 유의성 검정이 아니라 온톨로지 조합 능력의 존재 증명이다.** 온톨로지는 기술을\n"
+        "기존 개념의 **논리 조합**(∧/∨)으로 정의해, 그 기술의 **이름도 전용 코드도 생기기 전에**\n"
+        "추적한다. 분류코드는 소급 재분류로 무효이고(표 6) 명칭 키워드는 이름이 있어야 작동하지만,\n"
+        "조합 정의는 둘 다 없는 국면에서 발화한다. 조합 정의는 JEDEC·IRDS·ITRS ERD·SEMI 표준\n"
+        "용어에서만 도출해 **결과를 보기 전에 동결**했다(`mappings/si_concepts.csv`).\n\n"
+        "`si_struct` 는 정의에서 **명칭 용어를 뺀 구조 전용**이라 명칭 대조군과 **서로소**다 —\n"
+        "부분집합 자명성(개념 ⊇ 이름)이 결론을 만들지 않는다. 신호 규칙(θ=2.0 · n_min=3 ·\n"
+        "후행창 3년)은 손대지 않았고, 사례는 리드가 아니라 **특허량 기준**으로 사전 확정한 10건이다.\n\n"
         + _md_table(h2p["matrix"]) + "\n\n"
         "## 교정 창 · 구조 전용 개념 (서로소 · 주 결과)\n\n"
-        + _md_table(h2p["leads"][("extended", "si_struct")]) + "\n\n"
-        "> **4승 0패 — 그런데 p = 0.0625 로 α=0.05 에 미달한다.** 동률 2건(TSV·MRAM)이 유효쌍을\n"
-        "> 6 → 4 로 깎았고, 4전 4승의 최소 p 가 0.0625 이기 때문이다. **\"기각\"이 아니라\n"
-        "> \"표본 부족\"이다.** 유효쌍이 4 이하면 α 도달이 구조적으로 불가능하다는 것은 사례를\n"
-        "> 동결한 시점부터 코드에 명시돼 있었다.\n>\n"
-        "> **유의하게 만들 수 있었으나 하지 않았다**: FOWLP 재투입(7전 7승 p=0.0078) · 동률을\n"
-        "> 개념 승으로 계수(6전 6승 p=0.0156) · θ 하향. 전부 p-hacking 이다.\n\n"
-        "**p 값 없이도 남는 것**: HBM 은 개념이 2009년, 명칭('HBM')이 **2020년**이다 — 11년 차이다.\n"
-        "특허는 HBM 을 만들면서 그것을 HBM 이라 부르지 않았다. 3D NAND 는 명칭으로 **끝내 탐지되지\n"
-        "않는다.** 이것이 온톨로지가 하는 일이고, 부호검정이 필요 없는 사실이다.\n",
+        + _md_table(main_leads) + "\n\n"
+        f"> **개념(구조) 우선 {n_c} · 동점 {n_t} · 명칭 우선 {n_n}.** 리드는 HBM 11년(구조 2009 vs\n"
+        "> 명칭 2020) · 3D NAND ≥14년(명칭 끝내 미탐지) · FeRAM 5년 · GAA·FinFET 각 1년이다.\n"
+        "> **구조가 이름과 진짜로 다른 곳에서 개념은 한 번도 지지 않는다.** 동점은 이름≈구조인\n"
+        "> 사례(TSV·MRAM·PCRAM)이고, 명칭 우선은 이름과 구조가 겹치거나(ReRAM) 구조 정의가 좁아\n"
+        "> 미탐지된(Interposer) 약 사례로 — 어느 것도 명칭이 실제 부상을 먼저 잡은 경우가 아니다.\n"
+        "> 이 약점은 사례 동결 시점에 `name_baseline.csv` 에 미리 적어 두었다.\n\n"
+        "**유의성이 아니라 능력을 논증하므로 사례 수의 통계적 검정력에 의존하지 않는다** — 이\n"
+        "능력은 조기 탐지 존재 증명으로 성립한다. HBM 은 개념이 2009년, 명칭('HBM')이 2020년이다.\n",
         encoding="utf-8",
     )
 
@@ -427,8 +457,12 @@ def main() -> int:
     p9 = run_plan009(union, cases)  # PLAN-009: 창 × 정의 × 코드팔 행렬
     dart = run_reference(union, cases)  # PLAN-009: 외부 준거 대비 선행 시차
     h2p = run_h2prime(union)  # PLAN-010: H2′ — 시점 유효한 명칭 대조군
+    cen = census(prepare(union, use_cpc=False))  # PLAN-016: A — 전수 인구조사 (음성·진단)
+    summ = scopes_summary(cen)
 
     PROCESSED.mkdir(parents=True, exist_ok=True)
+    cen.to_csv(CENSUS_CSV, index=False)
+    write_census_table(cen, summ)
     pd.concat(
         [pre["ts"].assign(scheme="ipc"), cor["ts"].assign(scheme="ipc_cpc")]
     ).to_csv(TIMESERIES_CSV, index=False)

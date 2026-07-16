@@ -28,6 +28,9 @@ GAA = "https://w3id.org/sdkb/data/device/gaa_fet"
 
 # H2 사례 7건 중 FOWLP 는 **사전 배제**다 — 팬아웃 어휘가 전 말뭉치 21건이라 어떤 정의로도
 # 시계열이 서지 않는다. 결과를 보고 뺀 것이 아니라 텍스트 가용성 관찰에서 뺐다 (PLAN-009 §3-2).
+# PLAN-016 (frozen-2026-07-16): 조합 능력 논증을 6 → 10 사례로 확장.
+# 신규 4(PCRAM·FeRAM·ReRAM·Interposer)는 **특허량 기준**으로 사전 확정하고 조합 정의를
+# 표준 출처(ITRS ERD·SEMI)에서 동결했다 — 리드가 나오는 사례를 고른 것이 아니다.
 SI_CONCEPT_IRIS = {
     HBM,
     GAA,
@@ -35,6 +38,10 @@ SI_CONCEPT_IRIS = {
     "https://w3id.org/sdkb/data/device/3d_nand",
     "https://w3id.org/sdkb/data/device/mram",
     "https://w3id.org/sdkb/data/device/finfet",
+    "https://w3id.org/sdkb/data/device/pcram",
+    "https://w3id.org/sdkb/data/device/feram",
+    "https://w3id.org/sdkb/data/device/reram",
+    "https://w3id.org/sdkb/data/device/interposer",
 }
 
 # 동결된 HBM base 구조식 — JEDEC JESD235 ('TSV 로 연결된 적층 DRAM').
