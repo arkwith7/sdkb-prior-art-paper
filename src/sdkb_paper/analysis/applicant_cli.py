@@ -27,7 +27,7 @@ from sdkb_paper.preprocess.clean import TARGET_APPLICANTS
 from sdkb_paper.preprocess.profile import DELTA as DELTA_PARQUET
 
 REPORT = PROCESSED / "robustness_applicant.md"
-TABLE = TABLES / "table8_by_applicant.md"
+TABLE = TABLES / "table10_by_applicant.md"
 
 SHORT = {"삼성전자주식회사": "samsung", "에스케이하이닉스 주식회사": "hynix"}
 

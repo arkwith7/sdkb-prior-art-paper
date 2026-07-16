@@ -48,6 +48,46 @@ def fig_h1_coverage(df: pd.DataFrame, out: Path | None = None) -> Path:
     return out
 
 
+def fig_coverage_gap(df: pd.DataFrame, out: Path | None = None) -> Path:
+    """§4.1 EDA 그림 — 보강 전(G₀) 공정 단계별 커버리지 편중.
+
+    삼성·하이닉스 특허를 더하기 전에 baseline 이 어디에 편중돼 있고 어디가 비어 있는지를
+    보여준다. `before` 만 그린다 — 보강 효과(before vs after)는 그림 3(fig_h1_coverage)의
+    몫이고, 이 그림은 "왜 보강이 필요한가"라는 §4.1 의 동기를 그린다.
+
+    커버된 단계(before>0)와 공백 단계(before=0)를 색으로 가른다. 공백은 x=0 에 겹쳐
+    보이지 않으므로, 막대 없이 왼쪽 여백에 눈금 색으로만 드러낸다.
+    """
+    out = out or FIGURES / "fig_coverage_gap.png"
+    plot = df.sort_values(["level", "before"], ascending=[True, False]).copy()
+    plot.index = plot["label"]
+    covered = plot["before"] > 0
+    colors = covered.map({True: "#2b6cb0", False: "#e0e0e0"})
+
+    ax = plot["before"].plot.barh(
+        figsize=(8.5, max(4, 0.28 * len(plot))), color=list(colors), width=0.8
+    )
+    ax.set_xscale("symlog")
+    ax.set_xlabel("mapped patents in G₀ (symlog)")
+    ax.set_ylabel("process step")
+    n_cov = int(covered.sum())
+    n_gap = int((~covered).sum())
+    ax.set_title(
+        f"G₀ process coverage before augmentation — "
+        f"{n_cov} covered / {n_gap} empty of {len(plot)} steps"
+    )
+    # 공백 단계 라벨을 회색으로 — 어느 단계가 비어 있는지 눈으로 잡히게.
+    gap_labels = set(plot.index[~covered])
+    for lbl in ax.get_yticklabels():
+        if lbl.get_text() in gap_labels:
+            lbl.set_color("#999999")
+    plt.tight_layout()
+    FIGURES.mkdir(parents=True, exist_ok=True)
+    plt.savefig(out, dpi=200)
+    plt.close()
+    return out
+
+
 def fig_h2_timeseries(
     ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = None
 ) -> Path:

@@ -25,7 +25,7 @@ import pandas as pd
 from rdflib import Graph
 from scipy.stats import wilcoxon
 
-from sdkb_paper.config import LEGACY_SCOPE
+from sdkb_paper.config import CODE_MAPPING, LEGACY_SCOPE
 
 # 층위를 VALUES 로 명시 — RDFS 추론 없이 Process/SubProcess 를 각각 집계한다.
 # (SubProcess ⊑ Process 라서 추론을 켜면 SubProcess 가 두 층위에 이중 계상된다.)
@@ -78,6 +78,65 @@ def legacy_scope_iris(path: Path = LEGACY_SCOPE) -> set[str]:
 def restrict(df: pd.DataFrame, iris: set[str]) -> pd.DataFrame:
     """표본 집합을 IRI 목록으로 제한한다 (인덱스 level 2 = step IRI)."""
     return df[df.index.get_level_values("step").isin(iris)]
+
+
+def residual_gap_report(
+    df: pd.DataFrame, other: pd.DataFrame | None = None, other_label: str = "G₂"
+) -> pd.DataFrame:
+    """보강 후에도 여전히 공백(after=0)인 단계의 성격을 분류한다 (§4.5.3).
+
+    "왜 34,521건을 더해도 이 단계는 0인가"를 코드로 답한다. 분류는 룰 테이블
+    (`code_to_concept.csv`)에서 결정적으로 도출한다:
+      - **has_rule=False** — 이 개념을 겨냥한 매핑 룰이 0개다. 어떤 코퍼스로도 룰
+        경로로는 채울 수 없다 → 분류체계·온톨로지 범위의 경계이지 코퍼스의 결함이 아니다.
+      - **has_rule=True** — 룰은 있으나 그 미세 코드가 이 코퍼스에 한 번도 부여되지
+        않았다 → 코퍼스 특이적 공백(다르게 특화된 코퍼스는 채울 여지가 있다).
+
+    other 를 주면(다른 코퍼스의 compare_coverage 결과) 그 코퍼스가 같은 공백을
+    채우는지 대조 열을 붙인다 — breadth 포화를 실증하기 위함이다.
+    """
+    rules = pd.read_csv(CODE_MAPPING)
+    n_rules = rules.groupby("concept_iri").size()
+
+    gaps = df[df["after"] == 0].copy()
+    step_iri = gaps.index.get_level_values("step")
+    gaps["n_rules"] = [int(n_rules.get(s, 0)) for s in step_iri]
+    gaps["has_rule"] = gaps["n_rules"] > 0
+    if other is not None:
+        other_after = other["after"].reindex(df.index).fillna(0).astype(int)
+        gaps[f"{other_label}_after"] = other_after.loc[gaps.index].to_numpy()
+    return gaps.reset_index()[
+        ["level", "label", "before", "after", "has_rule", "n_rules"]
+        + ([f"{other_label}_after"] if other is not None else [])
+    ]
+
+
+# §4.5.4 H1 민감도 — 증가폭 임계 k. 결과를 보기 전에 동결한다 (사전등록 · 사용자 확정 2026-07-16).
+# 한 단계가 "증가"로 계수되려면 Δ≥k 여야 한다. k 를 올리면 얇은 증가가 0 으로 접히므로,
+# "H1 이 1~2건짜리 얇은 커버리지에 기대는가"(§5.3(g))를 정면으로 검정한다. k 값은 최소 양의
+# Δ(=38)부터 요구가 큰 200 까지 범위로 고정한다.
+H1_SENSITIVITY_KS = (1, 10, 38, 84, 120, 200)
+
+
+def threshold_sensitivity(
+    df: pd.DataFrame, scope: str = "expanded49", ks: tuple[int, ...] = H1_SENSITIVITY_KS
+) -> pd.DataFrame:
+    """증가폭 임계 k 를 흔들며 H1 을 재검정한다 (그래프 재빌드 없음 · h1_coverage.csv 만).
+
+    각 k 에서 Δ<k 인 단계는 Δ=0 으로 접고(증가 아님) Wilcoxon 을 다시 돌린다.
+    검정 방법·단측·동점 제외는 그대로다 — 바뀌는 것은 "증가"의 문턱뿐이다.
+    """
+    d0 = df["delta"].to_numpy()
+    out = []
+    for k in ks:
+        capped = pd.DataFrame({"delta": np.where(d0 >= k, d0, 0)}, index=df.index)
+        r = wilcoxon_h1(capped, f"{scope}·Δ≥{k}")
+        out.append({
+            "k": k, "n": r.n, "increased": r.n_positive,
+            "share": r.share_increased, "W": r.statistic,
+            "p": r.p_value, "rejects": r.rejects_null,
+        })
+    return pd.DataFrame(out)
 
 
 @dataclass(frozen=True)

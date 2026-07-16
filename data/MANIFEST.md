@@ -105,7 +105,7 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 
 | 일시 | 소스 | 쿼리 | 건수 | 저장 파일 | 쓰이는 곳 |
 |---|---|---|---:|---|---|
-| 2026-07-14 | BQ `patents.publications` | KR 출원 **64,936**건(델타 34,521 ∪ 2005–09 29,415 ∪ G₀ 1,000)의 `family_id` | 69,798행 · 출원 **63,679 / 64,936 (98.1%)** | `raw/bigquery/family_map.parquet` (gitignore) | **§4.5 표 7** — H1·H2′ 패밀리 dedup 전후 |
+| 2026-07-14 | BQ `patents.publications` | KR 출원 **64,936**건(델타 34,521 ∪ 2005–09 29,415 ∪ G₀ 1,000)의 `family_id` | 69,798행 · 출원 **63,679 / 64,936 (98.1%)** | `raw/bigquery/family_map.parquet` (gitignore) | **§4.5.1 표 9** — H1·H2′ 패밀리 dedup 전후 |
 
 **재현 절차**: `make family && make robustness`. 프로파일은 `data/profiles/family_dedup.md`.
 

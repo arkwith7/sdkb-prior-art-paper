@@ -28,7 +28,7 @@ DELTA_TTL_FD = PROCESSED / "delta_v1_famdedup.ttl"
 GRAPH_V1_FD = PROCESSED / "graph_v1_famdedup.ttl"
 REPORT = PROCESSED / "robustness_family.md"
 PROFILE = DATA / "profiles" / "family_dedup.md"
-TABLE = TABLES / "table7_family_dedup.md"
+TABLE = TABLES / "table9_family_dedup.md"
 
 SCOPES = ("expanded49", "legacy20", "process11", "subprocess38")
 
