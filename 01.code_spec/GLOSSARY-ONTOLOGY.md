@@ -6,6 +6,8 @@
 
 각 용어에 **SDKB 실물 예시**와 **여기서 실제로 무엇이 깨졌는지**를 붙였다.
 
+짝 문서: [GLOSSARY-SEMICONDUCTOR.md](GLOSSARY-SEMICONDUCTOR.md)(반도체 도메인) · [GLOSSARY-STATISTICS.md](GLOSSARY-STATISTICS.md)(통계). 이 문서가 *지식을 어떻게 표현하는가*라면, 그 둘은 *무엇을 표현하는가*(반도체)와 *어떻게 검정하는가*(통계)다.
+
 ---
 
 ## 1. 기본 골격 — 트리플, IRI, 그래프
