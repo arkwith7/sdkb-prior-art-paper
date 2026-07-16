@@ -46,7 +46,7 @@ ORG = {
 }
 ACTIVITY = SDKB_DATA["activity/kipris_plan002_ingest"]
 # C-2 소부장 G₂ (RQ3). 출원인은 preprocess 가 붙인 matched_slug(기존 G₀ organization 노드)로
-# 해석한다 — 94사 전량이 이미 G₀ 에 있으므로 신규 노드를 만들지 않는다(정체성 재분열 없음).
+# 해석한다 — 소부장 188사 전량이 이미 G₀ 에 있으므로 신규 노드를 만들지 않는다(정체성 재분열 없음).
 ACTIVITY_KSIA = SDKB_DATA["activity/kipris_ksia_equipment_ingest"]
 SOURCE = "KIPRIS Plus API (getAdvancedSearch)"
 LICENSE = "KIPRIS terms — academic use, no redistribution of full text"

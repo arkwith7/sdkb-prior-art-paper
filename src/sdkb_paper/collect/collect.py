@@ -24,8 +24,9 @@ from sdkb_paper.preprocess.clean import load_ksia_crosswalk
 APPLICANTS = ["삼성전자주식회사", "에스케이하이닉스 주식회사"]
 DATE_RANGE = "20100101~20251231"
 OUT = RAW_KIPRIS / "patents_raw.parquet"
-# C-2 소부장 G₂ (RQ3) · KSIA 장비 94사. 질의어는 크로스워크의 match_key(법인격 표기를 걷어낸
-# 핵심토큰)다 — ㈜넥스틴 대신 '넥스틴' 으로 질의해야 KIPRIS 의 (주)넥스틴 을 부분일치로 잡는다.
+# C-2 소부장 G₂ (RQ3) · KSIA 소부장 188사(장비·재료·부분품). 질의어는 크로스워크의 match_key
+# (법인격 표기를 걷어낸 핵심토큰)다 — ㈜넥스틴 대신 '넥스틴' 으로 질의해야 KIPRIS 의 (주)넥스틴
+# 을 부분일치로 잡는다.
 # 별도 parquet 에 저장한다: patents_raw.parquet(G₁·H1 의 원천)은 동결이라 건드리지 않는다.
 KSIA_OUT = RAW_KIPRIS / "patents_ksia_equipment_raw.parquet"
 # 청구항·초록 상세 (출원번호별). delta 후보만 조회한다 — 그래프에 들어갈 특허만 청구항이 필요하다.
@@ -51,7 +52,7 @@ def ipc_classes() -> list[str]:
 
 
 def ksia_applicants(smoke: bool) -> tuple[list[str], any]:
-    """장비 94사 질의어(match_key). smoke 면 넥스틴 1사만 — 규모 있는 순수 장비사라
+    """소부장 188사 질의어(match_key). smoke 면 넥스틴 1사만 — 규모 있는 순수 장비사라
     출원인명 매칭과 게이트를 실제로 때린다(파이프라인 관통 검증)."""
     cw = load_ksia_crosswalk()
     if smoke:

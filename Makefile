@@ -23,6 +23,11 @@ vendor:
 baseline:
 	uv run python -m sdkb_paper.ontology.baseline
 
+# RQ3 소부장 크로스워크 (KSIA 소부장 191사 → G₀ organization slug · match_key · company_type).
+# 결정적·사전동결. G₀ 를 읽어 매칭하므로 baseline 이 선행한다. 산출: mappings/ksia_applicant_crosswalk.csv
+crosswalk: baseline
+	uv run python -m sdkb_paper.preprocess.ksia_crosswalk
+
 # 삼성전자·SK하이닉스 특허 수집 (KIPRIS). 응답은 sqlite 캐시 → 재실행해도 API 를 다시 안 때린다.
 # make collect SMOKE=1 이면 클래스 1개만 (파이프라인 관통 검증용)
 collect:
@@ -101,6 +106,11 @@ gate: snapshot validate reason cq vocab
 # 표본 집합은 확장 49 와 복원 이전 20 **양쪽**으로 병기 보고된다 (PLAN-005).
 h1:
 	uv run python -m sdkb_paper.analysis.h1_cli $(if $(CORPUS),--corpus $(CORPUS),)
+
+# RQ3 소부장 층별 H1 — 장비/재료/부분품 각각 별도 델타·그래프(같은 게이트)로 정식 검정 (표 5b).
+# 검정 방법·임계값·개념 정의는 불변 · 바뀌는 건 company_type 필터 하나 (PLAN-014 §3.3 사전등록).
+ksia-strata:
+	uv run python -m sdkb_paper.analysis.ksia_strata_cli
 
 # H2 의 대조군 분류 데이터 (BigQuery patents-public-data · GCP 인증 필요).
 #   cpc         — 현재 스냅샷의 CPC. KIPRIS 는 IPC 만 주는데 대조 코드 2개가 CPC 전용이라

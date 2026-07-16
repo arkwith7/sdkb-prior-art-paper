@@ -22,7 +22,11 @@ TARGET_APPLICANTS = ("삼성전자주식회사", "에스케이하이닉스 주�
 
 
 def load_ksia_crosswalk() -> pd.DataFrame:
-    """장비 94사 사전동결 크로스워크 (KSIA명 → G₀ organization slug · match_key)."""
+    """소부장 188사 사전동결 크로스워크 (KSIA명 → G₀ organization slug · match_key · company_type).
+
+    company_type ∈ {equipment, material, component} 가 층별 H1(§4.6 · 표 5b)의 층화 키다.
+    생성은 preprocess.ksia_crosswalk (`make crosswalk`) — 결정적·검토 가능한 산출.
+    """
     return pd.read_csv(KSIA_CROSSWALK, dtype=str)
 
 # 법인격 표기(㈜↔(주)·주식회사 …)와 문장부호·공백을 걷어낸 핵심 토큰. KSIA 명부와 KIPRIS

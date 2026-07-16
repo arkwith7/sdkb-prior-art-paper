@@ -1,95 +1,189 @@
-idx,name_ko,name_en,org_slug,match_key,match_kind
-2469,에이씨엠리서치코리아,ACM Research Korea,acm_research_korea,에이씨엠리서치코리아,auto
-2607,아드반테스트코리아㈜,"Advantest Korea Co., Ltd.",advantest_korea_co_ltd,아드반테스트코리아,auto
-2602,㈜에이텍솔루션,"AETS CO., LTD.",aets_co_ltd,에이텍솔루션,auto
-2448,㈜에이앤아이,"ANI co., ltd.",ani_co_ltd,에이앤아이,auto
-2594,AP시스템㈜,APsystems,apsystems,ap시스템,auto
-2530,에이에스엠케이㈜,"ASM Korea, Ltd.",asm_korea_ltd,에이에스엠케이,auto
-2641,㈜오로스테크놀로지,"AUROS Technology, Inc.",auros_technology_inc,오로스테크놀로지,auto
-2778,㈜아바코,"AVACO Co.,Ltd.",avaco,아바코,auto
-2711,주식회사 비엔에스알,"BNSR Co.,ltd.",bnsr_co_ltd,비엔에스알,auto
-2463,부쉬코리아,BUSCH KOREA,busch_korea,부쉬코리아,auto
-2420,청진테크㈜,chungjintech,chungjintech,청진테크,auto
-2468,주식회사 크레셈,cressem co. Ltd,cressem_co_ltd,크레셈,auto
-2595,씨에스케이㈜,CSK,csk,씨에스케이,auto
-2704,㈜큐빅셀,"CUBIXEL CO., LTD.",cubixel_co_ltd,큐빅셀,auto
-2596,㈜싸이맥스,CYMECHS Inc.,cymechs_inc,싸이맥스,auto
-2397,싸이머코리아,CYMER,cymer,싸이머코리아,auto
-2336,다이헨한국㈜,"DAIHEN Korea Co.,Ltd",daihen_korea_co_ltd,다이헨한국,auto
-2408,㈜디아이,DI Corporation,di_corporation,디아이,auto
-2822,디아이티 주식회사,DIT Corp.,dit_corp,디아이티,auto
-2809,㈜한국에바라정밀기계,Ebara Precision Machinery Korea Inc.,ebara_precision_machinery_korea_inc,한국에바라정밀기계,auto
-2348,㈜이오테크닉스,EO Technics,eo_technics,이오테크닉스,auto
-2812,주식회사 이큐셀,"EQUIPMENT CELL CO.,LTD",equipment_cell_co_ltd,이큐셀,auto
-2771,이솔,ESOL,esol,이솔,auto
-2383,㈜유진테크,Eugene Technology,eugene_technology,유진테크,auto
-2343,㈜엑시콘,EXICON,exicon,엑시콘,auto
-630,주식회사 젠,GEN,gen,젠,auto
-2436,제너셈㈜,Genesem Inc.,genesem_inc,제너셈,auto
-2384,주식회사 지아이에스,GIS,gis,지아이에스,auto
-2808,㈜글로벌스탠다드테크놀로지,"Global Standard Technology Co.,Ltd",global_standard_technology_co_ltd,글로벌스탠다드테크놀로지,auto
-2210,㈜에이치앤이루자,H&iruja Co. Ltd,h_iruja,에이치앤이루자,auto
-2605,한미반도체,HANMI Semiconductor,hanmi_semiconductor,한미반도체,auto
-2149,한화세미텍 주식회사,"Hanwha Semitech Co., Ltd",hanwha_semitech,한화세미텍,auto
-2220,㈜한영,HANYUNG,hanyung,한영,auto
-2748,에이치비솔루션 주식회사,"HB SOLUTION CO., LTD.",hb_solution_co_ltd,에이치비솔루션,auto
-2687,(주)에이치피에스피,"HPSP Co.,Ltd.",hpsp_co_ltd,에이치피에스피,auto
-2524,주식회사 아이엠티,"IMT Co.,Ltd.",imt_co_ltd,아이엠티,auto
-2465,㈜아이씨디,"INNOVATION FOR CREATIVE DEVICES CO., LTD. (ICD CO.,LTD.)",innovation_for_creative_devices,아이씨디,manual
-2702,주식회사 아이에스티이,"ISTE Co.,Ltd.",iste,아이에스티이,manual
-2403,㈜제이티,JT Corporation,jt_corporation,제이티,auto
-2290,주식회사 저스템,justem,justem,저스템,auto
-2390,주성엔지니어링㈜,"JUSUNG ENGINEERING Co., LTD.",jusung_engineering,주성엔지니어링,auto
-2197,㈜케이씨,"KC Co., Ltd.",kc_co_ltd,케이씨,auto
-2779,㈜케이씨텍,"KCTech Co., Ltd.",kctech_co_ltd,케이씨텍,auto
-2629,국제엘렉트릭코리아㈜,"Kook Je Electric Korea Co.,Ltd.",kook_je_electric_korea_co_ltd,국제엘렉트릭코리아,auto
-2168,코리아테크노㈜,"KOREA TECHNO CO.,LTD.",korea_techno_co_ltd,코리아테크노,auto
-2768,코닉오토메이션,KORNIC Automation,kornic_automation,코닉오토메이션,auto
-2259,레이저쎌 주식회사,"LASERSSEL CO., LTD.",laserssel_co,레이저쎌,auto
-2459,엘에스이 주식회사,"LSE Co.,Ltd",lse_co_ltd,엘에스이,auto
-2386,엠에이티플러스㈜,"MAT PLUS.Co.,Ltd.",mat_plus_co_ltd,엠에이티플러스,auto
-2709,㈜미래컴퍼니,meerecompany Inc.,meerecompany_inc,미래컴퍼니,auto
-2830,멜콘㈜,"MELcon CO.,Ltd",melcon_co_ltd,멜콘,auto
-2791,주식회사 마인즈아이,"MINDSEYE CO.,LTD",mindseye_co_ltd,마인즈아이,auto
-2807,㈜뮤텍코리아,MUTECH KOREA,mutech_korea,뮤텍코리아,auto
-2487,나노엑스,"NANO-X Co.,Ltd",nano_x_co_ltd,나노엑스,auto
-2569,(주)넥센서,nexensor,nexensor,넥센서,auto
-2648,㈜넥스틴,"NEXTIN, Inc.",nextin_inc,넥스틴,auto
-2447,㈜나인벨,"Ninebell Co., Ltd.",ninebell_co_ltd,나인벨,auto
-2477,엔에스엔텍,nsntek,nsntek,엔에스엔텍,auto
-2244,엔비스아나㈜,"NvisANA Co., Ltd.",nvisana_co_ltd,엔비스아나,auto
-2273,파크시스템스㈜,Park Systems Corp.,park_systems_corp,파크시스템스,auto
-2509,주식회사 펨트론,PEMTRON Corp.,pemtron_corp,펨트론,auto
-2747,(주)필옵틱스,PHILOPTICS,philoptics,필옵틱스,auto
-2498,파인솔루션,pinesolution,pinesolution,파인솔루션,auto
-2814,주식회사 프로텍,"PROTEC Co.,Ltd",protec_co_ltd,프로텍,auto
-2361,피에스케이㈜,PSK Inc.,psk,피에스케이,auto
-2482,피에스케이홀딩스㈜,PSK Holdings Inc.,psk_holdings,피에스케이홀딩스,auto
-2462,㈜피티씨,"PTC Co., Ltd.",ptc_co_ltd,피티씨,auto
-2819,㈜라온테크,RAON TECH,raon_tech,라온테크,auto
-2453,㈜로봇앤드디자인,"Robots and Design Co., Ltd",robots_and_design_co_ltd,로봇앤드디자인,auto
-2376,로체시스템즈㈜,Rorze Systems Corporation,rorze_systems_corporation,로체시스템즈,auto
-2699,㈜러셀,"RUSSELL CO.,LTD",russell_co_ltd,러셀,auto
-2817,삼익티에이치케이,"SAMICK THK CO., LTD.",samick_thk_co_ltd,삼익티에이치케이,auto
-2638,세메스㈜,SEMES,semes,세메스,auto
-2370,㈜쎄믹스,SEMICS,semics,쎄믹스,auto
-825,㈜세츠,"SETS Co.,Ltd.",sets_co_ltd,세츠,auto
-2739,㈜에스에프에이,SFA Engineering Corp.,sfa_engineering_corp,에스에프에이,auto
-2478,(주)에스에스피,SSP Inc,ssp_inc,에스에스피,auto
-2736,㈜에스티아이,"STI Co., Ltd.",sti_co_ltd,에스티아이,auto
-2612,㈜서플러스글로벌,SurplusGLOBAL,surplusglobal,서플러스글로벌,auto
-2810,㈜테크윙,"TechWing, Inc.",techwing_inc,테크윙,auto
-2392,㈜테스,"TES Co.,Ltd",tes_co,테스,auto
-2345,㈜탑엔지니어링,"TOP ENGINEERING CO., LTD.",top_engineering_co_ltd,탑엔지니어링,auto
-2656,㈜티에스이,"TSE Co.,Ltd.",tse_co_ltd,티에스이,auto
-2677,주식회사 티에스케이코퍼레이션,tskcorporation,tskcorporation,티에스케이코퍼레이션,auto
-2773,한국알박㈜,"ULVAC KOREA, Ltd.",ulvac_korea,한국알박,manual
-2788,유니셈㈜,UNISEM,unisem,유니셈,auto
-2385,㈜유니테스트,UniTest Inc.,unitest_inc,유니테스트,auto
-2140,브이에이디인스트루먼트,VAD instrument,vad_instrument,브이에이디인스트루먼트,auto
-2341,버슘머트리얼즈 한양기공㈜,"Versum Materials HYT, Inc.",versum_materials_hyt_inc,버슘머트리얼즈한양기공,auto
-2455,주식회사 베셀,"VESSEL CO.,LTD.",vessel_co_ltd,베셀,auto
-2758,브이엠(주),VM Inc.,vm_inc,브이엠,auto
-2811,주식회사 원익아이피에스,"WONIK IPS Co., Ltd",wonik_ips_co,원익아이피에스,auto
-2422,㈜자비스,"XAVIS CO.,LTD",xavis_co_ltd,자비스,auto
-2579,㈜제우스,"ZEUS Co.,Ltd.",zeus_co_ltd,제우스,auto
+idx,name_ko,name_en,org_slug,match_key,match_kind,company_type
+2442,㈜에어포인트,"AIRPOINT CO., LTD.",airpoint_co_ltd,에어포인트,auto,component
+2734,㈜알파플러스,"ALPHAPLUS Co., Ltd.",alphaplus_co_ltd,알파플러스,auto,component
+2533,(주)에이엔텍,"antek.co.,Ltd",antek_co_ltd,에이엔텍,auto,component
+2753,㈜아센디아,"ASENDIA Co., Ltd.",asendia,아센디아,auto,component
+2145,아스플로,asflow,asflow,아스플로,auto,component
+2131,보부하이테크,Boboo Hitech,boboo_hitech,보부하이테크,auto,component
+2423,주식회사 콤델코리아,"ComdelKorea Co., Ltd.",comdelkorea_co_ltd,콤델코리아,auto,component
+2604,㈜디에스테크노,"DS TECHNO.,LTD.",ds_techno_ltd,디에스테크노,auto,component
+2159,에드워드 코리아,Edwards Korea Limited,edwards_korea_limited,에드워드코리아,auto,component
+2271,이화다이아몬드공업㈜,EHWA DIAMOND IND.CO.LTD.,ehwa_diamond_ind_co_ltd,이화다이아몬드공업,auto,component
+2225,㈜핫앤쿨,"Hot & Cool, Inc.",hot_cool_inc,핫앤쿨,auto,component
+2763,일진다이아몬드(주),"ILJIN DIAMOND CO., LTD.",iljin_diamond_co_ltd,일진다이아몬드,auto,component
+2580,인아오리엔탈모터㈜,"INA ORIENTAL MOTOR CO., LTD",ina_oriental_motor_co_ltd,인아오리엔탈모터,auto,component
+2170,㈜아이에스시,"ISC CO.,LTD",isc_co_ltd,아이에스시,auto,component
+2286,케이케이테크㈜,"Kashiyama·K·Tech Co.,Ltd",kashiyama_k_tech_co_ltd,케이케이테크,auto,component
+2740,코미코,KoMiCo LTD.,komico,코미코,auto,component
+2829,㈜코리아인스트루먼트,"Korea Instrument Co., Ltd.",korea_instrument,코리아인스트루먼트,auto,component
+2426,코리아스펙트랄프로덕츠㈜,KOREA SPECTRAL PRODUCTS,korea_spectral_products,코리아스펙트랄프로덕츠,auto,component
+2400,㈜케이에스티이,KSTE Inc.,kste_inc,케이에스티이,auto,component
+2827,㈜금강쿼츠,"KUMKANG QUARTZ CO., LTD.",kumkang_quartz_co_ltd,금강쿼츠,auto,component
+2600,리노공업㈜,LEENO INDUSTRIAL INC,leeno_industrial_inc,리노공업,auto,component
+2737,㈜엘오티베큠,"LOT VACUUM Co., Ltd.",lot_vacuum_co_ltd,엘오티베큠,auto,component
+2282,㈜메카로,Mecaro,mecaro,메카로,auto,component
+2741,㈜미코,MiCo Ltd.,mico,미코,auto,component
+2774,주식회사 미코세라믹스,MiCo Ceramics Ltd.,mico_ceramics_ltd,미코세라믹스,auto,component
+2831,엠케이피 주식회사,"MKP Co.,Ltd.",mkp_co_ltd,엠케이피,auto,component
+2470,엠케이프리시젼주식회사,"MKPRECISION.,LTD",mkprecision,엠케이프리시젼,auto,component
+2792,모벤시스,Movensys,movensys,모벤시스,auto,component
+2329,㈜네프코,"NEPCO CO.,LTD",nepco_co_ltd,네프코,auto,component
+2614,㈜뉴파워프라즈마,"New Power Plasma Co.,Ltd.",new_power_plasma_co_ltd,뉴파워프라즈마,auto,component
+2534,(주)오킨스전자,"OKins Electronics Co.,LTD",okins_electronics_co_ltd,오킨스전자,auto,component
+2283,한국오츠카전자 (주),Otsuka Electronics Korea,otsuka_electronics_korea,한국오츠카전자,auto,component
+2826,주식회사 피엠씨,PMC Corporation,pmc_corporation,피엠씨,auto,component
+2688,㈜파웰 코퍼레이션,"Powel Corporation Co.,Ltd.",powel_corporation_co_ltd,파웰코퍼레이션,auto,component
+2461,리얼센,realsen,realsen,리얼센,auto,component
+2360,㈜쎄미콤,"Semicom Co., Ltd.",semicom_co_ltd,쎄미콤,auto,component
+2147,에스케이엔펄스 주식회사,"SK enpulse Co., Ltd.",sk_enpulse,에스케이엔펄스,auto,component
+2363,㈜티로보틱스,"T-Robotics co., Ltd.",t_robotics_co_ltd,티로보틱스,auto,component
+2750,㈜티씨케이,TOKAI CARBON KOREA,tokai_carbon_korea,티씨케이,auto,component
+2636,㈜유시스템,U-System,u_system,유시스템,auto,component
+2712,(주)브이에이디인스트루먼트,Vad instronemet,vad_instronemet,브이에이디인스트루먼트,auto,component
+2746,㈜윌비에스엔티,"WILL BE SNT Co.,LTD",will_be_snt_co_ltd,윌비에스엔티,auto,component
+2772,㈜원익큐엔씨,WONIK QnC Corporation,wonik_qnc_corporation,원익큐엔씨,auto,component
+2372,영신쿼츠㈜,YOUNGSHIN QUARTZ,youngshin_quartz,영신쿼츠,auto,component
+2446,㈜유민에쓰티,"Yuminst Co,. Ltd",yuminst_co_ltd,유민에쓰티,auto,component
+2469,에이씨엠리서치코리아,ACM Research Korea,acm_research_korea,에이씨엠리서치코리아,auto,equipment
+2607,아드반테스트코리아㈜,"Advantest Korea Co., Ltd.",advantest_korea_co_ltd,아드반테스트코리아,auto,equipment
+2602,㈜에이텍솔루션,"AETS CO., LTD.",aets_co_ltd,에이텍솔루션,auto,equipment
+2448,㈜에이앤아이,"ANI co., ltd.",ani_co_ltd,에이앤아이,auto,equipment
+2594,AP시스템㈜,APsystems,apsystems,ap시스템,auto,equipment
+2530,에이에스엠케이㈜,"ASM Korea, Ltd.",asm_korea_ltd,에이에스엠케이,auto,equipment
+2641,㈜오로스테크놀로지,"AUROS Technology, Inc.",auros_technology_inc,오로스테크놀로지,auto,equipment
+2778,㈜아바코,"AVACO Co.,Ltd.",avaco,아바코,auto,equipment
+2711,주식회사 비엔에스알,"BNSR Co.,ltd.",bnsr_co_ltd,비엔에스알,auto,equipment
+2463,부쉬코리아,BUSCH KOREA,busch_korea,부쉬코리아,auto,equipment
+2420,청진테크㈜,chungjintech,chungjintech,청진테크,auto,equipment
+2468,주식회사 크레셈,cressem co. Ltd,cressem_co_ltd,크레셈,auto,equipment
+2595,씨에스케이㈜,CSK,csk,씨에스케이,auto,equipment
+2704,㈜큐빅셀,"CUBIXEL CO., LTD.",cubixel_co_ltd,큐빅셀,auto,equipment
+2596,㈜싸이맥스,CYMECHS Inc.,cymechs_inc,싸이맥스,auto,equipment
+2397,싸이머코리아,CYMER,cymer,싸이머코리아,auto,equipment
+2336,다이헨한국㈜,"DAIHEN Korea Co.,Ltd",daihen_korea_co_ltd,다이헨한국,auto,equipment
+2408,㈜디아이,DI Corporation,di_corporation,디아이,auto,equipment
+2822,디아이티 주식회사,DIT Corp.,dit_corp,디아이티,auto,equipment
+2809,㈜한국에바라정밀기계,Ebara Precision Machinery Korea Inc.,ebara_precision_machinery_korea_inc,한국에바라정밀기계,auto,equipment
+2348,㈜이오테크닉스,EO Technics,eo_technics,이오테크닉스,auto,equipment
+2812,주식회사 이큐셀,"EQUIPMENT CELL CO.,LTD",equipment_cell_co_ltd,이큐셀,auto,equipment
+2771,이솔,ESOL,esol,이솔,auto,equipment
+2383,㈜유진테크,Eugene Technology,eugene_technology,유진테크,auto,equipment
+2343,㈜엑시콘,EXICON,exicon,엑시콘,auto,equipment
+630,주식회사 젠,GEN,gen,젠,auto,equipment
+2436,제너셈㈜,Genesem Inc.,genesem_inc,제너셈,auto,equipment
+2384,주식회사 지아이에스,GIS,gis,지아이에스,auto,equipment
+2808,㈜글로벌스탠다드테크놀로지,"Global Standard Technology Co.,Ltd",global_standard_technology_co_ltd,글로벌스탠다드테크놀로지,auto,equipment
+2210,㈜에이치앤이루자,H&iruja Co. Ltd,h_iruja,에이치앤이루자,auto,equipment
+2605,한미반도체,HANMI Semiconductor,hanmi_semiconductor,한미반도체,auto,equipment
+2149,한화세미텍 주식회사,"Hanwha Semitech Co., Ltd",hanwha_semitech,한화세미텍,auto,equipment
+2220,㈜한영,HANYUNG,hanyung,한영,auto,equipment
+2748,에이치비솔루션 주식회사,"HB SOLUTION CO., LTD.",hb_solution_co_ltd,에이치비솔루션,auto,equipment
+2687,(주)에이치피에스피,"HPSP Co.,Ltd.",hpsp_co_ltd,에이치피에스피,auto,equipment
+2524,주식회사 아이엠티,"IMT Co.,Ltd.",imt_co_ltd,아이엠티,auto,equipment
+2465,㈜아이씨디,"INNOVATION FOR CREATIVE DEVICES CO., LTD. (ICD CO.,LTD.)",innovation_for_creative_devices,아이씨디,manual,equipment
+2702,주식회사 아이에스티이,"ISTE Co.,Ltd.",iste,아이에스티이,manual,equipment
+2403,㈜제이티,JT Corporation,jt_corporation,제이티,auto,equipment
+2290,주식회사 저스템,justem,justem,저스템,auto,equipment
+2390,주성엔지니어링㈜,"JUSUNG ENGINEERING Co., LTD.",jusung_engineering,주성엔지니어링,auto,equipment
+2197,㈜케이씨,"KC Co., Ltd.",kc_co_ltd,케이씨,auto,equipment
+2779,㈜케이씨텍,"KCTech Co., Ltd.",kctech_co_ltd,케이씨텍,auto,equipment
+2629,국제엘렉트릭코리아㈜,"Kook Je Electric Korea Co.,Ltd.",kook_je_electric_korea_co_ltd,국제엘렉트릭코리아,auto,equipment
+2168,코리아테크노㈜,"KOREA TECHNO CO.,LTD.",korea_techno_co_ltd,코리아테크노,auto,equipment
+2768,코닉오토메이션,KORNIC Automation,kornic_automation,코닉오토메이션,auto,equipment
+2259,레이저쎌 주식회사,"LASERSSEL CO., LTD.",laserssel_co,레이저쎌,auto,equipment
+2459,엘에스이 주식회사,"LSE Co.,Ltd",lse_co_ltd,엘에스이,auto,equipment
+2386,엠에이티플러스㈜,"MAT PLUS.Co.,Ltd.",mat_plus_co_ltd,엠에이티플러스,auto,equipment
+2709,㈜미래컴퍼니,meerecompany Inc.,meerecompany_inc,미래컴퍼니,auto,equipment
+2830,멜콘㈜,"MELcon CO.,Ltd",melcon_co_ltd,멜콘,auto,equipment
+2791,주식회사 마인즈아이,"MINDSEYE CO.,LTD",mindseye_co_ltd,마인즈아이,auto,equipment
+2807,㈜뮤텍코리아,MUTECH KOREA,mutech_korea,뮤텍코리아,auto,equipment
+2487,나노엑스,"NANO-X Co.,Ltd",nano_x_co_ltd,나노엑스,auto,equipment
+2569,(주)넥센서,nexensor,nexensor,넥센서,auto,equipment
+2648,㈜넥스틴,"NEXTIN, Inc.",nextin_inc,넥스틴,auto,equipment
+2447,㈜나인벨,"Ninebell Co., Ltd.",ninebell_co_ltd,나인벨,auto,equipment
+2477,엔에스엔텍,nsntek,nsntek,엔에스엔텍,auto,equipment
+2244,엔비스아나㈜,"NvisANA Co., Ltd.",nvisana_co_ltd,엔비스아나,auto,equipment
+2273,파크시스템스㈜,Park Systems Corp.,park_systems_corp,파크시스템스,auto,equipment
+2509,주식회사 펨트론,PEMTRON Corp.,pemtron_corp,펨트론,auto,equipment
+2747,(주)필옵틱스,PHILOPTICS,philoptics,필옵틱스,auto,equipment
+2498,파인솔루션,pinesolution,pinesolution,파인솔루션,auto,equipment
+2814,주식회사 프로텍,"PROTEC Co.,Ltd",protec_co_ltd,프로텍,auto,equipment
+2361,피에스케이㈜,PSK Inc.,psk,피에스케이,auto,equipment
+2482,피에스케이홀딩스㈜,PSK Holdings Inc.,psk_holdings,피에스케이홀딩스,auto,equipment
+2462,㈜피티씨,"PTC Co., Ltd.",ptc_co_ltd,피티씨,auto,equipment
+2819,㈜라온테크,RAON TECH,raon_tech,라온테크,auto,equipment
+2453,㈜로봇앤드디자인,"Robots and Design Co., Ltd",robots_and_design_co_ltd,로봇앤드디자인,auto,equipment
+2376,로체시스템즈㈜,Rorze Systems Corporation,rorze_systems_corporation,로체시스템즈,auto,equipment
+2699,㈜러셀,"RUSSELL CO.,LTD",russell_co_ltd,러셀,auto,equipment
+2817,삼익티에이치케이,"SAMICK THK CO., LTD.",samick_thk_co_ltd,삼익티에이치케이,auto,equipment
+2638,세메스㈜,SEMES,semes,세메스,auto,equipment
+2370,㈜쎄믹스,SEMICS,semics,쎄믹스,auto,equipment
+825,㈜세츠,"SETS Co.,Ltd.",sets_co_ltd,세츠,auto,equipment
+2739,㈜에스에프에이,SFA Engineering Corp.,sfa_engineering_corp,에스에프에이,auto,equipment
+2478,(주)에스에스피,SSP Inc,ssp_inc,에스에스피,auto,equipment
+2736,㈜에스티아이,"STI Co., Ltd.",sti_co_ltd,에스티아이,auto,equipment
+2612,㈜서플러스글로벌,SurplusGLOBAL,surplusglobal,서플러스글로벌,auto,equipment
+2810,㈜테크윙,"TechWing, Inc.",techwing_inc,테크윙,auto,equipment
+2392,㈜테스,"TES Co.,Ltd",tes_co,테스,auto,equipment
+2345,㈜탑엔지니어링,"TOP ENGINEERING CO., LTD.",top_engineering_co_ltd,탑엔지니어링,auto,equipment
+2656,㈜티에스이,"TSE Co.,Ltd.",tse_co_ltd,티에스이,auto,equipment
+2677,주식회사 티에스케이코퍼레이션,tskcorporation,tskcorporation,티에스케이코퍼레이션,auto,equipment
+2773,한국알박㈜,"ULVAC KOREA, Ltd.",ulvac_korea,한국알박,manual,equipment
+2788,유니셈㈜,UNISEM,unisem,유니셈,auto,equipment
+2385,㈜유니테스트,UniTest Inc.,unitest_inc,유니테스트,auto,equipment
+2341,버슘머트리얼즈 한양기공㈜,"Versum Materials HYT, Inc.",versum_materials_hyt_inc,버슘머트리얼즈한양기공,auto,equipment
+2455,주식회사 베셀,"VESSEL CO.,LTD.",vessel_co_ltd,베셀,auto,equipment
+2758,브이엠(주),VM Inc.,vm_inc,브이엠,auto,equipment
+2811,주식회사 원익아이피에스,"WONIK IPS Co., Ltd",wonik_ips_co,원익아이피에스,auto,equipment
+2422,㈜자비스,"XAVIS CO.,LTD",xavis_co_ltd,자비스,auto,equipment
+2579,㈜제우스,"ZEUS Co.,Ltd.",zeus_co_ltd,제우스,auto,equipment
+2430,아데카코리아㈜,ADEKA KOREA,adeka_korea,아데카코리아,auto,material
+2828,에어프로덕츠코리아㈜,Air Producst Korea Inc.,air_producst_korea_inc,에어프로덕츠코리아,auto,material
+2787,㈜에어퍼스트,"AirFirst Co., Ltd.",airfirst_co_ltd,에어퍼스트,auto,material
+2138,아토텍코리아㈜,Atotech Korea,atotech_korea,아토텍코리아,auto,material
+2760,(주)켐트로닉스,"Chemtronics Co., Ltd.",chemtronics_co_ltd,켐트로닉스,auto,material
+2454,㈜클랩,"CLAP Co., Ltd",clap_co_ltd,클랩,auto,material
+2337,대덕전자,DAEDUCK,daeduck,대덕전자,auto,material
+2744,㈜동진쎄미켐,"Dongjin Semichem Co., Ltd.",dongjin_semichem_co_ltd,동진쎄미켐,auto,material
+2242,동우화인켐㈜,DONGWOO FINE-CHEM,dongwoo_fine_chem,동우화인켐,auto,material
+2698,(주)아인크리스탈,"EINCRYSTAL Co.,Ltd",eincrystal_co_ltd,아인크리스탈,auto,material
+2402,㈜이엔에프테크놀로지,"ENF Technology Co.,Ltd",enf_technology_co_ltd,이엔에프테크놀로지,auto,material
+2659,주식회사 이포트,"Eport Co., Ltd.",eport_co_ltd,이포트,auto,material
+2789,㈜이큐테크플러스,"EQ Tech Plus Co., Ltd",eq_tech_plus_co_ltd,이큐테크플러스,auto,material
+2780,㈜에프에스티,FINE SEMI TECH CORP.,fine_semi_tech_corp,에프에스티,auto,material
+2769,㈜후성,"FOOSUNG CO., LTD.",foosung_co_ltd,후성,auto,material
+2445,㈜에프알디,"FRD CO., LTD",frd_co_ltd,에프알디,auto,material
+2775,해성디에스 주식회사,"HAESUNG DS Co., Ltd.",haesung_ds_co_ltd,해성디에스,auto,material
+2745,한덕화학(주),"Hantok Chemicals Co.,Ltd",hantok_chemicals_co_ltd,한덕화학,auto,material
+2735,㈜한화 글로벌부문,Hanwha Corporation Global Div.,hanwha_corporation_global_div,한화글로벌부문,auto,material
+2664,에이치엘비이노베이션 주식회사,HLB innovation,hlb_innovation,에이치엘비이노베이션,auto,material
+2786,효성네오켐 주식회사,"HYOSUNG NEOCHEM Co., Ltd.",hyosung_neochem_co_ltd,효성네오켐,auto,material
+2719,제이케이머트리얼즈,JK materials,jk_materials,제이케이머트리얼즈,auto,material
+2327,㈜경인양행,KISCO,kisco,경인양행,auto,material
+2816,㈜한국비철,"Korea Non-Ferrous Metals Co., Ltd",korea_non_ferrous_metals_co_ltd,한국비철,auto,material
+2528,고려아연,"Korea Zinc. Co., Ltd.",korea_zinc_co_ltd,고려아연,auto,material
+2236,케이피엑스케미칼㈜,KPX Chemical,kpx_chemical,케이피엑스케미칼,auto,material
+2458,로움하이텍 주식회사,"LOUM HITECH CO,.Ltd",loum_hitech_co_ltd,로움하이텍,auto,material
+2438,엠이엠씨코리아㈜,MEMC KROEA,memc_kroea,엠이엠씨코리아,auto,material
+2784,메타일렉트로(주),"METAELECTRO Co.,Ltd.",metaelectro_co_ltd,메타일렉트로,auto,material
+2550,엠케이켐앤텍,MK CHEM&TECH,mk_chem_tech,엠케이켐앤텍,auto,material
+2457,㈜엠에스머트리얼즈,"MS Materials Co., Ltd.",ms_materials_co,엠에스머트리얼즈,auto,material
+2623,OCI㈜,OCI Company Ltd.,oci_company_ltd,oci,auto,material
+2217,㈜에스앤에스텍,snstech,s_stech,에스앤에스텍,auto,material
+2683,삼화페인트공업(주),"Samhwa Paints Ind. Co., Ltd",samhwa_paints_ind_co_ltd,삼화페인트공업,auto,material
+2646,삼성SDI,"SAMSUNG SDI CO., LTD.",samsung_sdi,삼성sdi,auto,material
+2474,주식회사 쎄닉,SENIC Inc.,senic_inc,쎄닉,auto,material
+2272,심텍,SIMMTECH,simmtech,심텍,auto,material
+2522,주식회사 에스제이세미텍,SJ Semitech,sj_semitech,에스제이세미텍,auto,material
+2444,SK머티리얼즈 퍼포먼스,SK materials  performance,sk_materials_performance,sk머티리얼즈퍼포먼스,auto,material
+2742,SK실트론㈜,"SK Siltron Co., Ltd.",sk_siltron_co_ltd,sk실트론,auto,material
+2287,SK스페셜티,SKspecialty,sk_specialty,sk스페셜티,auto,material
+2452,㈜솔머티리얼즈,SOLEMATERIALS,solematerials,솔머티리얼즈,auto,material
+2751,솔브레인㈜,"Soulbrain Co.,Ltd.",soulbrain,솔브레인,auto,material
+2813,㈜시노펙스,SYNOPEX INC.,synopex_inc,시노펙스,auto,material
+2731,태광산업,Taekwang Industrial,taekwang_industrial,태광산업,auto,material
+2818,테크센드포토마스크㈜,TEKSCEND PHOTOMASKS KOREA INC.,tekscend_photomasks_korea_inc,테크센드포토마스크,auto,material
+2440,티이엠씨 주식회사,TEMC,temc,티이엠씨,auto,material
+2668,유비머트리얼즈㈜,UBmaterials Inc.,ubmaterials_inc,유비머트리얼즈,auto,material
+2755,㈜원익머트리얼즈,"Wonik Materials Co.,Ltd.",wonik_materials_co_ltd,원익머트리얼즈,auto,material
+881,와이씨켐,ycchem,ycchem,와이씨켐,auto,material

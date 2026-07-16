@@ -147,7 +147,7 @@ def build_ksia() -> pd.DataFrame:
     KSIA_PROFILE.parent.mkdir(parents=True, exist_ok=True)
     KSIA_PROFILE.write_text(
         _render(raw, norm, kept, uniq, overlap, delta,
-                "KIPRIS KSIA 장비 94사 특허 (RQ3 · PLAN-014 C-2 · G₂)", True, app_rows,
+                "KIPRIS KSIA 소부장 188사 특허 (RQ3 · PLAN-014 C-2 · G₂ · 장비·재료·부분품)", True, app_rows,
                 ("KSIA 회원사 (상위 20)", "델타 건수", "G₀ 겹침(제외됨)")), encoding="utf-8")
     return delta
 
