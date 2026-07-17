@@ -23,15 +23,17 @@ from sdkb_paper.ontology.delta import GRAPH_V1, GRAPH_V2
 from sdkb_paper.viz.figures import fig_coverage_gap, fig_h1_coverage
 
 H1_CSV = PROCESSED / "h1_coverage.csv"
-H1_TABLE = TABLES / "table5_h1.md"
+H1_TABLE = TABLES / "h1_main.md"
 
 # C-2 소부장 G₂ (RQ3): 검정은 PLAN-005 그대로 불변, 바뀌는 건 after 코퍼스 하나뿐이다.
 # 사전등록(§3.3): H1 이 소부장에서 **기각될 수 있다** — 장비사는 특정 공정에 특화돼 있어
 # "전 공정 확장"이 안 나올 수 있다. 기각되면 기각된 대로 §4.6 에 쓴다.
 CORPORA = {
-    "samsung-hynix": (GRAPH_V1, "G₁", H1_CSV, H1_TABLE, "graph_v1.ttl"),
+    "samsung-hynix": (GRAPH_V1, "G₁", H1_CSV, H1_TABLE, "graph_v1.ttl",
+                      "H1 — 공정 단계별 개념 커버리지 증가 (Wilcoxon 부호순위, 단측 · §4.3)"),
     "ksia-equipment": (GRAPH_V2, "G₂", PROCESSED / "h1_coverage_ksia.csv",
-                       TABLES / "table5_h1_ksia.md", "graph_v2.ttl"),
+                       TABLES / "h1_ksia.md", "graph_v2.ttl",
+                       "RQ3 소부장 H1 — 공정 단계별 개념 커버리지 증가 (Wilcoxon 단측 · §4.6)"),
 }
 
 
@@ -63,7 +65,7 @@ def main() -> int:
     ap.add_argument("--corpus", choices=sorted(CORPORA), default="samsung-hynix",
                     help="samsung-hynix=G₀ vs G₁(주 분석) · ksia-equipment=G₀ vs G₂(RQ3 재현성)")
     args = ap.parse_args()
-    after_graph, after_label, h1_csv, h1_table, after_file = CORPORA[args.corpus]
+    after_graph, after_label, h1_csv, h1_table, after_file, h1_title = CORPORA[args.corpus]
 
     df = compare_coverage(GRAPH_V0, after_graph)
     legacy = legacy_scope_iris()
@@ -75,7 +77,7 @@ def main() -> int:
     results = [wilcoxon_h1(sub, scope) for scope, sub in _scopes(df).items()]
 
     lines = [
-        "# 표 5 · H1 — 공정 단계별 개념 커버리지 증가 (Wilcoxon 부호순위, 단측)",
+        f"# {h1_title}",
         "",
         "H₀: 비영 차이의 유사중앙값(C₁(s) − C₀(s)) ≤ 0 · H₁(= 논문의 H1): > 0 · α = 0.05.",
         "표본 단위는 공정 단계 s(특허가 아니다). 동점 쌍(Δ=0)은 zero_method=\"wilcox\" 로 제외되므로,",
@@ -97,7 +99,7 @@ def main() -> int:
     TABLES.mkdir(parents=True, exist_ok=True)
     h1_table.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    fig_out = None if args.corpus == "samsung-hynix" else FIGURES / "fig_h1_coverage_ksia.png"
+    fig_out = None if args.corpus == "samsung-hynix" else FIGURES / "fig_h1_coverage_ksia.svg"
     fig = fig_h1_coverage(df, out=fig_out)
 
     # §4.1 EDA — 보강 전 편중 그림은 G₀ 기준이므로 주 코퍼스에서만 낸다 (G₀ 는 공통 before).
@@ -127,7 +129,7 @@ def _write_h1_sensitivity(df: pd.DataFrame):
     sens = threshold_sensitivity(df)
     n_rej = int(sens["rejects"].sum())
     lines = [
-        "# 표 12 · H1 증가폭 임계 민감도 (§4.5.4) — Δ≥k 로 '증가'를 재정의",
+        "# H1 증가폭 임계 민감도 — Δ≥k 로 '증가'를 재정의 (§4.5.4)",
         "",
         "한 단계가 증가로 계수되려면 Δ≥k 여야 한다(Δ<k 는 0 으로 접는다). 검정 방법·단측·",
         "동점 제외는 불변이고 문턱만 흔든다. **k 를 요구가 큰 200 까지 올려도 H1 은 계속 기각**하며,",
@@ -148,7 +150,7 @@ def _write_h1_sensitivity(df: pd.DataFrame):
     ]
     body = "\n".join(lines) + "\n"
     (PROCESSED / "h1_threshold_sensitivity.md").write_text(body, encoding="utf-8")
-    (TABLES / "table12_h1_sensitivity.md").write_text(body, encoding="utf-8")
+    (TABLES / "h1_sensitivity.md").write_text(body, encoding="utf-8")
     return PROCESSED / "h1_threshold_sensitivity.md"
 
 
@@ -162,7 +164,7 @@ def _write_residual_gaps(df: pd.DataFrame, other: pd.DataFrame | None):
     g2col = " | G₂ after" if has_g2 else ""
     g2sep = "|---:" if has_g2 else ""
     lines = [
-        "# 표 · 잔여 공백 — 보강 후에도 특허가 매핑되지 않은 공정 단계 (§4.5.3)",
+        "# 잔여 공백 — 보강 후에도 특허가 매핑되지 않은 공정 단계 (§4.5.3)",
         "",
         f"보강 후 커버 26/49 · **잔여 공백 {n}/49**. 공백을 룰 테이블(`code_to_concept.csv`)로",
         "분류한다: **룰 없음** = 개념을 겨냥한 매핑 룰이 0개라 어떤 코퍼스로도 룰 경로로는 채울 수",
@@ -191,7 +193,7 @@ def _write_residual_gaps(df: pd.DataFrame, other: pd.DataFrame | None):
     out = PROCESSED / "h1_residual_gaps.md"
     out.write_text(body, encoding="utf-8")
     # 논문 표 11 (§4.5.3) 도 같은 산출물로 낸다 — 손으로 옮기지 않는다.
-    (TABLES / "table11_residual_gaps.md").write_text(body, encoding="utf-8")
+    (TABLES / "h1_residual_gaps.md").write_text(body, encoding="utf-8")
     return out
 
 

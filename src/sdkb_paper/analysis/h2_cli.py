@@ -44,10 +44,10 @@ REFERENCE_CSV = PROCESSED / "h2_dart_reference.csv"
 H2PRIME_CSV = PROCESSED / "h2prime_matrix.csv"
 
 # 논문 표 (§4.4). **손으로 옮기지 않는다** — 이 함수가 생성한 파일이 원고의 원천이다.
-TABLE6 = TABLES / "table6_h2_code_arm.md"
-TABLE7 = TABLES / "table7_h2prime_name_arm.md"
-TABLE8 = TABLES / "table8_dart_reference.md"
-TABLE_CENSUS = TABLES / "table6b_population_census.md"  # A · PLAN-016
+TABLE6 = TABLES / "h2_code_arm.md"
+TABLE7 = TABLES / "h2_name_arm.md"
+TABLE8 = TABLES / "h2_dart_reference.md"
+TABLE_CENSUS = TABLES / "h2_census.md"  # A · PLAN-016
 CENSUS_CSV = PROCESSED / "h2a_census.csv"
 
 # §4.5 민감도 — 사전 정의 (PLAN-006). 결과를 보고 추가하지 않는다.
@@ -365,7 +365,7 @@ def write_census_table(cen: pd.DataFrame, summ: pd.DataFrame) -> None:
     """A · 표 6b — 기술개념 전수 인구조사 (PLAN-016). 유의성이 인공물임을 드러낸다."""
     TABLES.mkdir(parents=True, exist_ok=True)
     TABLE_CENSUS.write_text(
-        "# 표 6b · A — 기술개념 전수 인구조사 (개념 코드팔 vs 명칭팔 · 단측 부호검정)\n\n"
+        "# A — 기술개념 전수 인구조사 (개념 코드팔 vs 명칭팔 · 단측 부호검정 · §4.4)\n\n"
         "**이것은 유의성 검정이 아니라 음성·진단 증거다.** '왜 소수 사례만 보느냐'는 의심을\n"
         "지우려 온톨로지의 **기술개념 전수**에 개념-vs-명칭 조기탐지를 걸었다. 세 스코프를\n"
         "나란히 싣는다 — 유의성이 **스코프 선택과 인공물**의 산물임을 드러내기 위해서다.\n\n"
@@ -388,7 +388,7 @@ def write_paper_tables(p9: dict, h2p: dict, dart: pd.DataFrame) -> None:
     TABLES.mkdir(parents=True, exist_ok=True)
 
     TABLE6.write_text(
-        "# 표 6 · H2 — 개념 단위 vs **분류코드** 단위 조기탐지 (단측 부호검정)\n\n"
+        "# H2 — 개념 단위 vs **분류코드** 단위 조기탐지 (단측 부호검정 · §4.4)\n\n"
         "여덟 셀 전부를 싣는다 — 유리한 셀을 고르지 않는다. **전부 기각 실패다.**\n\n"
         "그러나 이 검정은 **성립하지 않는다**. 코드 대조군이 양방향으로 무효이기 때문이다:\n"
         "(a) 현재 분류는 소급 재분류라 부당하게 이르다 — 3D NAND 전용 코드가 2008년 출원에,\n"
@@ -404,7 +404,7 @@ def write_paper_tables(p9: dict, h2p: dict, dart: pd.DataFrame) -> None:
     n_n = int((main_leads["outcome"] == "name_first").sum())
     n_t = int((main_leads["outcome"] == "tie").sum())
     TABLE7.write_text(
-        "# 표 7 · 조합 능력 — 개념(구조 조합) 단위 vs **명칭 키워드** 단위 조기탐지\n\n"
+        "# 조합 능력 — 개념(구조 조합) 단위 vs **명칭 키워드** 단위 조기탐지 (§4.4)\n\n"
         "**이 표는 유의성 검정이 아니라 온톨로지 조합 능력의 존재 증명이다.** 온톨로지는 기술을\n"
         "기존 개념의 **논리 조합**(∧/∨)으로 정의해, 그 기술의 **이름도 전용 코드도 생기기 전에**\n"
         "추적한다. 분류코드는 소급 재분류로 무효이고(표 6) 명칭 키워드는 이름이 있어야 작동하지만,\n"
@@ -429,7 +429,7 @@ def write_paper_tables(p9: dict, h2p: dict, dart: pd.DataFrame) -> None:
 
     if len(dart):
         TABLE8.write_text(
-            "# 표 8 · 외부 준거(DART 공시) 대비 선행 시차 — **검정이 아니라 서술**\n\n"
+            "# 외부 준거(DART 공시) 대비 선행 시차 — **검정이 아니라 서술** (§4.4)\n\n"
             "특허로 특허를 검증할 수 없다. 두 팔이 같은 말뭉치에서 나오므로, 어느 쪽이 빨라도\n"
             "그것이 현실의 부상과 맞는지는 말뭉치 안에서 알 수 없다. 그래서 **말뭉치 밖의 준거**에\n"
             "각 팔을 대어 잰다 — 사업보고서는 **제출 시점의 기록이고 소급 수정되지 않는다**.\n\n"
@@ -676,7 +676,7 @@ B p = {cor["bidir_test"].p_value:.4g} (사례 2건뿐 — **검정이 아니라 
     write_paper_tables(p9, h2p, dart)
     fig = fig_h2_timeseries(cor["ts"], cor["leads"])
     fig_pre = fig_h2_timeseries(
-        pre["ts"], pre["leads"], out=FIGURES / "fig4b_h2_timeseries_preregistered.png"
+        pre["ts"], pre["leads"], out=FIGURES / "fig8b_h2_timeseries_preregistered.svg"
     )
 
     for label, r in (("A 사전등록 IPC", pre), ("B 교정 IPC∪CPC", cor)):

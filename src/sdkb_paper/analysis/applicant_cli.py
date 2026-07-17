@@ -27,7 +27,7 @@ from sdkb_paper.preprocess.clean import TARGET_APPLICANTS
 from sdkb_paper.preprocess.profile import DELTA as DELTA_PARQUET
 
 REPORT = PROCESSED / "robustness_applicant.md"
-TABLE = TABLES / "table10_by_applicant.md"
+TABLE = TABLES / "robustness_by_applicant.md"
 
 SHORT = {"삼성전자주식회사": "samsung", "에스케이하이닉스 주식회사": "hynix"}
 
@@ -119,7 +119,7 @@ def main() -> int:
     align = " | ".join(["---:", "---:", "---:", "---"] * len(names))
 
     lines = [
-        "# 표 11 · §4.5 강건성 — 출원인별 분리 재검정 (삼성전자 / SK하이닉스)",
+        "# 강건성 — 출원인별 분리 재검정 (삼성전자 / SK하이닉스 · §4.5.2)",
         "",
         "보강 효과가 **한 회사 때문에** 나온 것인지 확인한다. 각 회사의 특허만으로 델타를 다시 짓고",
         "같은 G₀ 에 병합해 H1·H2′ 를 따로 검정했다. **검정 방법·임계값·개념 정의·관측창은 불변**이며,",

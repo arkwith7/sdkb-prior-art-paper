@@ -28,7 +28,7 @@ DELTA_TTL_FD = PROCESSED / "delta_v1_famdedup.ttl"
 GRAPH_V1_FD = PROCESSED / "graph_v1_famdedup.ttl"
 REPORT = PROCESSED / "robustness_family.md"
 PROFILE = DATA / "profiles" / "family_dedup.md"
-TABLE = TABLES / "table9_family_dedup.md"
+TABLE = TABLES / "robustness_family_dedup.md"
 
 SCOPES = ("expanded49", "legacy20", "process11", "subprocess38")
 
@@ -178,7 +178,7 @@ def main() -> int:
     n_apps = len(corpus_application_numbers())
 
     lines = [
-        "# 표 7 · §4.5 강건성 — 패밀리(DOCDB) 중복 제거 전후",
+        "# 강건성 — 패밀리(DOCDB) 중복 제거 전후 (§4.5.1)",
         "",
         "현행 중복 제거는 **출원번호 기준**이다. 같은 발명의 국내 분할·계속출원은 서로 다른 출원번호를",
         "받으므로 남는다. DOCDB `family_id` 로 묶어 **가장 이른 출원만** 남기고 재검정한다.",

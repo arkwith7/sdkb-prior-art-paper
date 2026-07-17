@@ -25,7 +25,7 @@ from sdkb_paper.preprocess.clean import load_ksia_crosswalk
 from sdkb_paper.preprocess.profile import KSIA_DELTA
 
 REPORT = PROCESSED / "h1_strata_ksia.md"
-TABLE = TABLES / "table5b_h1_ksia_strata.md"
+TABLE = TABLES / "h1_ksia_strata.md"
 
 # 층 라벨(company_type) → 표시명. 순서는 규모 큰 순(장비·재료·부분품)으로 고정한다.
 STRATA = [("equipment", "장비"), ("material", "재료"), ("component", "부분품")]
@@ -90,7 +90,7 @@ def main() -> int:
     align = " | ".join(["---:", "---:", "---:", "---"] * len(STRATA))
 
     lines = [
-        "# 표 5b · RQ3 소부장 **층별** H1 — 장비 / 재료 / 부분품 (Wilcoxon 단측 · 동점 제외)",
+        "# RQ3 소부장 **층별** H1 — 장비 / 재료 / 부분품 (Wilcoxon 단측 · 동점 제외 · §4.6)",
         "",
         "전체 소부장 H1(표 5)의 지지가 어느 층에서 오는지 본다. 각 층의 특허만으로 델타를 다시",
         "짓고 같은 G₀ 에 병합해(같은 L1 게이트) H1 을 따로 검정했다. **검정 방법·임계값·개념 정의·",
