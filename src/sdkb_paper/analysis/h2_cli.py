@@ -33,7 +33,11 @@ from sdkb_paper.analysis.timeseries import (
 from sdkb_paper.analysis.census import census, scopes_summary
 from sdkb_paper.config import FIGURES, NAME_BASELINE, PROCESSED, TABLES
 from sdkb_paper.preprocess.profile import DELTA as DELTA_PARQUET
-from sdkb_paper.viz.figures import fig_h2_timeseries
+from sdkb_paper.viz.figures import fig_h2_name_arm, fig_h2_timeseries
+
+# H2 주논증 C 의 주 결과 셀 — 확장창(2005–2023) × 구조 전용 정의(명칭 대조군과 서로소).
+# 표 7 과 그림 6 이 **같은 상수**를 읽게 해서, 한쪽만 셀을 바꾸는 실수를 불가능하게 한다.
+MAIN_CELL = ("extended", "si_struct")
 
 TIMESERIES_CSV = PROCESSED / "h2_timeseries.csv"
 LEADTIME_CSV = PROCESSED / "h2_leadtime.csv"
@@ -42,6 +46,10 @@ PREDECESSOR_CSV = PROCESSED / "h2_predecessor_codes.csv"
 PLAN009_CSV = PROCESSED / "h2_plan009_matrix.csv"
 REFERENCE_CSV = PROCESSED / "h2_dart_reference.csv"
 H2PRIME_CSV = PROCESSED / "h2prime_matrix.csv"
+# 주논증 C(그림 6)의 소재. 코드 팔 CSV(h2_timeseries·h2_leadtime)와 **별도 파일**이다 —
+# 두 팔은 대조군도 사례 집합도 다르므로 한 파일에 섞으면 그림이 조용히 틀린 팔을 그린다.
+NAME_TIMESERIES_CSV = PROCESSED / "h2_name_timeseries.csv"
+NAME_LEADTIME_CSV = PROCESSED / "h2_name_leadtime.csv"
 
 # 논문 표 (§4.4). **손으로 옮기지 않는다** — 이 함수가 생성한 파일이 원고의 원천이다.
 TABLE6 = TABLES / "h2_code_arm.md"
@@ -256,16 +264,23 @@ def run_h2prime(union: pd.DataFrame) -> dict:
     cases = pd.read_csv(NAME_BASELINE)
     df = prepare(union, use_cpc=False)  # 두 팔 모두 텍스트만 본다 — 분류 데이터가 필요 없다
 
-    rows, leads_by_cell = [], {}
+    rows, leads_by_cell, series_by_cell = [], {}, {}
     for wname, window in WINDOWS.items():
         for definition in H2P_DEFINITIONS:
             assigned = assign_concepts(df, definition=definition)
-            leads = []
+            leads, series = [], []
             for case in cases.itertuples():
                 cs = concept_series(df, case.concept_iri, assigned, window)
                 ns = name_series(df, case.concept_iri, names, window)
                 cy = detect_year(cs, window=window)
                 ny = detect_year(ns, window=window)
+
+                # 그림 6(주논증 C)은 이 계열에서 그린다. 검정과 같은 호출로 만들어야
+                # 표 7 과 그림이 어긋날 수 없다 — 그림 전용 재계산 경로를 두지 않는다.
+                for kind, s in (("concept", cs), ("name", ns)):
+                    for year, n in s.items():
+                        series.append({"case_id": case.case_id, "kind": kind,
+                                       "year": int(year), "n": int(n)})
 
                 if cy is None and ny is None:
                     outcome, lead = "both_undetected", pd.NA
@@ -295,6 +310,7 @@ def run_h2prime(union: pd.DataFrame) -> dict:
             # sign_test 는 concept_first/code_first 를 센다 — 같은 규약으로 이름을 맞춘다.
             t = sign_test(lf.assign(outcome=lf["outcome"].replace({"name_first": "code_first"})))
             leads_by_cell[(wname, definition)] = lf
+            series_by_cell[(wname, definition)] = pd.DataFrame(series)
             rows.append({
                 "window": f"{window[0]}–{window[1]}",
                 "definition": definition,
@@ -306,7 +322,7 @@ def run_h2prime(union: pd.DataFrame) -> dict:
                 "p": t.p_value,
                 "rejects": t.rejects,
             })
-    return {"matrix": pd.DataFrame(rows), "leads": leads_by_cell}
+    return {"matrix": pd.DataFrame(rows), "leads": leads_by_cell, "series": series_by_cell}
 
 
 def run_reference(union: pd.DataFrame, cases: pd.DataFrame) -> pd.DataFrame:
@@ -399,7 +415,7 @@ def write_paper_tables(p9: dict, h2p: dict, dart: pd.DataFrame) -> None:
         encoding="utf-8",
     )
 
-    main_leads = h2p["leads"][("extended", "si_struct")]
+    main_leads = h2p["leads"][MAIN_CELL]
     n_c = int((main_leads["outcome"] == "concept_first").sum())
     n_n = int((main_leads["outcome"] == "name_first").sum())
     n_t = int((main_leads["outcome"] == "tie").sum())
@@ -674,7 +690,17 @@ B p = {cor["bidir_test"].p_value:.4g} (사례 2건뿐 — **검정이 아니라 
         dart.to_csv(REFERENCE_CSV, index=False)
     h2p["matrix"].to_csv(H2PRIME_CSV, index=False)
     write_paper_tables(p9, h2p, dart)
-    fig = fig_h2_timeseries(cor["ts"], cor["leads"])
+
+    # 주 결과 셀 — 표 7 이 쓰는 것과 **같은** 셀이어야 표와 그림이 어긋나지 않는다.
+    h2p["series"][MAIN_CELL].to_csv(NAME_TIMESERIES_CSV, index=False)
+    h2p["leads"][MAIN_CELL].to_csv(NAME_LEADTIME_CSV, index=False)
+
+    # 그림 6 = 주논증 C(개념 vs 명칭 · 10사례). 코드 팔은 §6.4 가 진단 D1 으로 강등한
+    # 축이므로 본문 그림 번호를 주지 않고 D1 근거로만 남긴다 (감사 2026-07-18 · S5).
+    fig = fig_h2_name_arm(h2p["series"][MAIN_CELL], h2p["leads"][MAIN_CELL])
+    fig_d1 = fig_h2_timeseries(
+        cor["ts"], cor["leads"], out=FIGURES / "fig8c_h2_code_arm_d1.svg"
+    )
     fig_pre = fig_h2_timeseries(
         pre["ts"], pre["leads"], out=FIGURES / "fig8b_h2_timeseries_preregistered.svg"
     )
@@ -686,7 +712,10 @@ B p = {cor["bidir_test"].p_value:.4g} (사례 2건뿐 — **검정이 아니라 
             f"코드우선 {t.n_code_first} · p = {t.p_value:.4g} · "
             f"{'H₀ 기각 → H2 지지' if t.rejects else '기각 실패 → H2 미지지'}"
         )
-    print(f"✓ {TIMESERIES_CSV}\n✓ {LEADTIME_CSV}\n✓ {REPORT_MD}\n✓ {fig}\n✓ {fig_pre}")
+    print(
+        f"✓ {TIMESERIES_CSV}\n✓ {LEADTIME_CSV}\n✓ {NAME_TIMESERIES_CSV}\n"
+        f"✓ {NAME_LEADTIME_CSV}\n✓ {REPORT_MD}\n✓ {fig}\n✓ {fig_d1}\n✓ {fig_pre}"
+    )
     return 0
 
 

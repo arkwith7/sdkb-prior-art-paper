@@ -23,7 +23,7 @@
 | **검증 게이트 (CQ·SHACL)** | `queries/cq/*.rq` 27개 · `queries/shapes/{graph,delta}/` 4개 | 전부 LIVE · 고아 0 |
 | **계약(SPEC)** | `SPEC-001~004` | `01.code_spec/specs/` (숫자는 §1 우선) |
 | **진행 현황** | `STATUS.md` | `01.code_spec/` (서명 숫자는 §1·§2 우선) |
-| **논문 그림 11장 · 표 11개** | `paper/figures/*.svg` · `paper/tables/*.md` (전량 코드 생성) | `viz/figures.py` 산출 |
+| **논문 그림 9장 · 표 11개** | `paper/figures/*.svg` · `paper/tables/*.md` (전량 코드 생성) | `viz/figures.py` 산출 |
 
 ---
 
@@ -34,17 +34,26 @@
 | 항목 | G₀ | G₁ | G₂ (소부장) |
 |---|---:|---:|---:|
 | **트리플 (정본)** | **44,202** | **413,730** | **429,334** |
-| 커버된 공정 / 49 | 20 | 24 | 26 |
+| 커버된 공정 / 49 | 20 | **26** | **26** |
 | 특허 (병합) | 1,000 (SIRP 거절) | +24,179 델타 | +12,339 델타 |
 | Process 11 / SubProcess 38 · Device 34 | ✓ | | |
 | 출원인(Organization) / 벤더 | 351 / 340 | | 188사(장비 93·재료 50·부분품 45) |
-| 게이트 | L1(완화)·L2 consistent·L3 CQ (측정) | L1·L2·L3 | L1·L2 consistent·L3 CQ 27/27 |
+| 게이트 | L1(완화)·L2 consistent·L3 CQ **26/27**(측정) | L1·L2·L3 CQ **26/27** | L1·L2 consistent·L3 CQ **27/27** |
 | 그래프 커밋(상류) | SDKB `edb8ae4` | 〃 위 델타 | 〃 위 델타 |
 
 > **특허 건수는 "매핑 ≠ 병합 ≠ 분석 말뭉치"로 세 값이 공존한다** — 모순이 아니다. 논문은 병합
 > 기준(G₁ 24,179 델타, 초록 서술상 25,179 병합 특허 노드)·분석 말뭉치(H2′ 63,936)를 문맥별로
 > 쓴다. 상세 정합은 메모리 `paper-corpus-counts-mapped-vs-merged` 및 논문 §3.2 참조. **트리플
 > 수만큼은 위 표가 유일 정본이다.**
+
+> **커버된 공정 정정 (2026-07-18, AUDIT §5).** 이 표는 G₁ 커버를 **24** 로 적고 있었다 —
+> 실측(`data/processed/h1_coverage.csv`: `after>0` 인 단계 수)은 **26** 이다. 중재자를 자처하는
+> 문서가 틀린 값을 들고 있었으므로 정정한다. **G₁ 26 = G₂ 26 이 RQ3 의 "폭 포화" 근거**이고
+> (`h1_coverage_ksia.csv` 도 26), 24 를 믿으면 그 주장이 거짓으로 보인다.
+>
+> **L3 응답률 정정 (같은 날, AUDIT §S1).** G₀·G₁ 은 100% 가 아니라 **26/27** 이다. 지는 것은
+> `CQ27_fto_claim_readiness` 이고, 청구항은 G₂ 에만 실체화돼 있다 — 결함이 아니라 **배터리가
+> 코퍼스를 판별한다는 증거**다.
 
 > **grep 으로 트리플을 세지 말 것.** `grep -c ' \.$'` 프록시는 Turtle 의 `;`·`,` 축약 때문에
 > 약 13배 과소계상한다(G₀ 프록시 3,291 vs 실제 44,202). 트리플 수는 **MANIFEST §3 또는 rdflib
@@ -101,7 +110,7 @@
 |---|---|
 | **FINAL** | `논문_v0.5_SDKB.md` (정본, 유일) |
 | **INTERMEDIATE** | `archive/논문초안_v0.2_…md`(3층 모델·삼성 only) · `archive/논문초안_v0.3_…md`(RQ3 이전 번호체계) — 둘 다 폐기, 인용 금지 |
-| **GENERATED (코드 산출)** | `figures/fig1~11.svg`(파일 11개 · v0.5 본문은 9장으로 재편 — 파일명 유지, 번호 정렬은 조판 시) · `figures/vocab_coverage_graph_v0.md` · `tables/*.md`(11개) |
+| **GENERATED (코드 산출)** | `figures/*.svg` **9개** — 본문 9장과 1:1 (2026-07-18 통합 반영: 구 fig3+fig4 → `fig3_research_model.svg`, 구 fig1+fig11 → `fig11_summary.svg`; `fig1_gap_map.svg`·`fig4_pipeline.svg` 는 **생성 중단·삭제**). 파일명 번호는 v0.3 명칭 유지 — 본문 `[그림 n]` 과 불일치하는 것이 정상이고 정렬은 조판 시. 부록/진단 전용: `fig8b_…preregistered.svg`(사전등록 코드 팔) · `fig8c_h2_code_arm_d1.svg`(진단 D1) — **본문 그림 번호 없음** · `figures/vocab_coverage_graph_v0.md` · `tables/*.md` |
 | **빈 디렉토리 (함정)** | `manuscript/`(.gitkeep 뿐 — 진짜 원고는 `paper/논문_v0.5_SDKB.md`) |
 
 ### `queries/`

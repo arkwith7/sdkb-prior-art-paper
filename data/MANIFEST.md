@@ -77,7 +77,13 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 |---|---|---|---:|---|---|
 | 2026-07-13 | KIPRIS Plus `getAdvancedSearch` | `applicant=삼성전자주식회사 ∪ 에스케이하이닉스 주식회사` × `ipcNumber ∈ {룰 테이블의 18개 클래스}` × `applicationDate=20100101~20251231` (patent=true, utility=false) | 원시 50,514행 → 델타 후보 34,521 → **병합 24,179** | `raw/kipris/patents_raw.parquet` · `interim/patents_delta.parquet` (둘 다 gitignore) | `graph_v1.ttl` |
 | 2026-07-13 | KIPRIS Plus `getAdvancedSearch` | 위와 **동일한 검색식** · 기간만 `applicationDate=20050101~20091231` (PLAN-009 · H2 좌측절단 교정) | 원시 41,443행 → 정제 후 **29,415** | `raw/kipris/patents_2005_2009.parquet` · `interim/patents_2005_2009.parquet` (둘 다 gitignore) | **없음 — 병합하지 않는다** |
-| 2026-07-16 | KIPRIS Plus `getAdvancedSearch` | **RQ3 · C-2 소부장 전체.** `applicant ∈ {KSIA 소부장 188사 — 장비 93·재료 50·부분품 45}` (질의어=크로스워크 match_key) × `ipcNumber ∈ {18개 클래스}` × `20100101~20251231`. 정확일치 필터는 정규화-정확일치(㈜↔(주)·공동출원 파이프분리) | 원시 42,185행 → 정확일치 33,858 → dedup 21,950 → G₀겹침 −63 → 정제 **21,887 → 매핑 12,358 → 병합 12,339** | `raw/kipris/patents_ksia_equipment_raw.parquet` · `interim/patents_ksia_equipment_delta.parquet` (gitignore) | `graph_v2.ttl` |
+| 2026-07-16 | KIPRIS Plus `getAdvancedSearch` | **RQ3 · C-2 소부장 전체.** `applicant ∈ {KSIA 소부장 188사 — 장비 93·재료 50·부분품 45}` (질의어=크로스워크 match_key) × `ipcNumber ∈ {18개 클래스}` × `20100101~20251231`. 정확일치 필터는 정규화-정확일치(㈜↔(주)·공동출원 파이프분리) | 원시 42,185행 → 정확일치 33,858 → dedup 21,950 → G₀겹침 −63 → 정제 **21,887 → 룰 매핑 12,358행 (+인식층 2 = 12,360행) → 중복 출원번호 −21 → 병합 12,339 노드** | `raw/kipris/patents_ksia_equipment_raw.parquet` · `interim/patents_ksia_equipment_delta.parquet` (gitignore) | `graph_v2.ttl` |
+> **N4 해소 (2026-07-18).** 위 행의 매핑↔병합 −19 는 탈락이 아니라 **행 vs 노드**의 단위 차이다.
+> 소부장은 회사별로 수집하므로 **KSIA 회원사 간 공동출원**은 양쪽 질의에 각각 잡히고(층별 검정에는
+> 두 회사 실적으로 다 계상돼야 한다), 그래프는 출원번호가 키라 특허 하나에 노드 하나다. 실측:
+> 정제 델타 21,887행 중 중복 출원번호 35건, 그중 매핑된 21건이 합쳐진다. G₁ 은 삼성·SK하이닉스가
+> 서로 공동출원하지 않아 34,521행의 출원번호가 전부 고유했다(중복 0) — 그래서 +114 가 그대로 남았다.
+
 | 2026-07-16 | KIPRIS Plus `getBibliographyDetailInfoSearch` | **초록+전체청구항** (출원번호별 · ServiceKey). 매핑 특허 **12,337건**만 조회(게이트 탈락분 미조회) | 상세 12,337건(청구항 보유 100%) · 청구항 그래프 실체화 **161,184 트리플** | `raw/kipris/patents_ksia_equipment_details.parquet` (gitignore) | `graph_v2.ttl` (`claimText`·`firstClaimText`·`abstractText`·`claimCount`) |
 
 **재현 절차**: `make collect && make profile && make merge` (응답은 `raw/kipris/kipris_cache.sqlite`

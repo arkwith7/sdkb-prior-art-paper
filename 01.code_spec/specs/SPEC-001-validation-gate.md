@@ -1,4 +1,10 @@
-# SPEC-001 · 검증 게이트 (3층 + 스냅샷 무결성)
+# SPEC-001 · 검증 게이트 (4층 L0–L3)
+
+> **2026-07-18 갱신 — 3층 → 4층.** 이 문서는 "3층 + 스냅샷 무결성"으로 쓰여 있었고, 그때 L0 는
+> `make vendor` 안에서만 도는 반쪽이었다(`_reject_stale_artifacts()` 가 살아있는 SDKB 워킹트리를
+> 요구 → 심사자가 저장소만 받아 돌리면 sha256 검사뿐). **이제 L0 는 독립 층이다** — `verify_freshness()`
+> 신설 · CLI `--verify-freshness` · `make l0` · `gate: l0 validate reason cq vocab`. 논문 v0.5 가
+> 초록·§4.3·§6.6·§7.2·§8 에서 주장하는 4층과 코드가 일치한다.
 
 | | |
 |---|---|
@@ -13,16 +19,33 @@
 
 ## 보장하는 것
 
-**스냅샷 무결성.** 커밋된 `data/external/sdkb/` 의 모든 파일이 `PROVENANCE.json` 의 sha256 과
+**L0-a 스냅샷 무결성.** 커밋된 `data/external/sdkb/` 의 모든 파일이 `PROVENANCE.json` 의 sha256 과
 일치한다. PROVENANCE 가 모르는 TTL 이 섞이면 실패한다.
 → `vendor.verify_snapshot()` · `make snapshot` · `test_verify_snapshot_detects_tampering`,
 `test_verify_snapshot_detects_stray_ttl`
+
+**L0-b 신선도.** 그 스냅샷이 **옳게 재빌드된 최신본**인가. sha256 은 "바뀌지 않았음"만 보장하고
+"옳게 빌드되었음"은 보장하지 않는다 — 2026-07-14 사고가 정확히 그 틈으로 났다. 해시는 내내 맞았고
+L1–L3 는 내내 통과했는데, 공정 어휘 복원 **이전에** 빌드된 특허 ABox 가 얼려져 H1 의 before 가
+실제보다 낮았다(C₀ 16 → 정정 20). 그래서 신선도는 별도 층이다(논문 §7.2).
+
+상류 워킹트리는 심사자·CI 에 없으므로 **오프라인에서 검사 가능한 두 가지**를 본다:
+(a) **이행 증명** — vendor 가 `_reject_stale_artifacts()` 를 실제로 돌린 흔적(PROVENANCE 의
+`freshness` 블록)이 존재하고 대상 산출물 전부를 덮는가. 블록이 없으면 그 스냅샷은 신선도 검사를
+거치지 않고 얼려진 것이고, **그것이 사고 당시의 상태다.**
+(b) **파생 산출물 신선도** — `graph_v0` 가 스냅샷보다 새로운가. 스냅샷만 갱신하고 `make baseline` 을
+잊으면 분석이 옛 그래프를 읽는다.
+→ `vendor.verify_freshness()` (`vendor.py:86`) · `make l0` · 회귀 테스트 4개(통과 1 + 거부 3)
+
+> **왜 이행 증명인가.** 상류 mtime 대조는 살아있는 SDKB 를 요구하므로 저장소만 받은 사람은 돌릴 수
+> 없다. 그래서 강한 검사는 `make vendor` 시점에 하고(`_reject_stale_artifacts()`), L0 는 **그 검사가
+> 남긴 서명을 검증**한다. 심사자가 재현할 수 있는 게이트가 4층이 되는 것은 이 분리 덕분이다.
 
 **L1 구조 제약 (SHACL) — 두 겹이다.**
 
 | shapes | 대상 | 요구 |
 |---|---|---|
-| `queries/shapes/graph/` | 그래프 전체 (G₀·G₁) | 출원번호 1개, 출원일 1개(`xsd:date`) |
+| `queries/shapes/graph/` | 그래프 전체 (G₀·G₁·G₂) | 출원번호 1개, 출원일 1개(`xsd:date`), prefLabel 규약 |
 | `queries/shapes/delta/` | **병합되는 특허만** | 위 + **개념 매핑 ≥1 (Process ∪ Device)** |
 
 두 겹인 이유: 게이트의 의미는 "이 데이터를 넣어도 되는가"이지 상류가 남긴 레거시의 소급 처벌이
@@ -33,7 +56,11 @@
 **L2 논리 일관성 (HermiT).** 그래프가 기술논리적으로 일관된다.
 → `make reason` · `test_baseline_is_logically_consistent`
 
-**L3 기능 검증 (CQ).** → [SPEC-003](SPEC-003-competency-questions.md)
+**L3 기능 검증 (CQ).** 현행 배터리는 **27개**(`queries/cq/CQ01~CQ27.rq`) — 도출 프로토콜 P1–P5 는
+[SPEC-004](SPEC-004-cq-derivation-protocol.md), 초기 K=8 설계 근거는 [SPEC-003](SPEC-003-competency-questions.md).
+실측 응답률: **G₀ 26/27 · G₁ 26/27 · G₂ 27/27 · mini_graph 27/27**. G₀·G₁ 이 지는 것은 CQ27(FTO
+청구항)이고 청구항은 G₂ 에만 실체화돼 있다 — **결함이 아니라 배터리가 코퍼스를 판별한다는 증거**다.
+응답률 단독은 게이트가 되지 않으므로 어휘 검증 커버리지를 반드시 병기한다(`make vocab`).
 
 **게이트 실패 시 그래프는 불변이다.** `merge_with_gate()` 가 실패하면 출력 파일이 생기지 않는다.
 → `test_gate_rejects_bad_delta_and_leaves_graph_untouched`
@@ -69,8 +96,9 @@ TBox range 위반, 출원일 누락, 개념 매핑 누락 — 각각이 실제�
 class file 69 vs 65).
 
 **게이트 대상이 두 그래프인 이유.** `graph_v0` 하나로는 병합 델타의 계약(개념 매핑 ≥1)이 한 번도
-exercise 되지 않는다. 합성 특허 3건이 든 `data/samples/mini_graph.ttl` 이 엄격 shape 와 CQ 8개를
-전부 때린다.
+exercise 되지 않는다. 합성 특허 3건이 든 `data/samples/mini_graph.ttl` 이 엄격 shape 와 CQ **27개**를
+전부 때린다. 지금 게이트 대상은 **세 그래프**다(`graph_v0`·`graph_v1`/`graph_v2`·`mini_graph`) —
+하나로는 게이트가 vacuous 해진다.
 
 **델타를 단독으로 검증하지 않는다.** 델타에는 TBox 도, 델타가 가리키는 공정 인스턴스도 없어
 `sh:class ont:Process` 가 성립하지 않는다. 그래서 `shacl_gate.target_only()` 가 **그래프는 합치되
