@@ -27,11 +27,15 @@ SDKB 원본(~/Dev/sdkb) ──(사람이 make vendor)──> data/external/sdkb/
 **결정적이다.** 같은 스냅샷 → 같은 그래프(바이트 단위 동일).
 → `test_baseline_is_deterministic` (두 번 조립해 sha256 비교)
 
-**서명 (`make baseline` 출력, SDKB 커밋 `23d07a1` · 2026-07-14 Expert·Problem 라벨 규약 교정)**
+**서명 (`make baseline` 출력, SDKB 커밋 `edb8ae4` · 2026-07-15 규제·FTO 어휘 적재 후 최종 재동결)**
+
+> ⚠ **서명 수치의 정본은 [CANONICAL-INDEX.md](../CANONICAL-INDEX.md) §1 이다.** 아래 표는 재동결
+> 시점마다 갱신한다 (트리플 이력: 43,712 → 43,745 → 43,812 → 44,192 → **44,202** 현재).
+> 트리플·커밋을 제외한 서명(C₀ 20/29·Process 11/SubProcess 38·Device 34·Patent 1,000 등)은 불변이다.
 
 | 항목 | 값 | 이것이 깨지면 |
 |---|---:|---|
-| 트리플 | 43,812 | 스냅샷이나 조립이 바뀌었다 |
+| 트리플 | 44,202 | 스냅샷이나 조립이 바뀌었다 |
 | Expert / Problem 의 `skos:prefLabel` | 110 / 226 (`rdfs:label` 0) | **인력·문제 질의가 IRI 만 돌려준다** |
 | Process / SubProcess | 11 / 38 | **H1 의 관측 단위(n=49)가 바뀐다** |
 | Device | 34 | H2 의 개념 축이 바뀐다 |

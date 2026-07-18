@@ -7,6 +7,11 @@
 | 검증 | `tests/test_vocab_coverage.py` · `test_baseline_integration.py::test_baseline_vocab_coverage_signature` |
 | 확정 | 2026-07-14 (§4 단계 2·3) · 2026-07-15 게이트 커버리지 100% (§4 단계 4) |
 
+> ⚠ **아래 표는 K=22 시점 값이다. 이후 PLAN-015 가 규제 CQ23–26 을, FTO 가 CQ27 을 더해
+> 현행 배터리는 27개(`queries/cq/CQ01~CQ27.rq`)다.** G₀ 재동결도 43,814 → **44,202** 로 진행됐다.
+> 서명 수치의 정본은 [CANONICAL-INDEX.md](../CANONICAL-INDEX.md) §1, CQ 목록은 `queries/cq/`.
+> 프로토콜(P1–P5)과 방법론 논지는 유효하다 — 낡은 것은 CQ 개수와 트리플 수뿐이다.
+
 ---
 
 ## 0. 이 스펙이 존재하는 이유 — 측정된 사실

@@ -6,6 +6,11 @@
 | 구현 | `queries/cq/CQ01~CQ08.rq`, `src/sdkb_paper/validate/cq_runner.py` |
 | 검증 | `make cq` · `tests/test_baseline_integration.py::test_baseline_cq_signature` |
 
+> ⚠ **이 문서의 수치는 작성 시점(K=8) 값이며 두 세대 낡았다. 정본은 [CANONICAL-INDEX.md](../CANONICAL-INDEX.md) §1.**
+> ① CQ 배터리는 8 → 14 → 22 → **27**개로 확장됐다 — 현행 계약은 [SPEC-004](SPEC-004-cq-derivation-protocol.md).
+> ② 아래 before 값은 낡은 스냅샷 교정(C₀ 16→20) **이전** 값이다. 현재: **CQ01=20**(공백 CQ03=**29**),
+> **CQ06=58**. 이 문서의 16·33·61·29/51 은 역사 기록으로 남긴다(교정 경위는 STATUS "낡은 스냅샷" 블록).
+
 ---
 
 ## CQ 8개와 그 근거
