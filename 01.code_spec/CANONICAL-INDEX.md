@@ -15,7 +15,7 @@
 
 | 축 | 정본 (FINAL) | 위치 |
 |---|---|---|
-| **논문** | `논문초안_v0.3_SDKB_기술예측_온톨로지.md` | `paper/` |
+| **논문** | `논문_v0.5_SDKB.md` | `paper/` |
 | **baseline 그래프 G₀** | `graph_v0.ttl` (44,202 트리플) | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
 | **보강 그래프 G₁** | `graph_v1.ttl` (413,730) | `data/processed/` |
 | **소부장 그래프 G₂ (RQ3)** | `graph_v2.ttl` (429,334) | `data/processed/` |
@@ -99,10 +99,10 @@
 ### `paper/`
 | 분류 | 파일 |
 |---|---|
-| **FINAL** | `논문초안_v0.3_SDKB_기술예측_온톨로지.md` (정본, 유일) |
-| **INTERMEDIATE** | `archive/논문초안_v0.2_…md` (3층 모델·삼성 only — 폐기, 인용 금지) |
-| **GENERATED (코드 산출)** | `figures/fig1~11.svg`(11장, 초안과 1:1) · `figures/vocab_coverage_graph_v0.md` · `tables/*.md`(11개) |
-| **빈 디렉토리 (함정)** | `manuscript/`(.gitkeep 뿐 — 진짜 원고는 최상위 v0.3) |
+| **FINAL** | `논문_v0.5_SDKB.md` (정본, 유일) |
+| **INTERMEDIATE** | `archive/논문초안_v0.2_…md`(3층 모델·삼성 only) · `archive/논문초안_v0.3_…md`(RQ3 이전 번호체계) — 둘 다 폐기, 인용 금지 |
+| **GENERATED (코드 산출)** | `figures/fig1~11.svg`(파일 11개 · v0.5 본문은 9장으로 재편 — 파일명 유지, 번호 정렬은 조판 시) · `figures/vocab_coverage_graph_v0.md` · `tables/*.md`(11개) |
+| **빈 디렉토리 (함정)** | `manuscript/`(.gitkeep 뿐 — 진짜 원고는 `paper/논문_v0.5_SDKB.md`) |
 
 ### `queries/`
 | 분류 | 파일 |
@@ -118,8 +118,9 @@
    samsung/hynix 는 트리에서 mtime 이 가장 최신(07-17)이라 "가장 최신=정본"으로 오인하기 쉽다.
    **정본 G₁ 은 `graph_v1.ttl`.**
 2. **`delta_v*.ttl`** — 전부 병합 *전* 입력. 독립 산출물 아님. 큰 용량에 속지 말 것.
-3. **`archive/논문초안_v0.2_…md`** — 파일명이 정본과 `v0.2/v0.3` 만 다르다. 4층 게이트 이전의
-   폐기본. **인용 금지.**
+3. **`archive/논문초안_v0.2_…md` · `archive/논문초안_v0.3_…md`** — v0.5 이전 폐기본.
+   v0.2 는 4층 게이트 이전, v0.3 은 RQ3·절 번호 재편 이전이라 **절·표·그림 번호가 정본과 다르다.**
+   **인용 금지.**
 4. **`STATUS.md`·`SPEC-002`·`MANIFEST §1` 의 트리플 숫자** — 낡은 세대(§2 참조). 숫자는 §1 표.
 5. **`candidates_report.md`** — 현행 동결 이전(07-13)의 탐색 목록. 최종 매핑 규칙 아님.
 6. **grep 트리플 프록시** — 실제의 약 1/13. rdflib/MANIFEST §3 로만 셀 것.
