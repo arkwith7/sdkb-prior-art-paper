@@ -66,7 +66,13 @@ candidates:
 snapshot:
 	uv run python -m sdkb_paper.ontology.vendor --verify
 
-# --- 3층 검증 게이트 (논문 §3.3) --------------------------------------------
+# L0 신선도: 산출물이 입력보다 낡지 않았는가. sha256(snapshot)은 "바뀌지 않았음"만 보장하고
+# "옳게 빌드되었음"은 보장하지 않는다 — 2026-07-14 사고가 정확히 그 틈으로 났다 (논문 §7.2).
+# baseline 이후에 돌아야 파생 산출물 신선도를 볼 수 있다.
+l0: snapshot baseline
+	uv run python -m sdkb_paper.ontology.vendor --verify-freshness
+
+# --- 4층 검증 게이트 L0–L3 (논문 §4.3) ---------------------------------------
 # 게이트 대상은 두 그래프다:
 #   graph_v0   — 실물 baseline(G₀ = 현행 SDKB, SIRP 특허 1,000건). 레거시 특허가 섞여 있으므로
 #                **완화 shape**(graph) 로 검증한다 — 공정 링크 없는 디바이스 특허를 소급 처벌하지 않는다.
@@ -99,8 +105,8 @@ vocab: baseline
 	uv run python -m sdkb_paper.validate.vocab_coverage data/processed/graph_v0.ttl --report
 	uv run python -m sdkb_paper.validate.vocab_coverage data/samples/mini_graph.ttl --report
 
-# 머지 전 전체 게이트: 스냅샷 무결성 + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
-gate: snapshot validate reason cq vocab
+# 머지 전 전체 게이트: L0(무결성+신선도) + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
+gate: l0 validate reason cq vocab
 
 # H1 검정 — 공정 단계별 커버리지 (Wilcoxon 단측). 게이트를 통과한 두 스냅샷을 읽기만 한다.
 # 표본 집합은 확장 49 와 복원 이전 20 **양쪽**으로 병기 보고된다 (PLAN-005).

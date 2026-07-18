@@ -26,7 +26,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from sdkb_paper.config import EXTERNAL_SDKB, SDKB_HOME
+from sdkb_paper.config import EXTERNAL_SDKB, PROCESSED, SDKB_HOME
 
 # vendor 대상: (SDKB 내 상대경로, 역할)
 #
@@ -81,6 +81,63 @@ def _verify_source(sdkb_home: Path) -> dict:
             f"         SDKB 에서 `make owl convert` 로 산출물을 다시 빌드한 뒤 재실행할 것."
         )
     return report
+
+
+def verify_freshness(dest: Path = EXTERNAL_SDKB, derived: Path | None = None) -> list[str]:
+    """L0 신선도 — 산출물이 입력보다 낡지 않았는가. **SDKB 원본 없이** 검사한다.
+
+    sha256(=verify_snapshot)은 "바뀌지 않았음"만 보장하고 "옳게 빌드되었음"은 보장하지 않는다.
+    2026-07-14 사고가 정확히 그 틈으로 났다 — 해시는 내내 맞았고 L1–L3 는 내내 통과했는데
+    공정 어휘 복원 이전에 빌드된 특허 ABox 가 얼려져 H1 의 before 가 낮게 잡혔다.
+    그래서 신선도는 별도 층이어야 한다 (논문 §7.2).
+
+    상류 워킹트리는 CI 에 없으므로 오프라인에서 검사 가능한 두 가지를 본다:
+
+    (a) **이행 증명** — vendor 가 `_reject_stale_artifacts()` 를 실제로 돌렸는지.
+        PROVENANCE 의 freshness 블록이 그 증거다. 블록이 없으면 그 스냅샷은 신선도 검사를
+        거치지 않고 얼려진 것이고, 그것이 사고 당시의 상태다.
+    (b) **파생 산출물 신선도** — baseline(graph_v0)이 스냅샷보다 새로운가.
+        스냅샷을 갱신하고 `make baseline` 을 잊으면 분석이 옛 그래프를 읽는다.
+
+    상류가 있을 때의 강한 검사(입력 mtime 대조)는 `_reject_stale_artifacts()` 가 맡는다 —
+    이 함수는 그 검사가 남긴 서명을 검증할 뿐이다.
+    """
+    problems: list[str] = []
+    prov_path = dest / "PROVENANCE.json"
+    if not prov_path.exists():
+        return [f"PROVENANCE.json 이 없다: {prov_path}"]
+    prov = json.loads(prov_path.read_text(encoding="utf-8"))
+
+    fresh = prov.get("freshness")
+    if not isinstance(fresh, dict) or not fresh.get("checked"):
+        problems.append(
+            "PROVENANCE 에 freshness 이행 증명이 없다 — 이 스냅샷은 신선도 검사를 거치지 않고 "
+            "얼려졌다. sha256 은 '바뀌지 않았음'만 보장하지 '옳게 빌드되었음'을 보장하지 않는다.\n"
+            "         `make vendor` 로 재vendor 하여 증명을 남길 것 (상류가 같은 커밋이면 "
+            "파일 내용·G₀ 는 바뀌지 않는다)."
+        )
+    else:
+        # 증명이 대상 산출물 전부를 덮는가. 일부만 덮은 증명은 증명이 아니다.
+        attested = set(fresh.get("artifacts", {}))
+        vendored = {rel for rel, _ in VENDOR_FILES}
+        for rel in sorted(ARTIFACT_INPUTS.keys() & vendored):
+            if rel not in attested:
+                problems.append(f"freshness 증명이 {rel} 을 덮지 않는다")
+        if prov.get("source_dirty"):
+            problems.append(
+                "vendor 시점 상류 워킹트리가 dirty 였다 — 스냅샷이 source_commit 만으로 재현되지 않는다"
+            )
+
+    # (b) 파생 산출물이 스냅샷보다 낡았는가.
+    derived = derived if derived is not None else (PROCESSED / "graph_v0.ttl")
+    if derived.exists():
+        newest = max((p.stat().st_mtime for p in dest.glob("*.ttl")), default=0.0)
+        if derived.stat().st_mtime < newest:
+            problems.append(
+                f"{derived.name} 이 스냅샷보다 낡았다 — `make baseline` 을 다시 실행할 것. "
+                "낡은 baseline 위에서 나온 H1 의 before 는 거짓이다."
+            )
+    return problems
 
 
 def verify_snapshot(dest: Path = EXTERNAL_SDKB) -> list[str]:
@@ -154,7 +211,7 @@ ARTIFACT_INPUTS: dict[str, list[str]] = {
 }
 
 
-def _reject_stale_artifacts(sdkb_home: Path) -> None:
+def _reject_stale_artifacts(sdkb_home: Path) -> dict:
     """입력보다 오래된 빌드 산출물을 거부한다.
 
     이 가드가 없어서 실제로 사고가 났다 (2026-07-14). vendor 대상 TTL 중 다수는 상류에서
@@ -168,15 +225,20 @@ def _reject_stale_artifacts(sdkb_home: Path) -> None:
     *옳게 빌드됐음*을 보장하지 않는다.
     """
     stale = []
+    attested: dict[str, list[dict]] = {}
     for rel, inputs in ARTIFACT_INPUTS.items():
         art = sdkb_home / rel
         if not art.exists():
             continue
         built = art.stat().st_mtime
+        seen = []
         for dep in inputs:
             src = sdkb_home / dep
             if src.exists() and src.stat().st_mtime > built:
                 stale.append(f"{rel}  ← {dep} 가 더 새롭다")
+            if src.exists():
+                seen.append({"input": dep, "sha256": sha256(src)})
+        attested[rel] = seen
 
     if stale:
         raise SystemExit(
@@ -185,6 +247,13 @@ def _reject_stale_artifacts(sdkb_home: Path) -> None:
             + "\n\n  스냅샷의 sha256 은 '바뀌지 않았음'만 보장하지 '옳게 빌드됐음'을 보장하지 않는다.\n"
             f"  cd {sdkb_home} && make owl convert abox abox-patents abox-vendors"
         )
+
+    # 검사를 통과했다는 사실 자체를 스냅샷에 남긴다 — 상류가 없는 CI 에서 L0 가 검증할 증거다.
+    return {
+        "checked": True,
+        "checked_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "artifacts": attested,
+    }
 
 
 def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
@@ -199,7 +268,7 @@ def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
             + f"\n\n  cd {sdkb_home} && make owl convert   # 를 먼저 실행할 것"
         )
 
-    _reject_stale_artifacts(sdkb_home)
+    freshness = _reject_stale_artifacts(sdkb_home)
     report = _verify_source(sdkb_home)
     commit = _git(sdkb_home, "rev-parse", "HEAD")
     dirty = bool(_git(sdkb_home, "status", "--porcelain"))
@@ -219,6 +288,7 @@ def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
         "source_license": "CDLA-Permissive-2.0",
         "vendored_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "baseline_counts": report["counts"],
+        "freshness": freshness,
         "excluded": {},
         "files": files,
     }
@@ -241,7 +311,25 @@ def main() -> None:
         "--verify", action="store_true",
         help="스냅샷 무결성만 검사한다 (SDKB 원본 불필요 — CI 게이트용). 갱신하지 않는다.",
     )
+    ap.add_argument(
+        "--verify-freshness", action="store_true",
+        help="L0 신선도 — 신선도 검사 이행 증명과 파생 산출물 신선도를 본다 (SDKB 원본 불필요).",
+    )
     args = ap.parse_args()
+
+    if args.verify_freshness:
+        problems = verify_freshness()
+        for p in problems:
+            print(f"[L0] ✗ {p}", file=sys.stderr)
+        if problems:
+            print(
+                "[L0] 신선도 검사 실패 — 산출물이 원천을 옳게 반영한다는 보장이 없다.\n"
+                "     sha256(L1 이전의 무결성)은 이 실패 양식을 원리적으로 잡지 못한다.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        print("[L0] ✓ 신선도 — vendor 이행 증명 유효 · baseline 이 스냅샷보다 새롭다")
+        return
 
     if args.verify:
         problems = verify_snapshot()

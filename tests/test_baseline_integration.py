@@ -13,6 +13,8 @@ graph_v0 은 gitignore 대상이라 CI 러너에 존재하지 않는다 — 커�
 from __future__ import annotations
 
 import hashlib
+import json
+import os
 import shutil
 import subprocess
 
@@ -21,7 +23,7 @@ from rdflib import RDF, URIRef
 
 from sdkb_paper.config import EXTERNAL_SDKB, ONT, QUERIES_CQ
 from sdkb_paper.ontology.baseline import build_baseline, summarize
-from sdkb_paper.ontology.vendor import verify_snapshot
+from sdkb_paper.ontology.vendor import verify_freshness, verify_snapshot
 from sdkb_paper.validate.cq_runner import run_cqs
 from sdkb_paper.validate.shacl_gate import validate_graph
 from sdkb_paper.validate.vocab_coverage import measure
@@ -368,6 +370,53 @@ def test_verify_snapshot_detects_stray_ttl(tmp_path):
 
     problems = verify_snapshot(fake)
     assert any("sdkb-abox-experts.ttl" in p for p in problems), problems
+
+
+# --- L0 신선도 (해시가 잡지 못하는 실패 양식) ---------------------------------
+
+def test_verify_freshness_passes_on_current_snapshot():
+    """현행 스냅샷은 L0 를 통과한다 — 통과 경로의 회귀 고정."""
+    assert verify_freshness(EXTERNAL_SDKB) == []
+
+
+def test_verify_freshness_rejects_missing_attestation(tmp_path):
+    """이행 증명 없는 스냅샷은 거부한다.
+
+    2026-07-14 사고 당시의 상태가 정확히 이것이다 — sha256 은 내내 맞았고 L1–L3 도 내내
+    통과했으나 산출물이 입력보다 낡아 H1 의 before 가 낮게 잡혔다.
+    """
+    fake = tmp_path / "sdkb"
+    shutil.copytree(EXTERNAL_SDKB, fake)
+    prov = json.loads((fake / "PROVENANCE.json").read_text(encoding="utf-8"))
+    del prov["freshness"]
+    (fake / "PROVENANCE.json").write_text(json.dumps(prov, ensure_ascii=False), encoding="utf-8")
+
+    problems = verify_freshness(fake)
+    assert any("freshness" in p for p in problems), problems
+
+
+def test_verify_freshness_rejects_partial_attestation(tmp_path):
+    """일부 산출물만 덮은 증명은 증명이 아니다."""
+    fake = tmp_path / "sdkb"
+    shutil.copytree(EXTERNAL_SDKB, fake)
+    prov = json.loads((fake / "PROVENANCE.json").read_text(encoding="utf-8"))
+    prov["freshness"]["artifacts"].pop("ontology/sdkb-abox-patents.ttl", None)
+    (fake / "PROVENANCE.json").write_text(json.dumps(prov, ensure_ascii=False), encoding="utf-8")
+
+    problems = verify_freshness(fake)
+    assert any("sdkb-abox-patents.ttl" in p for p in problems), problems
+
+
+def test_verify_freshness_rejects_stale_derived_graph(tmp_path):
+    """스냅샷보다 낡은 baseline 을 거부한다 — 갱신 후 재조립을 잊으면 분석이 옛 그래프를 읽는다."""
+    fake = tmp_path / "sdkb"
+    shutil.copytree(EXTERNAL_SDKB, fake)
+    stale = tmp_path / "graph_v0.ttl"
+    stale.write_text("# 스냅샷보다 낡은 파생 산출물\n", encoding="utf-8")
+    os.utime(stale, (0, 0))
+
+    problems = verify_freshness(fake, derived=stale)
+    assert any("낡았다" in p for p in problems), problems
 
 
 # --- CLI 계약 (Makefile/CI 가 부르는 경로) ------------------------------------

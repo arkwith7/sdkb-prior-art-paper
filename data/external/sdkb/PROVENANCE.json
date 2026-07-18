@@ -4,13 +4,109 @@
   "source_commit_date": "2026-07-15T15:05:28+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-15T06:05:35+00:00",
+  "vendored_at": "2026-07-18T09:30:47+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
     "synonyms": 184,
     "cases": 3,
     "provenance_sources": 13
+  },
+  "freshness": {
+    "checked": true,
+    "checked_at": "2026-07-18T09:30:47+00:00",
+    "artifacts": {
+      "ontology/sdkb-core.ttl": [
+        {
+          "input": "scripts/build_owl.py",
+          "sha256": "b369ea5423d210899f7985254828a7c4dde9b950dc13d5230524e6322f397d0e"
+        }
+      ],
+      "ontology/sdkb-core-data.ttl": [
+        {
+          "input": "scripts/convert_rdf.py",
+          "sha256": "932d132a962d30922081ddbd9bd1797a9ceed956f36e6720291d8648b93250e4"
+        },
+        {
+          "input": "data/semiconductor_v0_3.json",
+          "sha256": "a380792ef3870070a6fed377ec1f4f7aa2f0b52e5008b8d9d6f79694438d1a53"
+        }
+      ],
+      "ontology/sdkb-abox-patents.ttl": [
+        {
+          "input": "scripts/build_abox_patents.py",
+          "sha256": "83ea8bc1b3a42efe19036a3ea0a42f849df9e707c7ecfbe4a306868811285aed"
+        },
+        {
+          "input": "data/patents/rejected_patents_meta.parquet",
+          "sha256": "b76baafd6d91d3328f4b1e0675490cf03fc71f19d1d3370a7a0e494dec8a045a"
+        },
+        {
+          "input": "data/patents/prior_art_edges.parquet",
+          "sha256": "962673c1811e7afa8d328f467fdaf019abcc203351e586c542760d75ae57799e"
+        }
+      ],
+      "ontology/sdkb-abox-experts-problems.ttl": [
+        {
+          "input": "scripts/build_abox_experts_problems.py",
+          "sha256": "e2829abaf44f7837ba5dcff5b1f0c6837ef59d8ad36e6ad630cfab1a7337c1ab"
+        },
+        {
+          "input": "data/semiconductor_v0_3.json",
+          "sha256": "a380792ef3870070a6fed377ec1f4f7aa2f0b52e5008b8d9d6f79694438d1a53"
+        }
+      ],
+      "ontology/sdkb-abox-vendors.ttl": [
+        {
+          "input": "scripts/build_abox_vendors_ksia.py",
+          "sha256": "5d5a24449cfc2a4205b068f4332798e815a6dc747b9631eb756e4de422e5032c"
+        },
+        {
+          "input": "data/vendors/ksia_member_industry_list_20260714.csv",
+          "sha256": "e912c223b7bbf5646c8e4ff86db6246c24cbb39eb0e5ba360fe37826f84a010b"
+        },
+        {
+          "input": "ontology/sdkb-abox-patents.ttl",
+          "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089"
+        }
+      ],
+      "ontology/sdkb-governance-us-instances.ttl": [
+        {
+          "input": "scripts/seed_compliance_governance.py",
+          "sha256": "d4ea7c8653ef1f7526564e68b51faa14acb1d16b8b4e5e289689b38756a2d988"
+        },
+        {
+          "input": "data/compliance/us_standards_v1.json",
+          "sha256": "843f4909ead0fd71e97e95bf94e4dedbe4f0b7285d42c657613529463e9f752a"
+        },
+        {
+          "input": "data/compliance/concept_control_crosswalk.csv",
+          "sha256": "c35a7f0f8a11bd47940ef50d7d9c715952fd35e33b60fe64b66fdff7929b78d7"
+        },
+        {
+          "input": "ontology/sdkb-core-data.ttl",
+          "sha256": "62f5b5e6aafa605932bfe87993f6bf41391f2d4e456464d196e768ea5820360f"
+        }
+      ],
+      "ontology/sdkb-governance-kr-instances.ttl": [
+        {
+          "input": "scripts/seed_compliance_governance.py",
+          "sha256": "d4ea7c8653ef1f7526564e68b51faa14acb1d16b8b4e5e289689b38756a2d988"
+        },
+        {
+          "input": "data/compliance/kr_standards_v1.json",
+          "sha256": "d1211b6dc986fe092b6fbd1fd2f81f7962976d7b1bd7c2bd580734ec820f172c"
+        },
+        {
+          "input": "data/compliance/concept_control_crosswalk.csv",
+          "sha256": "c35a7f0f8a11bd47940ef50d7d9c715952fd35e33b60fe64b66fdff7929b78d7"
+        },
+        {
+          "input": "ontology/sdkb-core-data.ttl",
+          "sha256": "62f5b5e6aafa605932bfe87993f6bf41391f2d4e456464d196e768ea5820360f"
+        }
+      ]
+    }
   },
   "excluded": {},
   "files": [
