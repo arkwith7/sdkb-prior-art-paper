@@ -38,6 +38,7 @@
 | CQ24_national_core_technology | 12 | — |
 | CQ25_critical_control_concepts | 7 | — |
 | CQ26_patent_export_control_exposure | 1249 | `Patent` · `concernsDevice` · `realizesProcess` |
+| CQ27_fto_claim_readiness | 0 | — |
 
 ## 아무도 보지 않는 어휘 (CQ 도 SHACL 도) — **0 이어야 한다**
 

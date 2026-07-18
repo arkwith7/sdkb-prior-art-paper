@@ -15,12 +15,15 @@ H2′ 는 이미 유효쌍 4(최소 p=0.0625)라 α=0.05 에 도달할 수 없�
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
+from rdflib import Graph
 
 from sdkb_paper.analysis.coverage import compare_coverage, wilcoxon_h1
 from sdkb_paper.analysis.h2_cli import run_h2prime, union_corpus
 from sdkb_paper.analysis.robustness_cli import SCOPES, _scopes
-from sdkb_paper.config import GRAPH_V0, PROCESSED, TABLES
+from sdkb_paper.config import GRAPH_V0, ONT, PROCESSED, TABLES
 from sdkb_paper.ontology.delta import build_delta
 from sdkb_paper.ontology.merge import merge_with_gate
 from sdkb_paper.preprocess.clean import TARGET_APPLICANTS
@@ -47,10 +50,25 @@ def h1_by_applicant(applicant: str) -> dict:
     df = compare_coverage(GRAPH_V0, graph_ttl)
     return {
         "n_delta": len(sub),
+        "n_process_linked": _process_linked_delta(graph_ttl),
         "covered": int((df["after"] > 0).sum()),
         "n_steps": len(df),
         "tests": {s: wilcoxon_h1(x, s) for s, x in _scopes(df).items()},
     }
+
+
+def _process_linked_delta(graph_ttl: Path) -> int:
+    """이 회사의 델타 중 공정에 실제로 연결된 고유 특허 수 (G₀ 기존분 제외).
+
+    증가폭의 비대칭(삼성 185 vs SK 31)이 어디서 오는지는 델타 건수가 아니라 이 수가 말한다 —
+    델타가 커도 공정 링크가 없으면 커버리지는 움직이지 않는다. 논문 §6.5.2.
+    """
+    def linked(path: Path) -> set:
+        g = Graph()
+        g.parse(path, format="turtle")
+        return {s for s, _, _ in g.triples((None, ONT["realizesProcess"], None))}
+
+    return len(linked(graph_ttl) - linked(GRAPH_V0))
 
 
 def h2_by_applicant(applicant: str, union: pd.DataFrame) -> dict:
@@ -131,10 +149,11 @@ def main() -> int:
         "",
         "## 규모",
         "",
-        "| 출원인 | 델타(2010–25) | 커버된 공정 |",
-        "|---|---:|---:|",
+        "| 출원인 | 델타(2010–25) | 공정 링크 특허 | 커버된 공정 |",
+        "|---|---:|---:|---:|",
         *(
-            f"| {a} | {h1[a]['n_delta']:,} | {h1[a]['covered']} / {h1[a]['n_steps']} |"
+            f"| {a} | {h1[a]['n_delta']:,} | {h1[a]['n_process_linked']:,} "
+            f"| {h1[a]['covered']} / {h1[a]['n_steps']} |"
             for a in names
         ),
         "",
