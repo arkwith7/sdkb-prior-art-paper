@@ -333,9 +333,10 @@ CQ 를 지어내는 것**(커버리지는 목표가 아니라 진단이다).
 
 ### 5.2 어휘 검증 커버리지 — 공허한 게이트의 진단 지표
 
-**"CQ 8/8 · 100%" 는 어휘의 9.4% 만 검증한 100% 였다** (G₀ 술어 53개 중 CQ 가 건드리는 것은 5개:
-`realizesProcess`·`concernsDevice`·`filingDate`·`hasIPC`·`assignedTo`). 태스크 도출 CQ(K=14)로
-넓히자 **32.1%** 가 되었고, **올린 방법은 임계값이 아니라 태스크였다.** 논문 §5.3 · §6.2 · 기여 3.
+**"CQ 8/8 · 100%" 는 어휘의 9.3% 만 검증한 100% 였다** (G₀ 실사용 술어 54개 중 CQ 가 건드리는
+것은 5개: `realizesProcess`·`concernsDevice`·`filingDate`·`hasIPC`·`assignedTo`). 태스크 도출
+CQ(K=14)로 넓히자 **31.5%**, 전 배터리(K=27)로 **66.7%** 가 되었고, **올린 방법은 임계값이
+아니라 태스크였다.** CQ ∪ SHACL 게이트 커버리지는 100%(아무도 안 보는 어휘 0). 논문 §5.3 · §6.2 · 기여 3.
 
 조작적 정의(gaming 방지):
 - **분모** = 그래프에 **실제 사용된** 술어·클래스 (TBox 선언 어휘가 아니다 — 인스턴스 0인 술어를
@@ -411,29 +412,35 @@ make figures            # 논문 그림 전량 재생성
 
 | 원고 | 산출 명령 | 파일 |
 |---|---|---|
-| 표 5 수집 기술통계 | `make profile` | `data/profiles/*.md` |
-| 표 6 H1 검정 | `make h1` | `paper/tables/h1_main.md` |
-| 표 7–10 H2 (C·D1·D2·DART) | `make h2` · `make dart` | `paper/tables/h2_name_arm.md` · `h2_code_arm.md` · `h2_census.md` · `h2_dart_reference.md` |
-| 표 11–14 강건성 | `make family` · `make by-applicant` · `make robustness` | `paper/tables/robustness_*.md` · `h1_residual_gaps.md` · `h1_sensitivity.md` |
-| 표 15–16 RQ3 | `make h1 CORPUS=ksia` · `make ksia-strata` | `paper/tables/h1_ksia.md` · `h1_ksia_strata.md` |
-| 그림 (9장) | `make figures` | `paper/figures/fig{2,3,5,6,7,8,9,10,11}*.svg` |
+| 표 3 수집 기술통계 | `make profile` | `data/profiles/*.md` |
+| 표 4 H1 검정 | `make h1` | `paper/tables/h1_main.md` |
+| 표 5 H2 주논증 C · 표 6(a)(b) D1+DART · 부록 E 표 E1 D2 | `make h2` · `make dart` | `paper/tables/h2_name_arm.md` · `h2_code_arm.md` · `h2_dart_reference.md` · `h2_census.md` |
+| 표 7(a)(b)(c) 강건성 · 부록 F 표 F1 잔여 공백 | `make family` · `make by-applicant` · `make robustness` | `paper/tables/robustness_*.md` · `h1_sensitivity.md` · `h1_residual_gaps.md` |
+| 표 8(a)(b) RQ3 | `make h1 CORPUS=ksia` · `make ksia-strata` | `paper/tables/h1_ksia.md` · `h1_ksia_strata.md` |
+| 그림 (본문 6장) | `make figures` | `paper/figures/fig{1,4,6,7,8,10}*.svg` |
+| 그래픽 초록 | `make figures` | `paper/figures/fig11_summary.svg` |
 
-**그림은 v0.5 에서 11장 → 9장으로 재편되었고, 2026-07-18 에 코드가 그 선언을 따라잡았다.**
-구 그림 1+11 → `fig11_summary.svg`((a) 갭 맵 + (b) 결과 요약) · 구 그림 3+4 →
-`fig3_research_model.svg`((a) 연구 모형 + (b) 파이프라인). 흡수된 `fig1_gap_map.svg`·
-`fig4_pipeline.svg` 는 **생성하지 않는다** — 도식 함수는 `_draw_*(ax)` 로 패널에 그리고
-통합 그림이 `_stack()` 으로 조립한다.
+**그림은 AEI 감축 재편(2026-07-19)으로 본문 6장 + 그래픽 초록이다** — 표도 본문 8개로 줄었다
+(표 1 자원 비교·표 2 G₀ 는 원고 인라인, 4층 모형 표는 §2.1 본문 흡수, 소스 표는 부록 C 표 C1).
+그림 1 `fig1_gap_map.svg`((a) 갭 맵 + (b) 연구 모형 — 갭이 첫 그림이어야 그림만으로 신규성이
+읽힌다) · 그림 2 `fig4_pipeline.svg` · 그림 3 `fig6_vacuous_gate.svg`(K=8/14/27 세 집합) ·
+그림 4 `fig7_h1_coverage.svg`(G₀ 편중 그림은 여기의 before 막대로 흡수) · 그림 5
+`fig8_h2_timeseries.svg`((a) 명칭 팔 10사례 + (b) 세 함정 패널) · 그림 6
+`fig10_rq3_portability.svg`. 구 `fig2_evolution`·`fig3_research_model`·`fig5_coverage_gap`·
+`fig9_traps` 는 **생성하지 않는다** — 도식 함수는 `_draw_*(ax)` 로 패널에 그리고 통합 그림이
+`_stack()`/gridspec 으로 조립한다.
 **파일명은 v0.3 산출물 명칭을 유지하고 번호 정렬은 최종 조판 시 한다** — 파일명을 지금 바꾸면
 `figures.py` · 표 대응 · 원고 참조가 동시에 흔들린다. 원고 본문의 `[그림 n]` 번호와 파일명의
 `figN` 은 **당분간 일치하지 않는 것이 정상**이다.
 **그림 안에 절·표·그림 번호를 굽지 말 것** — 파일명과 달리 아트워크 텍스트는 독자에게 보이고
-조판으로 고칠 수 없다. 그림 9 가 v0.3 번호를 렌더링하고 있던 것이 그 사례다.
+조판으로 고칠 수 없다. 구 요약 그림이 v0.3 번호를 렌더링하고 있던 것이 그 사례이고, 그래픽
+초록의 근거 열은 그래서 번호가 아니라 검증 방식을 적는다.
 
-> **그림 6 은 주논증 C(개념 vs **명칭** · 10사례)다.** 오래도록 이 자리에 **코드 팔**(7사례)이
+> **그림 5(a) 는 주논증 C(개념 vs **명칭** · 10사례)다.** 오래도록 이 자리에 **코드 팔**(7사례)이
 > 걸려 있었는데, §6.4 는 코드 대조군을 소급 재분류 때문에 무효로 선언하고 **진단 D1** 으로
 > 강등했다 — 주논증이 아닌 축이 주논증의 그림 자리를 차지하고 표는 10사례인데 그림은 7사례였다.
 > 코드 팔은 `fig8c_h2_code_arm_d1.svg` 로 D1 근거로만 남기고 **본문 그림 번호를 주지 않는다.**
-> 표 7 과 그림 6 은 `h2_cli.MAIN_CELL` 상수를 공유한다 — 한쪽만 셀이 바뀌면 어긋나기 때문이다.
+> 표 5 와 그림 5(a) 는 `h2_cli.MAIN_CELL` 상수를 공유한다 — 한쪽만 셀이 바뀌면 어긋나기 때문이다.
 
 ---
 

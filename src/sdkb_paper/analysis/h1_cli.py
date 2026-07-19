@@ -20,7 +20,7 @@ from sdkb_paper.analysis.coverage import (
 )
 from sdkb_paper.config import FIGURES, GRAPH_V0, PROCESSED, TABLES
 from sdkb_paper.ontology.delta import GRAPH_V1, GRAPH_V2
-from sdkb_paper.viz.figures import fig_coverage_gap, fig_h1_coverage
+from sdkb_paper.viz.figures import fig_h1_coverage
 
 H1_CSV = PROCESSED / "h1_coverage.csv"
 H1_TABLE = TABLES / "h1_main.md"
@@ -100,10 +100,9 @@ def main() -> int:
     h1_table.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     fig_out = None if args.corpus == "samsung-hynix" else FIGURES / "fig_h1_coverage_ksia.svg"
+    # 구 fig5(G₀ 편중 단독)는 감축 재편(2026-07-19)으로 생성하지 않는다 —
+    # 그림 4 의 before 막대가 같은 사실을 말한다.
     fig = fig_h1_coverage(df, out=fig_out)
-
-    # §4.1 EDA — 보강 전 편중 그림은 G₀ 기준이므로 주 코퍼스에서만 낸다 (G₀ 는 공통 before).
-    gap_fig = fig_coverage_gap(df) if args.corpus == "samsung-hynix" else None
 
     # §4.5.3 잔여 공백 성격 분석 — 주 코퍼스에서만. G₂(소부장) 가 있으면 breadth 포화 대조 열을 붙인다.
     gap_report = None
@@ -118,7 +117,6 @@ def main() -> int:
 
     print("\n".join(lines))
     print(f"\n✓ {h1_csv}\n✓ {h1_table}\n✓ {fig}"
-          + (f"\n✓ {gap_fig}" if gap_fig else "")
           + (f"\n✓ {gap_report}" if gap_report else "")
           + (f"\n✓ {sens_report}" if args.corpus == 'samsung-hynix' else ""))
     return 0

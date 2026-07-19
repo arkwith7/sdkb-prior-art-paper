@@ -1,17 +1,26 @@
 """논문 그림은 전부 이 모듈이 생성한다 → paper/figures/ (수작업 그림 금지).
 
 두 갈래다.
-1. **서사 도식**(fig_gap_map · fig_evolution · fig_research_model · fig_pipeline ·
-   fig_vacuous_gate · fig_traps · fig_rq3_portability · fig_summary_matrix) — 논문의
-   주장 흐름을 나른다. 수치는 **v0.5 §6 의 표**에서 확정된 실측값이며 여기서는 시각화만 한다.
-2. **데이터 플롯**(fig_coverage_gap · fig_h1_coverage · fig_h2_timeseries) — analysis
+1. **서사 도식**(fig_gap_and_model · fig_pipeline · fig_vacuous_gate ·
+   fig_rq3_portability · fig_summary_matrix) — 논문의 주장 흐름을 나른다.
+   수치는 **v0.5 §6 의 표**에서 확정된 실측값이며 여기서는 시각화만 한다.
+2. **데이터 플롯**(fig_h1_coverage · fig_h2_name_arm · fig_h2_timeseries) — analysis
    산출 CSV(`data/processed/`)를 그린다.
 
 출력은 전부 **SVG**다. `make figures` 하나가 CSV·상수에서 전량을 결정적으로 재생성한다.
 
-**파일명 fig1~11 과 원고 본문의 [그림 n] 은 일치하지 않는다 — 정상이다.** v0.5 에서 본문 그림이
-11장 → 9장으로 재편(구 1↔11 통합, 구 3↔4 통합)되었으나 파일명은 v0.3 산출물 명칭을 유지한다.
-지금 파일명을 바꾸면 이 모듈·표 대응·원고 참조가 동시에 흔들린다. 번호 정렬은 **최종 조판 시**.
+**본문 그림은 6장이다 (AEI 25페이지 감축 재편 · 2026-07-19).** 그림만 순서대로 읽어도
+갭 → 방법 → 검증 발견 → 결과(H1·H2) → 이식성이 이어지도록 배치한다.
+그림 1 `fig1_gap_map`(갭+연구 모형) · 그림 2 `fig4_pipeline` · 그림 3 `fig6_vacuous_gate` ·
+그림 4 `fig7_h1_coverage` · 그림 5 `fig8_h2_timeseries`(H2 시계열+세 함정) ·
+그림 6 `fig10_rq3_portability`. `fig11_summary` 는 본문이 아니라 **그래픽 초록**이다.
+구 fig2(진화)·fig3(모형+파이프라인)·fig5(G₀ 편중)·fig9(함정 단독)는 생성하지 않는다 —
+진화는 본문 서술로, 모형은 그림 1 로, G₀ 편중은 그림 4 의 before 막대로, 함정은 그림 5 의
+하단 패널로 흡수됐다.
+
+**파일명 figN 과 원고 본문의 [그림 n] 은 일치하지 않는다 — 정상이다.** 파일명은 v0.3 산출물
+명칭을 유지한다. 지금 파일명을 바꾸면 이 모듈·표 대응·원고 참조가 동시에 흔들린다.
+번호 정렬은 **최종 조판 시**.
 """
 from __future__ import annotations
 
@@ -162,11 +171,11 @@ def _save(fig, out: Path) -> Path:
 # 서사 도식
 # ═══════════════════════════════════════════════════════════════════════════
 def _draw_gap_map(ax) -> None:
-    """연구 갭 — 세 AS-IS를 세 TO-BE로 (§1.3 · §2.6).
+    """연구 갭 — 세 AS-IS를 세 TO-BE로 (§2.4). **그림 1 의 위 패널.**
 
-    v0.5 에서 **그림 9 의 위 절반**이 되었다(구 그림 1). 단독 파일이던 시절 이 도식은
-    결과 요약과 떨어져 있어 "무엇이 갭이었는지"와 "그래서 무엇이 나왔는지"를 독자가
-    두 장을 오가며 맞춰야 했다.
+    감축 재편(2026-07-19)에서 요약 그림의 위 절반에서 그림 1 로 옮겨 왔다 — "그림만
+    이어 봐도 신규성 주장이 보여야 한다"는 요구에서 갭 도식이 결론에 가 있으면
+    독자가 신규성을 마지막에야 만난다. 갭은 논문의 첫 그림이어야 한다.
     """
     ax.text(0.5, 0.965, "(a) 연구 갭 — 세 개의 AS-IS를 세 개의 TO-BE로",
             ha="center", va="top", fontsize=14, fontweight="bold", color=INK)
@@ -204,40 +213,9 @@ def _draw_gap_map(ax) -> None:
         _chip(ax, 0.955, y + hh / 2, ctag)
 
 
-def fig_evolution(out: Path | None = None) -> Path:
-    """그림 2 — SDKB 3단계 진화와 본 연구의 위치 (§2.5)."""
-    out = out or FIGURES / "fig2_evolution.svg"
-    fig, ax = _canvas(11.5, 6.2)
-    ax.text(0.5, 0.96, "SDKB의 3단계 진화 — 각 단계가 다른 타당성 차원을 확보한다",
-            ha="center", va="top", fontsize=15, fontweight="bold", color=INK)
-    stages = [
-        ("1단계 · 전문가 매칭", "개념 타당성",
-         "공개 온톨로지·분류·표준·규제를\n큐레이션·정렬 (스키마 수준)", "#EDF2F7", "#A0AEC0", INK),
-        ("2단계 · 선행기술조사", "근거 타당성",
-         "심사관 인용 문헌으로 정박\n(weak ground truth)", TOBE_FILL, TOBE_EDGE, TOBE),
-        ("3단계 · 기술예측", "커버리지·시간 차원",
-         "삼성·SK하이닉스 전 공정 특허 보강\n+ 4층 게이트 — 본 연구", GREEN_FILL, GREEN, GREEN),
-    ]
-    x0, ww, hh = 0.06, 0.285, 0.30
-    for i, (title, dim, body, fill, edge, tc) in enumerate(stages):
-        x = x0 + i * 0.315
-        y = 0.24 + i * 0.14
-        _rbox(ax, x, y, ww, hh, title, body, fill, edge, tc, 12, 9.5, "left")
-        ax.text(x + 0.014, y + hh - 0.006, dim, ha="left", va="bottom",
-                fontsize=9, fontweight="bold", color=tc)
-        if i < 2:
-            _arrow(ax, x + ww + 0.004, y + hh / 2, x + 0.315 - 0.004,
-                   y + 0.14 + hh / 2, color=MUTE, lw=2.0)
-    ax.text(0.50, 0.16, "G₀ = 2단계까지 완료한 현행 SDKB (동결 baseline)",
-            ha="center", fontsize=9.5, color=TOBE, fontweight="bold")
-    ax.text(0.685, 0.10, "G₁·G₂ = 3단계 보강 (본 연구의 처치)",
-            ha="center", fontsize=9.5, color=GREEN, fontweight="bold")
-    return _save(fig, out)
-
-
 def _draw_research_model(ax) -> None:
-    """연구 모형 — 보강 처치 → 게이트 → 태스크 성능 (§5.1). 그림 2 의 위 패널."""
-    ax.text(0.5, 0.95, "(a) 연구 모형 — 보강 처치 → 품질 게이트 → 태스크 성능",
+    """연구 모형 — 보강 처치 → 게이트 → 태스크 성능 (§5.1). **그림 1 의 아래 패널.**"""
+    ax.text(0.5, 0.95, "(b) 연구 모형 — 보강 처치 → 품질 게이트 → 태스크 성능",
             ha="center", va="top", fontsize=15, fontweight="bold", color=INK)
     _rbox(ax, 0.03, 0.44, 0.22, 0.26, "G₀", "현행 SDKB\n(특허 1,000 포함)",
           "#EDF2F7", "#A0AEC0", INK, 13, 9.5)
@@ -261,13 +239,8 @@ def _draw_research_model(ax) -> None:
 
 
 def _draw_pipeline(ax) -> None:
-    """검증 게이트 내장 보강 파이프라인 (§5.2). 그림 2 의 아래 패널.
-
-    (a) 가 **무엇을 검정하는가**(변수 관계)를, (b) 가 **그 처치가 실제로 어떻게 집행되는가**
-    (게이트가 무엇을 떨궈내는가)를 말한다. 두 장으로 흩어져 있으면 독자는 "게이트 통과"라는
-    매개 조건이 실물 파이프라인의 어디인지를 스스로 이어 붙여야 했다.
-    """
-    ax.text(0.5, 0.95, "(b) 검증 게이트 내장 보강 파이프라인 — 통과분만 병합된다",
+    """검증 게이트 내장 보강 파이프라인 (§4). **그림 2**(단독)의 본체."""
+    ax.text(0.5, 0.95, "검증 게이트 내장 보강 파이프라인 — 통과분만 병합된다",
             ha="center", va="top", fontsize=15, fontweight="bold", color=INK)
     steps = [
         ("수집", "KIPRIS 학술 API"),
@@ -298,50 +271,61 @@ def _draw_pipeline(ax) -> None:
             color=ASIS, fontweight="bold")
 
 
-def fig_research_model(out: Path | None = None) -> Path:
-    """**그림 2** — 연구 모형 + 파이프라인 통합 (v0.5 재편: 구 그림 3 ↔ 4).
+def fig_gap_and_model(out: Path | None = None) -> Path:
+    """**그림 1** — (a) 연구 갭 + (b) 연구 모형 (감축 재편 2026-07-19).
 
-    파일명은 선행 파일명(`fig3_research_model.svg`)을 유지한다 — CLAUDE.md §7 대로
-    번호 정렬은 최종 조판 시에 한다. `fig4_pipeline.svg` 는 더 이상 생성하지 않는다.
+    "무엇이 없었는가"와 "그 공백을 어떤 설계로 메우는가"가 논문의 첫 그림에서
+    한 번에 읽힌다. 구 `fig3_research_model.svg`(모형+파이프라인)는 생성하지 않는다 —
+    모형은 여기로, 파이프라인은 그림 2(`fig4_pipeline.svg`)로 갈라졌다.
     """
-    out = out or FIGURES / "fig3_research_model.svg"
-    fig, axes = _stack(11.8, 10.4, [1.0, 1.0])
-    _draw_research_model(axes[0])
-    _draw_pipeline(axes[1])
+    out = out or FIGURES / "fig1_gap_map.svg"
+    fig, axes = _stack(11.8, 11.2, [1.25, 1.0])
+    _draw_gap_map(axes[0])
+    _draw_research_model(axes[1])
     plt.tight_layout()
     return _save(fig, out)
 
 
-def fig_vacuous_gate(out: Path | None = None) -> Path:
-    """그림 6 — 공허한 게이트: 응답률은 둘 다 100%, 어휘 커버리지가 차이를 드러낸다 (§4.2).
+def fig_pipeline(out: Path | None = None) -> Path:
+    """**그림 2** — 검증 게이트 내장 보강 파이프라인 (§4)."""
+    out = out or FIGURES / "fig4_pipeline.svg"
+    fig, ax = _canvas(11.8, 5.2)
+    _draw_pipeline(ax)
+    return _save(fig, out)
 
-    수치는 §4.2 표(`make vocab`) 확정값이다.
+
+def fig_vacuous_gate(out: Path | None = None) -> Path:
+    """**그림 3** — 공허한 게이트: 응답률은 세 CQ 집합을 구별하지 못한다 (§6.2).
+
+    수치는 §6.2 표(`make vocab` · 실사용 술어 54 · 클래스 25) 확정값이다.
     """
     out = out or FIGURES / "fig6_vacuous_gate.svg"
-    fig, ax = plt.subplots(figsize=(9, 5.4))
+    fig, ax = plt.subplots(figsize=(9.5, 5.4))
     groups = ["CQ 응답률", "술어 커버리지", "클래스 커버리지"]
-    k8 = [100.0, 9.4, 16.0]
-    k14 = [100.0, 32.1, 28.0]
+    sets = [
+        ("K=8 (손으로 선정)", [100.0, 9.3, 16.0], "#B0B7C3", "#8A93A3"),
+        ("K=14 (태스크 도출)", [100.0, 31.5, 28.0], TOBE, "#1E4E82"),
+        ("K=27 (전 배터리)", [96.3, 66.7, 72.0], GREEN, "#1F5C40"),
+    ]
     x = list(range(len(groups)))
-    w = 0.36
-    b1 = ax.bar([i - w / 2 for i in x], k8, w, label="K=8 (손으로 선정)",
-                color="#B0B7C3", edgecolor="#8A93A3")
-    b2 = ax.bar([i + w / 2 for i in x], k14, w, label="K=14 (태스크 도출)",
-                color=TOBE, edgecolor="#1E4E82")
-    for bars in (b1, b2):
+    w = 0.26
+    for k, (label, vals, fc, ec) in enumerate(sets):
+        bars = ax.bar([i + (k - 1) * w for i in x], vals, w, label=label,
+                      color=fc, edgecolor=ec)
         for r in bars:
             if r.get_height() >= 100:  # 100% 막대는 라벨 생략 (범례·밴드와 겹침)
                 continue
             ax.text(r.get_x() + r.get_width() / 2, r.get_height() + 1.5,
-                    f"{r.get_height():.1f}", ha="center", fontsize=9, color=INK)
-    ax.axhspan(97, 103, color=ASIS_FILL, zorder=0)
-    ax.text(2.34, 100, "응답률은\n둘 다 100%", ha="center", va="center",
-            fontsize=9, color=ASIS, fontweight="bold")
+                    f"{r.get_height():.1f}", ha="center", fontsize=8.5, color=INK)
+    ax.axhspan(95, 103, color=ASIS_FILL, zorder=0)
+    ax.text(2.44, 99, "응답률은 좁은 집합을\n벌하지 못한다\n(넓은 쪽만 96.3)", ha="center",
+            va="center", fontsize=8.5, color=ASIS, fontweight="bold")
     ax.set_ylim(0, 112)
     ax.set_xticks(x)
     ax.set_xticklabels(groups, fontsize=10)
     ax.set_ylabel("백분율 (%)")
-    ax.set_title("공허한 게이트 — 응답률만 보면 9%짜리와 32%짜리가 구별되지 않는다",
+    ax.set_title("공허한 게이트 — 응답률만 보면 어휘의 9%를 만지는 CQ 집합과\n"
+                 "67%를 만지는 집합이 구별되지 않는다",
                  fontsize=12, fontweight="bold")
     ax.legend(loc="upper left", framealpha=0.9)
     ax.spines[["top", "right"]].set_visible(False)
@@ -349,12 +333,15 @@ def fig_vacuous_gate(out: Path | None = None) -> Path:
     return _save(fig, out)
 
 
-def fig_traps(out: Path | None = None) -> Path:
-    """그림 9 — 개념 단위 조기탐지 측정의 세 함정과 회피 설계 (§4.4·§5.3)."""
-    out = out or FIGURES / "fig9_traps.svg"
-    fig, ax = _canvas(12.0, 5.2)
-    ax.text(0.5, 0.95, "개념 단위 조기탐지의 세 함정 — 규명하고 회피한다",
-            ha="center", va="top", fontsize=15, fontweight="bold", color=INK)
+def _draw_traps(ax) -> None:
+    """개념 단위 조기탐지 측정의 세 함정과 회피 설계 (§6.4). **그림 5 의 아래 패널.**
+
+    감축 재편(2026-07-19)에서 단독 그림(구 fig9)에서 H2 시계열의 하단 패널로 흡수됐다 —
+    함정은 곧 "그림 5 위 패널의 시계열을 왜 이 설계로 읽어야 하는가"이므로 결과와
+    같은 자리에서 읽혀야 한다.
+    """
+    ax.text(0.5, 1.08, "(b) 개념 단위 조기탐지의 세 함정 — 규명하고 회피한다",
+            ha="center", va="bottom", fontsize=13, fontweight="bold", color=INK)
     traps = [
         ("소급 재분류", "현재 코드가 과거 출원에 소급 부여\n(H10 스킴 전량 2021년 이후 신설)",
          "명칭 키워드 대조군\n(명세는 소급 재작성 안 됨 · 시점 유효)"),
@@ -366,18 +353,17 @@ def fig_traps(out: Path | None = None) -> Path:
     ww = 0.30
     for i, (t, asis, tobe) in enumerate(traps):
         x = 0.035 + i * 0.325
-        ax.text(x + ww / 2, 0.83, f"함정 {i + 1} · {t}", ha="center",
+        ax.text(x + ww / 2, 0.92, f"함정 {i + 1} · {t}", ha="center", va="center",
                 fontsize=11.5, fontweight="bold", color=INK)
-        _rbox(ax, x, 0.44, ww, 0.30, "증상 (AS-IS)", asis,
+        _rbox(ax, x, 0.46, ww, 0.34, "증상 (AS-IS)", asis,
               ASIS_FILL, ASIS_EDGE, ASIS, 9.5, 9, "left")
-        _arrow(ax, x + ww / 2, 0.435, x + ww / 2, 0.375, GREEN, 2.2)
-        _rbox(ax, x, 0.06, ww, 0.30, "회피 (TO-BE)", tobe,
+        _arrow(ax, x + ww / 2, 0.455, x + ww / 2, 0.40, GREEN, 2.2)
+        _rbox(ax, x, 0.04, ww, 0.34, "회피 (TO-BE)", tobe,
               GREEN_FILL, GREEN, GREEN, 9.5, 9, "left")
-    return _save(fig, out)
 
 
 def fig_rq3_portability(out: Path | None = None) -> Path:
-    """그림 10 — RQ3 이식성: 폭은 포화, 깊이가 갈린다 (§4.6).
+    """**그림 6** — RQ3 이식성: 폭은 포화, 깊이가 갈린다 (§6.6).
 
     수치는 §4.6·표 15 확정값(G₁ 236 vs G₂ 573; 커버 26=26).
     """
@@ -413,26 +399,27 @@ def fig_rq3_portability(out: Path | None = None) -> Path:
 
 
 def _draw_summary_matrix(ax) -> None:
-    """결과 한 장 요약 — RQ ↔ 가설 ↔ 판정 ↔ 근거 (§7.1). 그림 9 의 아래 패널.
+    """결과 한 장 요약 — RQ ↔ 가설 ↔ 판정 ↔ 검증 방식 (§7.1). **그래픽 초록의 본체.**
 
-    **근거 열의 그림·표 번호는 v0.5 본문 번호다.** v0.3 번호("그림 5·7", "그림 8·9",
-    "그림 10")를 아트워크 안에 구워 두었었는데, 파일명과 달리 이것은 독자에게 보인다 —
-    조판에서 고칠 수 없는 종류의 불일치였다 (감사 2026-07-18 · S4).
+    근거 열에 그림·표 번호를 굽지 않는다(CLAUDE.md §7) — 그래픽 초록은 본문 밖에서
+    단독으로 읽히므로 본문 번호는 여기서 무의미하고, 조판에서 고칠 수도 없다.
+    대신 검증 방식(무엇으로 확인했는가)을 적는다.
     """
-    ax.text(0.5, 0.95, "(b) 결과 요약 — 세 질문, 세 답",
+    ax.text(0.5, 0.95, "결과 요약 — 세 질문, 세 답",
             ha="center", va="top", fontsize=14, fontweight="bold", color=INK)
-    cols = ["", "질문", "가설·판정", "핵심 수치", "근거"]
+    cols = ["", "질문", "가설·판정", "핵심 수치", "검증 방식"]
     xw = [0.06, 0.24, 0.26, 0.24, 0.16]
     xs = [0.02]
     for w in xw[:-1]:
         xs.append(xs[-1] + w)
     rows = [
         ("RQ1", "게이트가 정합성 훼손 델타를 거부하며\n커버리지를 확장하는가",
-         "H1 지지\n(단측 Wilcoxon)", "커버 20 → 26 / 49\np = 4.8×10⁻⁷", "그림 3·5\n표 6"),
+         "H1 지지\n(단측 Wilcoxon)", "커버 20 → 26 / 49\np = 4.8×10⁻⁷", "커버리지 검정\n4개 표본집합"),
         ("RQ2", "코드·이름 없는 국면을\n표현·조기탐지하는가",
-         "H2 능력 존재 증명\n(유의성 아님)", "HBM 개념 2009\nvs 명칭 2020 (11년차)", "그림 6·7\n표 7–10"),
+         "H2 능력 존재 증명\n(유의성 아님)", "HBM 개념 2009\nvs 명칭 2020 (11년차)",
+         "10사례 시계열\n+ 진단 D1·D2"),
         ("RQ3", "프레임워크가 코퍼스를 바꿔도\n재현되는가 (이식성)",
-         "H1 소부장서도 지지\n세 층 모두", "폭 26 포화\n깊이 236 → 573", "그림 8\n표 15·16"),
+         "H1 소부장서도 지지\n세 층 모두", "폭 26 포화\n깊이 236 → 573", "층별 재검정\nCQ 27/27"),
     ]
     y0, hh = 0.72, 0.205
     for j, (c, w) in enumerate(zip(cols, xw, strict=True)):
@@ -454,58 +441,28 @@ def _draw_summary_matrix(ax) -> None:
 
 
 def fig_summary_matrix(out: Path | None = None) -> Path:
-    """**그림 9** — 갭 맵 + 결과 요약 통합 (v0.5 재편: 구 그림 1 ↔ 11).
+    """**그래픽 초록** — 결과 한 장 요약 (본문 그림 아님 · 감축 재편 2026-07-19).
 
-    갭(AS-IS→TO-BE)과 그 갭에 대한 답을 한 장에 세로로 놓아, 논문이 무엇을 메우려 했고
-    무엇으로 메웠는지가 한 눈에 대응되게 한다. 파일명은 선행 파일명(`fig11_summary.svg`)을
-    유지하고 `fig1_gap_map.svg` 는 더 이상 생성하지 않는다 (CLAUDE.md §7).
+    갭 맵은 그림 1 로 옮겨 갔고, 이 파일은 AEI 제출물의 graphical abstract 가 된다 —
+    본문 페이지를 쓰지 않으면서 결과 요약을 유지하는 자리다. 파일명은 선행 파일명
+    (`fig11_summary.svg`)을 유지한다.
     """
     out = out or FIGURES / "fig11_summary.svg"
-    fig, axes = _stack(12.0, 11.6, [1.28, 1.0])
-    _draw_gap_map(axes[0])
-    _draw_summary_matrix(axes[1])
-    plt.tight_layout()
+    fig, ax = _canvas(12.0, 5.4)
+    _draw_summary_matrix(ax)
     return _save(fig, out)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
 # 데이터 플롯 (data/processed CSV)
 # ═══════════════════════════════════════════════════════════════════════════
-def fig_coverage_gap(df: pd.DataFrame, out: Path | None = None) -> Path:
-    """그림 5 — 보강 전(G₀) 공정 단계별 커버리지 편중 (§4.1).
-
-    `before` 만 그린다 — 보강 효과는 그림 7의 몫이고, 이 그림은 "왜 보강이
-    필요한가"라는 §4.1 의 동기를 그린다. 공백(before=0) 단계는 회색 라벨로 드러낸다.
-    """
-    out = out or FIGURES / "fig5_coverage_gap.svg"
-    plot = df.sort_values(["level", "before"], ascending=[True, False]).copy()
-    plot.index = plot["label"]
-    covered = plot["before"] > 0
-    colors = covered.map({True: TOBE, False: "#e0e0e0"})
-    ax = plot["before"].plot.barh(
-        figsize=(8.5, max(4, 0.28 * len(plot))), color=list(colors), width=0.8
-    )
-    ax.set_xscale("symlog")
-    ax.set_xlabel("mapped patents in G₀ (symlog)")
-    ax.set_ylabel("process step")
-    n_cov, n_gap = int(covered.sum()), int((~covered).sum())
-    ax.set_title(
-        f"G₀ process coverage before augmentation — "
-        f"{n_cov} covered / {n_gap} empty of {len(plot)} steps"
-    )
-    gap_labels = set(plot.index[~covered])
-    for lbl in ax.get_yticklabels():
-        if lbl.get_text() in gap_labels:
-            lbl.set_color("#999999")
-    plt.tight_layout()
-    return _save(plt.gcf(), out)
-
-
 def fig_h1_coverage(df: pd.DataFrame, out: Path | None = None) -> Path:
-    """그림 7 — H1: 공정 단계별 커버리지 G₀ vs G₁ (§4.3).
+    """**그림 4** — H1: 공정 단계별 커버리지 G₀ vs G₁ (§6.3).
 
     복원 이전 20개 단계를 레이블 * 로 표시한다 — 복원 단계는 G₀ 에서 0 이라 H1 에
     유리하므로 어느 막대가 그쪽인지 그림에서 바로 보여야 한다.
+    구 fig5(G₀ 편중 단독)는 생성하지 않는다 — before 막대가 같은 사실을 말한다
+    (감축 재편 2026-07-19).
     """
     out = out or FIGURES / "fig7_h1_coverage.svg"
     plot = df.sort_values(["level", "delta"], ascending=[True, True]).copy()
@@ -523,7 +480,7 @@ def fig_h1_coverage(df: pd.DataFrame, out: Path | None = None) -> Path:
 
 
 def fig_h2_name_arm(ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = None) -> Path:
-    """**그림 6** — 사례별 개념(구조 조합) vs **명칭 키워드** 출원 시계열 (§6.4 · 주논증 C).
+    """**그림 5** — (a) 개념 vs 명칭 시계열 10사례 + (b) 세 함정 (§6.4 · 주논증 C).
 
     이 자리에는 오래도록 **코드 팔**(개념 vs 코드 · 7사례)이 걸려 있었다. 그런데 §6.4 는
     코드 대조군을 소급 재분류 때문에 무효로 선언하고 **진단 D1** 으로 강등했다 — 주논증이
@@ -533,6 +490,9 @@ def fig_h2_name_arm(ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = No
     명칭 대조군이 옳은 상대인 이유: 명세 텍스트는 **소급 재작성되지 않는다.** 2010년 특허의
     초록은 지금도 2010년의 초록이다. 개념 정의는 `si_struct`(명칭 용어를 뺀 구조 전용)라
     대조군과 **서로소**이므로, 개념 ⊇ 이름의 자명성이 결론을 만들지 않는다.
+
+    감축 재편(2026-07-19)에서 세 함정 도식(구 fig9)이 (b) 패널로 들어왔다 — (a) 의
+    대조군·정의·관측창 선택이 전부 (b) 의 회피 설계이므로 한 장에서 읽혀야 한다.
     """
     out = out or FIGURES / "fig8_h2_timeseries.svg"
     order = ["concept_first", "tie", "name_first"]
@@ -545,8 +505,11 @@ def fig_h2_name_arm(ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = No
 
     ncol = 5
     nrow = (len(cases) + ncol - 1) // ncol
-    fig, axes = plt.subplots(nrow, ncol, figsize=(3.5 * ncol, 3.1 * nrow), sharex=True)
-    for ax, case_id in zip(axes.flat, cases, strict=False):
+    fig = plt.figure(figsize=(3.5 * ncol, 3.1 * nrow + 3.3))
+    gs = fig.add_gridspec(2, 1, height_ratios=[3.1 * nrow, 3.0], hspace=0.30)
+    gs_ts = gs[0].subgridspec(nrow, ncol, hspace=0.42)
+    axes = [fig.add_subplot(gs_ts[k // ncol, k % ncol]) for k in range(len(cases))]
+    for ax, case_id in zip(axes, cases, strict=True):
         row = leads[leads["case_id"] == case_id].iloc[0]
         sub = ts[ts["case_id"] == case_id].pivot(index="year", columns="kind", values="n")
         for kind, style, color, label in (
@@ -576,15 +539,15 @@ def fig_h2_name_arm(ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = No
         ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(5))
         ax.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d"))
         ax.spines[["top", "right"]].set_visible(False)
-    for ax in axes.flat[len(cases):]:
-        ax.axis("off")
-    axes.flat[0].legend(fontsize=8)
+    axes[0].legend(fontsize=8)
+    traps_ax = fig.add_subplot(gs[1])
+    _blank(traps_ax)
+    _draw_traps(traps_ax)
     fig.suptitle(
-        "H2 (주논증 C) — 개념(구조 조합) vs 명칭 키워드 조기탐지 · 사전 확정 10사례\n"
+        "(a) H2 (주논증 C) — 개념(구조 조합) vs 명칭 키워드 조기탐지 · 사전 확정 10사례\n"
         "구조가 이름과 진짜로 다른 곳에서 개념은 한 번도 지지 않는다 (2005–2023)",
         fontsize=12.5, fontweight="bold",
     )
-    plt.tight_layout()
     return _save(fig, out)
 
 
@@ -633,16 +596,13 @@ def fig_h2_timeseries(ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = 
 def main() -> None:
     """CSV·상수에서 논문 그림 전량을 SVG 로 결정적으로 재생성한다."""
     made: list[Path] = []
-    # fig_gap_map·fig_pipeline 은 더 이상 단독 생성하지 않는다 — 각각 fig_summary_matrix·
-    # fig_research_model 의 패널로 흡수됐다 (v0.5 그림 재편 · 11장 → 9장).
-    for fn in (fig_evolution, fig_research_model,
-               fig_vacuous_gate, fig_traps, fig_rq3_portability, fig_summary_matrix):
+    for fn in (fig_gap_and_model, fig_pipeline,
+               fig_vacuous_gate, fig_rq3_portability, fig_summary_matrix):
         made.append(fn())
     h1 = pd.read_csv(PROCESSED / "h1_coverage.csv")
-    made.append(fig_coverage_gap(h1))
     made.append(fig_h1_coverage(h1))
-    # 그림 6 = 주논증 C(명칭 팔). 코드 팔은 진단 D1 로만 남는다 — 두 팔은 사례 집합도
-    # 대조군도 다르므로 각자의 CSV 에서 그린다 (감사 2026-07-18 · S5).
+    # 그림 5 = 주논증 C(명칭 팔) + 세 함정 패널. 코드 팔은 진단 D1 로만 남는다 —
+    # 두 팔은 사례 집합도 대조군도 다르므로 각자의 CSV 에서 그린다 (감사 2026-07-18 · S5).
     made.append(fig_h2_name_arm(
         pd.read_csv(PROCESSED / "h2_name_timeseries.csv"),
         pd.read_csv(PROCESSED / "h2_name_leadtime.csv"),
