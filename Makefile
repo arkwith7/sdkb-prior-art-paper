@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq vocab gate h1 h2 cpc cpc-vintage figures
+.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq vocab gate h1 h2 cpc cpc-vintage figures serve
 
 setup:
 	uv sync --all-extras
@@ -152,3 +152,7 @@ by-applicant:
 
 figures:
 	uv run python -m sdkb_paper.viz.figures
+
+# --- 온톨로지 탐색·모니터링 로컬 웹앱 (읽기 전용) ---
+serve:
+	uv run python -m sdkb_paper.explore.server --port $(or $(PORT),8000)

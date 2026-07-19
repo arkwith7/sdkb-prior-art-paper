@@ -60,6 +60,9 @@ SDKB_HOME = Path(os.environ.get("SDKB_HOME", Path.home() / "Dev" / "sdkb"))
 
 # baseline: 보강 전 그래프 (H1 의 "before")
 GRAPH_V0 = PROCESSED / "graph_v0.ttl"
+# 보강 후 그래프 — 읽기 전용 소비자(explore 등)만 참조한다. 조립은 merge 가 한다.
+GRAPH_V1 = PROCESSED / "graph_v1.ttl"  # G₁ 삼성·SK하이닉스 보강 후
+GRAPH_V2 = PROCESSED / "graph_v2.ttl"  # G₂ KSIA 소부장 188사 보강 후
 
 # --- 온톨로지 네임스페이스 ------------------------------------------------
 # SDKB v1.0 실물과 일치 (semiconductor-knowledge-base). slash 네임스페이스 3분리:

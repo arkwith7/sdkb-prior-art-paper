@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SDKB 온톨로지 탐색기</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="/static/vendor/cytoscape.min.js"></script>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>SDKB 반도체 온톨로지 탐색기</h1>
+      <div class="sub">G₀·G₁·G₂ 라이브 SPARQL · 구축현황 모니터링 · 읽기 전용</div>
+    </div>
+    <nav>
+      <button data-tab="dashboard" class="active">대시보드</button>
+      <button data-tab="sparql">SPARQL</button>
+      <button data-tab="findings">핵심 발견</button>
+      <button data-tab="practical">실무 질의</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 대시보드 -->
+    <section id="dashboard" class="tab active">
+      <div id="status-cards" class="grid"><div class="empty spin">구축현황 불러오는 중…</div></div>
+    </section>
+
+    <!-- SPARQL -->
+    <section id="sparql" class="tab">
+      <div class="sparql-layout">
+        <aside class="sidebar">
+          <h4>역량질문 프리셋 (27)</h4>
+          <div id="cq-list"><div class="empty spin">불러오는 중…</div></div>
+        </aside>
+        <div class="editor-wrap">
+          <div class="toolbar">
+            <select id="graph-select" title="질의 대상 그래프"></select>
+            <button id="run-btn" class="btn primary">▶ 실행 (Ctrl+Enter)</button>
+            <button id="csv-btn" class="btn">CSV 내보내기</button>
+            <span id="active-cq" class="meta"></span>
+          </div>
+          <textarea id="query" spellcheck="false" placeholder="SPARQL 을 입력하거나 왼쪽 CQ 를 클릭하세요…"></textarea>
+          <div id="query-meta" class="meta"></div>
+          <div class="result-tabs" id="result-tabs" style="display:none">
+            <button class="btn" data-view="table">표</button>
+            <button class="btn" data-view="graph">그래프 뷰</button>
+          </div>
+          <div id="result-table"></div>
+          <div id="result-graph" style="display:none"><div id="cy"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 핵심 발견 -->
+    <section id="findings" class="tab">
+      <p class="meta">아래 수치는 상주 그래프에 대한 <b>실시간 SPARQL</b> 로 계산됩니다 — 논문 §6 의 발견이 실제 그래프에서 재현됨을 보이는 증거를 겸합니다.</p>
+      <div id="findings-body"><div class="empty spin">불러오는 중…</div></div>
+    </section>
+
+    <!-- 실무 질의 -->
+    <section id="practical" class="tab">
+      <div class="practical-grid">
+        <div class="pcard" id="pc-expert">
+          <h3>① 소부장 문제 → 전문가 찾기</h3>
+          <p>공정 단계가 요구하는 스킬을 실제 보유한 전문가를 찾습니다 (CQ11·인력 매칭).</p>
+          <label>공정/스킬 키워드 (prefLabel 부분일치)</label>
+          <input id="expert-kw" placeholder="예: etch, deposition, litho" />
+          <label>대상 그래프</label>
+          <select id="expert-graph"></select>
+          <button class="btn primary" onclick="runPractical('expert')">전문가 검색</button>
+          <div class="presult" id="expert-result"></div>
+        </div>
+        <div class="pcard" id="pc-priorart">
+          <h3>② 연구개발 기술 → 선행기술 조사</h3>
+          <p>아이디어를 온톨로지 개념으로 표현했을 때, 같은 개념을 실현하며 착상일보다 앞선 선행기술 후보를 찾습니다 (CQ10·RQ2).</p>
+          <label>개념 키워드 (공정·디바이스 prefLabel 부분일치)</label>
+          <input id="pa-kw" placeholder="예: plasma etch, HBM, GAA" />
+          <label>착상 기준일 (이전 출원만)</label>
+          <input id="pa-date" type="date" value="2015-01-01" />
+          <label>대상 그래프</label>
+          <select id="pa-graph"></select>
+          <button class="btn primary" onclick="runPractical('priorart')">선행기술 검색</button>
+          <div class="presult" id="priorart-result"></div>
+        </div>
+        <div class="pcard" id="pc-fto">
+          <h3>③ 적용 기술 → FTO 청구항 확인</h3>
+          <p>출원인별로 청구항 전문(FTO·회피설계의 기초)을 그래프에 갖춘 특허 건수를 봅니다 (CQ27·G₂에 실체화).</p>
+          <label>출원인 키워드 (선택 · prefLabel 부분일치)</label>
+          <input id="fto-kw" placeholder="예: 삼성, 램테크, 비워두면 전체" />
+          <label>대상 그래프</label>
+          <select id="fto-graph"></select>
+          <button class="btn primary" onclick="runPractical('fto')">FTO 준비 현황</button>
+          <div class="presult" id="fto-result"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
