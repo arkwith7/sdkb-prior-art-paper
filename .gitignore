@@ -18,6 +18,9 @@ paper/figures/cq_report*.md
 # Windows/WSL 부산물 (NTFS alternate data stream)
 *:Zone.Identifier
 
+# 에디터 로컬 워크스페이스 정보 (개인 설정 — 추적 제외)
+*.code-workspace
+
 # python
 __pycache__/
 *.egg-info/
