@@ -414,14 +414,15 @@ make figures            # 논문 그림 전량 재생성
 |---|---|---|
 | 표 3 수집 기술통계 | `make profile` | `data/profiles/*.md` |
 | 표 4 H1 검정 | `make h1` | `paper/tables/h1_main.md` |
-| 표 5 H2 주논증 C · 표 6(a)(b) D1+DART · 부록 E 표 E1 D2 | `make h2` · `make dart` | `paper/tables/h2_name_arm.md` · `h2_code_arm.md` · `h2_dart_reference.md` · `h2_census.md` |
-| 표 7(a)(b)(c) 강건성 · 부록 F 표 F1 잔여 공백 | `make family` · `make by-applicant` · `make robustness` | `paper/tables/robustness_*.md` · `h1_sensitivity.md` · `h1_residual_gaps.md` |
-| 표 8(a)(b) RQ3 | `make h1 CORPUS=ksia` · `make ksia-strata` | `paper/tables/h1_ksia.md` · `h1_ksia_strata.md` |
+| 표 5 H2 주논증 C · 부록 E 표 E1(a)(b) D1+DART · 표 E2 D2 | `make h2` · `make dart` | `paper/tables/h2_name_arm.md` · `h2_code_arm.md` · `h2_dart_reference.md` · `h2_census.md` |
+| 표 6(a)(b)(c) 강건성 · 부록 F 표 F1 잔여 공백 | `make family` · `make by-applicant` · `make robustness` | `paper/tables/robustness_*.md` · `h1_sensitivity.md` · `h1_residual_gaps.md` |
+| 표 7(a)(b) RQ3 | `make h1 CORPUS=ksia` · `make ksia-strata` | `paper/tables/h1_ksia.md` · `h1_ksia_strata.md` |
 | 그림 (본문 6장) | `make figures` | `paper/figures/fig{1,4,6,7,8,10}*.svg` |
 | 그래픽 초록 | `make figures` | `paper/figures/fig11_summary.svg` |
 
-**그림은 AEI 감축 재편(2026-07-19)으로 본문 6장 + 그래픽 초록이다** — 표도 본문 8개로 줄었다
-(표 1 자원 비교·표 2 G₀ 는 원고 인라인, 4층 모형 표는 §2.1 본문 흡수, 소스 표는 부록 C 표 C1).
+**그림은 AEI 감축 재편(2026-07-19)으로 본문 6장 + 그래픽 초록이다** — 표도 본문 7개로 줄었다
+(표 1 자원 비교·표 2 G₀ 는 원고 인라인, 4층 모형 표는 §2.1 본문 흡수, 소스 표는 부록 C 표 C1,
+D1 진단 전표는 부록 E 표 E1 — §6 서술도 같은 날 축약했고 수치·판정은 전량 보존이다).
 그림 1 `fig1_gap_map.svg`((a) 갭 맵 + (b) 연구 모형 — 갭이 첫 그림이어야 그림만으로 신규성이
 읽힌다) · 그림 2 `fig4_pipeline.svg` · 그림 3 `fig6_vacuous_gate.svg`(K=8/14/27 세 집합) ·
 그림 4 `fig7_h1_coverage.svg`(G₀ 편중 그림은 여기의 before 막대로 흡수) · 그림 5
