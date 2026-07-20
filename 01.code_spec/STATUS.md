@@ -2,7 +2,7 @@
 
 *최종 갱신: 2026-07-16 · 근거: `pytest` · `make gate` · `make h1 CORPUS=ksia-equipment` · `make ksia-strata` · G₂ 3층 게이트(L1·L2 consistent·L3 CQ 27/27) · SDKB 커밋 `edb8ae4`*
 
-> ⚠ **서명 수치의 정본은 [CANONICAL-INDEX.md](CANONICAL-INDEX.md) §1 이다.** 현재값: **G₀ 44,202 ·
+> ⚠ **서명 수치의 정본은 [CANONICAL-INDEX.md](CANONICAL-INDEX.md) §1 이다.** 현재값: **G₀ 44,221 ·
 > G₁ 413,730 · G₂ 429,334 트리플** (이번 세션 rdflib 실측 = MANIFEST §3 = 논문 v0.3). 아래 "G₁ 서명"·
 > "G₀ 서명" 표의 일부 트리플 수(413,340·43,814)와 before 커버(16/33)는 재동결·교정 이전의 낡은
 > 값이다 — 서사 맥락으로 남기되, 인용은 CANONICAL-INDEX §1 을 쓴다.
@@ -234,7 +234,7 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 
 | 항목 | G₀ | G₁ | 근거 |
 |---|---:|---:|---|
-| 트리플 | 44,202 | **413,730** | `make merge` (트리플은 재동결 반영 · CANONICAL-INDEX §1) |
+| 트리플 | 44,221 | **413,749** | `make merge` (트리플은 재동결 반영 · CANONICAL-INDEX §1) |
 | 특허 | 1,000 | **25,179** | +24,179 (삼성 · SK하이닉스) |
 | **커버된 공정 / 공백** | **20 / 29** | **26 / 23** | CQ01 · CQ03 (`h1_coverage.csv` 실측) |
 | 최근 5년 출원 전무 개념 | 58 | **35** | CQ06 |

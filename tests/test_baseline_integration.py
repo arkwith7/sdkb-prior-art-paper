@@ -31,7 +31,11 @@ from sdkb_paper.validate.vocab_coverage import measure
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 44202    # 2026-07-15 청구항 어휘(C-2 RQ3): ont:claimText·claimCount TBox 선언
+EXPECTED_TRIPLES = 44221    # 2026-07-20 SubProcess 한국어 별칭 승격(SDKB da745ef): skos:altLabel@ko
+                            # +19 — 원자층증착=ALD·화학기상증착=CVD·물리기상증착/스퍼터링=PVD·
+                            # 건식(플라즈마) 식각·습식 식각. 라벨만 늘고 특허↔공정 엣지 불변이라
+                            # C₀ 20/49 · H1 네 표본집합 p값 전부 불변(실측). 구 44,202.
+                            # 그 전: 2026-07-15 청구항 어휘(C-2 RQ3): ont:claimText·claimCount TBox 선언
                             # +10 (술어 2개 × 5 트리플) — 구 44,192. G₀ 의 SIRP 특허는 청구항1만
                             # 있어 claimText 사용 0, ABox·엣지 불변(C₀ 20/49 불변 · H1 p 4자리 불변).
                             # 그 전: 2026-07-15 규제 축(PLAN-015): governance TBox+인스턴스 +378 — 구 43,814

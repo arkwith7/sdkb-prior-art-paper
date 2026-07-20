@@ -16,7 +16,7 @@
 | 축 | 정본 (FINAL) | 위치 |
 |---|---|---|
 | **논문** | `논문_v0.5_SDKB.md` | `paper/` |
-| **baseline 그래프 G₀** | `graph_v0.ttl` (44,202 트리플) | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
+| **baseline 그래프 G₀** | `graph_v0.ttl` (44,221 트리플) | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
 | **보강 그래프 G₁** | `graph_v1.ttl` (413,730) | `data/processed/` |
 | **소부장 그래프 G₂ (RQ3)** | `graph_v2.ttl` (429,334) | `data/processed/` |
 | **얼린 상류 스냅샷** | `data/external/sdkb/` 13파일 (SDKB `edb8ae4`) | git-tracked · sha256 in `PROVENANCE.json` |
@@ -33,7 +33,7 @@
 
 | 항목 | G₀ | G₁ | G₂ (소부장) |
 |---|---:|---:|---:|
-| **트리플 (정본)** | **44,202** | **413,730** | **429,334** |
+| **트리플 (정본)** | **44,221** | **413,749** | **429,353** |
 | 커버된 공정 / 49 | 20 | **26** | **26** |
 | 특허 (병합) | 1,000 (SIRP 거절) | +24,179 델타 | +12,339 델타 |
 | Process 11 / SubProcess 38 · Device 34 | ✓ | | |
@@ -56,7 +56,7 @@
 > 코퍼스를 판별한다는 증거**다.
 
 > **grep 으로 트리플을 세지 말 것.** `grep -c ' \.$'` 프록시는 Turtle 의 `;`·`,` 축약 때문에
-> 약 13배 과소계상한다(G₀ 프록시 3,291 vs 실제 44,202). 트리플 수는 **MANIFEST §3 또는 rdflib
+> 약 13배 과소계상한다(G₀ 프록시 3,291 vs 실제 44,221). 트리플 수는 **MANIFEST §3 또는 rdflib
 > 파싱**으로만 인용한다.
 
 ---

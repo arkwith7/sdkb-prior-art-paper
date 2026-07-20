@@ -2723,6 +2723,12 @@
     dcterms:license "Apache-2.0" ;
     dcterms:source "semikong" ;
     rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:altLabel "물리 기상 증착"@ko,
+        "물리 기상 퇴적"@ko,
+        "물리기상증착"@ko,
+        "물리기상퇴적"@ko,
+        "스퍼터"@ko,
+        "스퍼터링"@ko ;
     skos:definition "Physical vapor deposition (sputter)."@en ;
     skos:prefLabel "PVD"@en ;
     ont:confidence 0.7,
@@ -2800,6 +2806,10 @@
     dcterms:license "Apache-2.0" ;
     dcterms:source "semikong" ;
     rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:altLabel "원자층 증착"@ko,
+        "원자층 퇴적"@ko,
+        "원자층증착"@ko,
+        "원자층퇴적"@ko ;
     skos:definition "Atomic layer deposition for conformal ultra-thin films."@en ;
     skos:prefLabel "ALD"@en ;
     ont:confidence 0.7,
@@ -2833,6 +2843,8 @@
     dcterms:license "Apache-2.0" ;
     dcterms:source "semikong" ;
     rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:altLabel "습식 식각"@ko,
+        "습식식각"@ko ;
     skos:definition "Etch using liquid chemistries."@en ;
     skos:prefLabel "Wet Etch"@en ;
     ont:confidence 0.9,
@@ -2924,6 +2936,10 @@
     dcterms:license "Apache-2.0" ;
     dcterms:source "semikong" ;
     rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:altLabel "화학 기상 증착"@ko,
+        "화학 기상 퇴적"@ko,
+        "화학기상증착"@ko,
+        "화학기상퇴적"@ko ;
     skos:definition "Chemical vapor deposition."@en ;
     skos:prefLabel "CVD"@en ;
     ont:confidence 0.7,
@@ -2959,6 +2975,9 @@
     dcterms:license "Apache-2.0" ;
     dcterms:source "semikong" ;
     rdfs:seeAlso <https://github.com/aitomatic/semikong> ;
+    skos:altLabel "건식 식각"@ko,
+        "건식식각"@ko,
+        "플라즈마 식각"@ko ;
     skos:definition "Dry etch using RF plasma (RIE/ICP)."@en ;
     skos:prefLabel "Plasma Etch"@en ;
     ont:confidence 0.6,

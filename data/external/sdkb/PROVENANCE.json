@@ -1,20 +1,20 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "5cbf149ce8a686b60f001046467bdd8dc3c0beb1",
-  "source_commit_date": "2026-07-20T16:34:37+09:00",
+  "source_commit": "da745ef6bfda6d909792dda701f37e7d82ce0705",
+  "source_commit_date": "2026-07-20T19:46:14+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-20T07:34:52+00:00",
+  "vendored_at": "2026-07-20T10:46:27+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
-    "synonyms": 184,
+    "synonyms": 203,
     "cases": 3,
-    "provenance_sources": 13
+    "provenance_sources": 14
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-07-20T07:34:52+00:00",
+    "checked_at": "2026-07-20T10:46:27+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -29,7 +29,7 @@
         },
         {
           "input": "data/semiconductor_v0_3.json",
-          "sha256": "a380792ef3870070a6fed377ec1f4f7aa2f0b52e5008b8d9d6f79694438d1a53"
+          "sha256": "c5d55aa9a06f77f8bdc995eabf3be129d9d7f9604bcec258e48aa66efd2a4032"
         }
       ],
       "ontology/sdkb-abox-patents.ttl": [
@@ -53,7 +53,7 @@
         },
         {
           "input": "data/semiconductor_v0_3.json",
-          "sha256": "a380792ef3870070a6fed377ec1f4f7aa2f0b52e5008b8d9d6f79694438d1a53"
+          "sha256": "c5d55aa9a06f77f8bdc995eabf3be129d9d7f9604bcec258e48aa66efd2a4032"
         }
       ],
       "ontology/sdkb-abox-vendors.ttl": [
@@ -85,7 +85,7 @@
         },
         {
           "input": "ontology/sdkb-core-data.ttl",
-          "sha256": "62f5b5e6aafa605932bfe87993f6bf41391f2d4e456464d196e768ea5820360f"
+          "sha256": "fa326cf2153e42b861ff1b5f82af51d1fd918e0f5dda4c949d34e51e211b251c"
         }
       ],
       "ontology/sdkb-governance-kr-instances.ttl": [
@@ -103,7 +103,7 @@
         },
         {
           "input": "ontology/sdkb-core-data.ttl",
-          "sha256": "62f5b5e6aafa605932bfe87993f6bf41391f2d4e456464d196e768ea5820360f"
+          "sha256": "fa326cf2153e42b861ff1b5f82af51d1fd918e0f5dda4c949d34e51e211b251c"
         }
       ]
     }
@@ -132,7 +132,7 @@
       "file": "sdkb-core-data.ttl",
       "source_path": "ontology/sdkb-core-data.ttl",
       "role": "ABox: 도메인 인스턴스 (공정 20 · 디바이스 31 …)",
-      "sha256": "62f5b5e6aafa605932bfe87993f6bf41391f2d4e456464d196e768ea5820360f"
+      "sha256": "fa326cf2153e42b861ff1b5f82af51d1fd918e0f5dda4c949d34e51e211b251c"
     },
     {
       "file": "sdkb-abox-patents.ttl",
@@ -180,13 +180,13 @@
       "file": "semiconductor_v0_3.json",
       "source_path": "data/semiconductor_v0_3.json",
       "role": "ABox 의 커밋된 원천(=재현 기준점)",
-      "sha256": "a380792ef3870070a6fed377ec1f4f7aa2f0b52e5008b8d9d6f79694438d1a53"
+      "sha256": "c5d55aa9a06f77f8bdc995eabf3be129d9d7f9604bcec258e48aa66efd2a4032"
     },
     {
       "file": "schema_report.json",
       "source_path": "data/schema_report.json",
       "role": "원천의 sha256 + 노드/엣지 카운트",
-      "sha256": "10a492a28cad9b2f9f6705800fa4b4e41832e268e15f07be1bb83c25a9183d22"
+      "sha256": "eed652d9ee3aebc3bafcea990a85f7e9593cfdccdc9afba7a67329b3cf0fb249"
     }
   ]
 }
