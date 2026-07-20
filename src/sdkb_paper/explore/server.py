@@ -14,7 +14,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from sdkb_paper.config import QUERIES_CQ
-from sdkb_paper.explore import findings, store
+from sdkb_paper.explore import anchor, findings, store, viewer
 
 STATIC = Path(__file__).parent / "static"
 
@@ -50,6 +50,10 @@ def list_cqs() -> list[dict]:
 
 class Handler(BaseHTTPRequestHandler):
     server_version = "sdkb-explore/1.0"
+
+    def _log(self, *parts) -> None:
+        """진행 상황을 콘솔에 한 줄로. 데모 중 무엇이 도는지 보이는 것이 목적이다."""
+        print("  " + " ".join(str(p) for p in parts), flush=True)
 
     # --- 응답 헬퍼 -------------------------------------------------------
     def _json(self, obj, status=200):
@@ -102,11 +106,19 @@ class Handler(BaseHTTPRequestHandler):
             payload = json.loads(self.rfile.read(length) or b"{}")
             if route == "/api/sparql":
                 self._json(self._sparql(payload))
+            elif route == "/api/interpret":
+                self._json(self._interpret(payload))
+            elif route == "/api/viewer":
+                self._json(self._viewer(payload))
             else:
-                self._error("unknown route", 404)
+                # 구버전 프로세스가 살아 있으면 새 라우트를 모른다 — 그 사실을 메시지에 담는다.
+                self._log(f"[404] 없는 라우트: {route} (서버가 구버전일 수 있다 — 재시작하라)")
+                self._error(f"unknown route: {route} — 서버 재시작이 필요할 수 있습니다", 404)
         except json.JSONDecodeError:
+            self._log("[오류] JSON 본문 파싱 실패")
             self._error("invalid JSON body")
         except Exception as exc:  # noqa: BLE001
+            self._log(f"[오류] {type(exc).__name__}: {exc}")
             self._error(f"{type(exc).__name__}: {exc}", 400)
 
     # --- 엔드포인트 구현 ------------------------------------------------
@@ -123,7 +135,74 @@ class Handler(BaseHTTPRequestHandler):
         query = (payload.get("query") or "").strip()
         if not query:
             raise ValueError("빈 쿼리")
-        return store.run_query(key, query).to_dict()
+        first = next((ln for ln in query.splitlines() if ln.strip()[:1] not in ("#", "")), "")
+        self._log(f"[SPARQL] {key} ← {first.strip()[:70]}")
+        res = store.run_query(key, query)
+        self._log(f"[SPARQL] {key} → {len(res.rows)}행 · {res.elapsed_ms:.0f}ms")
+        return res.to_dict()
+
+    def _interpret(self, payload: dict) -> dict:
+        """서술문 → 앵커·생성 쿼리·결과. 실행까지 한 번에 해서 데모 왕복을 줄인다."""
+        key = payload.get("graph", "v0")
+        text = (payload.get("text") or "").strip()
+        if not text:
+            raise ValueError("빈 문장")
+        before = payload.get("before") or "2015-01-01"
+        self._log(f'[문장] {key} ← "{text[:70]}{"…" if len(text) > 70 else ""}"')
+
+        lex = anchor.build_lexicon(key)
+        self._log(f"[사전] {key} · 어휘 {len(lex)}항목 (prefLabel+altLabel)")
+
+        out = anchor.interpret(text, key, before=before)
+        for a in out["anchors"]:
+            via = " (별칭)" if a["via_alt"] else ""
+            nodes = f" ×{a['nodes']}노드" if a["nodes"] > 1 else ""
+            self._log(
+                f"  [앵커] {a['score']:.2f} {a['cls']}: {a['label']}{via}{nodes} ← {a['matched']}"
+            )
+        if not out["anchors"]:
+            self._log("  [앵커] 없음 — 그래프 어휘와 겹치는 개념이 문장에 없다")
+        if out["unused"]:
+            self._log(f"  [미사용] {' · '.join(out['unused'][:12])}")
+
+        out["results"] = {}
+        for name, q in out["queries"].items():
+            res = store.run_query(key, q)
+            self._log(f"  [질의] {name} → {len(res.rows)}행 · {res.elapsed_ms:.0f}ms")
+            out["results"][name] = res.to_dict()
+        return out
+
+    def _viewer(self, payload: dict) -> dict:
+        """온톨로지 뷰어 — L1 도메인 지도 / L2 이웃 확장 / L3 노드 상세."""
+        key = payload.get("graph", "v0")
+        mode = payload.get("mode", "domain")
+        iri = payload.get("iri") or ""
+        if mode == "domain":
+            out = viewer.domain_map(key)
+            self._log(f"[뷰어] {key} L1 공정·소자 · 노드 {len(out['nodes'])} 엣지 {len(out['edges'])}")
+            return out
+        if mode == "people":
+            out = viewer.people_map(key)
+            self._log(f"[뷰어] {key} L1 인력·문제 · 노드 {len(out['nodes'])} 엣지 {len(out['edges'])}")
+            return out
+        if not iri:
+            raise ValueError("iri 가 필요하다")
+        if mode == "category":
+            cat = iri.removeprefix(viewer.CATEGORY_PREFIX)
+            out = viewer.expand_category(key, cat)
+            cut = " (상한 절단)" if out["truncated"] else ""
+            self._log(f"[뷰어] {key} 범주 확장 {cat} · 문제 {len(out['nodes'])}{cut}")
+            return out
+        if mode == "expand":
+            out = viewer.expand(key, iri)
+            cut = " (상한 절단)" if out["truncated"] else ""
+            self._log(f"[뷰어] {key} L2 확장 {iri.rsplit('/', 1)[-1]} · 이웃 {len(out['nodes'])}{cut}")
+            return out
+        if mode == "detail":
+            out = viewer.detail(key, iri)
+            self._log(f"[뷰어] {key} L3 상세 {out['label']} · 속성 {len(out['props'])}")
+            return out
+        raise ValueError(f"unknown mode: {mode}")
 
     def log_message(self, fmt, *args):  # 조용히 — 콘솔 노이즈 억제
         return

@@ -46,6 +46,7 @@ document.querySelectorAll("nav button").forEach((b) =>
     b.classList.add("active");
     document.getElementById(b.dataset.tab).classList.add("active");
     if (b.dataset.tab === "findings") loadFindings();
+    if (b.dataset.tab === "viewer" && !VW) loadDomain();
   })
 );
 
@@ -96,7 +97,7 @@ function statusCard(key, info, sig) {
     const items = Object.entries(sig.drift).map(([k, v]) => `${k}: ${v.got}≠정본${v.expected}`).join(" · ");
     c.append(el("div", { class: "drift" }, "⚠ 정본 서명과 불일치 — " + items));
   } else if (sig.drift) {
-    c.append(el("div", { class: "ok-badge" }, "✓ 정본 서명과 일치 (트리플 44,202 · 커버 20/49)"));
+    c.append(el("div", { class: "ok-badge" }, "✓ 정본 서명과 일치 (트리플 44,221 · 커버 20/49)"));
   }
   return c;
 }
@@ -105,12 +106,17 @@ function fmt(n) { return (typeof n === "number" ? n : 0).toLocaleString(); }
 /* ---------- 그래프 선택 드롭다운 ---------- */
 function populateGraphSelects() {
   const opts = GRAPHS_AVAILABLE.map((k) => `<option value="${k}">${G_LABEL[k]} · ${k}</option>`).join("");
-  ["graph-select", "expert-graph", "pa-graph", "fto-graph"].forEach((id) => {
+  ["graph-select", "expert-graph", "pa-graph", "fto-graph", "nl-graph", "vw-graph"].forEach((id) => {
     const s = document.getElementById(id);
     if (s) s.innerHTML = opts;
   });
-  const gs = document.getElementById("graph-select");
-  if (gs && GRAPHS_AVAILABLE.includes("v1")) gs.value = "v1";
+  // 기본은 G₁ — 신기술 별칭(HBM·GAA·식각)이 병합 때 실체화되므로 G₀ 에서는 문장 질의가
+  // 약해 보인다. 데모의 기본값이 도구를 실제보다 못하게 보이게 해서는 안 된다.
+  if (GRAPHS_AVAILABLE.includes("v1"))
+    for (const id of ["graph-select", "nl-graph", "vw-graph"]) {
+      const s = document.getElementById(id);
+      if (s) s.value = "v1";
+    }
 }
 
 /* ---------- CQ 프리셋 ---------- */
@@ -342,9 +348,257 @@ async function runPractical(kind) {
   }
 }
 
+/* ---------- 문장으로 질의 (앵커링) ---------- */
+const NL_TITLE = {
+  expert: "① 전문가 후보",
+  priorart: "② 선행기술 후보",
+  fto: "③ FTO 청구항 준비 현황",
+};
+
+async function runNL() {
+  const box = document.getElementById("nl-result");
+  const text = document.getElementById("nl-text").value.trim();
+  if (!text) { box.innerHTML = '<span class="err">문장을 입력하세요</span>'; return; }
+  const graph = document.getElementById("nl-graph").value;
+  const before = document.getElementById("nl-date").value || "2015-01-01";
+  box.innerHTML = '<span class="spin">문장 해석 · 질의 중…</span>';
+  try {
+    const r = await api("/api/interpret", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, graph, before }),
+    });
+    box.innerHTML = "";
+
+    // (1) 인식된 앵커 — 무엇을 근거로 읽었는지 그대로 보인다.
+    box.append(el("h4", {}, `인식된 개념 ${r.anchors.length}개`));
+    if (r.anchors.length === 0)
+      box.append(el("div", { class: "empty" }, "그래프 어휘와 겹치는 개념이 없습니다 — 공정·소자·스킬 용어를 포함해 보세요"));
+    const chips = el("div", { class: "chips" });
+    for (const a of r.anchors) {
+      chips.append(
+        el("span", { class: "chip" + (a.queryable ? "" : " muted"), title: a.iri },
+          el("b", {}, a.cls), ` ${a.label}`,
+          el("i", {}, ` ← ${a.matched.join(", ")}${a.via_alt ? " (별칭)" : ""} · ${a.score}`))
+      );
+    }
+    box.append(chips);
+
+    // (2) 질의에 쓰이지 않은 구절 — 대응 술어가 없는 것을 있는 척하지 않는다.
+    if (r.unused.length)
+      box.append(el("div", { class: "meta" },
+        `질의에 쓰이지 않음 (대응 술어 없음): ${r.unused.join(" · ")}`));
+
+    // (3) 시나리오별 결과 + 생성된 SPARQL(펼쳐보기 · SPARQL 탭으로 복사 가능)
+    for (const kind of ["expert", "priorart", "fto"]) {
+      const q = r.queries[kind];
+      if (!q) continue;
+      const res = r.results[kind];
+      box.append(el("h4", {}, `${NL_TITLE[kind]} — ${res.rows.length} 건`));
+      if (res.rows.length === 0)
+        box.append(el("div", { class: "empty" }, "결과 없음 — 그래프를 바꾸거나 기준일을 조정하세요"));
+      else box.append(selectTable(res.columns, res.rows.slice(0, 50)));
+      const det = el("details", {}, el("summary", {}, "생성된 SPARQL 보기"));
+      det.append(el("pre", { class: "gen-sparql" }, q));
+      det.append(el("button", {
+        class: "btn", onclick: () => {
+          document.getElementById("query").value = q;
+          document.getElementById("graph-select").value = graph;
+          document.querySelector('nav button[data-tab="sparql"]').click();
+        },
+      }, "SPARQL 탭에서 편집"));
+      box.append(det);
+    }
+  } catch (e) {
+    box.innerHTML = `<span class="err">${e.message}</span>`;
+  }
+}
+
 /* ---------- 부트 ---------- */
 document.getElementById("run-btn").addEventListener("click", runQuery);
 document.getElementById("csv-btn").addEventListener("click", exportCSV);
 document.getElementById("query").addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") runQuery(); });
+for (const id of ["vw-graph", "vw-mode"])
+  document.getElementById(id).addEventListener("change", () => { if (VW) loadDomain(); });
 loadStatus();
 loadCQs();
+
+/* ---------- 온톨로지 뷰어 ---------- */
+// 축 색은 서버(viewer.AXES)와 한 벌이어야 한다 — 한쪽만 바뀌면 범례가 거짓말을 한다.
+const VW_AXIS = {
+  Process: ["공정 그룹", "#4493f8"], SubProcess: ["하위 공정", "#3fb950"],
+  Device: ["소자·제품", "#e5487f"], Material: ["재료", "#d29922"],
+  Equipment: ["장비", "#a371f7"], EquipmentClass: ["장비 클래스", "#8957e5"],
+  Skill: ["역량", "#39c5cf"], FailureMode: ["불량 모드", "#f85149"],
+  Problem: ["실무 문제", "#db6d28"], Expert: ["전문가", "#2ea043"],
+  Patent: ["특허", "#7d8590"], RejectedPatent: ["거절 특허", "#6e7681"],
+  Organization: ["조직", "#bf8700"], Vendor: ["공급사", "#9e6a03"],
+  ProblemCategory: ["문제 범주(집계)", "#8250df"],
+};
+let VW = null;              // cytoscape 인스턴스
+let VW_LOADED = new Set();  // 이미 펼친 노드 — 같은 노드를 두 번 질의하지 않는다
+
+function vwColor(cls) { return (VW_AXIS[cls] || ["기타", "#8b98a5"])[1]; }
+function vwKo(cls) { return (VW_AXIS[cls] || ["기타", "#8b98a5"])[0]; }
+
+function vwApi(body) {
+  return api("/api/viewer", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ graph: document.getElementById("vw-graph").value, ...body }),
+  });
+}
+
+function vwEls(d) {
+  const els = [];
+  for (const n of d.nodes) {
+    els.push({ data: {
+      id: n.id, label: n.label, cls: n.cls, axis: n.axis_ko || vwKo(n.cls),
+      def: n.definition || "", patents: n.patents || 0,
+      experts: n.experts, problems: n.problems, derived: !!n.derived,
+      // 특허 수로 크기를 준다 — 로그 스케일이 아니면 EPROM(5,139)이 화면을 다 먹는다.
+      size: 16 + Math.min(26, Math.log2(1 + (n.patents || 0)) * 3),
+    } });
+  }
+  for (const e of d.edges) els.push({ data: { id: `${e.src}|${e.pred}|${e.dst}`, source: e.src, target: e.dst, pred: e.pred } });
+  return els;
+}
+
+function vwInit() {
+  if (VW) return VW;
+  VW = cytoscape({
+    container: document.getElementById("vw-canvas"),
+    style: [
+      { selector: "node", style: {
+          "background-color": (n) => vwColor(n.data("cls")),
+          width: "data(size)", height: "data(size)",
+          label: "data(label)", color: "#c9d1d9", "font-size": 10,
+          "text-valign": "bottom", "text-margin-y": 4, "text-outline-width": 2,
+          "text-outline-color": "#0d1117", "min-zoomed-font-size": 7 } },
+      { selector: "node:selected", style: { "border-width": 3, "border-color": "#e6edf3" } },
+      { selector: "edge", style: {
+          width: 1, "line-color": "#30363d", "target-arrow-color": "#30363d",
+          "target-arrow-shape": "triangle", "curve-style": "bezier", "arrow-scale": 0.7 } },
+      { selector: "edge[pred = 'hasSubprocess']", style: { "line-color": "#3fb950", "target-arrow-color": "#3fb950", width: 1.6 } },
+    ],
+    wheelSensitivity: 0.2,
+  });
+  VW.on("mouseover", "node", (e) => vwTip(e.target, e.renderedPosition || e.target.renderedPosition()));
+  VW.on("mouseout", "node", () => { document.getElementById("vw-tip").style.display = "none"; });
+  VW.on("tap", "node", (e) => vwDetail(e.target.id(), e.target.data()));
+  VW.on("dbltap", "node", (e) => vwExpand(e.target.id(), e.target.data("derived")));
+  return VW;
+}
+
+// 마우스오버 툴팁 — 이름 · 축 배지 · 정의 · 특허 수 · IRI
+function vwTip(node, pos) {
+  const tip = document.getElementById("vw-tip");
+  const d = node.data();
+  const def = d.def || "<i>정의 없음 — 그래프에 skos:definition 이 없습니다</i>";
+  // 축마다 세는 것이 다르다 — 특허 수를 인력 축에 붙이면 거짓이 된다.
+  let use;
+  if (d.derived) use = `<span>집계</span> 이 범주의 실무문제 ${fmt(d.problems)}건 — 그래프의 개체가 아닙니다`;
+  else if (d.experts !== undefined) use = `<span>인력</span> 보유 전문가 ${fmt(d.experts)}명 · 요구 실무문제 ${fmt(d.problems)}건`;
+  else if (d.problems !== undefined) use = `<span>연결</span> 이 불량모드를 보이는 실무문제 ${fmt(d.problems)}건`;
+  else use = `<span>연결</span> 이 개념을 실현·언급하는 특허 ${fmt(d.patents)}건`;
+  tip.innerHTML = `<div class="t-name">${d.label}</div>`
+    + `<div class="t-cat">${d.axis}</div>`
+    + `<div class="t-desc">${def}</div>`
+    + `<div class="t-use">${use}</div>`
+    + `<div class="t-id">${shorten(d.id)}</div>`;
+  const box = document.getElementById("vw-canvas").getBoundingClientRect();
+  tip.style.display = "block";
+  tip.style.left = Math.min(box.left + pos.x + 14, window.innerWidth - 340) + "px";
+  tip.style.top = (box.top + pos.y + 12) + "px";
+}
+
+async function loadDomain() {
+  const meta = document.getElementById("vw-meta");
+  const mode = document.getElementById("vw-mode").value;
+  meta.innerHTML = '<span class="spin">지도 계산 중…</span>';
+  vwInit();
+  VW_LOADED = new Set();
+  try {
+    const d = await vwApi({ mode });
+    VW.elements().remove();
+    VW.add(vwEls(d));
+    VW.layout({ name: "cose", animate: false, nodeRepulsion: 9000, idealEdgeLength: 70, padding: 30 }).run();
+    meta.innerHTML = `노드 ${d.nodes.length} · 엣지 ${d.edges.length} — 클릭: 속성 · 더블클릭: 이웃 펼치기`;
+    if (d.note) meta.innerHTML += `<br /><span class="warn-note">${d.note}</span>`;
+    vwLegend();
+  } catch (e) { meta.innerHTML = `<span class="err">${e.message}</span>`; }
+}
+
+async function vwExpand(iri, derived) {
+  const meta = document.getElementById("vw-meta");
+  if (VW_LOADED.has(iri)) { meta.innerHTML = "이미 펼친 노드입니다."; return; }
+  meta.innerHTML = '<span class="spin">이웃 조회 중…</span>';
+  try {
+    const d = await vwApi({ mode: derived ? "category" : "expand", iri });
+    VW_LOADED.add(iri);
+    const els = vwEls(d).filter((el) => !VW.getElementById(el.data.id).length);
+    VW.add(els);
+    VW.layout({ name: "cose", animate: false, nodeRepulsion: 9000, idealEdgeLength: 70, padding: 30 }).run();
+    meta.innerHTML = `+${d.nodes.length} 이웃 · 총 ${VW.nodes().length} 노드`;
+    // 상한에 걸렸으면 말한다 — 조용히 자르면 "이게 전부"로 읽힌다.
+    if (d.truncated) meta.innerHTML += ` <span class="warn-note">⚠ 상한 절단 — 이웃이 더 있습니다</span>`;
+  } catch (e) { meta.innerHTML = `<span class="err">${e.message}</span>`; }
+}
+
+async function vwDetail(iri, data) {
+  const panel = document.getElementById("vw-panel");
+  // 집계 노드는 그래프에 없다 — detail 을 물으면 빈 응답이 온다. 그 사실을 그대로 말한다.
+  if (data && data.derived) {
+    panel.innerHTML = "";
+    panel.append(el("h4", {}, data.label));
+    panel.append(el("div", { class: "t-cat" }, data.axis));
+    panel.append(el("p", { class: "vw-def muted" },
+      `ont:problemCategory 집계 노드입니다 — 그래프의 개체가 아니라 실무문제 ${fmt(data.problems)}건을 묶은 것입니다.`));
+    panel.append(el("button", { class: "btn", onclick: () => vwExpand(iri, true) }, "이 범주의 문제 펼치기"));
+    return;
+  }
+  panel.innerHTML = '<div class="empty spin">속성 조회 중…</div>';
+  try {
+    const d = await vwApi({ mode: "detail", iri });
+    panel.innerHTML = "";
+    panel.append(el("h4", {}, d.label));
+    panel.append(el("div", { class: "t-cat" }, d.axis_ko));
+    if (d.definition) panel.append(el("p", { class: "vw-def" }, d.definition));
+    else panel.append(el("p", { class: "vw-def muted" }, "정의 없음 — 그래프에 skos:definition 이 없습니다"));
+    if (d.alt_labels.length) panel.append(el("div", { class: "meta" }, "별칭: " + d.alt_labels.join(" · ")));
+    panel.append(el("div", { class: "t-id" }, shorten(d.iri)));
+    // 같은 술어가 여러 값을 갖는 일이 흔하다(confidence 4개·isDueTo 3개) — 술어당 한 줄로 묶는다.
+    // 자르지 않는다: 잘린 값은 읽을 수 없고, 읽을 수 없으면 속성창이 아니다.
+    const byPred = new Map();
+    for (const p of d.props) {
+      if (!byPred.has(p.pred)) byPred.set(p.pred, []);
+      byPred.get(p.pred).push(p);
+    }
+    const tbl = el("table", { class: "vw-props" });
+    for (const [pred, items] of byPred) {
+      const cell = el("td", { class: "vw-vals" });
+      for (const p of items) {
+        if (p.is_iri) {
+          // IRI 는 라벨이 있으면 라벨로 — 없으면 접두사로 줄인다. 링크는 새 창.
+          const text = p.label || shorten(p.value);
+          cell.append(p.value.startsWith("http") && !p.value.startsWith("https://w3id.org/sdkb")
+            ? el("a", { href: p.value, target: "_blank", rel: "noreferrer", class: "vw-link" }, text)
+            : el("span", { class: "vw-iri", title: p.value }, text));
+        } else {
+          cell.append(el("span", {}, p.value));
+        }
+      }
+      tbl.append(el("tr", {}, el("td", {}, pred), cell));
+    }
+    if (d.props.length) panel.append(tbl);
+    panel.append(el("button", { class: "btn", onclick: () => vwExpand(iri) }, "이웃 펼치기"));
+  } catch (e) { panel.innerHTML = `<span class="err">${e.message}</span>`; }
+}
+
+function vwLegend() {
+  const box = document.getElementById("vw-legend");
+  box.innerHTML = "";
+  const present = new Set(VW.nodes().map((n) => n.data("cls")));
+  for (const cls of present) {
+    box.append(el("span", { class: "lg" }, el("i", { style: `background:${vwColor(cls)}` }), vwKo(cls)));
+  }
+}

@@ -17,6 +17,7 @@
       <button data-tab="dashboard" class="active">대시보드</button>
       <button data-tab="sparql">SPARQL</button>
       <button data-tab="findings">핵심 발견</button>
+      <button data-tab="viewer">온톨로지 뷰어</button>
       <button data-tab="practical">실무 질의</button>
     </nav>
   </header>
@@ -59,8 +60,44 @@
       <div id="findings-body"><div class="empty spin">불러오는 중…</div></div>
     </section>
 
+    <!-- 온톨로지 뷰어 -->
+    <section id="viewer" class="tab">
+      <div class="viewer-bar">
+        <label>대상 그래프 <select id="vw-graph"></select></label>
+        <label>축 지도
+          <select id="vw-mode">
+            <option value="domain">공정 · 소자 축</option>
+            <option value="people">소부장 기술문제 · 전문가 축</option>
+          </select>
+        </label>
+        <label>축 <span id="vw-legend" class="legend"></span></label>
+        <button class="btn" onclick="loadDomain()">초기 화면으로</button>
+        <span id="vw-meta" class="meta"></span>
+      </div>
+      <div class="viewer-layout">
+        <div id="vw-canvas"></div>
+        <aside id="vw-panel" class="vw-panel">
+          <div class="empty">노드를 클릭하면 속성이 여기에 나옵니다.<br />더블클릭하면 이웃을 펼칩니다.</div>
+        </aside>
+      </div>
+      <div id="vw-tip" class="sdkb-tip" style="display:none"></div>
+    </section>
+
     <!-- 실무 질의 -->
     <section id="practical" class="tab">
+      <div class="pcard nlcard">
+        <h3>⓪ 문장으로 질의 — 현장 서술문 그대로</h3>
+        <p>실무 문제를 문장으로 쓰면 <b>그래프 자신의 어휘</b>(prefLabel·altLabel)로 개념을 집어내
+           SPARQL 을 만들고 실행합니다. 무엇을 어떻게 읽었는지 전부 화면에 보입니다.</p>
+        <textarea id="nl-text" rows="4" spellcheck="false"
+          placeholder="예: We need to optimize our etching process to achieve better uniformity. Current performance: 78%. Target specification: 93%."></textarea>
+        <div class="nl-row">
+          <label>대상 그래프 <select id="nl-graph"></select></label>
+          <label>선행기술 기준일 <input id="nl-date" type="date" value="2015-01-01" /></label>
+          <button class="btn primary" onclick="runNL()">문장으로 질의</button>
+        </div>
+        <div class="presult" id="nl-result"></div>
+      </div>
       <div class="practical-grid">
         <div class="pcard" id="pc-expert">
           <h3>① 소부장 문제 → 전문가 찾기</h3>
