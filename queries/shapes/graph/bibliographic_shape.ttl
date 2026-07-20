@@ -100,6 +100,26 @@ ont:ComplianceShape a sh:NodeShape ;
     sh:property [ sh:path ont:complianceSensitivity ; sh:datatype xsd:string ] ;
     sh:property [ sh:path ont:problemCategory       ; sh:datatype xsd:string ] .
 
+# ── 인력·문제 축의 라벨 규약 ────────────────────────────────────────────
+# §6.2 의 결함이 여기서 재발하지 않도록 고정한다: Expert 110 · Problem 226 이
+# skos:prefLabel 대신 rdfs:label 을 달고 있었고, **이 클래스를 타깃하는 shape 가
+# 라벨을 요구하지 않아** 게이트가 내내 초록불이었다. CQ11·CQ12 는 답은 하되
+# 읽을 수 없는 IRI 만 돌려줬다 — "검증되지 않는 어휘는 조용히 썩는다".
+#
+# 상류에는 대응 shape 가 있으나 이 저장소로 vendor 되지 않는다. 심사자가 이 저장소만
+# 받아 돌리는 게이트에 없으면 그것은 재현 가능한 게이트가 아니다.
+#
+# 언어태그를 요구한다: 인력은 가명 한글(@ko), 문제는 원천이 영문(@en)이라 둘 다 langString
+# 이어야 하고, 태그 없는 평문 리터럴이 섞이면 다국어 질의가 조용히 갈라진다.
+ont:PersonProblemLabelShape a sh:NodeShape ;
+    sh:targetClass ont:Expert, ont:Problem ;
+    sh:property [
+        sh:path skos:prefLabel ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:datatype rdf:langString ;
+        sh:message "Expert·Problem 은 언어태그 붙은 skos:prefLabel 을 정확히 하나 가져야 한다 (rdfs:label 아님)" ;
+    ] .
+
 # ── 값 어휘(value vocabulary) — 열거형 노드도 이름이 있어야 한다 ────────
 # RejectionType(거절유형) · OptionType(대응옵션) · ConstraintType(제약강도) ·
 # STEEPVEDimension(거시요인) · Semiconductor(재료). 인스턴스는 적지만(1–7개) 질의 결과에

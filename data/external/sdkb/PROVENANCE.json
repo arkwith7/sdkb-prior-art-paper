@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "edb8ae48888b11ff0f231b3fbd36d3219bc022b3",
-  "source_commit_date": "2026-07-15T15:05:28+09:00",
+  "source_commit": "5cbf149ce8a686b60f001046467bdd8dc3c0beb1",
+  "source_commit_date": "2026-07-20T16:34:37+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-18T09:30:47+00:00",
+  "vendored_at": "2026-07-20T07:34:52+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
@@ -14,7 +14,7 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-07-18T09:30:47+00:00",
+    "checked_at": "2026-07-20T07:34:52+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -49,7 +49,7 @@
       "ontology/sdkb-abox-experts-problems.ttl": [
         {
           "input": "scripts/build_abox_experts_problems.py",
-          "sha256": "e2829abaf44f7837ba5dcff5b1f0c6837ef59d8ad36e6ad630cfab1a7337c1ab"
+          "sha256": "61d228668ae5cee13c77c462dbb2c0a1c2d5ebd3ece27ec75095b8d75853d535"
         },
         {
           "input": "data/semiconductor_v0_3.json",
@@ -144,7 +144,7 @@
       "file": "sdkb-abox-experts-problems.ttl",
       "source_path": "ontology/sdkb-abox-experts-problems.ttl",
       "role": "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축",
-      "sha256": "7079bc94b43ba8e40129e8d1c1ac16d410b3e242e6d2e5a2de2514be7564c85b"
+      "sha256": "245fb28e427e21667d29d7692bf9f40df02509b8ccb3dbf4100e257b77edf19e"
     },
     {
       "file": "sdkb-abox-vendors.ttl",

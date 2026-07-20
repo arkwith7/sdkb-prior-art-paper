@@ -223,7 +223,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_014> a ont:Expert ;
     skos:altLabel "Kang, [Given Name]"@en ;
-    skos:prefLabel "강태영"@ko ;
+    skos:prefLabel "강다영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -253,7 +253,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_016> a ont:Expert ;
     skos:altLabel "Lim, [Given Name]"@en ;
-    skos:prefLabel "임소영"@ko ;
+    skos:prefLabel "임다영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -308,7 +308,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_020> a ont:Expert ;
     skos:altLabel "Han, [Given Name]"@en ;
-    skos:prefLabel "한예원"@ko ;
+    skos:prefLabel "한다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -335,7 +335,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_022> a ont:Expert ;
     skos:altLabel "Kang, [Given Name]"@en ;
-    skos:prefLabel "강현수"@ko ;
+    skos:prefLabel "강동욱"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla>,
@@ -346,7 +346,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_023> a ont:Expert ;
     skos:altLabel "Han, [Given Name]"@en ;
-    skos:prefLabel "한예원"@ko ;
+    skos:prefLabel "한동욱"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/lithography>,
@@ -370,7 +370,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_025> a ont:Expert ;
     skos:altLabel "Choi, [Given Name]"@en ;
-    skos:prefLabel "최동현"@ko ;
+    skos:prefLabel "최다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -409,7 +409,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_028> a ont:Expert ;
     skos:altLabel "Jeon, [Given Name]"@en ;
-    skos:prefLabel "전호영"@ko ;
+    skos:prefLabel "전다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -460,7 +460,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_032> a ont:Expert ;
     skos:altLabel "Kim, [Given Name]"@en ;
-    skos:prefLabel "김서연"@ko ;
+    skos:prefLabel "김동욱"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -498,7 +498,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_035> a ont:Expert ;
     skos:altLabel "Kang, [Given Name]"@en ;
-    skos:prefLabel "강현수"@ko ;
+    skos:prefLabel "강동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -532,7 +532,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_038> a ont:Expert ;
     skos:altLabel "Hwang, [Given Name]"@en ;
-    skos:prefLabel "황수정"@ko ;
+    skos:prefLabel "황다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -545,7 +545,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_039> a ont:Expert ;
     skos:altLabel "Kang, [Given Name]"@en ;
-    skos:prefLabel "강현수"@ko ;
+    skos:prefLabel "강동훈"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -586,7 +586,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_042> a ont:Expert ;
     skos:altLabel "Han, [Given Name]"@en ;
-    skos:prefLabel "한예원"@ko ;
+    skos:prefLabel "한동현"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -599,7 +599,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_043> a ont:Expert ;
     skos:altLabel "Yoon, [Given Name]"@en ;
-    skos:prefLabel "윤서진"@ko ;
+    skos:prefLabel "윤다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -612,7 +612,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_044> a ont:Expert ;
     skos:altLabel "Song, [Given Name]"@en ;
-    skos:prefLabel "송지은"@ko ;
+    skos:prefLabel "송다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -638,7 +638,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_046> a ont:Expert ;
     skos:altLabel "Kang, [Given Name]"@en ;
-    skos:prefLabel "강현수"@ko ;
+    skos:prefLabel "강미경"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/implant>,
@@ -684,7 +684,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_050> a ont:Expert ;
     skos:altLabel "Kim, [Given Name]"@en ;
-    skos:prefLabel "김서연"@ko ;
+    skos:prefLabel "김동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -698,7 +698,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_051> a ont:Expert ;
     skos:altLabel "Choi, [Given Name]"@en ;
-    skos:prefLabel "최동현"@ko ;
+    skos:prefLabel "최동욱"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -708,7 +708,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_052> a ont:Expert ;
     skos:altLabel "Lee, [Given Name]"@en ;
-    skos:prefLabel "이예은"@ko ;
+    skos:prefLabel "이다영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -720,8 +720,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_053> a ont:Expert ;
-    skos:altLabel "문예린"@en ;
-    skos:prefLabel "문예린"@ko ;
+    skos:altLabel "문다영"@en ;
+    skos:prefLabel "문다영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -734,8 +734,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_054> a ont:Expert ;
-    skos:altLabel "문예린"@en ;
-    skos:prefLabel "문예린"@ko ;
+    skos:altLabel "문동욱"@en ;
+    skos:prefLabel "문동욱"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/lam_research>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -744,7 +744,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_055> a ont:Expert ;
     skos:altLabel "Song, [Given Name]"@en ;
-    skos:prefLabel "송지은"@ko ;
+    skos:prefLabel "송동욱"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -760,7 +760,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_056> a ont:Expert ;
     skos:altLabel "Lee, [Given Name]"@en ;
-    skos:prefLabel "이예은"@ko ;
+    skos:prefLabel "이동욱"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -774,7 +774,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_057> a ont:Expert ;
     skos:altLabel "Yoon, [Given Name]"@en ;
-    skos:prefLabel "윤미경"@ko ;
+    skos:prefLabel "윤동욱"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -787,7 +787,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_058> a ont:Expert ;
     skos:altLabel "Park, [Given Name]"@en ;
-    skos:prefLabel "박현민"@ko ;
+    skos:prefLabel "박다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -797,7 +797,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_059> a ont:Expert ;
     skos:altLabel "Lee, [Given Name]"@en ;
-    skos:prefLabel "이예은"@ko ;
+    skos:prefLabel "이동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research>,
@@ -812,7 +812,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_060> a ont:Expert ;
     skos:altLabel "Kang, [Given Name]"@en ;
-    skos:prefLabel "강현수"@ko ;
+    skos:prefLabel "강미라"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -851,7 +851,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_063> a ont:Expert ;
     skos:altLabel "Yoon, [Given Name]"@en ;
-    skos:prefLabel "윤미경"@ko ;
+    skos:prefLabel "윤동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -862,7 +862,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_064> a ont:Expert ;
     skos:altLabel "Han, [Given Name]"@en ;
-    skos:prefLabel "한예원"@ko ;
+    skos:prefLabel "한동훈"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -901,8 +901,8 @@
     ont:region "Taiwan" .
 
 <https://w3id.org/sdkb/data/expert/EXP_067> a ont:Expert ;
-    skos:altLabel "문지현"@en ;
-    skos:prefLabel "문지현"@ko ;
+    skos:altLabel "문동현"@en ;
+    skos:prefLabel "문동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla>,
@@ -926,7 +926,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_069> a ont:Expert ;
     skos:altLabel "Kim, [Given Name]"@en ;
-    skos:prefLabel "김다영"@ko ;
+    skos:prefLabel "김동훈"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/kla>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -939,7 +939,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_070> a ont:Expert ;
     skos:altLabel "Cho, [Given Name]"@en ;
-    skos:prefLabel "조민수"@ko ;
+    skos:prefLabel "조다영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research>,
@@ -954,7 +954,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_071> a ont:Expert ;
     skos:altLabel "Lee, [Given Name]"@en ;
-    skos:prefLabel "이하은"@ko ;
+    skos:prefLabel "이동훈"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -963,7 +963,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_072> a ont:Expert ;
     skos:altLabel "Yoon, [Given Name]"@en ;
-    skos:prefLabel "윤미경"@ko ;
+    skos:prefLabel "윤동훈"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -974,7 +974,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_073> a ont:Expert ;
     skos:altLabel "Song, [Given Name]"@en ;
-    skos:prefLabel "송지은"@ko ;
+    skos:prefLabel "송동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml> ;
@@ -999,7 +999,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_075> a ont:Expert ;
     skos:altLabel "Song, [Given Name]"@en ;
-    skos:prefLabel "송지은"@ko ;
+    skos:prefLabel "송동훈"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -1022,7 +1022,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_077> a ont:Expert ;
     skos:altLabel "Lee, [Given Name]"@en ;
-    skos:prefLabel "이준석"@ko ;
+    skos:prefLabel "이미경"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -1033,7 +1033,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_078> a ont:Expert ;
     skos:altLabel "Kim, [Given Name]"@en ;
-    skos:prefLabel "김하늘"@ko ;
+    skos:prefLabel "김미경"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/metrology> ;
@@ -1051,7 +1051,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_080> a ont:Expert ;
     skos:altLabel "Lee, [Given Name]"@en ;
-    skos:prefLabel "이준석"@ko ;
+    skos:prefLabel "이미라"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/kla> ;
@@ -1073,7 +1073,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_082> a ont:Expert ;
     skos:altLabel "Cho, [Given Name]"@en ;
-    skos:prefLabel "조민수"@ko ;
+    skos:prefLabel "조동욱"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
     ont:hasProcessExpertise <https://w3id.org/sdkb/data/process/deposition>,
@@ -1085,7 +1085,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_083> a ont:Expert ;
     skos:altLabel "Jang, [Given Name]"@en ;
-    skos:prefLabel "장승호"@ko ;
+    skos:prefLabel "장다영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1102,7 +1102,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_084> a ont:Expert ;
     skos:altLabel "Hwang, [Given Name]"@en ;
-    skos:prefLabel "황지민"@ko ;
+    skos:prefLabel "황동욱"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/asml>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -1115,7 +1115,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_085> a ont:Expert ;
     skos:altLabel "Kim, [Given Name]"@en ;
-    skos:prefLabel "김다영"@ko ;
+    skos:prefLabel "김미라"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -1129,7 +1129,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_086> a ont:Expert ;
     skos:altLabel "Shin, [Given Name]"@en ;
-    skos:prefLabel "신동욱"@ko ;
+    skos:prefLabel "신다영"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -1142,8 +1142,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_087> a ont:Expert ;
-    skos:altLabel "백동현"@en ;
-    skos:prefLabel "백동현"@ko ;
+    skos:altLabel "백다영"@en ;
+    skos:prefLabel "백다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,
@@ -1158,7 +1158,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_088> a ont:Expert ;
     skos:altLabel "Hwang, [Given Name]"@en ;
-    skos:prefLabel "황수정"@ko ;
+    skos:prefLabel "황동현"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1168,8 +1168,8 @@
     ont:region "USA" .
 
 <https://w3id.org/sdkb/data/expert/EXP_089> a ont:Expert ;
-    skos:altLabel "문예린"@en ;
-    skos:prefLabel "문예린"@ko ;
+    skos:altLabel "문동훈"@en ;
+    skos:prefLabel "문동훈"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1198,8 +1198,8 @@
     ont:region "Singapore" .
 
 <https://w3id.org/sdkb/data/expert/EXP_091> a ont:Expert ;
-    skos:altLabel "문예린"@en ;
-    skos:prefLabel "문예린"@ko ;
+    skos:altLabel "문미경"@en ;
+    skos:prefLabel "문미경"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research>,
@@ -1209,7 +1209,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_092> a ont:Expert ;
     skos:altLabel "Ryu, [Given Name]"@en ;
-    skos:prefLabel "류현정"@ko ;
+    skos:prefLabel "류다영"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1219,7 +1219,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_093> a ont:Expert ;
     skos:altLabel "Yoon, [Given Name]"@en ;
-    skos:prefLabel "윤미경"@ko ;
+    skos:prefLabel "윤미라"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1234,7 +1234,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_094> a ont:Expert ;
     skos:altLabel "Jeon, [Given Name]"@en ;
-    skos:prefLabel "전호영"@ko ;
+    skos:prefLabel "전동욱"@ko ;
     ont:complianceFlag true ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/lam_research> ;
@@ -1244,8 +1244,8 @@
     ont:region "China" .
 
 <https://w3id.org/sdkb/data/expert/EXP_095> a ont:Expert ;
-    skos:altLabel "문예린"@en ;
-    skos:prefLabel "문예린"@ko ;
+    skos:altLabel "문미라"@en ;
+    skos:prefLabel "문미라"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -1258,7 +1258,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_096> a ont:Expert ;
     skos:altLabel "Kang, [Given Name]"@en ;
-    skos:prefLabel "강태영"@ko ;
+    skos:prefLabel "강민석"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/lam_research>,
         <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> ;
@@ -1271,7 +1271,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_097> a ont:Expert ;
     skos:altLabel "Jang, [Given Name]"@en ;
-    skos:prefLabel "장승호"@ko ;
+    skos:prefLabel "장동욱"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/organization/applied_materials>,
         <https://w3id.org/sdkb/data/organization/asml>,
@@ -1284,7 +1284,7 @@
 
 <https://w3id.org/sdkb/data/expert/EXP_098> a ont:Expert ;
     skos:altLabel "Lee, [Given Name]"@en ;
-    skos:prefLabel "이준석"@ko ;
+    skos:prefLabel "이민석"@ko ;
     ont:complianceFlag false ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/cd_sem>,
         <https://w3id.org/sdkb/data/metrology/cd_sem>,

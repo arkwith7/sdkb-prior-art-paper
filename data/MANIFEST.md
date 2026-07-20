@@ -28,7 +28,8 @@ make baseline                       # graph_v0 재조립
 | 2026-07-14 | 〃 | `d4dff61…` | 〃 + **상류 지식 적재**(선행기술·거절·초록·청구항·인력·문제·KSIA 벤더) + **낡은 특허 A-Box 재빌드** | 43,745 트리플 | (대체됨) |
 | 2026-07-14 | 〃 | `581360a…` | 〃 + **출원인 정체성 통합**(회사 하나 = IRI 하나 · 11쌍 병합) | 43,712 트리플 | (대체됨) |
 | 2026-07-14 | 〃 | `23d07a140cec` | 〃 + **Expert·Problem 라벨 규약 교정**(`rdfs:label` → `skos:prefLabel`, 전문가 EN 표기 `altLabel` 100) | 43,812 트리플 | (대체됨) |
-| 2026-07-15 | 〃 | `edb8ae48888` | 〃 + **US EAR/CCL 8·KR-ITPA 12 규제 인스턴스 + 개념↔통제 37 + FTO 청구항 어휘**(`ont:claimText`·`claimCount`) | **44,202 트리플** | `graph_v0.ttl` |
+| 2026-07-15 | 〃 | `edb8ae48888` | 〃 + **US EAR/CCL 8·KR-ITPA 12 규제 인스턴스 + 개념↔통제 37 + FTO 청구항 어휘**(`ont:claimText`·`claimCount`) | **44,202 트리플** | (대체됨) |
+| 2026-07-20 | 〃 | `5cbf149ce8a6` | 〃 + **인력 축 이름 재부여**(전문가 가명 충돌 해소 · 고유 이름 56→110 · 삭제 0) + 프로비넌스 정본화(`docs/deidentification_protocol.md`) | **44,202 트리플** (불변) | `graph_v0.ttl` |
 
 **G₀ 정의 변경 (2026-07-12) — 아래는 그 시점의 역사 서명이다.** 현재 G₀ 서명(트리플 44,202 ·
 커버 20/49 · CQ06 58)은 **§3 과 [CANONICAL-INDEX.md](../01.code_spec/CANONICAL-INDEX.md) §1** 이 정본이다.
