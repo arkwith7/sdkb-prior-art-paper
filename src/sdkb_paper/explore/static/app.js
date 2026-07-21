@@ -1,5 +1,25 @@
 "use strict";
 
+// 그래프 캔버스는 vis-network(site/baseline.html 과 동일) — 연속 forceAtlas2Based 물리로
+// 노드를 고르게 펼치고, 드래그로 떼어낼 수 있으며, 네이티브 title 툴팁이 겹침에도 안정적이다.
+const NODE_FONT = '"Malgun Gothic", "Noto Sans KR", system-ui, -apple-system, sans-serif';
+
+// 라벨 글자색 = 테마 본문색(라이트=검정 #1f2328 · 다크=밝은색). 외곽선(strokeWidth)은
+// 두지 않는다 — 라이트 배경에서 밝은 글자+어두운 외곽선은 볼드·음영처럼 번져 보인다.
+const LABEL_COLOR = getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#1f2328";
+
+// baseline.html 과 같은 물리 파라미터 — 여기가 "정돈된 형태"의 근원이다.
+const VIS_OPTS = {
+  nodes: { shape: "dot", font: { color: LABEL_COLOR, face: NODE_FONT, size: 13, strokeWidth: 0 } },
+  edges: { color: { color: "#454b54", highlight: "#8b98a5", inherit: false }, arrows: { to: { enabled: true, scaleFactor: 0.6 } }, smooth: { enabled: true, type: "dynamic" }, width: 1 },
+  interaction: { dragNodes: true, hover: true, tooltipDelay: 90, hideEdgesOnDrag: false, hideNodesOnDrag: false, multiselect: false, navigationButtons: false },
+  physics: {
+    enabled: true, solver: "forceAtlas2Based",
+    forceAtlas2Based: { avoidOverlap: 0.6, centralGravity: 0.015, damping: 0.6, gravitationalConstant: -55, springConstant: 0.04, springLength: 130 },
+    stabilization: { enabled: true, fit: true, iterations: 1000, updateInterval: 50 },
+  },
+};
+
 const PREFIXES = [
   ["https://w3id.org/sdkb/ont/", "ont:"],
   ["https://w3id.org/sdkb/data/patent/", "pat:"],
@@ -218,36 +238,30 @@ function triplesTable(triples) {
   t.append(tb); wrap.append(t); return wrap;
 }
 
-/* ---------- Cytoscape 그래프 뷰 ---------- */
-let CY = null;
+/* ---------- vis-network 그래프 뷰 (SPARQL CONSTRUCT 결과) ---------- */
+let CY = null;  // vis.Network 인스턴스
 function setupGraphView(triples) {
   const nodes = new Map(), edges = [];
   const nid = (t) => t.type === "uri" ? t.value : t.type + ":" + t.value;
   for (const tr of triples) {
     const s = tr.s, o = tr.o;
-    if (!nodes.has(nid(s))) nodes.set(nid(s), { data: { id: nid(s), label: shorten(s.value), kind: "node" } });
+    if (!nodes.has(nid(s))) nodes.set(nid(s), { id: nid(s), label: shorten(s.value), color: { background: "#4493f8", border: "#1f6feb" }, size: 12 });
     if (o.type === "uri" || o.type === "bnode") {
-      if (!nodes.has(nid(o))) nodes.set(nid(o), { data: { id: nid(o), label: shorten(o.value), kind: "node" } });
-      edges.push({ data: { source: nid(s), target: nid(o), label: shorten(tr.p.value) } });
+      if (!nodes.has(nid(o))) nodes.set(nid(o), { id: nid(o), label: shorten(o.value), color: { background: "#4493f8", border: "#1f6feb" }, size: 12 });
+      edges.push({ from: nid(s), to: nid(o), label: shorten(tr.p.value) });
     } else {
       const litId = nid(s) + "|" + tr.p.value + "|" + o.value;
-      nodes.set(litId, { data: { id: litId, label: o.value, kind: "lit" } });
-      edges.push({ data: { source: nid(s), target: litId, label: shorten(tr.p.value) } });
+      nodes.set(litId, { id: litId, label: o.value, shape: "box", color: { background: "#238636", border: "#2ea043" }, size: 8 });
+      edges.push({ from: nid(s), to: litId, label: shorten(tr.p.value) });
     }
   }
   const container = document.getElementById("cy");
   if (CY) CY.destroy();
-  CY = cytoscape({
-    container,
-    elements: [...nodes.values(), ...edges],
-    style: [
-      { selector: "node", style: { "background-color": "#4493f8", label: "data(label)", color: "#e6edf3", "font-size": "9px", "text-wrap": "wrap", "text-max-width": "90px", width: 16, height: 16, "text-valign": "center", "text-halign": "right", "text-margin-x": 3 } },
-      { selector: 'node[kind="lit"]', style: { "background-color": "#3fb950", shape: "round-rectangle", width: 10, height: 10 } },
-      { selector: "edge", style: { width: 1, "line-color": "#8b98a5", "target-arrow-color": "#8b98a5", "target-arrow-shape": "triangle", "curve-style": "bezier", label: "data(label)", "font-size": "7px", color: "#8b98a5", "text-rotation": "autorotate" } },
-    ],
-    layout: { name: "cose", animate: false, nodeRepulsion: 6000, idealEdgeLength: 70 },
-  });
-  window._cyResize = () => { CY.resize(); CY.fit(undefined, 30); };
+  const data = { nodes: new vis.DataSet([...nodes.values()]), edges: new vis.DataSet(edges) };
+  const opts = { ...VIS_OPTS, edges: { ...VIS_OPTS.edges, font: { color: "#8b98a5", size: 9, strokeWidth: 3, strokeColor: "#0d1117", align: "middle" } } };
+  CY = new vis.Network(container, data, opts);
+  // 컨테이너가 숨겨진 채 생성되면 크기가 0이므로, 탭 전환 시 다시 맞춘다.
+  window._cyResize = () => { CY.redraw(); CY.fit(); };
 }
 
 /* ---------- CSV ---------- */
@@ -435,7 +449,9 @@ const VW_AXIS = {
   Organization: ["조직", "#bf8700"], Vendor: ["공급사", "#9e6a03"],
   ProblemCategory: ["문제 범주(집계)", "#8250df"],
 };
-let VW = null;              // cytoscape 인스턴스
+let VW = null;              // vis.Network 인스턴스
+let VW_NODES = null;        // vis.DataSet — 노드
+let VW_EDGES = null;        // vis.DataSet — 엣지
 let VW_LOADED = new Set();  // 이미 펼친 노드 — 같은 노드를 두 번 질의하지 않는다
 
 function vwColor(cls) { return (VW_AXIS[cls] || ["기타", "#8b98a5"])[1]; }
@@ -448,81 +464,88 @@ function vwApi(body) {
   });
 }
 
+// 서버 응답 → vis-network 노드/엣지. 툴팁은 노드 title(HTMLElement)로 굽는다 —
+// vis-network 가 hover 시 네이티브로 띄우므로 겹친 노드에서도 안정적이다(수제 mouseover 불필요).
 function vwEls(d) {
-  const els = [];
+  const nodes = [], edges = [];
   for (const n of d.nodes) {
-    els.push({ data: {
-      id: n.id, label: n.label, cls: n.cls, axis: n.axis_ko || vwKo(n.cls),
-      def: n.definition || "", patents: n.patents || 0,
-      experts: n.experts, problems: n.problems, derived: !!n.derived,
+    const cls = n.cls;
+    nodes.push({
+      id: n.id, label: n.label, group: cls,
+      color: { background: vwColor(cls), border: "#0d1117", highlight: { background: vwColor(cls), border: "#e6edf3" } },
       // 특허 수로 크기를 준다 — 로그 스케일이 아니면 EPROM(5,139)이 화면을 다 먹는다.
-      size: 16 + Math.min(26, Math.log2(1 + (n.patents || 0)) * 3),
-    } });
+      size: 10 + Math.min(24, Math.log2(1 + (n.patents || 0)) * 3),
+      shape: n.derived ? "hexagon" : "dot",
+      title: vwTitle(n),
+      // detail·expand 가 읽는 원본 필드 — DataSet 에 실어둔다.
+      _cls: cls, _axis: n.axis_ko || vwKo(cls), _derived: !!n.derived,
+      _experts: n.experts, _problems: n.problems, _patents: n.patents || 0,
+    });
   }
-  for (const e of d.edges) els.push({ data: { id: `${e.src}|${e.pred}|${e.dst}`, source: e.src, target: e.dst, pred: e.pred } });
-  return els;
+  for (const e of d.edges) {
+    const sub = e.pred === "hasSubprocess";
+    edges.push({
+      id: `${e.src}|${e.pred}|${e.dst}`, from: e.src, to: e.dst,
+      color: sub ? { color: "#3fb950", highlight: "#56d364" } : undefined,
+      width: sub ? 1.6 : 1,
+    });
+  }
+  return { nodes, edges };
+}
+
+// 툴팁 본문 — 이름 · 축 배지 · 정의 · 활용 · IRI (site/baseline.html 과 같은 층위).
+// vis-network 는 title 이 HTMLElement 면 그대로 append 하므로 .sdkb-tip CSS 가 적용된다.
+function vwTitle(n) {
+  const def = n.definition || "<i>정의 없음 — 그래프에 skos:definition 이 없습니다</i>";
+  let use;
+  if (n.derived) use = `<span>집계</span> 이 범주의 실무문제 ${fmt(n.problems)}건 — 그래프의 개체가 아닙니다`;
+  else if (n.experts !== undefined && n.experts !== null) use = `<span>인력</span> 보유 전문가 ${fmt(n.experts)}명 · 요구 실무문제 ${fmt(n.problems)}건`;
+  else if (n.problems !== undefined && n.problems !== null) use = `<span>연결</span> 이 불량모드를 보이는 실무문제 ${fmt(n.problems)}건`;
+  else use = `<span>연결</span> 이 개념을 실현·언급하는 특허 ${fmt(n.patents || 0)}건`;
+  const box = document.createElement("div");
+  box.className = "sdkb-tip";
+  box.innerHTML = `<div class="t-name">${n.label}</div>`
+    + `<div class="t-cat">${n.axis_ko || vwKo(n.cls)}</div>`
+    + `<div class="t-desc">${def}</div>`
+    + `<div class="t-use">${use}</div>`
+    + `<div class="t-id">${shorten(n.id)}</div>`;
+  return box;
 }
 
 function vwInit() {
   if (VW) return VW;
-  VW = cytoscape({
-    container: document.getElementById("vw-canvas"),
-    style: [
-      { selector: "node", style: {
-          "background-color": (n) => vwColor(n.data("cls")),
-          width: "data(size)", height: "data(size)",
-          label: "data(label)", color: "#c9d1d9", "font-size": 10,
-          "text-valign": "bottom", "text-margin-y": 4, "text-outline-width": 2,
-          "text-outline-color": "#0d1117", "min-zoomed-font-size": 7 } },
-      { selector: "node:selected", style: { "border-width": 3, "border-color": "#e6edf3" } },
-      { selector: "edge", style: {
-          width: 1, "line-color": "#30363d", "target-arrow-color": "#30363d",
-          "target-arrow-shape": "triangle", "curve-style": "bezier", "arrow-scale": 0.7 } },
-      { selector: "edge[pred = 'hasSubprocess']", style: { "line-color": "#3fb950", "target-arrow-color": "#3fb950", width: 1.6 } },
-    ],
-    wheelSensitivity: 0.2,
-  });
-  VW.on("mouseover", "node", (e) => vwTip(e.target, e.renderedPosition || e.target.renderedPosition()));
-  VW.on("mouseout", "node", () => { document.getElementById("vw-tip").style.display = "none"; });
-  VW.on("tap", "node", (e) => vwDetail(e.target.id(), e.target.data()));
-  VW.on("dbltap", "node", (e) => vwExpand(e.target.id(), e.target.data("derived")));
+  VW_NODES = new vis.DataSet([]);
+  VW_EDGES = new vis.DataSet([]);
+  VW = new vis.Network(document.getElementById("vw-canvas"), { nodes: VW_NODES, edges: VW_EDGES }, VIS_OPTS);
+  // 안정화가 끝난 뒤에 맞춘다 — 초기(원점 근처 뭉친) 배치로 fit 하면 scale 이 과도해져
+  // 노드가 화면 밖으로 밀려 캔버스가 빈 것처럼 보인다.
+  VW.on("stabilizationIterationsDone", () => VW.fit({ animation: false }));
+  // 클릭: 속성창 · 더블클릭: 이웃 펼치기. vis 이벤트는 노드 id 만 주므로 DataSet 에서 원본을 읽는다.
+  VW.on("click", (p) => { if (p.nodes.length) vwDetail(p.nodes[0], VW_NODES.get(p.nodes[0])); });
+  VW.on("doubleClick", (p) => { if (p.nodes.length) { const n = VW_NODES.get(p.nodes[0]); vwExpand(p.nodes[0], n && n._derived); } });
   return VW;
-}
-
-// 마우스오버 툴팁 — 이름 · 축 배지 · 정의 · 특허 수 · IRI
-function vwTip(node, pos) {
-  const tip = document.getElementById("vw-tip");
-  const d = node.data();
-  const def = d.def || "<i>정의 없음 — 그래프에 skos:definition 이 없습니다</i>";
-  // 축마다 세는 것이 다르다 — 특허 수를 인력 축에 붙이면 거짓이 된다.
-  let use;
-  if (d.derived) use = `<span>집계</span> 이 범주의 실무문제 ${fmt(d.problems)}건 — 그래프의 개체가 아닙니다`;
-  else if (d.experts !== undefined) use = `<span>인력</span> 보유 전문가 ${fmt(d.experts)}명 · 요구 실무문제 ${fmt(d.problems)}건`;
-  else if (d.problems !== undefined) use = `<span>연결</span> 이 불량모드를 보이는 실무문제 ${fmt(d.problems)}건`;
-  else use = `<span>연결</span> 이 개념을 실현·언급하는 특허 ${fmt(d.patents)}건`;
-  tip.innerHTML = `<div class="t-name">${d.label}</div>`
-    + `<div class="t-cat">${d.axis}</div>`
-    + `<div class="t-desc">${def}</div>`
-    + `<div class="t-use">${use}</div>`
-    + `<div class="t-id">${shorten(d.id)}</div>`;
-  const box = document.getElementById("vw-canvas").getBoundingClientRect();
-  tip.style.display = "block";
-  tip.style.left = Math.min(box.left + pos.x + 14, window.innerWidth - 340) + "px";
-  tip.style.top = (box.top + pos.y + 12) + "px";
 }
 
 async function loadDomain() {
   const meta = document.getElementById("vw-meta");
+  // 상태(그래프 목록) 로드 전에 뷰어를 열면 vw-graph 가 빈 값이라 API 가 빈 키로 실패한다.
+  // 아직이면 잠깐 뒤 재시도한다 — populateGraphSelects 가 값을 채우면 자연히 진행된다.
+  if (!document.getElementById("vw-graph").value) {
+    meta.innerHTML = '<span class="spin">그래프 목록 로드 대기…</span>';
+    setTimeout(loadDomain, 250);
+    return;
+  }
   const mode = document.getElementById("vw-mode").value;
   meta.innerHTML = '<span class="spin">지도 계산 중…</span>';
   vwInit();
   VW_LOADED = new Set();
   try {
     const d = await vwApi({ mode });
-    VW.elements().remove();
-    VW.add(vwEls(d));
-    VW.layout({ name: "cose", animate: false, nodeRepulsion: 9000, idealEdgeLength: 70, padding: 30 }).run();
-    meta.innerHTML = `노드 ${d.nodes.length} · 엣지 ${d.edges.length} — 클릭: 속성 · 더블클릭: 이웃 펼치기`;
+    const els = vwEls(d);
+    VW_NODES.clear(); VW_EDGES.clear();
+    VW_NODES.add(els.nodes); VW_EDGES.add(els.edges);
+    // fit 은 stabilizationIterationsDone 에서 — 여기서 부르면 안정화 전이라 과도 확대된다.
+    meta.innerHTML = `노드 ${d.nodes.length} · 엣지 ${d.edges.length} — 드래그: 이동 · 클릭: 속성 · 더블클릭: 이웃 펼치기`;
     if (d.note) meta.innerHTML += `<br /><span class="warn-note">${d.note}</span>`;
     vwLegend();
   } catch (e) { meta.innerHTML = `<span class="err">${e.message}</span>`; }
@@ -535,10 +558,11 @@ async function vwExpand(iri, derived) {
   try {
     const d = await vwApi({ mode: derived ? "category" : "expand", iri });
     VW_LOADED.add(iri);
-    const els = vwEls(d).filter((el) => !VW.getElementById(el.data.id).length);
-    VW.add(els);
-    VW.layout({ name: "cose", animate: false, nodeRepulsion: 9000, idealEdgeLength: 70, padding: 30 }).run();
-    meta.innerHTML = `+${d.nodes.length} 이웃 · 총 ${VW.nodes().length} 노드`;
+    const els = vwEls(d);
+    // DataSet 은 같은 id 재추가 시 예외 — 이미 있는 노드/엣지는 걸러 넣는다.
+    VW_NODES.add(els.nodes.filter((n) => !VW_NODES.get(n.id)));
+    VW_EDGES.add(els.edges.filter((e) => !VW_EDGES.get(e.id)));
+    meta.innerHTML = `+${d.nodes.length} 이웃 · 총 ${VW_NODES.length} 노드`;
     // 상한에 걸렸으면 말한다 — 조용히 자르면 "이게 전부"로 읽힌다.
     if (d.truncated) meta.innerHTML += ` <span class="warn-note">⚠ 상한 절단 — 이웃이 더 있습니다</span>`;
   } catch (e) { meta.innerHTML = `<span class="err">${e.message}</span>`; }
@@ -547,12 +571,12 @@ async function vwExpand(iri, derived) {
 async function vwDetail(iri, data) {
   const panel = document.getElementById("vw-panel");
   // 집계 노드는 그래프에 없다 — detail 을 물으면 빈 응답이 온다. 그 사실을 그대로 말한다.
-  if (data && data.derived) {
+  if (data && data._derived) {
     panel.innerHTML = "";
     panel.append(el("h4", {}, data.label));
-    panel.append(el("div", { class: "t-cat" }, data.axis));
+    panel.append(el("div", { class: "t-cat" }, data._axis));
     panel.append(el("p", { class: "vw-def muted" },
-      `ont:problemCategory 집계 노드입니다 — 그래프의 개체가 아니라 실무문제 ${fmt(data.problems)}건을 묶은 것입니다.`));
+      `ont:problemCategory 집계 노드입니다 — 그래프의 개체가 아니라 실무문제 ${fmt(data._problems)}건을 묶은 것입니다.`));
     panel.append(el("button", { class: "btn", onclick: () => vwExpand(iri, true) }, "이 범주의 문제 펼치기"));
     return;
   }
@@ -597,7 +621,7 @@ async function vwDetail(iri, data) {
 function vwLegend() {
   const box = document.getElementById("vw-legend");
   box.innerHTML = "";
-  const present = new Set(VW.nodes().map((n) => n.data("cls")));
+  const present = new Set(VW_NODES.get().map((n) => n._cls));
   for (const cls of present) {
     box.append(el("span", { class: "lg" }, el("i", { style: `background:${vwColor(cls)}` }), vwKo(cls)));
   }

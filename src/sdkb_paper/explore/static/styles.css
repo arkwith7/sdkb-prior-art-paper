@@ -137,10 +137,14 @@ tr:hover td { background: var(--panel2); }
 .legend { display: inline-flex; gap: 10px; flex-wrap: wrap; }
 .legend .lg { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); }
 .legend .lg i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
-.viewer-layout { display: grid; grid-template-columns: 1fr 320px; gap: 14px; height: 72vh; }
-#vw-canvas { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; height: 100%; }
+/* 행 트랙을 minmax(0,1fr) 로 고정한다 — auto 행이면 vis 캔버스의 height:100% 가
+   콘텐츠→행 확장→100% 재계산의 피드백 루프를 만들어 컨테이너가 무한 성장한다(fit 뒤틀림). */
+.viewer-layout { display: grid; grid-template-columns: 1fr 320px; grid-template-rows: minmax(0, 1fr);
+  gap: 14px; height: 72vh; }
+#vw-canvas { background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  height: 100%; min-height: 0; overflow: hidden; }
 .vw-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
-  padding: 14px; overflow-y: auto; overflow-x: hidden; font-size: 12.5px; }
+  padding: 14px; overflow-y: auto; overflow-x: hidden; font-size: 12.5px; min-height: 0; }
 .vw-panel .t-id { overflow-wrap: anywhere; }
 .vw-panel h4 { margin: 0 0 6px; font-size: 15px; }
 .vw-def { color: var(--muted); line-height: 1.5; margin: 8px 0; }
@@ -156,15 +160,22 @@ tr:hover td { background: var(--panel2); }
 .vw-link:hover { text-decoration: underline; }
 .warn-note { color: var(--accent2); font-size: 11.5px; }
 
+/* vis-network 네이티브 툴팁 래퍼 — 기본 흰 박스·verdana·nowrap 를 지우고 우리 .sdkb-tip 만 보이게 */
+.vis-tooltip { background: transparent !important; border: 0 !important; box-shadow: none !important;
+  padding: 0 !important; color: inherit !important; white-space: normal !important;
+  font-family: var(--sans) !important; z-index: 60; }
+
 /* 툴팁 — site/baseline.html 과 같은 층위의 정보(이름·범주·설명·활용·id) */
-.sdkb-tip { position: fixed; z-index: 50; max-width: 320px; pointer-events: none;
+.sdkb-tip { max-width: 320px; pointer-events: none;
   background: #161b22; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;
-  box-shadow: 0 8px 28px rgba(0,0,0,.55); font-size: 12.5px; line-height: 1.5; }
-.sdkb-tip .t-name { font-weight: 600; font-size: 14px; color: var(--fg); margin-bottom: 6px; }
-.sdkb-tip .t-cat { display: inline-block; background: rgba(68,147,248,.18); color: var(--accent);
+  box-shadow: 0 8px 28px rgba(0,0,0,.55); font-size: 12.5px; line-height: 1.5; text-align: left; }
+/* 툴팁 배경은 항상 다크(#161b22)이므로 텍스트도 테마와 무관하게 밝게 고정한다 —
+   var(--fg)/var(--muted) 를 쓰면 라이트 테마에서 다크-온-다크로 안 보인다. */
+.sdkb-tip .t-name { font-weight: 600; font-size: 14px; color: #f0f6fc; margin-bottom: 6px; }
+.sdkb-tip .t-cat { display: inline-block; background: rgba(68,147,248,.22); color: #79c0ff;
   border-radius: 5px; padding: 2px 8px; font-size: 11px; margin-bottom: 8px; }
-.sdkb-tip .t-desc { color: var(--fg); opacity: .9; margin-bottom: 8px; }
-.sdkb-tip .t-use { color: var(--muted); font-size: 11.5px; margin-bottom: 8px; }
-.sdkb-tip .t-use span { color: var(--accent2); font-weight: 600; margin-right: 4px; }
-.sdkb-tip .t-id { border-top: 1px solid var(--border); padding-top: 6px; color: var(--muted);
+.sdkb-tip .t-desc { color: #d6dde5; margin-bottom: 8px; }
+.sdkb-tip .t-use { color: #9aa5b1; font-size: 11.5px; margin-bottom: 8px; }
+.sdkb-tip .t-use span { color: #3fb950; font-weight: 600; margin-right: 4px; }
+.sdkb-tip .t-id { border-top: 1px solid #30363d; padding-top: 6px; color: #8b98a5;
   font-family: ui-monospace, monospace; font-size: 11px; }

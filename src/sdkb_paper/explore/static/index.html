@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SDKB 온톨로지 탐색기</title>
   <link rel="stylesheet" href="/static/styles.css" />
-  <script src="/static/vendor/cytoscape.min.js"></script>
+  <!-- 그래프 캔버스: vis-network 9.1.2 (site/baseline.html 과 동일 엔진) -->
+  <link rel="stylesheet" href="/static/vendor/vis-network.min.css" />
+  <script src="/static/vendor/vis-network.min.js"></script>
 </head>
 <body>
   <header>
@@ -80,7 +82,6 @@
           <div class="empty">노드를 클릭하면 속성이 여기에 나옵니다.<br />더블클릭하면 이웃을 펼칩니다.</div>
         </aside>
       </div>
-      <div id="vw-tip" class="sdkb-tip" style="display:none"></div>
     </section>
 
     <!-- 실무 질의 -->
