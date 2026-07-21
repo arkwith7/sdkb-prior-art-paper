@@ -29,3 +29,6 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 dist/
+
+# Protégé/OWLAPI 가 온톨로지를 열 때 폴더에 자동 생성 (편집 도구 부산물 — 얼린 스냅샷 오염 방지)
+catalog-v*.xml
