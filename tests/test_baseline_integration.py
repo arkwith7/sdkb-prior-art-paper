@@ -31,7 +31,13 @@ from sdkb_paper.validate.vocab_coverage import measure
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 44221    # 2026-07-20 SubProcess 한국어 별칭 승격(SDKB da745ef): skos:altLabel@ko
+EXPECTED_TRIPLES = 49210    # 2026-07-21 전문가 상세 경력 A-Box 적재(SDKB): +4,906 — 경력 datatype
+                            # 22종 · EquipmentModel 29 · ExpertCase 163(사례 reification) · 큐레이션
+                            # ontology_alignment 기반 역량 링크. **특허↔공정 엣지는 한 건도 안 움직였다**
+                            # (realizesProcess 1565 · concernsDevice 181 · assignedTo 1053 불변) —
+                            # C₀ 20/49 불변 · H1 네 표본집합 p 전부 불변(4.77e-07·3.05e-05·1.95e-03·
+                            # 2.44e-04) · RQ3 세 층 불변. docs/deidentification_protocol.md §1.5. 구 44,221.
+                            # 그 전: 2026-07-20 SubProcess 한국어 별칭 승격(SDKB da745ef): skos:altLabel@ko
                             # +19 — 원자층증착=ALD·화학기상증착=CVD·물리기상증착/스퍼터링=PVD·
                             # 건식(플라즈마) 식각·습식 식각. 라벨만 늘고 특허↔공정 엣지 불변이라
                             # C₀ 20/49 · H1 네 표본집합 p값 전부 불변(실측). 구 44,202.
@@ -101,20 +107,25 @@ EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴�
 #
 # CQ 8개(손으로 고른 것) 시절: 술어 5/53 = 9.4% · 클래스 4/25 = 16.0% — 특허 축 하나의 100%.
 # CQ 22개(태스크에서 도출 · SPEC-004 P1–P5): 아래. 올린 방법은 임계값이 아니라 태스크다.
-EXPECTED_VOCAB_PREDICATES = (36, 54)  # CQ 검증 66.7% — 규제 축이 ont:securityLevel 1개를 더했다
-EXPECTED_VOCAB_CLASSES = (18, 25)     # CQ 검증 72.0% (규제 클래스는 gov: 라 ont: 측정 밖)
+EXPECTED_VOCAB_PREDICATES = (36, 83)  # CQ 검증 43.4% — 2026-07-21 전문가 상세 경력 적재로 술어
+                                      # 사용이 54→83(+29). CQ 는 이 신규 어휘를 심문하지 않으므로
+                                      # CQ 검증률은 내려간다(66.7%→43.4%) — 지표가 잡아야 할 현상이다(§5.2).
+EXPECTED_VOCAB_CLASSES = (18, 27)     # CQ 검증 66.7% — 클래스 사용 25→27(+EquipmentModel·ExpertCase)
 
 # **게이트 커버리지 = CQ ∪ SHACL.** 목표는 커버리지 90% 가 아니라 "아무도 안 보는 어휘 = 0" 이다.
-# 서지·프로비넌스·값어휘는 CQ 가 아니라 SHACL 이 본다 (bibliographic_shape.ttl · compliance_shape.ttl).
-EXPECTED_GATE_PREDICATES = (54, 54)   # 100% — securityLevel 을 compliance_shape 이 게이트
-EXPECTED_GATE_CLASSES = (25, 25)      # 100% — 아무도 안 보는 클래스 0
+# 신규 어휘 29종은 expert_shape.ttl(SHACL)이 본다 → 게이트 커버리지는 100% 유지.
+EXPECTED_GATE_PREDICATES = (83, 83)   # 100% — 전문가 경력 술어를 expert_shape 이 게이트
+EXPECTED_GATE_CLASSES = (27, 27)      # 100% — 아무도 안 보는 클래스 0 (EquipmentModel·ExpertCase 포함)
 
 # G₀ 의 IP-R&D CQ before 값 (§4.2 의 G₀ 열). G₁ 과 비교되는 수치이므로 여기서 고정한다.
 EXPECTED_IPRD_ROWS = {
     "CQ09_rejection_prior_art": 414,             # 거절 근거가 기록된 특허
     "CQ10_prior_art_candidates_by_concept": 8,   # plasma_etch · 2015 이전 출원
     "CQ11_experts_for_process_skill": 66,
-    "CQ12_problem_process_equipment_expert": 4967,
+    "CQ12_problem_process_equipment_expert": 3134,  # 2026-07-21 전문가 링크를 큐레이션
+                                                    # ontology_alignment ID 로 전환(텍스트 재매칭 폐기).
+                                                    # 정렬 공정 링크가 더 정밀해 problem→process→expert
+                                                    # 조인이 4967→3134 로 줄었다(정직한 변화 · 여전히 응답).
     "CQ13_value_chain_vendor_portfolio": 21,     # 정체성 통합 이전에는 **0 행**이었다
     "CQ14_value_chain_role_distribution": 18,
     # SPEC-004 단계 4 — 불량 인과·재료·계측 축 (2026-07-15). 여섯도 G₀ 에서 응답해야 정상이다.
@@ -123,7 +134,9 @@ EXPECTED_IPRD_ROWS = {
     "CQ17_material_problem_expert": 35,
     "CQ18_patents_by_skill": 10,
     "CQ19_process_control_and_metrology": 6,
-    "CQ20_experts_by_equipment": 15,
+    "CQ20_experts_by_equipment": 395,  # 2026-07-21 정렬 기반 링크 + EquipmentModel 노드로
+                                       # 전문가↔장비 경험이 대폭 풍부해졌다(15→395 · vendor·
+                                       # equipment_class·equipment_model 세 축).
     "CQ21_process_hierarchy_portfolio": 38,
     "CQ22_patent_equipment_and_technode": 9,
     # PLAN-015 · 규제·수출통제 축 (2026-07-15). RQ3 IP-R&D 산출물 4(라이선싱·기술이전 심사).

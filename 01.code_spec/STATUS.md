@@ -2,10 +2,27 @@
 
 *최종 갱신: 2026-07-16 · 근거: `pytest` · `make gate` · `make h1 CORPUS=ksia-equipment` · `make ksia-strata` · G₂ 3층 게이트(L1·L2 consistent·L3 CQ 27/27) · SDKB 커밋 `edb8ae4`*
 
-> ⚠ **서명 수치의 정본은 [CANONICAL-INDEX.md](CANONICAL-INDEX.md) §1 이다.** 현재값: **G₀ 44,221 ·
-> G₁ 413,730 · G₂ 429,334 트리플** (이번 세션 rdflib 실측 = MANIFEST §3 = 논문 v0.3). 아래 "G₁ 서명"·
+> ⚠ **서명 수치의 정본은 [CANONICAL-INDEX.md](CANONICAL-INDEX.md) §1 이다.** 현재값: **G₀ 49,210 ·
+> G₁ 418,738 · G₂ 434,342 트리플** (2026-07-21 전문가 상세 경력 적재 후 재동결 · 각 +4,906 ·
+> 특허↔공정 엣지·C₀ 20/49·H1 p·RQ3 세 층 전부 불변). 아래 "G₁ 서명"·
 > "G₀ 서명" 표의 일부 트리플 수(413,340·43,814)와 before 커버(16/33)는 재동결·교정 이전의 낡은
 > 값이다 — 서사 맥락으로 남기되, 인용은 CANONICAL-INDEX §1 을 쓴다.
+
+> **2026-07-21 · 전문가 상세 경력 A-Box 전량 적재 완료 — 인력 축 심화 (뷰어 품질검토 · CQ11·12 · RQ3 보조).**
+> 상류 SDKB `curated_profiles_kr.json`(110명)에 큐레이션돼 있으나 그래프에만 없던 상세 경력을 실체화했다.
+> **상류에서**: T-Box 신설(`ont:EquipmentModel`·`ont:ExpertCase` 클래스 2 · 사례 object property 6 ·
+> 경력 datatype 23종) → A-Box 빌더 확장(자유텍스트 재매칭 폐기, 큐레이션 `ontology_alignment` ID 를
+> **필드별 스킴 정합**(vendor:↔organization: · equipment:↔equipment_class: · failure:↔failuremode: ·
+> cause:↔rootcause: · param:↔parameter:) + 정규화 렉시콘 폴백으로 95.6% 결정적 해석, 잔차는 그대로 보고) →
+> SHACL shape 3종 신설(음성 검사로 비공허 확인) → 회귀 테스트 5종 · 상류 pytest 84 통과.
+> **비식별 프로토콜 §1.5 를 적재보다 먼저 갱신**(신규 필드 열거 · synthetic 재확인 · `hourlyRateRange`
+> 상업성 한계 표기 — 배포된 개인정보는 되돌릴 수 없다는 비대칭이 이 작업의 유일한 비가역 지점).
+> **하류에서**: 재vendor → G₀ 재동결 **44,221 → 49,210 (+4,906)** · G₁ 418,738 · G₂ 434,342 (각 +4,906).
+> **H1 네 표본집합 p 전부 불변**(4.77e-07·3.05e-05·1.95e-03·2.44e-04) · C₀ 20/49 불변 ·
+> **RQ3 세 층 불변**(장비 4.77e-07·재료 4.42e-05·부분품 6.57e-05) · realizesProcess 1565·concernsDevice
+> 181·assignedTo 1053 불변. 특허↔공정 엣지를 건드리지 않았으므로 검정은 원리적으로 안 움직인다.
+> 하류 graph SHACL `expert_shape.ttl` 신설로 신규 어휘 29종이 게이트에 보인다(§5.2). 뷰어 속성창은
+> `detail()` 이 노드 전 속성을 반환하므로 전문가 노드가 이제 전체 프로필(학력·자격증·장비 경험·사례)을 띄운다.
 
 > **2026-07-16 · RQ2(H2) 재설계 완료 — A(음성 인구조사) + C(조합 능력) · [PLAN-016](plans/PLAN-016-rq2-population-leadtime.md).**
 > H2 를 4~7사례 부호검정(최소 p=0.0625, 검정력 봉쇄)에서 **조합 능력 존재 증명 + 전수 인구조사**로 재설계했다.

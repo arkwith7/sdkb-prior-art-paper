@@ -13,7 +13,7 @@ SKOS = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
 
 # 논문 정본(v0.5) 서명 — G₀ 만 불변식으로 검사한다. 나머지는 참고.
 EXPECTED = {
-    "v0": {"triples": 44221, "steps": 49, "covered": 20, "patent": 1000, "device": 34},
+    "v0": {"triples": 49210, "steps": 49, "covered": 20, "patent": 1000, "device": 34},
 }
 
 _COUNTS = {

@@ -40,7 +40,14 @@ def reasoning_view(graph: Graph) -> Graph:
             continue
         if isinstance(o, Literal) and o.datatype == XSD.date:
             o = Literal(f"{o}T00:00:00", datatype=XSD.dateTime)
+        elif isinstance(o, Literal) and o.datatype == XSD.gYear:
+            # xsd:gYear("2023") 도 HermiT 의 OWL 2 datatype map 밖이다 (xsd:date 와 같은 사유).
+            # 전문가 retirementYear 가 이 타입을 쓴다. 원본 그래프의 gYear 는 그대로 두고
+            # (L1 SHACL 이 검사) 추론 뷰에서만 dateTime 으로 사상한다.
+            o = Literal(f"{o}-01-01T00:00:00", datatype=XSD.dateTime)
         elif o == XSD.date:  # rdfs:range xsd:date 같은 TBox 선언
+            o = XSD.dateTime
+        elif o == XSD.gYear:  # rdfs:range xsd:gYear 같은 TBox 선언
             o = XSD.dateTime
         g.add((s, p, o))
     return g

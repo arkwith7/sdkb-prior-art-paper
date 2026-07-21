@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "da745ef6bfda6d909792dda701f37e7d82ce0705",
-  "source_commit_date": "2026-07-20T19:46:14+09:00",
+  "source_commit": "d583b0c87b68063ead1fda1395fb97dd2d57f011",
+  "source_commit_date": "2026-07-21T14:28:39+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-20T10:46:27+00:00",
+  "vendored_at": "2026-07-21T05:28:55+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
@@ -14,12 +14,12 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-07-20T10:46:27+00:00",
+    "checked_at": "2026-07-21T05:28:55+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
           "input": "scripts/build_owl.py",
-          "sha256": "b369ea5423d210899f7985254828a7c4dde9b950dc13d5230524e6322f397d0e"
+          "sha256": "56310cf124b326765d6f64a5c1ef8fd87bdce1feebbc6a391e58c2b8d707f333"
         }
       ],
       "ontology/sdkb-core-data.ttl": [
@@ -49,7 +49,7 @@
       "ontology/sdkb-abox-experts-problems.ttl": [
         {
           "input": "scripts/build_abox_experts_problems.py",
-          "sha256": "61d228668ae5cee13c77c462dbb2c0a1c2d5ebd3ece27ec75095b8d75853d535"
+          "sha256": "e4357d4cca940989d2e51eaac6d7b46456162798d8eadfdddad9825da8f58cba"
         },
         {
           "input": "data/semiconductor_v0_3.json",
@@ -114,7 +114,7 @@
       "file": "sdkb-core.ttl",
       "source_path": "ontology/sdkb-core.ttl",
       "role": "TBox: 제조 코어(Process/SubProcess/Equipment/Material/Device/FailureMode)",
-      "sha256": "5bf7f9f488a72292170a75d05a1011cd56a12ac1f4ada23a07c4ce6658194f91"
+      "sha256": "0cc3aa5dfd8ecb939043d6580c95bf8e430b25afae6f3b94e78cf1d98e1da2f3"
     },
     {
       "file": "sdkb-patent.ttl",
@@ -144,7 +144,7 @@
       "file": "sdkb-abox-experts-problems.ttl",
       "source_path": "ontology/sdkb-abox-experts-problems.ttl",
       "role": "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축",
-      "sha256": "245fb28e427e21667d29d7692bf9f40df02509b8ccb3dbf4100e257b77edf19e"
+      "sha256": "4251b65a7032363aa81b5fb218e4bbda656747f778ef38dc248fe221a252bebc"
     },
     {
       "file": "sdkb-abox-vendors.ttl",

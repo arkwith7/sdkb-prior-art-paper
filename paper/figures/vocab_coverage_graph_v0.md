@@ -5,8 +5,8 @@
 
 | 축 | CQ 검증 | SHACL 검사 | **게이트(합집합)** | 사용됨 | **아무도 안 봄** |
 |---|---:|---:|---:|---:|---:|
-| 술어 | 36 (66.7%) | 19 | **54 (100.0%)** | 54 | **0** |
-| 클래스 | 18 (72.0%) | 11 | **25 (100.0%)** | 25 | **0** |
+| 술어 | 36 (43.4%) | 48 | **83 (100.0%)** | 83 | **0** |
+| 클래스 | 18 (66.7%) | 19 | **27 (100.0%)** | 27 | **0** |
 
 ## CQ 별 검증 어휘
 
@@ -23,7 +23,7 @@
 | CQ09_rejection_prior_art | 414 | `RejectedPatent` · `hasPriorArt` · `hasPriorArtExaminer` · `rejectedFor` |
 | CQ10_prior_art_candidates_by_concept | 8 | `Patent` · `filingDate` · `realizesProcess` |
 | CQ11_experts_for_process_skill | 66 | `Expert` · `Process` · `SubProcess` · `hasSkill` · `requiresSkill` |
-| CQ12_problem_process_equipment_expert | 4967 | `Expert` · `Problem` · `hasProcessExpertise` · `involvesEquipment` · `involvesProcess` |
+| CQ12_problem_process_equipment_expert | 3134 | `Expert` · `Problem` · `hasProcessExpertise` · `involvesEquipment` · `involvesProcess` |
 | CQ13_value_chain_vendor_portfolio | 21 | `EquipmentClass` · `Patent` · `Vendor` · `assignedTo` · `isInstanceOf` · `madeBy` · `providedBy` · `usesEquipmentClass` |
 | CQ14_value_chain_role_distribution | 18 | `companyType` |
 | CQ15_failure_causal_chain | 6 | `FailureMode` · `Mitigation` · `Problem` · `RootCause` · `Skill` · `exhibitsFailureMode` · `isDueTo` · `mitigatedBy` · `mitigationProvidesSkill` · `occursAtProcessStep` |
@@ -31,7 +31,7 @@
 | CQ17_material_problem_expert | 35 | `Expert` · `Problem` · `hasMaterialExpertise` · `involvesMaterial` |
 | CQ18_patents_by_skill | 10 | `Patent` · `concernsSkill` |
 | CQ19_process_control_and_metrology | 6 | `Metrology` · `Parameter` · `hasParameter` · `measuredBy` |
-| CQ20_experts_by_equipment | 15 | `Equipment` · `EquipmentClass` · `Expert` · `hasEquipmentExperience` |
+| CQ20_experts_by_equipment | 395 | `Equipment` · `EquipmentClass` · `Expert` · `hasEquipmentExperience` |
 | CQ21_process_hierarchy_portfolio | 38 | `hasSubprocess` |
 | CQ22_patent_equipment_and_technode | 9 | `EquipmentClass` · `Patent` · `RootCause` · `TechnologyNode` · `concernsTechnologyNode` · `realizesEquipmentClass` · `relatedToTopic` |
 | CQ23_concept_export_control | 37 | — |
@@ -50,19 +50,48 @@
 |---|---:|---|---|---:|
 | `abstractText` | 1000 | | `IPCSymbol` | 810 |
 | `applicationNumber` | 1000 | | `Organization` | 351 |
-| `examinationStatus` | 1000 | | `STEEPVEDimension` | 7 |
-| `firstClaimText` | 1000 | | `OptionType` | 5 |
-| `patentOffice` | 1000 | | `RejectionType` | 5 |
-| `processFamily` | 1000 | | `ConstraintType` | 2 |
-| `publicationDate` | 1000 | | `Semiconductor` | 1 |
-| `publicationNumber` | 1000 | |  |  |
-| `valueChainStage` | 1000 | |  |  |
+| `examinationStatus` | 1000 | | `ExpertCase` | 163 |
+| `firstClaimText` | 1000 | | `EquipmentModel` | 29 |
+| `patentOffice` | 1000 | | `STEEPVEDimension` | 7 |
+| `processFamily` | 1000 | | `OptionType` | 5 |
+| `publicationDate` | 1000 | | `RejectionType` | 5 |
+| `publicationNumber` | 1000 | | `ConstraintType` | 2 |
+| `valueChainStage` | 1000 | | `Semiconductor` | 1 |
 | `interpretationType` | 914 | |  |  |
+| `hasCertification` | 395 | |  |  |
 | `region` | 336 | |  |  |
+| `preferredProjectType` | 316 | |  |  |
+| `language` | 282 | |  |  |
 | `clientCountry` | 226 | |  |  |
 | `complianceSensitivity` | 226 | |  |  |
 | `problemCategory` | 226 | |  |  |
+| `workHistoryCountry` | 169 | |  |  |
+| `caseSource` | 163 | |  |  |
+| `hasCaseExperience` | 163 | |  |  |
+| `majorProject` | 159 | |  |  |
 | `confidence` | 149 | |  |  |
+| `caseMitigation` | 135 | |  |  |
+| `caseProcess` | 122 | |  |  |
+| `age` | 110 | |  |  |
 | `complianceFlag` | 110 | |  |  |
+| `consultingAvailability` | 110 | |  |  |
+| `currentStatus` | 110 | |  |  |
+| `education` | 110 | |  |  |
+| `formerEmployer` | 110 | |  |  |
+| `hasNCT` | 110 | |  |  |
+| `hourlyRateRange` | 110 | |  |  |
+| `lastActivity` | 110 | |  |  |
+| `nationality` | 110 | |  |  |
+| `patentCount` | 110 | |  |  |
+| `profileSummary` | 110 | |  |  |
+| `publicationCount` | 110 | |  |  |
+| `securityClearance` | 110 | |  |  |
+| `specialization` | 110 | |  |  |
+| `toeicScore` | 110 | |  |  |
+| `yearsExperience` | 110 | |  |  |
 | `validationRequired` | 108 | |  |  |
+| `caseFailureMode` | 105 | |  |  |
+| `retirementYear` | 53 | |  |  |
+| `caseRootCause` | 46 | |  |  |
+| `caseParameter` | 41 | |  |  |
 | `securityLevel` | 1 | |  |  |

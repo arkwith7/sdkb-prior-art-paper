@@ -89,11 +89,54 @@ ont:affectsMetric a owl:ObjectProperty ;
     rdfs:domain ont:FailureMode ;
     rdfs:range ont:Parameter .
 
+ont:age a owl:DatatypeProperty ;
+    rdfs:label "age"@en ;
+    rdfs:comment "Expert age (synthetic/altered — no claim about a real individual)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:integer .
+
 ont:belongsToFunction a owl:ObjectProperty ;
     rdfs:label "belongsToFunction"@en ;
     rdfs:comment "Outcome belongs to a NIST CSF 2.0 function."@en ;
     rdfs:domain gov:NISTOutcome ;
     rdfs:range gov:NISTFunction .
+
+ont:caseFailureMode a owl:ObjectProperty ;
+    rdfs:label "caseFailureMode"@en ;
+    rdfs:comment "A failure mode encountered in the case-experience."@en ;
+    rdfs:domain ont:ExpertCase ;
+    rdfs:range ont:FailureMode .
+
+ont:caseMitigation a owl:ObjectProperty ;
+    rdfs:label "caseMitigation"@en ;
+    rdfs:comment "A mitigation applied in the case-experience."@en ;
+    rdfs:domain ont:ExpertCase ;
+    rdfs:range ont:Mitigation .
+
+ont:caseParameter a owl:ObjectProperty ;
+    rdfs:label "caseParameter"@en ;
+    rdfs:comment "A process parameter involved in the case-experience."@en ;
+    rdfs:domain ont:ExpertCase ;
+    rdfs:range ont:Parameter .
+
+ont:caseProcess a owl:ObjectProperty ;
+    rdfs:label "caseProcess"@en ;
+    rdfs:comment "The process (or sub-process) a case-experience is about."@en ;
+    rdfs:domain ont:ExpertCase ;
+    rdfs:range [ a owl:Class ;
+            owl:unionOf ( ont:Process ont:SubProcess ) ] .
+
+ont:caseRootCause a owl:ObjectProperty ;
+    rdfs:label "caseRootCause"@en ;
+    rdfs:comment "A root cause diagnosed in the case-experience."@en ;
+    rdfs:domain ont:ExpertCase ;
+    rdfs:range ont:RootCause .
+
+ont:caseSource a owl:DatatypeProperty ;
+    rdfs:label "caseSource"@en ;
+    rdfs:comment "Provenance of a case-experience record (e.g. synthetic_ontology_heuristic)."@en ;
+    rdfs:domain ont:ExpertCase ;
+    rdfs:range xsd:string .
 
 ont:changeSet a owl:DatatypeProperty ;
     rdfs:label "changeSet"@en ;
@@ -135,21 +178,45 @@ ont:conflictNote a owl:DatatypeProperty ;
     rdfs:comment "Note on unresolved alignment conflict."@en ;
     rdfs:range xsd:string .
 
+ont:consultingAvailability a owl:DatatypeProperty ;
+    rdfs:label "consultingAvailability"@en ;
+    rdfs:comment "Consulting availability (available | limited | selective | not_available)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
+
 ont:controlledBy a owl:ObjectProperty ;
     rdfs:label "controlledBy"@en ;
     rdfs:comment "Regulation controlling this item."@en ;
     rdfs:domain gov:RegulatedItem ;
     rdfs:range gov:EARRule .
 
+ont:currentStatus a owl:DatatypeProperty ;
+    rdfs:label "currentStatus"@en ;
+    rdfs:comment "Current professional status (retired | advisor | consultant | active | title)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
+
 ont:deprecatedId a owl:DatatypeProperty ;
     rdfs:label "deprecatedId"@en ;
     rdfs:comment "Former ID preserved after merge."@en ;
+    rdfs:range xsd:string .
+
+ont:education a owl:DatatypeProperty ;
+    rdfs:label "education"@en ;
+    rdfs:comment "Highest degree, field, institution, and year (narrative)."@en ;
+    rdfs:domain ont:Expert ;
     rdfs:range xsd:string .
 
 ont:effectiveDate a owl:DatatypeProperty ;
     rdfs:label "effectiveDate"@en ;
     rdfs:comment "Regulatory effective date."@en ;
     rdfs:range xsd:date .
+
+ont:formerEmployer a owl:DatatypeProperty ;
+    rdfs:label "formerEmployer"@en ;
+    rdfs:comment "A former employer of the expert (altered for EXP_001–005)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
 
 ont:granularity a owl:DatatypeProperty ;
     rdfs:label "granularity"@en ;
@@ -167,6 +234,18 @@ ont:hasAcceptor a owl:ObjectProperty ;
     rdfs:domain ont:ExtrinsicSemiconductor ;
     rdfs:range ont:Material ;
     skos:exactMatch <http://w3id.org/SemicONTO/hasAcceptor> .
+
+ont:hasCaseExperience a owl:ObjectProperty ;
+    rdfs:label "hasCaseExperience"@en ;
+    rdfs:comment "A reified case-experience record of an expert."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range ont:ExpertCase .
+
+ont:hasCertification a owl:DatatypeProperty ;
+    rdfs:label "hasCertification"@en ;
+    rdfs:comment "A professional certification held by the expert."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
 
 ont:hasCommunicationProtocol a owl:ObjectProperty ;
     rdfs:label "hasCommunicationProtocol"@en ;
@@ -199,7 +278,7 @@ ont:hasEquipmentExperience a owl:ObjectProperty ;
     rdfs:comment "Hands-on equipment experience of an expert."@en ;
     rdfs:domain ont:Expert ;
     rdfs:range [ a owl:Class ;
-            owl:unionOf ( ont:Equipment ont:EquipmentClass ont:Vendor ont:Metrology ) ] .
+            owl:unionOf ( ont:Equipment ont:EquipmentClass ont:Vendor ont:Metrology ont:EquipmentModel ) ] .
 
 ont:hasEquipmentState a owl:ObjectProperty ;
     rdfs:label "hasEquipmentState"@en ;
@@ -219,6 +298,12 @@ ont:hasMeasuredProperty a owl:ObjectProperty ;
     rdfs:domain ont:SubProcess ;
     rdfs:range ont:MaterialProperty ;
     skos:exactMatch <http://w3id.org/SemicONTO/hasMeasuredProperty> .
+
+ont:hasNCT a owl:DatatypeProperty ;
+    rdfs:label "hasNCT"@en ;
+    rdfs:comment "Whether the expert's profile touches a National Core Technology field."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:boolean .
 
 ont:hasNextStep a owl:ObjectProperty ;
     rdfs:label "hasNextStep"@en ;
@@ -287,6 +372,12 @@ ont:hasUnitSymbol a owl:DatatypeProperty ;
     rdfs:domain ont:Quantity ;
     rdfs:range xsd:string .
 
+ont:hourlyRateRange a owl:DatatypeProperty ;
+    rdfs:label "hourlyRateRange"@en ;
+    rdfs:comment "Indicative consulting rate range (synthetic — not a real market price; see deidentification_protocol §1.5)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
+
 ont:incompatibleWith a owl:ObjectProperty ;
     rdfs:label "incompatibleWith"@en ;
     rdfs:comment "Material incompatible with a sub-process."@en ;
@@ -324,12 +415,30 @@ ont:isInstanceOf a owl:ObjectProperty ;
     rdfs:domain ont:Equipment ;
     rdfs:range ont:EquipmentClass .
 
+ont:language a owl:DatatypeProperty ;
+    rdfs:label "language"@en ;
+    rdfs:comment "A language the expert works in."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
+
+ont:lastActivity a owl:DatatypeProperty ;
+    rdfs:label "lastActivity"@en ;
+    rdfs:comment "Date of the expert's last recorded activity."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:date .
+
 ont:madeBy a owl:ObjectProperty ;
     rdfs:label "madeBy"@en ;
     rdfs:comment "Material produced by vendor."@en ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( ont:Material ont:EquipmentClass ) ] ;
     rdfs:range ont:Vendor .
+
+ont:majorProject a owl:DatatypeProperty ;
+    rdfs:label "majorProject"@en ;
+    rdfs:comment "A notable project the expert led or contributed to."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
 
 ont:measuredBy a owl:ObjectProperty ;
     rdfs:label "measuredBy"@en ;
@@ -350,6 +459,12 @@ ont:mitigationProvidesSkill a owl:ObjectProperty ;
     rdfs:domain ont:Mitigation ;
     rdfs:range ont:Skill .
 
+ont:nationality a owl:DatatypeProperty ;
+    rdfs:label "nationality"@en ;
+    rdfs:comment "ISO country code of nationality (synthetic/altered)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
+
 ont:notAllowedWith a owl:ObjectProperty ;
     rdfs:label "notAllowedWith"@en ;
     rdfs:comment "Material not permitted in a sub-process."@en ;
@@ -363,6 +478,18 @@ ont:occursAtProcessStep a owl:ObjectProperty ;
     rdfs:domain ont:FailureMode ;
     rdfs:range ont:SubProcess .
 
+ont:patentCount a owl:DatatypeProperty ;
+    rdfs:label "patentCount"@en ;
+    rdfs:comment "Patent count (synthetic — no claim about a real individual)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:integer .
+
+ont:preferredProjectType a owl:DatatypeProperty ;
+    rdfs:label "preferredProjectType"@en ;
+    rdfs:comment "A preferred project type (troubleshooting | new_technology | optimization | training)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
+
 ont:probability a owl:DatatypeProperty ;
     rdfs:label "probability"@en ;
     rdfs:comment "Conditional probability of cause→failure (optional)."@en ;
@@ -374,11 +501,23 @@ ont:problemCategory a owl:DatatypeProperty ;
     rdfs:domain ont:Problem ;
     rdfs:range xsd:string .
 
+ont:profileSummary a owl:DatatypeProperty ;
+    rdfs:label "profileSummary"@en ;
+    rdfs:comment "Free-text career summary (altered/synthetic narrative)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
+
 ont:providedBy a owl:ObjectProperty ;
     rdfs:label "providedBy"@en ;
     rdfs:comment "Equipment supplied by vendor."@en ;
     rdfs:domain ont:Equipment ;
     rdfs:range ont:Vendor .
+
+ont:publicationCount a owl:DatatypeProperty ;
+    rdfs:label "publicationCount"@en ;
+    rdfs:comment "Publication count (synthetic — no claim about a real individual)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:integer .
 
 ont:region a owl:DatatypeProperty ;
     rdfs:label "region"@en ;
@@ -406,6 +545,12 @@ ont:requiresSkill a owl:ObjectProperty ;
             owl:unionOf ( ont:SubProcess ont:Mitigation ) ] ;
     rdfs:range ont:Skill .
 
+ont:retirementYear a owl:DatatypeProperty ;
+    rdfs:label "retirementYear"@en ;
+    rdfs:comment "Year of retirement, if retired."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:gYear .
+
 ont:retrievedDate a owl:DatatypeProperty ;
     rdfs:label "retrievedDate"@en ;
     rdfs:comment "Date when the data was retrieved."@en ;
@@ -414,6 +559,12 @@ ont:retrievedDate a owl:DatatypeProperty ;
 ont:reviewStatus a owl:DatatypeProperty ;
     rdfs:label "reviewStatus"@en ;
     rdfs:comment "Review status: APPROVED | DISPUTED | PENDING."@en ;
+    rdfs:range xsd:string .
+
+ont:securityClearance a owl:DatatypeProperty ;
+    rdfs:label "securityClearance"@en ;
+    rdfs:comment "Security clearance level (none | confidential | secret | top_secret)."@en ;
+    rdfs:domain ont:Expert ;
     rdfs:range xsd:string .
 
 ont:securityLevel a owl:DatatypeProperty ;
@@ -426,6 +577,12 @@ ont:softConstraint a owl:NamedIndividual,
     rdfs:label "softConstraint"@en ;
     skos:prefLabel "Soft Constraint"@en .
 
+ont:specialization a owl:DatatypeProperty ;
+    rdfs:label "specialization"@en ;
+    rdfs:comment "Primary specialization (e.g. Lithography, Metrology, CMP)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
+
 ont:standardRef a owl:ObjectProperty ;
     rdfs:label "standardRef"@en ;
     rdfs:comment "Reference to an industry standard."@en ;
@@ -436,6 +593,12 @@ ont:svhcConcentration a owl:DatatypeProperty ;
     rdfs:label "svhcConcentration"@en ;
     rdfs:comment "SVHC concentration (w/w fraction)."@en ;
     rdfs:range xsd:decimal .
+
+ont:toeicScore a owl:DatatypeProperty ;
+    rdfs:label "toeicScore"@en ;
+    rdfs:comment "TOEIC score (synthetic)."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:integer .
 
 ont:tppValue a owl:DatatypeProperty ;
     rdfs:label "tppValue"@en ;
@@ -458,6 +621,18 @@ ont:validationRequired a owl:DatatypeProperty ;
     rdfs:label "validationRequired"@en ;
     rdfs:comment "Whether this entity needs expert validation."@en ;
     rdfs:range xsd:boolean .
+
+ont:workHistoryCountry a owl:DatatypeProperty ;
+    rdfs:label "workHistoryCountry"@en ;
+    rdfs:comment "An ISO country code where the expert has worked."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:string .
+
+ont:yearsExperience a owl:DatatypeProperty ;
+    rdfs:label "yearsExperience"@en ;
+    rdfs:comment "Years of professional experience."@en ;
+    rdfs:domain ont:Expert ;
+    rdfs:range xsd:integer .
 
 gov:EARRule a owl:Class ;
     rdfs:label "EARRule"@en ;
@@ -487,6 +662,10 @@ ont:Donor a owl:Class ;
     rdfs:comment "A dopant that donates electrons, producing an n-type semiconductor."@en ;
     rdfs:subClassOf ont:Dopant ;
     skos:exactMatch <http://w3id.org/SemicONTO/Donor> .
+
+ont:EquipmentModel a owl:Class ;
+    rdfs:label "EquipmentModel"@en ;
+    rdfs:comment "A commercial equipment model (vendor product line, e.g. 'Applied Materials Centura'). More specific than EquipmentClass."@en .
 
 gov:NISTOutcome a owl:Class ;
     rdfs:label "NISTOutcome"@en ;
@@ -519,10 +698,6 @@ ont:MaterialProperty a owl:Class ;
     skos:closeMatch <http://qudt.org/schema/qudt/Quantity> ;
     skos:exactMatch <http://w3id.org/SemicONTO/MaterialProperty> .
 
-ont:RootCause a owl:Class ;
-    rdfs:label "RootCause"@en ;
-    rdfs:comment "An identified root cause of a failure mode."@en .
-
 ont:Semiconductor a owl:Class ;
     rdfs:label "Semiconductor"@en ;
     rdfs:comment "A material with electrical conductivity between conductor and insulator."@en ;
@@ -533,11 +708,9 @@ ont:TechnologyNode a owl:Class ;
     rdfs:label "TechnologyNode"@en ;
     rdfs:comment "A semiconductor technology generation (e.g. 7nm, 3nm)."@en .
 
-ont:Parameter a owl:Class ;
-    rdfs:label "Parameter"@en ;
-    rdfs:comment "A measurable process parameter (e.g. temperature, pressure)."@en ;
-    rdfs:subClassOf ont:Quantity ;
-    skos:closeMatch <http://qudt.org/schema/qudt/Quantity> .
+ont:RootCause a owl:Class ;
+    rdfs:label "RootCause"@en ;
+    rdfs:comment "An identified root cause of a failure mode."@en .
 
 ont:Skill a owl:Class ;
     rdfs:label "Skill"@en ;
@@ -548,6 +721,21 @@ ont:ExtrinsicSemiconductor a owl:Class ;
     rdfs:comment "A doped semiconductor whose carriers come from intentional dopants."@en ;
     rdfs:subClassOf ont:Semiconductor ;
     skos:exactMatch <http://w3id.org/SemicONTO/ExtrinsicSemiconductor> .
+
+ont:Parameter a owl:Class ;
+    rdfs:label "Parameter"@en ;
+    rdfs:comment "A measurable process parameter (e.g. temperature, pressure)."@en ;
+    rdfs:subClassOf ont:Quantity ;
+    skos:closeMatch <http://qudt.org/schema/qudt/Quantity> .
+
+ont:Quantity a owl:Class ;
+    rdfs:label "Quantity"@en ;
+    rdfs:comment "An abstract measurable quantity with a numeric value and unit. Generalizes process Parameter and MaterialProperty."@en ;
+    skos:exactMatch <http://qudt.org/schema/qudt/Quantity> .
+
+ont:Vendor a owl:Class ;
+    rdfs:label "Vendor"@en ;
+    rdfs:comment "A supplier or manufacturer of equipment or materials."@en .
 
 ont:FailureMode a owl:Class ;
     rdfs:label "FailureMode"@en ;
@@ -561,22 +749,13 @@ ont:Process a owl:Class ;
     rdfs:label "Process"@en ;
     rdfs:comment "A major semiconductor manufacturing process (e.g. Lithography, Etch)."@en .
 
-ont:Quantity a owl:Class ;
-    rdfs:label "Quantity"@en ;
-    rdfs:comment "An abstract measurable quantity with a numeric value and unit. Generalizes process Parameter and MaterialProperty."@en ;
-    skos:exactMatch <http://qudt.org/schema/qudt/Quantity> .
-
-ont:Vendor a owl:Class ;
-    rdfs:label "Vendor"@en ;
-    rdfs:comment "A supplier or manufacturer of equipment or materials."@en .
-
-ont:Expert a owl:Class ;
-    rdfs:label "Expert"@en ;
-    rdfs:comment "A domain expert with a curated competency profile (인력 축)."@en .
-
 ont:Metrology a owl:Class ;
     rdfs:label "Metrology"@en ;
     rdfs:comment "A measurement or inspection method."@en .
+
+ont:ExpertCase a owl:Class ;
+    rdfs:label "ExpertCase"@en ;
+    rdfs:comment "A reified case-experience record of an expert, grouping a process with its failure modes, root causes, mitigations, and parameters."@en .
 
 ont:Problem a owl:Class ;
     rdfs:label "Problem"@en ;
@@ -598,4 +777,8 @@ ont:SubProcess a owl:Class ;
     rdfs:label "SubProcess"@en ;
     rdfs:comment "A sub-step within a Process (e.g. Wet Etch, Plasma Etch)."@en ;
     rdfs:subClassOf ont:Process .
+
+ont:Expert a owl:Class ;
+    rdfs:label "Expert"@en ;
+    rdfs:comment "A domain expert with a curated competency profile (인력 축)."@en .
 

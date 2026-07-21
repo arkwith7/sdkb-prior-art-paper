@@ -16,11 +16,11 @@
 | 축 | 정본 (FINAL) | 위치 |
 |---|---|---|
 | **논문** | `논문_v0.5_SDKB.md` | `paper/` |
-| **baseline 그래프 G₀** | `graph_v0.ttl` (44,221 트리플) | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
-| **보강 그래프 G₁** | `graph_v1.ttl` (413,730) | `data/processed/` |
-| **소부장 그래프 G₂ (RQ3)** | `graph_v2.ttl` (429,334) | `data/processed/` |
-| **얼린 상류 스냅샷** | `data/external/sdkb/` 13파일 (SDKB `edb8ae4`) | git-tracked · sha256 in `PROVENANCE.json` |
-| **검증 게이트 (CQ·SHACL)** | `queries/cq/*.rq` 27개 · `queries/shapes/{graph,delta}/` 4개 | 전부 LIVE · 고아 0 |
+| **baseline 그래프 G₀** | `graph_v0.ttl` (49,210 트리플) | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
+| **보강 그래프 G₁** | `graph_v1.ttl` (418,738) | `data/processed/` |
+| **소부장 그래프 G₂ (RQ3)** | `graph_v2.ttl` (434,342) | `data/processed/` |
+| **얼린 상류 스냅샷** | `data/external/sdkb/` 13파일 (SDKB — 전문가 상세 경력 적재) | git-tracked · sha256 in `PROVENANCE.json` |
+| **검증 게이트 (CQ·SHACL)** | `queries/cq/*.rq` 27개 · `queries/shapes/{graph,delta}/` 5개(+expert_shape) | 전부 LIVE · 고아 0 |
 | **계약(SPEC)** | `SPEC-001~004` | `01.code_spec/specs/` (숫자는 §1 우선) |
 | **진행 현황** | `STATUS.md` | `01.code_spec/` (서명 숫자는 §1·§2 우선) |
 | **논문 그림 9장 · 표 11개** | `paper/figures/*.svg` · `paper/tables/*.md` (전량 코드 생성) | `viz/figures.py` 산출 |
@@ -33,14 +33,22 @@
 
 | 항목 | G₀ | G₁ | G₂ (소부장) |
 |---|---:|---:|---:|
-| **트리플 (정본)** | **44,221** | **413,749** | **429,353** |
+| **트리플 (정본)** | **49,210** | **418,738** | **434,342** |
 | 커버된 공정 / 49 | 20 | **26** | **26** |
 | 특허 (병합) | 1,000 (SIRP 거절) | +24,179 델타 | +12,339 델타 |
 | Process 11 / SubProcess 38 · Device 34 | ✓ | | |
 | 출원인(Organization) / 벤더 | 351 / 340 | | 188사(장비 93·재료 50·부분품 45) |
 | 게이트 | L1(완화)·L2 consistent·L3 CQ **26/27**(측정) | L1·L2·L3 CQ **26/27** | L1·L2 consistent·L3 CQ **27/27** |
-| 그래프 커밋(상류) | SDKB `edb8ae4` | 〃 위 델타 | 〃 위 델타 |
+| 그래프 커밋(상류) | SDKB `d583b0c` | 〃 위 델타 | 〃 위 델타 |
 
+> **전문가 상세 경력 적재 (2026-07-21) — G₀ 44,221 → 49,210 (+4,906).** 상류 SDKB 가
+> `curated_profiles_kr.json` 의 경력 datatype 22종 · EquipmentModel 29 · ExpertCase 163(사례
+> reification) · 큐레이션 `ontology_alignment` 기반 역량 링크를 A-Box 로 실체화했다. G₁·G₂ 도
+> 같은 +4,906(공유 G₀ 기반). **특허↔공정 엣지는 한 건도 안 움직였다** (realizesProcess 1565 ·
+> concernsDevice 181 · assignedTo 1053 불변) → **C₀ 20/49 · H1 네 표본집합 p 전부 불변**
+> (4.77e-07·3.05e-05·1.95e-03·2.44e-04) · **RQ3 세 층 불변**(장비 4.77e-07·재료 4.42e-05·부분품
+> 6.57e-05). 값은 전부 비식별 변조/생성값(SDKB `docs/deidentification_protocol.md` §1.5). 구 44,221.
+>
 > **특허 건수는 "매핑 ≠ 병합 ≠ 분석 말뭉치"로 세 값이 공존한다** — 모순이 아니다. 논문은 병합
 > 기준(G₁ 24,179 델타, 초록 서술상 25,179 병합 특허 노드)·분석 말뭉치(H2′ 63,936)를 문맥별로
 > 쓴다. 상세 정합은 메모리 `paper-corpus-counts-mapped-vs-merged` 및 논문 §3.2 참조. **트리플
@@ -56,7 +64,7 @@
 > 코퍼스를 판별한다는 증거**다.
 
 > **grep 으로 트리플을 세지 말 것.** `grep -c ' \.$'` 프록시는 Turtle 의 `;`·`,` 축약 때문에
-> 약 13배 과소계상한다(G₀ 프록시 3,291 vs 실제 44,221). 트리플 수는 **MANIFEST §3 또는 rdflib
+> 약 13배 과소계상한다(G₀ 프록시 3,291 vs 실제 49,210). 트리플 수는 **MANIFEST §3 또는 rdflib
 > 파싱**으로만 인용한다.
 
 ---
