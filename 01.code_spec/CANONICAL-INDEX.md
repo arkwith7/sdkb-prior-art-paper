@@ -20,11 +20,11 @@
 | **보강 그래프 G₁** | `graph_v1.ttl` (924,814) | `data/processed/` |
 | **소부장 그래프 G₂ (RQ3)** | `graph_v2.ttl` (490,529) | `data/processed/` |
 | **얼린 상류 스냅샷** | `data/external/sdkb/` 13파일 (SDKB `d578bf3` — 청구항-feature·거절판단 TBox 반영) | git-tracked · sha256 in `PROVENANCE.json` |
-| **검증 게이트 (CQ·SHACL)** | `queries/cq/*.rq` 27개 · `queries/shapes/{graph,delta}/` 5개(+expert_shape) | 전부 LIVE · 고아 0 |
+| **검증 게이트 (CQ·SHACL)** | `queries/cq/*.rq` **28개**(CQ01~CQ28) · `queries/shapes/graph/` 5개 + `shapes/delta/` 1개 | 전부 LIVE · 고아 0 |
 | **데이터셋 정의서 (G₀·G₁·G₂ 정체성)** | `DATASET-CARD.md` (6축: 정의·출처·서명·게이트·배제·상호관계 · 서명은 §1 종속) | `data/` |
 | **계약(SPEC)** | `SPEC-001~004` | `01.code_spec/specs/` (숫자는 §1 우선) |
 | **진행 현황** | `STATUS.md` | `01.code_spec/` (서명 숫자는 §1·§2 우선) |
-| **논문 그림 9장 · 표 11개** | `paper/figures/*.svg` · `paper/tables/*.md` (전량 코드 생성) | `viz/figures.py` 산출 |
+| **논문 그림 본문 6장 + 그래픽 초록 · 표 11개** | `paper/figures/*.svg` **10개**(본문 6 + 초록 1 + 부록/진단 3) · `paper/tables/*.md` 11개 (전량 코드 생성) | `viz/figures.py` 산출 |
 
 ---
 
@@ -178,13 +178,13 @@
 |---|---|
 | **FINAL** | `논문_v0.5_SDKB.md` (정본, 유일) |
 | **INTERMEDIATE** | `archive/논문초안_v0.2_…md`(3층 모델·삼성 only) · `archive/논문초안_v0.3_…md`(RQ3 이전 번호체계) — 둘 다 폐기, 인용 금지 |
-| **GENERATED (코드 산출)** | `figures/*.svg` **9개** — 본문 9장과 1:1 (2026-07-18 통합 반영: 구 fig3+fig4 → `fig3_research_model.svg`, 구 fig1+fig11 → `fig11_summary.svg`; `fig1_gap_map.svg`·`fig4_pipeline.svg` 는 **생성 중단·삭제**). 파일명 번호는 v0.3 명칭 유지 — 본문 `[그림 n]` 과 불일치하는 것이 정상이고 정렬은 조판 시. 부록/진단 전용: `fig8b_…preregistered.svg`(사전등록 코드 팔) · `fig8c_h2_code_arm_d1.svg`(진단 D1) — **본문 그림 번호 없음** · `figures/vocab_coverage_graph_v0.md` · `tables/*.md` |
+| **GENERATED (코드 산출)** | `figures/*.svg` **10개** (2026-07-19 AEI 감축 재편): **본문 6장** = `fig1_gap_map.svg`(그림 1 · 갭 맵+연구모형) · `fig4_pipeline.svg` · `fig6_vacuous_gate.svg` · `fig7_h1_coverage.svg` · `fig8_h2_timeseries.svg` · `fig10_rq3_portability.svg`, **그래픽 초록** = `fig11_summary.svg`. 구 `fig2_evolution`·`fig3_research_model`·`fig5_coverage_gap`·`fig9_traps` 는 **생성하지 않는다**(패널로 흡수). 파일명 번호는 v0.3 명칭 유지 — 본문 `[그림 n]` 과 불일치하는 것이 정상이고 정렬은 조판 시. 부록/진단 전용 3: `fig8b_…preregistered.svg`(사전등록 코드 팔) · `fig8c_h2_code_arm_d1.svg`(진단 D1) · `fig_h1_coverage_ksia.svg` — **본문 그림 번호 없음** · `figures/vocab_coverage_graph_v0.md` · `tables/*.md` |
 | **빈 디렉토리 (함정)** | `manuscript/`(.gitkeep 뿐 — 진짜 원고는 `paper/논문_v0.5_SDKB.md`) |
 
 ### `queries/`
 | 분류 | 파일 |
 |---|---|
-| **LIVE (전부)** | `cq/CQ01~CQ27.rq`(27개, 연속·중복 0) · `shapes/graph/*.ttl`(완화 3개) · `shapes/delta/patent_delta_shape.ttl`(엄격 1개) |
+| **LIVE (전부)** | `cq/CQ01~CQ28.rq`(**28개**, 연속·중복 0) · `shapes/graph/*.ttl`(완화 **5개**: `bibliographic`·`compliance`·`expert`·`new_axes`·`patent`) · `shapes/delta/patent_delta_shape.ttl`(엄격 1개) |
 | **고아/중복** | **없음.** 게이트가 디렉토리 glob 으로 로드하므로 폴더에 있으면 곧 LIVE |
 
 ---
