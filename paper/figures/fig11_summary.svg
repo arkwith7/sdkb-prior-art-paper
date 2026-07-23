@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-07-19T15:21:20.384957</dc:date>
+    <dc:date>2026-07-23T11:21:43.998753</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -40,7 +40,7 @@ Q 17.9136 89.827776 17.9136 92.821536
 L 17.9136 150.601104 
 Q 17.9136 153.594864 24.6096 153.594864 
 z
-" clip-path="url(#p8d9c687ba0)" style="fill: #f7fafc; stroke: #e2e8f0; stroke-linejoin: miter"/>
+" clip-path="url(#pf83ad9334a)" style="fill: #f7fafc; stroke: #e2e8f0; stroke-linejoin: miter"/>
    </g>
    <g id="patch_3">
     <path d="M 24.6096 217.960704 
@@ -53,7 +53,7 @@ Q 17.9136 154.193616 17.9136 157.187376
 L 17.9136 214.966944 
 Q 17.9136 217.960704 24.6096 217.960704 
 z
-" clip-path="url(#p8d9c687ba0)" style="fill: #eff4f9; stroke: #e2e8f0; stroke-linejoin: miter"/>
+" clip-path="url(#pf83ad9334a)" style="fill: #eff4f9; stroke: #e2e8f0; stroke-linejoin: miter"/>
    </g>
    <g id="patch_4">
     <path d="M 24.6096 282.326544 
@@ -66,7 +66,7 @@ Q 17.9136 218.559456 17.9136 221.553216
 L 17.9136 279.332784 
 Q 17.9136 282.326544 24.6096 282.326544 
 z
-" clip-path="url(#p8d9c687ba0)" style="fill: #f7fafc; stroke: #e2e8f0; stroke-linejoin: miter"/>
+" clip-path="url(#pf83ad9334a)" style="fill: #f7fafc; stroke: #e2e8f0; stroke-linejoin: miter"/>
    </g>
    <g id="text_1">
     <!-- 결과 요약 — 세 질문, 세 답 -->
@@ -4671,7 +4671,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-ba7b" transform="translate(298.40625 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-d610" transform="translate(390.40625 0)"/>
     </g>
-    <!-- CQ 27/27 -->
+    <!-- CQ 28/28 -->
     <g style="fill: #1a202c" transform="translate(590.593313 259.229) scale(0.092 -0.092)">
      <defs>
       <path id="NotoSansCJKjp-Regular-24" d="M 2413 -83 
@@ -4705,31 +4705,21 @@ C 371 986 1062 77 2086 -64
 C 2349 -704 2944 -1178 3808 -1178 
 z
 " transform="scale(0.015625)"/>
-      <path id="NotoSansCJKjp-Regular-f6b8" d="M 1267 0 
-L 1875 0 
-C 1952 1779 2176 2822 3251 4205 
-L 3251 4563 
-L 314 4563 
-L 314 4058 
-L 2592 4058 
-C 1690 2810 1350 1722 1267 0 
-z
-" transform="scale(0.015625)"/>
      </defs>
      <use xlink:href="#NotoSansCJKjp-Regular-24"/>
      <use xlink:href="#NotoSansCJKjp-Regular-32" transform="translate(60.59375 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-1" transform="translate(134.796875 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-f6b3" transform="translate(157.203125 0)"/>
-     <use xlink:href="#NotoSansCJKjp-Regular-f6b8" transform="translate(212.703125 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Regular-f6b9" transform="translate(212.703125 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-10" transform="translate(268.203125 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-f6b3" transform="translate(307.40625 0)"/>
-     <use xlink:href="#NotoSansCJKjp-Regular-f6b8" transform="translate(362.90625 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Regular-f6b9" transform="translate(362.90625 0)"/>
     </g>
    </g>
   </g>
  </g>
  <defs>
-  <clipPath id="p8d9c687ba0">
+  <clipPath id="pf83ad9334a">
    <rect x="7.2" y="7.2" width="669.6" height="299.376"/>
   </clipPath>
  </defs>

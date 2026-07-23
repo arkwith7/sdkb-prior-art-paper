@@ -5,7 +5,7 @@
 
 | 축 | CQ 검증 | SHACL 검사 | **게이트(합집합)** | 사용됨 | **아무도 안 봄** |
 |---|---:|---:|---:|---:|---:|
-| 술어 | 36 (43.4%) | 48 | **83 (100.0%)** | 83 | **0** |
+| 술어 | 38 (45.8%) | 48 | **83 (100.0%)** | 83 | **0** |
 | 클래스 | 18 (66.7%) | 19 | **27 (100.0%)** | 27 | **0** |
 
 ## CQ 별 검증 어휘
@@ -39,6 +39,7 @@
 | CQ25_critical_control_concepts | 7 | — |
 | CQ26_patent_export_control_exposure | 1249 | `Patent` · `concernsDevice` · `realizesProcess` |
 | CQ27_fto_claim_readiness | 0 | — |
+| CQ28_patent_failuremode_expert | 40 | `Expert` · `Patent` · `caseFailureMode` · `exhibitsFailureMode` · `hasCaseExperience` |
 
 ## 아무도 보지 않는 어휘 (CQ 도 SHACL 도) — **0 이어야 한다**
 
@@ -67,7 +68,6 @@
 | `problemCategory` | 226 | |  |  |
 | `workHistoryCountry` | 169 | |  |  |
 | `caseSource` | 163 | |  |  |
-| `hasCaseExperience` | 163 | |  |  |
 | `majorProject` | 159 | |  |  |
 | `confidence` | 149 | |  |  |
 | `caseMitigation` | 135 | |  |  |
@@ -90,7 +90,6 @@
 | `toeicScore` | 110 | |  |  |
 | `yearsExperience` | 110 | |  |  |
 | `validationRequired` | 108 | |  |  |
-| `caseFailureMode` | 105 | |  |  |
 | `retirementYear` | 53 | |  |  |
 | `caseRootCause` | 46 | |  |  |
 | `caseParameter` | 41 | |  |  |

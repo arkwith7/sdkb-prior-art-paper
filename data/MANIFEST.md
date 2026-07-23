@@ -184,11 +184,11 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 
 | 그래프 | 트리플 | 만드는 법 | 게이트 |
 |---|---:|---|---|
-| `graph_v0` (G₀) | **49,210** | `make baseline` (전문가 상세 경력 적재) | L1(완화)·L2·L3 26/27 |
+| `graph_v0` (G₀) | **49,210** | `make baseline` (전문가 상세 경력 적재) | L1(완화)·L2·L3 27/28 |
 | `delta_v1` | 370,077 | `make merge` 1단계 — 특허 24,179건 | L1(엄격): 개념 ≥1 |
-| `graph_v1` (G₁) | **418,738** | `make merge` 2단계 | L1 통과 · **L2 HermiT consistent=True** · L3 CQ |
+| `graph_v1` (G₁) | **868,669** | `make merge` 2단계 (+ §G1 Phase A 청구항 축 · Phase C 문제층) | L1 통과 · **L2 HermiT consistent=True** · L3 CQ |
 | `delta_v2` (소부장) | 385,577 | `make merge CORPUS=ksia-equipment` 1단계 — 특허 **12,339건** · 초록·청구항 포함 | L1(엄격): 개념 ≥1 |
-| `graph_v2` (G₂ · RQ3) | **434,342** | 2단계 — G₀ 위 KSIA 소부장 188사 델타 | L1 통과 · **L2 consistent=True** · L3 CQ **27/27** |
+| `graph_v2` (G₂ · RQ3) | **434,342** | 2단계 — G₀ 위 KSIA 소부장 188사 델타 | L1 통과 · **L2 consistent=True** · L3 CQ **28/28** |
 | `graph_v2_{equipment,material,component}` (층별) | 각 층 subset | `make ksia-strata` — 층별 H1(표 5b) 전용, 같은 L1 게이트 | L1 통과 |
 
 > **G₀ 재동결 44,192 → 44,202 (2026-07-15).** 상류 SDKB 에 `ont:claimText`·`ont:claimCount`
