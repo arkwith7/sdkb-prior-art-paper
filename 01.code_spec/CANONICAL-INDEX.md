@@ -21,6 +21,7 @@
 | **소부장 그래프 G₂ (RQ3)** | `graph_v2.ttl` (434,342) | `data/processed/` |
 | **얼린 상류 스냅샷** | `data/external/sdkb/` 13파일 (SDKB `d578bf3` — 청구항-feature·거절판단 TBox 반영) | git-tracked · sha256 in `PROVENANCE.json` |
 | **검증 게이트 (CQ·SHACL)** | `queries/cq/*.rq` 27개 · `queries/shapes/{graph,delta}/` 5개(+expert_shape) | 전부 LIVE · 고아 0 |
+| **데이터셋 정의서 (G₀·G₁·G₂ 정체성)** | `DATASET-CARD.md` (6축: 정의·출처·서명·게이트·배제·상호관계 · 서명은 §1 종속) | `data/` |
 | **계약(SPEC)** | `SPEC-001~004` | `01.code_spec/specs/` (숫자는 §1 우선) |
 | **진행 현황** | `STATUS.md` | `01.code_spec/` (서명 숫자는 §1·§2 우선) |
 | **논문 그림 9장 · 표 11개** | `paper/figures/*.svg` · `paper/tables/*.md` (전량 코드 생성) | `viz/figures.py` 산출 |
