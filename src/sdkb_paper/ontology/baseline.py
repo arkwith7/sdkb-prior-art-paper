@@ -26,7 +26,10 @@ BASELINE_PARTS = [
     "sdkb-core-data.ttl",
     "sdkb-abox-patents.ttl",   # SIRP 거절특허 1,000건 — H1 의 before
     # 심사관 인용 선행기술 (CitedPatent 3,034 + 개념링크). 선행기술조사 정답지를
-    # 분석 그래프 안에서 개념 도달 가능하게 만든다 (도달성 0%→95.3%/63.4%, 실측 2026-07-23).
+    # 분석 그래프 안에서 개념 도달 가능하게 만든다. 정답지(hasPriorArtExaminer distinct 2,321)
+    # 도달성 (재측정 2026-07-23 · graph_v0 전수): 노드(CitedPatent 타입) 0%→95.3% ·
+    # 개념링크는 정의에 따라 곡선 — Process∪Device 54.6% / +material 63.4% / +전의미링크 70.5% /
+    # +분류(CPC·IPC) 95.3%. (54.6 vs 63.4 는 "개념링크" 정의차일 뿐 둘 다 실측이다.)
     # CitedPatent ⊑ Patent 이나 명시 타입은 CitedPatent 라 EXPECTED_PATENTS(=1000)는 불변이다.
     "sdkb-abox-prior-art.ttl",
     # 인력·문제 축 (Expert 110 · Problem 226). 상류가 `make abox` 로 만드는데

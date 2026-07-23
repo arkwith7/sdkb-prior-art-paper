@@ -16,9 +16,9 @@
 | 축 | 정본 (FINAL) | 위치 |
 |---|---|---|
 | **논문** | `논문_v0.5_SDKB.md` | `paper/` |
-| **baseline 그래프 G₀** | `graph_v0.ttl` (49,307 트리플) | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
-| **보강 그래프 G₁** | `graph_v1.ttl` (868,669) | `data/processed/` |
-| **소부장 그래프 G₂ (RQ3)** | `graph_v2.ttl` (434,342) | `data/processed/` |
+| **baseline 그래프 G₀** | `graph_v0.ttl` (105,588 트리플) | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
+| **보강 그래프 G₁** | `graph_v1.ttl` (924,814) | `data/processed/` |
+| **소부장 그래프 G₂ (RQ3)** | `graph_v2.ttl` (490,529) | `data/processed/` |
 | **얼린 상류 스냅샷** | `data/external/sdkb/` 13파일 (SDKB `d578bf3` — 청구항-feature·거절판단 TBox 반영) | git-tracked · sha256 in `PROVENANCE.json` |
 | **검증 게이트 (CQ·SHACL)** | `queries/cq/*.rq` 27개 · `queries/shapes/{graph,delta}/` 5개(+expert_shape) | 전부 LIVE · 고아 0 |
 | **데이터셋 정의서 (G₀·G₁·G₂ 정체성)** | `DATASET-CARD.md` (6축: 정의·출처·서명·게이트·배제·상호관계 · 서명은 §1 종속) | `data/` |
@@ -34,9 +34,10 @@
 
 | 항목 | G₀ | G₁ | G₂ (소부장) |
 |---|---:|---:|---:|
-| **트리플 (정본)** | **49,307** | **868,669** | **434,342** |
+| **트리플 (정본)** | **105,588** | **924,814** | **490,529** |
 | 커버된 공정 / 49 | 20 | **26** | **26** |
 | 특허 (병합) | 1,000 (SIRP 거절) | +24,179 델타 (총 25,179) | +12,339 델타 (총 13,339) |
+| 선행기술 정답지 (`ont:CitedPatent`) | 3,034 (심사관 인용 + 개념링크) | 상속 | 상속 |
 | Process 11 / SubProcess 38 · Device 34 | ✓ | | |
 | IPCSymbol | 810 | 2,924 | 2,914 |
 | FailureMode (문제층) | 25 | **55** | 25 |
@@ -46,6 +47,27 @@
 | 게이트 | L1(완화)·L2 consistent·L3 CQ **27/28**(측정) | L1·L2·L3 CQ **28/28** | L1·L2 consistent·L3 CQ **28/28** |
 | 그래프 커밋(상류) | SDKB `d578bf3` | 〃 위 델타 | 〃 위 델타 |
 
+> **미반영 SDKB 온톨로지 전량 반영 (2026-07-23, 커밋 `3429d66`) — G₀ 49,307 → 105,588 · G₁ 868,669
+> → 924,814 · G₂ 434,342 → 490,529.** 사용자 결정으로 baseline 동결을 풀고, 스냅샷에는 벤더돼 있으나
+> `baseline.py`/`vendor.py` 목록에서 빠져 G₀ 에 적재되지 않던 SDKB 온톨로지 3종을 편입해 세 그래프를
+> 재조립했다 — **(1) 심사관 인용 선행기술 ABox**(`sdkb-abox-prior-art.ttl` · `ont:CitedPatent` 3,034
+> 노드 + 개념링크), **(2) 상용화 축**(`sdkb-commercialization.ttl` · TRL·라이선싱·spinoff),
+> **(3) 자원기반관점**(`sdkb-rbv.ttl` · VRIO·역량·진입장벽). SDKB 커밋은 `d578bf3` 그대로이고 벤더
+> 파일 목록만 확장됐다(재수집 아님). **델타 특허 24,179/12,339 불변**.
+> **H1 중립 — C₀ 20/49 불변.** 선행기술은 명시 타입이 `ont:CitedPatent`(⊑ Patent 이나 명시적으로는
+> Patent 로 타입하지 않음)라 CQ01(`?patent a ont:Patent`)이 세지 않는다 → **CQ01=20·CQ03=29·CQ06=58·
+> CQ10=8 불변**, 특허↔공정 엣지도 한 건 안 움직였다. 통합테스트 21/21 · 전체 179 passed.
+> **선행기술조사 정답지 도달성 0% → 95.3%(노드).** 심사관이 인용한 선행기술이 이제 분석 그래프 안에서
+> 개념적으로 도달 가능하다 — 원인은 데이터 부재가 아니라 `sdkb-abox-prior-art.ttl` 벤더 누락이었다.
+> **정답지 = distinct `hasPriorArtExaminer` 대상 2,321건**(graph_v0 전수 재측정 2026-07-23). 도달성은
+> "개념링크" 정의에 따라 **곡선**을 그린다: 노드(CitedPatent 타입) **95.3%**(2,211/2,321) · 개념링크
+> Process∪Device **54.6%** / +material **63.4%** / +전의미링크(skill·failureMode·equipment) 70.5% /
+> +분류(CPC·IPC) 95.3%. **54.6 vs 63.4 는 계산 오류가 아니라 개념링크 정의차**(전자=개념축만, 후자=재료
+> 포함)이며 둘 다 실측이다. 어느 값을 §2.4 헤드라인으로 쓸지는 논문 방향(대기) 소관. OntoCheck 대조도 §2.4.
+> **라이선스: 특허 전문(abstract/claim)을 담은 스냅샷 2종**(`sdkb-abox-patents.ttl`·`sdkb-abox-prior-art.ttl`)
+> 은 KIPRIS 학술 이용·비재배포 조건이라 **git 추적 제외**(gitignore) — `PROVENANCE.json` 의 sha256·집계만
+> 커밋하고 파일은 `make vendor` 로 로컬 재생성한다. 구 49,307·868,669·434,342.
+>
 > **청구항-feature·거절판단 TBox 반영 (2026-07-23) — G₀ 49,210 → 49,307 (+97).** 상류 SDKB 가
 > `d583b0c`(전문가 적재) 이후 `sdkb-patent.ttl` 에 선언한 **순수 TBox** 를 재벤더로 반영했다:
 > 신규 클래스 4(`ont:Claim`·`ont:ClaimFeature`·`ont:PriorArtJudgment`·`ont:CitedPatent`) +

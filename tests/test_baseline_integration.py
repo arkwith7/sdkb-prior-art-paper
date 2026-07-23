@@ -23,7 +23,11 @@ from rdflib import RDF, URIRef
 
 from sdkb_paper.config import EXTERNAL_SDKB, ONT, QUERIES_CQ
 from sdkb_paper.ontology.baseline import build_baseline, summarize
-from sdkb_paper.ontology.vendor import verify_freshness, verify_snapshot
+from sdkb_paper.ontology.vendor import (
+    license_restricted_absences,
+    verify_freshness,
+    verify_snapshot,
+)
 from sdkb_paper.validate.cq_runner import run_cqs
 from sdkb_paper.validate.shacl_gate import validate_graph
 from sdkb_paper.validate.vocab_coverage import measure
@@ -34,7 +38,8 @@ from sdkb_paper.validate.vocab_coverage import measure
 EXPECTED_TRIPLES = 105588   # 2026-07-23 미반영 SDKB 온톨로지 전량 반영(사용자 결정): 선행기술 ABox
                             # (CitedPatent 3,034 + 개념링크 realizesProcess/concernsDevice/involvesMaterial)
                             # · 상용화(TRL) · 자원기반관점(RBV)을 G₀ 에 편입. 49,307 → 105,588.
-                            # **선행기술조사 정답지 도달성 0%→95.3%(노드)/54.6%(개념링크)**. 단 CitedPatent
+                            # **선행기술조사 정답지 도달성 0%→95.3%(노드)**. 개념링크는 정의별 곡선 —
+                            # Process∪Device 54.6%/+material 63.4%/+전의미 70.5%/+분류 95.3%(재측정 확정). 단 CitedPatent
                             # 는 명시 타입이 ont:CitedPatent 라 CQ01(?patent a ont:Patent)이 안 세므로
                             # C₀ 20/49·H1 네 표본집합 불변(19/21 통합테스트 통과로 실측). 선행기술을 커버로
                             # 세면 26/49(+6). 구 이력(청구항 TBox +97 → 49,307)은 git 참조.
@@ -401,6 +406,36 @@ def test_verify_snapshot_detects_stray_ttl(tmp_path):
 
     problems = verify_snapshot(fake)
     assert any("sdkb-abox-experts.ttl" in p for p in problems), problems
+
+
+def test_verify_snapshot_tolerates_absent_license_restricted(tmp_path):
+    """라이선스 제한 파일(특허 전문)은 gitignore 되어 클론/CI 에 없다 — 그 부재는 실패가 아니다.
+
+    이 관용이 없으면 심사자가 저장소만 받아 돌리는 L0 게이트가 늘 빨간불이 되어,
+    논문 §7.2 의 "4층 게이트는 상류 없이 재현 가능" 주장이 깨진다.
+    """
+    fake = tmp_path / "sdkb"
+    shutil.copytree(EXTERNAL_SDKB, fake)
+    restricted = fake / "sdkb-abox-prior-art.ttl"
+    assert restricted.exists(), "픽스처 전제: 로컬 스냅샷엔 라이선스 제한 파일이 있다"
+    restricted.unlink()  # 클론/CI 상태를 흉내낸다
+
+    problems = verify_snapshot(fake)
+    assert not any("sdkb-abox-prior-art.ttl" in p for p in problems), problems
+    # 부재는 실패가 아니지만 조용하지도 않다 — 별도 창구로 표면화된다.
+    assert "sdkb-abox-prior-art.ttl" in license_restricted_absences(fake)
+
+
+def test_verify_snapshot_still_catches_tampered_license_restricted(tmp_path):
+    """관용은 '부재'에만 적용된다 — 파일이 있으면 변조는 여전히 잡는다."""
+    fake = tmp_path / "sdkb"
+    shutil.copytree(EXTERNAL_SDKB, fake)
+    target = fake / "sdkb-abox-prior-art.ttl"
+    target.write_text(target.read_text(encoding="utf-8") + "\n# tampered\n", encoding="utf-8")
+
+    problems = verify_snapshot(fake)
+    assert any("sdkb-abox-prior-art.ttl" in p and "sha256" in p for p in problems), problems
+    assert license_restricted_absences(fake) == []  # 있으니 부재 목록은 비어야 한다
 
 
 # --- L0 신선도 (해시가 잡지 못하는 실패 양식) ---------------------------------

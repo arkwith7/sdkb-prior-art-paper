@@ -150,7 +150,13 @@ def verify_snapshot(dest: Path = EXTERNAL_SDKB) -> list[str]:
     스냅샷이 제자리에서 수정되면(누가 TTL 을 손으로 고치면) baseline 의 출처가 거짓이 되고
     H1 의 before 가 조용히 움직인다. 이 검사가 그걸 막는다.
 
-    문제 목록을 반환한다 (빈 리스트 = 정상).
+    **라이선스 제한 파일**(`license_restricted: true`)은 특허 전문을 담아 gitignore 되므로
+    (CLAUDE.md §1.4) 신선한 클론/CI 에는 없다. 이 부재는 실패가 아니다 — sha256 은 파일이
+    있을 때만 검사하고, 없으면 관용한다(무결성은 유지, 재현성 게이트는 통과). 손으로 고친
+    변조는 파일이 있을 때 여전히 잡힌다.
+
+    문제 목록을 반환한다 (빈 리스트 = 정상). 라이선스 제한 파일의 부재는 문제가 아니며,
+    그 가시성은 별도 함수 license_restricted_absences() 가 제공한다 — CLI 가 정보성으로 출력한다.
     """
     prov_path = dest / "PROVENANCE.json"
     if not prov_path.exists():
@@ -161,7 +167,10 @@ def verify_snapshot(dest: Path = EXTERNAL_SDKB) -> list[str]:
     for entry in prov["files"]:
         f = dest / entry["file"]
         if not f.exists():
-            problems.append(f"{entry['file']}: 스냅샷에 파일이 없다")
+            # 라이선스 제한 파일은 gitignore 되어 클론/CI 에 정당하게 없다 — 관용한다.
+            # (부재의 가시성은 license_restricted_absences() 가 별도로 제공한다.)
+            if not entry.get("license_restricted"):
+                problems.append(f"{entry['file']}: 스냅샷에 파일이 없다")
             continue
         actual = sha256(f)
         if actual != entry["sha256"]:
@@ -175,6 +184,24 @@ def verify_snapshot(dest: Path = EXTERNAL_SDKB) -> list[str]:
         problems.append(f"{stray}: PROVENANCE 에 없는 파일이 스냅샷에 있다 (SIRP ABox 유입?)")
 
     return problems
+
+
+def license_restricted_absences(dest: Path = EXTERNAL_SDKB) -> list[str]:
+    """라이선스 제한 파일 중 로컬에 **없는** 것의 파일명 목록.
+
+    verify_snapshot 은 이 부재를 관용(문제 아님)하므로, 게이트를 통과시키되 "이 스냅샷은
+    로컬에서 불완전하다 — `make vendor` 로 재생성하라"를 사용자에게 알릴 창구가 필요하다.
+    빈 목록 = 라이선스 제한 파일이 전부 로컬에 있음.
+    """
+    prov_path = dest / "PROVENANCE.json"
+    if not prov_path.exists():
+        return []
+    prov = json.loads(prov_path.read_text(encoding="utf-8"))
+    return [
+        e["file"]
+        for e in prov["files"]
+        if e.get("license_restricted") and not (dest / e["file"]).exists()
+    ]
 
 
 # 산출물 → 그것을 만드는 입력(생성기 + 원천 데이터). make 의 의존관계와 같은 뜻이다.
@@ -349,9 +376,18 @@ def main() -> None:
                 file=sys.stderr,
             )
             sys.exit(1)
+        absent = license_restricted_absences()
+        for a in absent:
+            print(
+                f"[vendor] ⚠ 라이선스 제한 파일 부재(로컬 재생성 필요): {a} — "
+                "`make vendor` 로 재생성. gitignore 되어 클론/CI 에 없는 것은 정상이다.",
+                file=sys.stderr,
+            )
         prov = json.loads((EXTERNAL_SDKB / "PROVENANCE.json").read_text(encoding="utf-8"))
+        present = len(prov["files"]) - len(absent)
         print(
-            f"[vendor] ✓ 스냅샷 무결 — {len(prov['files'])} files, "
+            f"[vendor] ✓ 스냅샷 무결 — {present}/{len(prov['files'])} files 검증"
+            f"{f' ({len(absent)} 라이선스 제한 파일 부재·관용)' if absent else ''}, "
             f"SDKB commit {prov['source_commit'][:12]}"
         )
         return

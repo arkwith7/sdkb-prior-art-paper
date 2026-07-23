@@ -144,7 +144,8 @@
       "file": "sdkb-abox-patents.ttl",
       "source_path": "ontology/sdkb-abox-patents.ttl",
       "role": "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다",
-      "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089"
+      "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089",
+      "license_restricted": true
     },
     {
       "file": "sdkb-abox-experts-problems.ttl",
@@ -162,7 +163,8 @@
       "file": "sdkb-abox-prior-art.ttl",
       "source_path": "ontology/sdkb-abox-prior-art.ttl",
       "role": "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지",
-      "sha256": "013018db544d0a4028e9c6135197dcb492873eb4ea93f5fcaa809e1bb66c89f3"
+      "sha256": "013018db544d0a4028e9c6135197dcb492873eb4ea93f5fcaa809e1bb66c89f3",
+      "license_restricted": true
     },
     {
       "file": "sdkb-commercialization.ttl",
