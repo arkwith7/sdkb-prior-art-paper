@@ -14,14 +14,21 @@
 @prefix pat:  <https://w3id.org/sdkb/data/patent/> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
+# filingDate 는 모든 특허(심사대상·인용선행기술 공통)의 시계열 전제이므로 ont:Patent 전체에 건다.
+# applicationNumber 는 우리 코퍼스의 심사대상 특허(SIRP/델타)만 갖는다 — 심사관 인용 선행기술
+# (ont:CitedPatent ⊑ ont:Patent)은 서지가 불완전할 수 있어(TBox 주석) 출원번호가 없다.
+# 그래서 sh:or 로 "CitedPatent 이거나, 아니면 출원번호 1개"를 요구한다 (순수 코어 SHACL).
 pat:PatentShape a sh:NodeShape ;
     sh:targetClass ont:Patent ;
-    sh:property [
-        sh:path ont:applicationNumber ;
-        sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
-    ] ;
     sh:property [
         sh:path ont:filingDate ;
         sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
         sh:message "특허는 filingDate(xsd:date)가 정확히 1개 있어야 함 — foresight 시계열의 전제" ;
-    ] .
+    ] ;
+    sh:or (
+        [ sh:class ont:CitedPatent ]
+        [ sh:property [
+            sh:path ont:applicationNumber ;
+            sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+        ] ]
+    ) .

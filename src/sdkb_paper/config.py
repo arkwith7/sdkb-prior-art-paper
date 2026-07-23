@@ -64,6 +64,14 @@ GRAPH_V0 = PROCESSED / "graph_v0.ttl"
 GRAPH_V1 = PROCESSED / "graph_v1.ttl"  # G₁ 삼성·SK하이닉스 보강 후
 GRAPH_V2 = PROCESSED / "graph_v2.ttl"  # G₂ KSIA 소부장 188사 보강 후
 
+# 청구항 분해 중심축 데이터셋 (11.6M 트리플). 분석 그래프에 **병합하지 않는다** — H1 엣지
+# 중립이고, rdflib 인메모리로 올리면 피크 15GB·4분이라 OOM 위험이다(실측 2026-07-23).
+# pyoxigraph 온디스크 스토어로만 적재/질의한다. 소스는 상류 SDKB, 스토어는 여기서 결정적 재빌드.
+CENTRAL_AXIS_SRC = SDKB_HOME / "ontology" / "sdkb-abox-claim-features.ttl"  # ABox 887MB
+CENTRAL_AXIS_TBOX = SDKB_HOME / "ontology" / "sdkb-patent.ttl"              # 동반 TBox 22KB
+CENTRAL_AXIS_STORE = PROCESSED / "central_axis.oxstore"                     # 온디스크 스토어(gitignore)
+CENTRAL_AXIS_PROVENANCE = DATA / "external" / "sdkb-central-axis" / "PROVENANCE.json"  # 커밋 가능 핀
+
 # --- 온톨로지 네임스페이스 ------------------------------------------------
 # SDKB v1.0 실물과 일치 (semiconductor-knowledge-base). slash 네임스페이스 3분리:
 #   ont:  TBox 어휘        ont:Patent, ont:Process, ont:realizesProcess …

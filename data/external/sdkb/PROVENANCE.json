@@ -4,7 +4,7 @@
   "source_commit_date": "2026-07-23T11:32:45+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-23T02:49:57+00:00",
+  "vendored_at": "2026-07-23T06:24:50+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
@@ -14,7 +14,7 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-07-23T02:49:57+00:00",
+    "checked_at": "2026-07-23T06:24:50+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -68,6 +68,12 @@
         {
           "input": "ontology/sdkb-abox-patents.ttl",
           "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089"
+        }
+      ],
+      "ontology/sdkb-abox-prior-art.ttl": [
+        {
+          "input": "scripts/build_prior_art_pairs.py",
+          "sha256": "2011e6630396e2f9a40285c9d5afb8db631dd7afec9bb428d2b9e2e30b7ca347"
         }
       ],
       "ontology/sdkb-governance-us-instances.ttl": [
@@ -151,6 +157,24 @@
       "source_path": "ontology/sdkb-abox-vendors.ttl",
       "role": "ABox: KSIA 회원사 326 — 소부장 벤더 축",
       "sha256": "2bed199d9afc8734ab05f375c34e7f1cd29adf6263157f0ad214cd7f89cf6d54"
+    },
+    {
+      "file": "sdkb-abox-prior-art.ttl",
+      "source_path": "ontology/sdkb-abox-prior-art.ttl",
+      "role": "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지",
+      "sha256": "013018db544d0a4028e9c6135197dcb492873eb4ea93f5fcaa809e1bb66c89f3"
+    },
+    {
+      "file": "sdkb-commercialization.ttl",
+      "source_path": "ontology/sdkb-commercialization.ttl",
+      "role": "TBox+ABox: 상용화 축(TRL·라이선싱·spinoff)",
+      "sha256": "763a4b0ed0386890ce6ec7f548d70ad313e102bddbacad60730f652c171d67aa"
+    },
+    {
+      "file": "sdkb-rbv.ttl",
+      "source_path": "ontology/sdkb-rbv.ttl",
+      "role": "TBox: 자원기반관점(VRIO·역량·진입장벽) — 핵심자원조합 축",
+      "sha256": "c2a260792d47d8356cde20ba6c4dacecb51c231d4cb1b2cb390f0422d0624486"
     },
     {
       "file": "sdkb-governance.ttl",

@@ -31,7 +31,14 @@ from sdkb_paper.validate.vocab_coverage import measure
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 49307    # 2026-07-23 청구항-feature·거절판단 순수 TBox 반영(SDKB d578bf3): +97 —
+EXPECTED_TRIPLES = 105588   # 2026-07-23 미반영 SDKB 온톨로지 전량 반영(사용자 결정): 선행기술 ABox
+                            # (CitedPatent 3,034 + 개념링크 realizesProcess/concernsDevice/involvesMaterial)
+                            # · 상용화(TRL) · 자원기반관점(RBV)을 G₀ 에 편입. 49,307 → 105,588.
+                            # **선행기술조사 정답지 도달성 0%→95.3%(노드)/54.6%(개념링크)**. 단 CitedPatent
+                            # 는 명시 타입이 ont:CitedPatent 라 CQ01(?patent a ont:Patent)이 안 세므로
+                            # C₀ 20/49·H1 네 표본집합 불변(19/21 통합테스트 통과로 실측). 선행기술을 커버로
+                            # 세면 26/49(+6). 구 이력(청구항 TBox +97 → 49,307)은 git 참조.
+EXPECTED_TRIPLES_LEGACY = 49307  # 2026-07-23 청구항-feature·거절판단 순수 TBox 반영(SDKB d578bf3): +97 —
                             # 신규 클래스 4(Claim·ClaimFeature·PriorArtJudgment·CitedPatent) + 익명
                             # unionOf 1 · ObjectProperty +10 · DatatypeProperty +5. G₀ 에 이 어휘의
                             # 인스턴스가 0이라(청구항 분해 ABox 는 보강 코퍼스 G₁·G₂ 전용) ABox·엣지 불변 —
@@ -113,15 +120,16 @@ EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴�
 #
 # CQ 8개(손으로 고른 것) 시절: 술어 5/53 = 9.4% · 클래스 4/25 = 16.0% — 특허 축 하나의 100%.
 # CQ 22개(태스크에서 도출 · SPEC-004 P1–P5): 아래. 올린 방법은 임계값이 아니라 태스크다.
-EXPECTED_VOCAB_PREDICATES = (38, 83)  # CQ 검증 45.8% — 2026-07-22 CQ28(특허↔문제↔전문가) 추가로
-                                      # caseFailureMode·hasCaseExperience 2개 신규 검증(36→38). 문제층
-                                      # (§G1 Phase C)이 전문가 매칭 축을 실제로 심문한다는 증거다(§5.2).
-EXPECTED_VOCAB_CLASSES = (18, 27)     # CQ 검증 66.7% — 클래스 사용 25→27(+EquipmentModel·ExpertCase)
+EXPECTED_VOCAB_PREDICATES = (38, 86)  # CQ 검증 44.2% — 2026-07-23 미반영 SDKB 반영으로 술어 사용
+                                      # 83→86(선행기술 hasCPC·인용 claimText·상용화 trlLevel). CQ 검증분
+                                      # 38 은 불변 — 새 축은 아직 태스크 CQ 가 아니라 SHACL 이 본다(§5.2).
+EXPECTED_VOCAB_CLASSES = (18, 30)     # CQ 검증 60.0% — 클래스 사용 27→30(+CitedPatent·CPCSymbol·TRL)
 
 # **게이트 커버리지 = CQ ∪ SHACL.** 목표는 커버리지 90% 가 아니라 "아무도 안 보는 어휘 = 0" 이다.
-# 신규 어휘 29종은 expert_shape.ttl(SHACL)이 본다 → 게이트 커버리지는 100% 유지.
-EXPECTED_GATE_PREDICATES = (83, 83)   # 100% — 전문가 경력 술어를 expert_shape 이 게이트
-EXPECTED_GATE_CLASSES = (27, 27)      # 100% — 아무도 안 보는 클래스 0 (EquipmentModel·ExpertCase 포함)
+# 새 축 5종(hasCPC·claimText·trlLevel·CPCSymbol·TechnologyReadinessLevel)은 new_axes_shape.ttl 이
+# 본다 → 게이트 커버리지 100% 유지(구 83/83·27/27 → 86/86·30/30).
+EXPECTED_GATE_PREDICATES = (86, 86)   # 100% — 새 축 술어를 new_axes_shape 이 게이트
+EXPECTED_GATE_CLASSES = (30, 30)      # 100% — 아무도 안 보는 클래스 0 (CitedPatent·CPCSymbol·TRL 포함)
 
 # G₀ 의 IP-R&D CQ before 값 (§4.2 의 G₀ 열). G₁ 과 비교되는 수치이므로 여기서 고정한다.
 EXPECTED_IPRD_ROWS = {

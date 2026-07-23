@@ -41,6 +41,9 @@ VENDOR_FILES: list[tuple[str, str]] = [
     ("ontology/sdkb-abox-patents.ttl", "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다"),
     ("ontology/sdkb-abox-experts-problems.ttl", "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축"),
     ("ontology/sdkb-abox-vendors.ttl", "ABox: KSIA 회원사 326 — 소부장 벤더 축"),
+    ("ontology/sdkb-abox-prior-art.ttl", "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지"),
+    ("ontology/sdkb-commercialization.ttl", "TBox+ABox: 상용화 축(TRL·라이선싱·spinoff)"),
+    ("ontology/sdkb-rbv.ttl", "TBox: 자원기반관점(VRIO·역량·진입장벽) — 핵심자원조합 축"),
     ("ontology/sdkb-governance.ttl", "TBox: 규제 코어(hasJurisdiction·controlLevel·subjectToControl·관할개념·EARRule 앵커) — RQ3 수출통제"),
     ("ontology/sdkb-governance-kr.ttl", "TBox: KR 규제(NationalCoreTechnology·designatedAsNCT·산업기술보호법)"),
     ("ontology/sdkb-governance-us-instances.ttl", "ABox: US EAR/CCL 수출통제 8건 + G₀ 개념 연결"),
@@ -193,6 +196,9 @@ ARTIFACT_INPUTS: dict[str, list[str]] = {
         "scripts/build_abox_vendors_ksia.py",
         "data/vendors/ksia_member_industry_list_20260714.csv",
         "ontology/sdkb-abox-patents.ttl",
+    ],
+    "ontology/sdkb-abox-prior-art.ttl": [
+        "scripts/build_prior_art_pairs.py",
     ],
     # 규제 인스턴스: seed 스크립트 + 마스터 JSON + 사전동결 크로스워크에서 생성된다.
     # core-data 도 의존이다 — 링크 대상 개념이 사라지면 seed 의 검증이 실패해야 한다.

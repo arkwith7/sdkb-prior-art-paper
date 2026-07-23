@@ -29,15 +29,20 @@ pat:PatentBibliographyShape a sh:NodeShape ;
         sh:message "특허는 발명의 명칭을 skos:prefLabel(언어태그)로 가져야 한다 — rdfs:label 이 아니다" ;
     ] ;
     sh:property [
-        sh:path ont:patentOffice ;
-        sh:minCount 1 ; sh:maxCount 1 ;
-        sh:in ( "KR" "US" "JP" "EP" "WO" "CN" "OTHER" ) ;
-    ] ;
-    sh:property [
         sh:path ont:publicationDate ;
         sh:maxCount 1 ; sh:datatype xsd:date ;
         sh:message "공개일은 xsd:date 다 — 출원일(filingDate)과 혼동하면 H2 시계열이 오염된다" ;
-    ] .
+    ] ;
+    # patentOffice 는 심사대상 특허(SIRP/델타)만 갖는다 — 인용 선행기술(CitedPatent)은 관할이
+    # IRI 접두(cn_·kr_…)에만 있고 속성으로 실리지 않아 서지가 완화된다(TBox 주석). sh:or 로 면제.
+    sh:or (
+        [ sh:class ont:CitedPatent ]
+        [ sh:property [
+            sh:path ont:patentOffice ;
+            sh:minCount 1 ; sh:maxCount 1 ;
+            sh:in ( "KR" "US" "JP" "EP" "WO" "CN" "OTHER" ) ;
+        ] ]
+    ) .
 
 # ── SIRP 거절특허에만 있는 필드 (G₀) ───────────────────────────────────
 # 델타(KIPRIS) 특허는 ont:RejectedPatent 가 아니므로 이 요구를 받지 않는다.

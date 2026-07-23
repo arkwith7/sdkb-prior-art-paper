@@ -1,0 +1,51 @@
+# L1 — 2026-07-23 미반영 SDKB 온톨로지 반영으로 들어온 새 축의 구조 검증.
+#
+# 선행기술 ABox(CPC 분류·인용 청구항 텍스트)·상용화(TRL)가 G₀ 에 편입되며 어휘 5종이
+# 새로 쓰였는데, CQ 도 SHACL 도 보지 않아 게이트 커버리지가 100%→96.5% 로 떨어졌다.
+# **"검증되지 않는 어휘 = 결함"**(§5.2) 원칙에 따라 구조(제약)인 이 어휘들을 SHACL 이 본다
+# — 기능(질의 가능성)이 아니므로 CQ 가 아니라 여기가 맞는 자리다. 값이 있을 때 형식만
+# 강제하고 없는 것을 요구하지 않는다(없는 값을 지어내지 않는다 · §1.2).
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix ont:  <https://w3id.org/sdkb/ont/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# CPCSymbol 은 IPCSymbol 과 같다 — 코드는 이름이 아니라 표기(notation)로 식별된다.
+ont:CPCSymbolShape a sh:NodeShape ;
+    sh:targetClass ont:CPCSymbol ;
+    sh:property [
+        sh:path skos:notation ;
+        sh:minCount 1 ;
+        sh:message "CPCSymbol 은 skos:notation 이 있어야 한다 (예: 'H01L 21/3065')" ;
+    ] .
+
+# 기술성숙도(TRL 1–9) — 상용화 축. 값 어휘이므로 이름(prefLabel)과 등급(trlLevel)을 갖는다.
+ont:TechnologyReadinessLevelShape a sh:NodeShape ;
+    sh:targetClass ont:TechnologyReadinessLevel ;
+    sh:property [
+        sh:path ont:trlLevel ;
+        sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ;
+        sh:minInclusive 1 ; sh:maxInclusive 9 ;
+        sh:message "trlLevel 은 1~9 의 정수다" ;
+    ] ;
+    sh:property [
+        sh:path skos:prefLabel ;
+        sh:minCount 1 ;
+        sh:message "TRL 단계도 skos:prefLabel 이 있어야 한다 — 질의 결과에 값으로 등장한다" ;
+    ] .
+
+# 특허의 분류(hasCPC)·인용 청구항 원문(claimText)은 값이 있을 때 형식을 검사한다.
+# 심사관 인용 선행기술(CitedPatent)에만 있는 축이라 minCount 를 걸지 않는다.
+ont:PatentClassificationTextShape a sh:NodeShape ;
+    sh:targetClass ont:Patent ;
+    sh:property [
+        sh:path ont:hasCPC ;
+        sh:nodeKind sh:IRI ;
+        sh:class ont:CPCSymbol ;
+        sh:message "hasCPC 의 값은 ont:CPCSymbol IRI 다" ;
+    ] ;
+    sh:property [
+        sh:path ont:claimText ;
+        sh:datatype xsd:string ;
+        sh:message "claimText 는 문자열이다 (인용 선행기술의 청구항 원문)" ;
+    ] .
