@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 import pandas as pd
 
@@ -31,6 +32,9 @@ OUT = RAW_KIPRIS / "patents_raw.parquet"
 KSIA_OUT = RAW_KIPRIS / "patents_ksia_equipment_raw.parquet"
 # 청구항·초록 상세 (출원번호별). delta 후보만 조회한다 — 그래프에 들어갈 특허만 청구항이 필요하다.
 KSIA_DETAILS = RAW_KIPRIS / "patents_ksia_equipment_details.parquet"
+# G₁ 삼성·SK하이닉스 상세 (§G1 Phase A). 병합 특허 24,179건의 초록+전체청구항 — RQ2 선행기술조사
+# feature-대비를 G₀→G₁ 주 대비축에 걸리게 한다. patents_raw 는 동결이라 별도 파일에 받는다.
+SH_DETAILS = RAW_KIPRIS / "patents_samsung_hynix_details.parquet"
 
 # PLAN-009 · 좌측절단 교정. H2 의 관측창을 기술의 부상 이전으로 되돌린다.
 # **별도 파일로 받는다** — patents_raw.parquet 은 G₁ 과 H1 의 원천이고, G₁ 은 동결이다.
@@ -60,7 +64,7 @@ def ksia_applicants(smoke: bool) -> tuple[list[str], any]:
     return cw["match_key"].tolist(), KSIA_OUT
 
 
-def collect_details(application_numbers: list[str]) -> "pd.DataFrame":
+def collect_details(application_numbers: list[str], out: "Path" = KSIA_DETAILS) -> "pd.DataFrame":
     """delta 후보 출원번호의 초록+전체청구항을 상세 엔드포인트로 모은다(특허당 1회·캐시).
 
     청구항은 리스트 열로 담는다 — delta 가 청구항당 1트리플(ont:claimText)로 실체화한다.
@@ -74,10 +78,10 @@ def collect_details(application_numbers: list[str]) -> "pd.DataFrame":
         if i % 200 == 0:
             print(f"  상세 {i:,}/{len(application_numbers):,}", flush=True)
     df = pd.DataFrame(rows)
-    KSIA_DETAILS.parent.mkdir(parents=True, exist_ok=True)
-    df.to_parquet(KSIA_DETAILS, index=False)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(out, index=False)
     got = int((df["claims"].apply(len) > 0).sum()) if len(df) else 0
-    print(f"\n✓ 상세 {len(df):,}건 (청구항 보유 {got:,}) → {KSIA_DETAILS}")
+    print(f"\n✓ 상세 {len(df):,}건 (청구항 보유 {got:,}) → {out}")
     return df
 
 
@@ -94,16 +98,24 @@ def main() -> int:
     args = ap.parse_args()
 
     if args.details:
-        if args.corpus != "ksia-equipment":
-            ap.error("--details 는 ksia-equipment 코퍼스에만 쓴다")
-        from sdkb_paper.preprocess.profile import KSIA_DELTA
-        cand = pd.read_parquet(KSIA_DELTA)
-        # G₂ 에 실제로 들어갈 매핑 특허만 상세수집한다 — 게이트에서 탈락할 미매핑 특허의
-        # 청구항을 긁는 것은 불필요한 API 호출이다(§ KIPRIS 규칙 준수).
-        mapped = cand[(cand["n_process"] > 0) | (cand["n_device"] > 0)]
-        appnums = mapped["application_number"].drop_duplicates().tolist()
-        print(f"델타 매핑 특허 {len(appnums):,}건의 초록·청구항 상세 수집 (특허당 1회·캐시)")
-        collect_details(appnums)
+        if args.corpus == "ksia-equipment":
+            from sdkb_paper.preprocess.profile import KSIA_DELTA
+            cand = pd.read_parquet(KSIA_DELTA)
+            # G₂ 에 실제로 들어갈 매핑 특허만 상세수집한다 — 게이트에서 탈락할 미매핑 특허의
+            # 청구항을 긁는 것은 불필요한 API 호출이다(§ KIPRIS 규칙 준수).
+            mapped = cand[(cand["n_process"] > 0) | (cand["n_device"] > 0)]
+            appnums = mapped["application_number"].drop_duplicates().tolist()
+            out = KSIA_DETAILS
+        else:  # samsung-hynix (§G1 Phase A)
+            from sdkb_paper.ontology.delta import merged_application_numbers
+            from sdkb_paper.preprocess.profile import DELTA
+            cand = pd.read_parquet(DELTA)
+            # graph_v1 에 실제로 병합되는 24,179건(룰 OR 인식층)만 — build_delta 병합 필터와
+            # 같은 의미(사용자 결정 2026-07-22). 미매핑 10,342건은 상세수집하지 않는다.
+            appnums = merged_application_numbers(cand)
+            out = SH_DETAILS
+        print(f"병합 특허 {len(appnums):,}건의 초록·청구항 상세 수집 (특허당 1회·캐시)")
+        collect_details(appnums, out=out)
         return 0
 
     classes = ipc_classes()

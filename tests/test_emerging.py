@@ -12,9 +12,9 @@ from __future__ import annotations
 
 import pandas as pd
 import pytest
-from rdflib import RDF, SKOS, Literal, URIRef
+from rdflib import RDF, SKOS, XSD, Literal, URIRef
 
-from sdkb_paper.config import EMERGING_CONCEPTS, ONT, TERM_ALIASES
+from sdkb_paper.config import EMERGING_CONCEPTS, ONT, SDKB_DATA, TERM_ALIASES
 from sdkb_paper.ontology.emerging import (
     VARIANTS,
     Combination,
@@ -180,3 +180,86 @@ def test_delta_adds_device_links_and_altlabels_only(tmp_path):
     assert (pat, ONT.concernsDevice, URIRef(HBM)) in g
     assert list(g.objects(pat, ONT.realizesProcess)) == []          # 공정 축 불변
     assert (URIRef(HBM), SKOS.altLabel, Literal("고대역폭 메모리", lang="ko")) in g
+
+
+def test_delta_details_are_edge_neutral():
+    """§G1 Phase B: 초록·청구항(details)을 심어도 realizesProcess·concernsDevice 엣지와
+    병합 특허 집합은 한 트리플도 안 움직인다 — claimText 등은 datatype 속성이기 때문이다.
+    이 계약이 깨지면 G₁ claimText 실체화가 H1 커버리지를 사후에 바꾼다."""
+    from sdkb_paper.ontology.delta import build_delta
+
+    df = pd.DataFrame([{
+        "application_number": "1020230000001",
+        "applicant_name": "삼성전자주식회사",
+        "application_date": pd.Timestamp("2023-05-01"),
+        "invention_title": "적층형 반도체 장치",
+        "abstract": "관통 전극을 포함하는 적층 메모리",
+        "ipc_codes": ["H10B 80/00", "H10W 20/20"],
+        "open_date": "20240101",
+    }])
+    details = {"1020230000001": {"abstract": "실체화된 초록",
+                                 "claims": ["1. 제1 청구항", "2. 제2 청구항"], "claim_count": 2}}
+
+    bare = build_delta(df)
+    withd = build_delta(df, details=details)
+
+    def edges(g):
+        return (set(g.subject_objects(ONT.realizesProcess))
+                | set(g.subject_objects(ONT.concernsDevice)))
+    assert edges(bare) == edges(withd), "details 가 개념 엣지를 바꿨다 — H1 이 사후에 움직인다"
+    assert set(withd.subjects(RDF.type, ONT.Patent)) == set(bare.subjects(RDF.type, ONT.Patent))
+
+    pat = next(iter(withd.subjects(RDF.type, ONT.Patent)))
+    assert (pat, ONT.claimCount, Literal(2, datatype=XSD.integer)) in withd
+    assert len(list(withd.objects(pat, ONT.claimText))) == 2         # 청구항당 1트리플
+    assert (pat, ONT.firstClaimText, Literal("1. 제1 청구항", datatype=XSD.string)) in withd
+    assert (pat, ONT.abstractText, Literal("실체화된 초록", datatype=XSD.string)) in withd
+    assert list(bare.objects(pat, ONT.claimText)) == []             # 미배선이면 청구항 0
+
+
+def test_delta_problem_layer_is_edge_neutral_and_rejects_unknown():
+    """§G1 Phase C(C4): 문제층(exhibitsFailureMode/relatedToTopic)을 심어도 realizesProcess·
+    concernsDevice·병합집합은 불변(H1 불변). 미등재 slug 는 지어내지 않고 버린다. 신규 개념은
+    노드로 정의된다(매달린 IRI 방지)."""
+    from sdkb_paper.ontology.delta import (
+        NEW_FAILURE_MODES,
+        EXHIBITS_FAILURE_MODE,
+        RELATED_TO_TOPIC,
+        build_delta,
+    )
+
+    df = pd.DataFrame([{
+        "application_number": "1020230000001",
+        "applicant_name": "삼성전자주식회사",
+        "application_date": pd.Timestamp("2023-05-01"),
+        "invention_title": "적층형 반도체 장치",
+        "abstract": "관통 전극을 포함하는 적층 메모리",
+        "ipc_codes": ["H10B 80/00", "H10W 20/20"],
+        "open_date": "20240101",
+    }])
+    # 기존 개념 dishing + 신규 개념 1개(있으면) + 미등재(버려짐)
+    new_slug = next(iter(NEW_FAILURE_MODES), None)
+    good = {"1020230000001": {"failuremode": ["dishing", "무슨_결함이든_지어낸것"]
+                              + ([new_slug] if new_slug else []),
+                              "rootcause": ["slurry_instability"]}}
+
+    bare = build_delta(df)
+    withp = build_delta(df, problems=good)
+
+    def edges(g):
+        return (set(g.subject_objects(ONT.realizesProcess))
+                | set(g.subject_objects(ONT.concernsDevice)))
+    assert edges(bare) == edges(withp)                              # 개념 엣지 불변 → H1 불변
+
+    pat = next(iter(withp.subjects(RDF.type, ONT.Patent)))
+    assert (pat, EXHIBITS_FAILURE_MODE, SDKB_DATA["failuremode/dishing"]) in withp
+    assert (pat, RELATED_TO_TOPIC, SDKB_DATA["rootcause/slurry_instability"]) in withp
+    # 미등재 slug 는 한 트리플도 만들지 않는다 (날조 금지)
+    assert (pat, EXHIBITS_FAILURE_MODE, SDKB_DATA["failuremode/무슨_결함이든_지어낸것"]) not in withp
+    assert list(bare.objects(pat, EXHIBITS_FAILURE_MODE)) == []
+    # 신규 개념은 엣지 + 개념 노드(type·prefLabel)가 함께 실체화된다 (매달린 IRI 아님)
+    if new_slug:
+        node = SDKB_DATA[f"failuremode/{new_slug}"]
+        assert (pat, EXHIBITS_FAILURE_MODE, node) in withp
+        assert (node, RDF.type, ONT.FailureMode) in withp
+        assert any(withp.objects(node, SKOS.prefLabel))

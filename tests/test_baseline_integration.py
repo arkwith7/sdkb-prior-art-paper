@@ -107,9 +107,9 @@ EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴�
 #
 # CQ 8개(손으로 고른 것) 시절: 술어 5/53 = 9.4% · 클래스 4/25 = 16.0% — 특허 축 하나의 100%.
 # CQ 22개(태스크에서 도출 · SPEC-004 P1–P5): 아래. 올린 방법은 임계값이 아니라 태스크다.
-EXPECTED_VOCAB_PREDICATES = (36, 83)  # CQ 검증 43.4% — 2026-07-21 전문가 상세 경력 적재로 술어
-                                      # 사용이 54→83(+29). CQ 는 이 신규 어휘를 심문하지 않으므로
-                                      # CQ 검증률은 내려간다(66.7%→43.4%) — 지표가 잡아야 할 현상이다(§5.2).
+EXPECTED_VOCAB_PREDICATES = (38, 83)  # CQ 검증 45.8% — 2026-07-22 CQ28(특허↔문제↔전문가) 추가로
+                                      # caseFailureMode·hasCaseExperience 2개 신규 검증(36→38). 문제층
+                                      # (§G1 Phase C)이 전문가 매칭 축을 실제로 심문한다는 증거다(§5.2).
 EXPECTED_VOCAB_CLASSES = (18, 27)     # CQ 검증 66.7% — 클래스 사용 25→27(+EquipmentModel·ExpertCase)
 
 # **게이트 커버리지 = CQ ∪ SHACL.** 목표는 커버리지 90% 가 아니라 "아무도 안 보는 어휘 = 0" 이다.

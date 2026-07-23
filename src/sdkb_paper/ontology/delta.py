@@ -19,7 +19,7 @@ import pandas as pd
 from rdflib import RDF, RDFS, XSD, Graph, Literal, URIRef
 from rdflib.namespace import DCTERMS, SKOS
 
-from sdkb_paper.config import ONT, PATENT_NS, PROCESSED, SDKB_DATA, bind_namespaces
+from sdkb_paper.config import DATA, ONT, PATENT_NS, PROCESSED, SDKB_DATA, bind_namespaces
 from sdkb_paper.ontology.emerging import (
     DEFAULT_VARIANT,
     alias_labels,
@@ -52,6 +52,28 @@ SOURCE = "KIPRIS Plus API (getAdvancedSearch)"
 LICENSE = "KIPRIS terms — academic use, no redistribution of full text"
 
 
+def merged_application_numbers(df: pd.DataFrame, variant: str = DEFAULT_VARIANT) -> list[str]:
+    """graph_v1 에 실제로 병합되는 특허의 출원번호를 API 없이 로컬 parquet 로 재현한다.
+
+    판정은 build_delta 의 병합 필터([delta.py] `if not (process or device): continue`)와
+    **같은 의미**다 — 룰 매핑(공정·소자) 또는 신기술 인식층(별칭·조합)이 개념을 주면 병합.
+    상세수집은 이 집합만 대상으로 한다: 게이트에서 탈락할 미매핑 특허의 청구항을 긁는 것은
+    불필요한 API 호출이다(§ KIPRIS 규칙). 인식층이 잡는 114건도 병합되므로 포함한다.
+    """
+    table = load_code_mapping()
+    aliases = load_aliases(variant=variant)
+    combos = load_combinations(variant=variant)
+    out: list[str] = []
+    for row in df.itertuples():
+        codes = [c.strip() for c in row.ipc_codes if c.strip()]
+        hits = map_codes_to_concepts(codes, table)
+        text = f"{row.invention_title or ''} {row.abstract or ''}"
+        device = set(hits["device"]) | set(emerging_devices(codes, text, aliases, combos))
+        if hits["process"] or device:
+            out.append(row.application_number)
+    return out
+
+
 def _org_samsung(row) -> URIRef | None:
     return ORG.get(row.applicant_name)
 
@@ -65,10 +87,34 @@ def ipc_iri(code: str) -> URIRef:
     return SDKB_DATA["ipc/" + code.strip().replace(" ", "_").replace("/", "-")]
 
 
+# §G1 Phase C(C4): 특허 문제층 어휘. 기존 SDKB ont:FailureMode 25 / ont:RootCause 20 +
+# C3 에서 특허 초록에서 자라난 신규 FailureMode 개념(사용자 채택 · frozen CSV).
+from sdkb_paper.ontology.problems import FAILURE_MODES, ROOT_CAUSES  # noqa: E402
+
+NEW_FM_CSV = DATA / "failuremode_concepts_new.csv"
+
+
+def load_new_failure_modes() -> dict[str, tuple[str, str]]:
+    """C3 채택 신규 FailureMode 개념 (slug → (label_en, label_ko)). delta 가 개념 노드를 정의한다 —
+    엣지 타깃이 매달리지 않도록(이 프로젝트 핵심 결함패턴). 특허 초록에서 추출·통합된 실재 결함이다."""
+    import csv
+    if not NEW_FM_CSV.exists():
+        return {}
+    with NEW_FM_CSV.open(encoding="utf-8") as f:
+        return {r["slug"]: (r["label_en"], r["label_ko"]) for r in csv.DictReader(f)}
+
+
+NEW_FAILURE_MODES = load_new_failure_modes()
+VALID_FAILURE_MODES = set(FAILURE_MODES) | set(NEW_FAILURE_MODES)
+VALID_ROOT_CAUSES = set(ROOT_CAUSES)
+EXHIBITS_FAILURE_MODE = ONT.exhibitsFailureMode
+RELATED_TO_TOPIC = ONT.relatedToTopic
+
+
 def build_delta(df: pd.DataFrame, variant: str = DEFAULT_VARIANT,
                 org_of=_org_samsung, activity: URIRef = ACTIVITY,
                 activity_label: str = "KIPRIS Samsung/SK hynix ingest (PLAN-002)",
-                details: dict | None = None) -> Graph:
+                details: dict | None = None, problems: dict | None = None) -> Graph:
     """룰 매핑 + 신기술 인식 레이어(PLAN-004)로 델타를 만든다.
 
     신기술 레이어는 **디바이스 축에만** 링크를 더한다 — 공정 축을 건드리지 않으므로 H1 의
@@ -91,6 +137,7 @@ def build_delta(df: pd.DataFrame, variant: str = DEFAULT_VARIANT,
     for iri, term, lang in alias_labels(variant=variant):
         g.add((URIRef(iri), SKOS.altLabel, Literal(term, lang=lang)))
 
+    used_new_fm: set[str] = set()  # C4: 정의할 신규 FailureMode 개념 추적(실사용만)
     for row in df.sort_values("application_number").itertuples():
         codes = [c.strip() for c in row.ipc_codes if c.strip()]
         hits = map_codes_to_concepts(codes, table)
@@ -151,6 +198,31 @@ def build_delta(df: pd.DataFrame, variant: str = DEFAULT_VARIANT,
             g.add((p, ONT.realizesProcess, URIRef(iri)))
         for iri in hits["device"]:
             g.add((p, ONT.concernsDevice, URIRef(iri)))
+
+        # 특허 → 문제원자 (C4). exhibitsFailureMode/relatedToTopic 는 SDKB TBox 에 이미 있는 술어다
+        # (발명 0 · 주석이 "patent addresses a FailureMode via free-text extraction"). resolved 는
+        # 특허당 결함/원인 slug 리스트다(기존 45 개념 재배치 + C3 신규 개념). 신규 개념 노드는
+        # 아래에서 정의한다(매달린 IRI 방지). datatype 이 아니라 객체속성이지만 realizesProcess/
+        # concernsDevice 를 안 건드리므로 H1 불변(회귀 테스트).
+        prob = problems.get(row.application_number) if problems else None
+        if prob is not None:
+            for slug in prob.get("failuremode", ()):
+                if slug in VALID_FAILURE_MODES:
+                    g.add((p, EXHIBITS_FAILURE_MODE, SDKB_DATA[f"failuremode/{slug}"]))
+                    if slug in NEW_FAILURE_MODES:
+                        used_new_fm.add(slug)
+            for slug in prob.get("rootcause", ()):
+                if slug in VALID_ROOT_CAUSES:
+                    g.add((p, RELATED_TO_TOPIC, SDKB_DATA[f"rootcause/{slug}"]))
+
+    # C3 신규 FailureMode 개념 노드를 **실제 사용된 것만** 정의한다 — 기존 25 는 G₀ 스냅샷에 있고,
+    # 신규 30 은 여기서 정의돼 graph_v1 에 산다(엣지 타깃이 매달리지 않도록).
+    for slug in used_new_fm:
+        en, ko = NEW_FAILURE_MODES[slug]
+        node = SDKB_DATA[f"failuremode/{slug}"]
+        g.add((node, RDF.type, ONT.FailureMode))
+        g.add((node, SKOS.prefLabel, Literal(en, lang="en")))
+        g.add((node, SKOS.prefLabel, Literal(ko, lang="ko")))
     return g
 
 
@@ -183,8 +255,33 @@ def main() -> int:
                         details=details)
         out = DELTA_V2_TTL
     else:
+        from sdkb_paper.collect.collect import SH_DETAILS
         df = pd.read_parquet(DELTA_PARQUET)
-        g = build_delta(df)
+        # §G1 Phase B: 초록·전체청구항을 실체화한다(엣지 중립). claimText/abstractText/claimCount
+        # 는 datatype 속성이라 realizesProcess·concernsDevice 엣지와 병합 집합을 건드리지 않는다
+        # → H1 커버리지 원리적 불변(회귀 테스트로 고정). details 미수집이면 G₂ 수집 전 상태와
+        # 동일하게 서지만 병합한다.
+        details = None
+        if SH_DETAILS.exists():
+            dd = pd.read_parquet(SH_DETAILS)
+            details = {r.application_number: {"abstract": r.abstract, "claims": r.claims,
+                                             "claim_count": r.claim_count}
+                       for r in dd.itertuples()}
+        # §G1 Phase C(C4): 특허 문제층. exhibitsFailureMode/relatedToTopic 를 심는다(엣지 중립 —
+        # realizesProcess/concernsDevice 불변 → H1 불변). resolved = C3 해결분(특허당 결함/원인
+        # slug 리스트: 기존 45 재배치 + 신규 개념). 미해결이면 문제층 없이 병합.
+        import json as _json
+
+        from sdkb_paper.config import INTERIM
+        problems = None
+        resolved = INTERIM / "patent_problems_resolved.jsonl"
+        if resolved.exists():
+            problems = {}
+            for line in resolved.open():
+                r = _json.loads(line)
+                problems[r["application_number"]] = {"failuremode": r.get("failuremode", []),
+                                                     "rootcause": r.get("rootcause", [])}
+        g = build_delta(df, details=details, problems=problems)
         out = DELTA_TTL
 
     PROCESSED.mkdir(parents=True, exist_ok=True)

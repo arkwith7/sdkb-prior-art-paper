@@ -152,6 +152,76 @@ def build_ksia() -> pd.DataFrame:
     return delta
 
 
+def build_details_profile() -> "pd.DataFrame":
+    """G₁ 삼성·SK하이닉스 상세(초록+전체청구항) 프로파일 (§G1 Phase A · CLAUDE.md §4 의무).
+
+    서지 프로파일과 형태가 다르다 — 관측 단위가 청구항 리스트·초록이다. 이 데이터는 그래프에
+    claimText/abstractText/claimCount 로 실체화되어 RQ2 선행기술조사 feature 대비의 원천이 된다.
+    """
+    from sdkb_paper.collect.collect import SH_DETAILS
+    df = pd.read_parquet(SH_DETAILS)
+    prof = DATA / "profiles" / "kipris_samsung_hynix_details.md"
+
+    n = len(df)
+    n_claim_bearing = int((df["claims"].apply(len) > 0).sum())
+    n_abs = int((df["abstract"].astype(str).str.strip() != "").sum())
+    claims_len = df["claims"].apply(len)
+    # claim_count(KIPRIS) > 실제 적재 청구항 수 → 미적재 신호 (자기완결성 결함 탐지).
+    undercount = int((df["claim_count"] > claims_len).sum())
+    cc = df["claim_count"]
+
+    prof.parent.mkdir(parents=True, exist_ok=True)
+    prof.write_text("".join([
+        "# 프로파일 — KIPRIS 삼성·SK하이닉스 상세 (초록+전체청구항 · §G1 Phase A · G₁ 선행기술 feature 축)\n",
+        "> 이 파일은 `python -m sdkb_paper.preprocess.profile --corpus samsung-hynix --details` 이 생성한다. 손으로 고치지 않는다.\n",
+        "\n## 1. 구조 (structure)\n\n",
+        _md_table([
+            ("application_number", "출원번호 (하이픈 제거, 키)", str(df["application_number"].dtype),
+             "KIPRIS applicationNumber"),
+            ("abstract", "초록 전문 → ont:abstractText", str(df["abstract"].dtype), "KIPRIS astrtCont"),
+            ("claims", "청구항 전문 리스트 (번호순, 선두번호 보존)", "object(list[str])",
+             "KIPRIS claim — 청구항당 1원소"),
+            ("claim_count", "KIPRIS 신고 청구항 수 (>len(claims)면 미적재)", str(cc.dtype), "KIPRIS claimCount"),
+        ], ("컬럼", "의미", "dtype", "원천")),
+        "\n키: `application_number` (병합 24,179건 = build_delta 병합필터와 동일 집합). "
+        "**초록·청구항 원문은 그래프(gitignore·로컬 전용)에만 실체화되고 재배포하지 않는다 (§1.3).**\n",
+        "\n## 2. 형태 (shape)\n\n",
+        _md_table([
+            ("상세 수집 특허", f"{n:,}", "병합 특허 전량 (룰 OR 인식층 · 사용자 결정 2026-07-22)"),
+            ("고유 출원번호", f"{df['application_number'].nunique():,}", "키 — 중복 0"),
+            ("청구항 보유", f"{n_claim_bearing:,} ({n_claim_bearing/max(n,1):.1%})", "FTO 자기완결성"),
+            ("초록 보유", f"{n_abs:,} ({n_abs/max(n,1):.1%})", "선행기술 텍스트 대비 입력"),
+            ("**claimText 트리플(예상)**", f"**{int(claims_len.sum()):,}**", "청구항당 1트리플 (번호 보존)"),
+            ("claim_count 미적재 특허", f"{undercount:,}", "KIPRIS claimCount > 실제 청구항 수 (정직 계상)"),
+        ], ("항목", "값", "설명")),
+        "\n## 3. 기술통계 (descriptive)\n\n",
+        "### 특허당 청구항 수 (실제 적재 기준)\n\n",
+        _md_table([
+            ("count", f"{n:,}"), ("mean", f"{claims_len.mean():.1f}"),
+            ("std", f"{claims_len.std():.1f}"), ("min", f"{int(claims_len.min())}"),
+            ("median", f"{int(claims_len.median())}"), ("max", f"{int(claims_len.max())}"),
+        ], ("통계", "값")),
+        "\n### KIPRIS 신고 claim_count\n\n",
+        _md_table([
+            ("count", f"{n:,}"), ("mean", f"{cc.mean():.1f}"),
+            ("median", f"{int(cc.median())}"), ("max", f"{int(cc.max())}"),
+            ("합계", f"{int(cc.sum()):,}"),
+        ], ("통계", "값")),
+        "\n## 4. 사용 목적 (purpose)\n\n",
+        "| 컬럼 | 논문에서 쓰이는 곳 |\n|---|---|\n"
+        "| `claims` | `ont:claimText`(청구항당 1)·`ont:firstClaimText` → **claim-feature 분해**의 원천 "
+        "(RQ2 선행기술조사 feature 대비 · §G1 Phase C `src_g1`) |\n"
+        "| `abstract` | `ont:abstractText` — 선행기술 텍스트 대비·설명 |\n"
+        "| `claim_count` | `ont:claimCount` — FTO 자기완결성 지표 (신고 대비 적재율) |\n"
+        "| `application_number` | 특허 IRI 키 (`data:patent/kr_…`) — G₀→G₁ 주 대비축 |\n"
+        "\n> **엣지 중립**: 이 데이터는 datatype 속성만 더한다 — `realizesProcess`·`concernsDevice` 엣지와 "
+        "병합 특허 집합을 건드리지 않으므로 **H1 커버리지는 원리적으로 불변**이다 (회귀 테스트 "
+        "`test_delta_details_are_edge_neutral`).\n",
+    ]), encoding="utf-8")
+    print(f"✓ 상세 프로파일 → {prof.relative_to(ROOT)}")
+    return df
+
+
 def _render(raw, norm, kept, uniq, overlap, delta, title, merged, app_rows, app_header) -> str:
     mapped = delta[(delta.n_process > 0) | (delta.n_device > 0)]
     years = delta["application_date"].dt.year
@@ -229,7 +299,15 @@ def main() -> int:
                     help="samsung-hynix=G₁(PLAN-002) · ksia-equipment=G₂ 소부장(RQ3 · PLAN-014 C-2)")
     ap.add_argument("--period", choices=sorted(PERIODS), default="main",
                     help="main=2010–2025 (G₁ 의 원천) · extended=2005–2009 (PLAN-009 · H2 전용)")
+    ap.add_argument("--details", action="store_true",
+                    help="samsung-hynix 상세(초록+청구항) 프로파일 (§G1 Phase A)")
     args = ap.parse_args()
+
+    if args.details:
+        if args.corpus != "samsung-hynix":
+            ap.error("--details 프로파일은 samsung-hynix 코퍼스에만 쓴다")
+        build_details_profile()
+        return 0
 
     if args.corpus == "ksia-equipment":
         delta = build_ksia()

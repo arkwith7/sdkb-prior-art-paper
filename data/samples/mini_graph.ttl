@@ -162,7 +162,8 @@ pat:1020190000005 a ont:Patent ;
     ont:filingDate "2019-11-08"^^xsd:date ;
     ont:assignedTo <https://w3id.org/sdkb/data/organization/lam_research> ;
     ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
-    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> ;
+    ont:exhibitsFailureMode <https://w3id.org/sdkb/data/failure_mode/micro_trenching> .
 
 # ---------------------------------------------------------------------------
 # 불량 인과 · 재료 · 계측 축 (CQ15–CQ22) — 2026-07-14 · SPEC-004 단계 4.
@@ -204,6 +205,16 @@ pat:1020190000005 a ont:Patent ;
 <https://w3id.org/sdkb/data/expert/EXP_M01>
     ont:hasMaterialExpertise <https://w3id.org/sdkb/data/material/euv_photoresist> ;
     ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment_class/etcher> .
+
+# 전문가 사례 (CQ28: 특허↔결함모드↔전문가) — 특허가 다루는 결함모드를 실제로 다뤄본 전문가.
+# 이 사슬이 §G1 Phase C 문제층의 task-fitness 다리다(선행기술 설명 + 매칭 substrate).
+<https://w3id.org/sdkb/data/expert_case/CASE_M01> a ont:ExpertCase ;
+    skos:prefLabel "식각 마이크로트렌칭 사례"@ko ;
+    ont:caseSource "curated_profiles_kr.json#EXP_M01" ;
+    ont:caseFailureMode <https://w3id.org/sdkb/data/failure_mode/micro_trenching> ;
+    ont:caseProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
+<https://w3id.org/sdkb/data/expert/EXP_M01>
+    ont:hasCaseExperience <https://w3id.org/sdkb/data/expert_case/CASE_M01> .
 
 # 공정 제어 · 계측 (CQ19)
 <https://w3id.org/sdkb/data/parameter/bias_power> a ont:Parameter ;

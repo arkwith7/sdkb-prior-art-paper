@@ -1,0 +1,31 @@
+slug,label_ko,label_en,n_patents_g1
+bitline_coupling_noise,비트라인 커플링 노이즈,bitline coupling noise,7
+cell_to_cell_interference,셀 간 간섭,cell to cell interference,18
+charge_loss,전하 손실,charge loss,6
+contact_resistance,콘택 저항,contact resistance,20
+copper_migration,구리 마이그레이션,copper migration,4
+dangling_bond,댕글링 본드,dangling bond,4
+domain_wall_motion,자벽 이동,domain wall motion,1
+ferroelectric_fatigue,강유전체 피로,ferroelectric fatigue,2
+filament_variability,필라멘트 형성 불균일,filament variability,2
+floating_body_effect,플로팅 바디 효과,floating body effect,6
+gate_oxide_breakdown,게이트 산화막 파괴,gate oxide breakdown,3
+gidl,게이트 유도 드레인 누설,gate induced drain leakage,28
+hot_carrier_injection,핫 캐리어 주입,hot carrier injection,3
+interface_trap,계면 트랩,interface trap,2
+junction_leakage,접합 누설,junction leakage,3
+leakage_current,누설 전류,leakage current,16
+narrow_width_effect,협폭 효과,narrow width effect,2
+nbti,음의 바이어스 온도 불안정성,negative bias temperature instability,2
+parasitic_capacitance,기생 캐패시턴스,parasitic capacitance,62
+poly_depletion,폴리실리콘 공핍,poly depletion,2
+program_disturb,프로그램 디스터브,program disturb,9
+program_saturation,프로그램 포화,program saturation,3
+punch_through,펀치 스루,punch through,2
+random_telegraph_noise,랜덤 텔레그래프 노이즈,random telegraph noise,2
+read_disturb,리드 디스터브,read disturb,2
+resistance_drift,저항 드리프트,resistance drift,1
+row_hammer,로우 해머,row hammer,17
+sense_amplifier_offset,센스 앰프 오프셋,sense amplifier offset,4
+short_channel_effect,쇼트 채널 효과,short channel effect,2
+wordline_disturb,워드라인 디스터브,wordline disturb,8
