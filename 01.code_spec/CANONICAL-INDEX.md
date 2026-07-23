@@ -16,10 +16,10 @@
 | 축 | 정본 (FINAL) | 위치 |
 |---|---|---|
 | **논문** | `논문_v0.5_SDKB.md` | `paper/` |
-| **baseline 그래프 G₀** | `graph_v0.ttl` (49,210 트리플) | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
+| **baseline 그래프 G₀** | `graph_v0.ttl` (49,307 트리플) | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
 | **보강 그래프 G₁** | `graph_v1.ttl` (868,669) | `data/processed/` |
 | **소부장 그래프 G₂ (RQ3)** | `graph_v2.ttl` (434,342) | `data/processed/` |
-| **얼린 상류 스냅샷** | `data/external/sdkb/` 13파일 (SDKB — 전문가 상세 경력 적재) | git-tracked · sha256 in `PROVENANCE.json` |
+| **얼린 상류 스냅샷** | `data/external/sdkb/` 13파일 (SDKB `d578bf3` — 청구항-feature·거절판단 TBox 반영) | git-tracked · sha256 in `PROVENANCE.json` |
 | **검증 게이트 (CQ·SHACL)** | `queries/cq/*.rq` 27개 · `queries/shapes/{graph,delta}/` 5개(+expert_shape) | 전부 LIVE · 고아 0 |
 | **계약(SPEC)** | `SPEC-001~004` | `01.code_spec/specs/` (숫자는 §1 우선) |
 | **진행 현황** | `STATUS.md` | `01.code_spec/` (서명 숫자는 §1·§2 우선) |
@@ -33,7 +33,7 @@
 
 | 항목 | G₀ | G₁ | G₂ (소부장) |
 |---|---:|---:|---:|
-| **트리플 (정본)** | **49,210** | **868,669** | **434,342** |
+| **트리플 (정본)** | **49,307** | **868,669** | **434,342** |
 | 커버된 공정 / 49 | 20 | **26** | **26** |
 | 특허 (병합) | 1,000 (SIRP 거절) | +24,179 델타 (총 25,179) | +12,339 델타 (총 13,339) |
 | Process 11 / SubProcess 38 · Device 34 | ✓ | | |
@@ -43,8 +43,20 @@
 | 문제층 (Phase C) | — | exhibitsFailureMode 2,816 · relatedToTopic 3,236 | — |
 | 출원인(Organization) / 벤더 | 351 / 340 | | 188사(장비 93·재료 50·부분품 45) |
 | 게이트 | L1(완화)·L2 consistent·L3 CQ **27/28**(측정) | L1·L2·L3 CQ **28/28** | L1·L2 consistent·L3 CQ **28/28** |
-| 그래프 커밋(상류) | SDKB `d583b0c` | 〃 위 델타 | 〃 위 델타 |
+| 그래프 커밋(상류) | SDKB `d578bf3` | 〃 위 델타 | 〃 위 델타 |
 
+> **청구항-feature·거절판단 TBox 반영 (2026-07-23) — G₀ 49,210 → 49,307 (+97).** 상류 SDKB 가
+> `d583b0c`(전문가 적재) 이후 `sdkb-patent.ttl` 에 선언한 **순수 TBox** 를 재벤더로 반영했다:
+> 신규 클래스 4(`ont:Claim`·`ont:ClaimFeature`·`ont:PriorArtJudgment`·`ont:CitedPatent`) +
+> `featureConcept` range 의 익명 unionOf 클래스 1 → owl:Class 82→87 · ObjectProperty 75→85
+> (hasClaim·dependsOnClaim·hasFeature·dependsOnFeature·featureConcept·hasJudgment·aboutClaim·
+> overPriorArt·onGround·overlappingFeature) · DatatypeProperty 69→74(claimNumber·isIndependent·
+> featureSeq·featureText·decompositionMethod). **ABox·엣지는 한 트리플도 안 움직였다** —
+> Patent 1000 · realizesProcess 1565 · concernsDevice 181 · assignedTo 1053 · hasIPC 3804 불변 →
+> **C₀ 20/49 · H1 네 표본집합 p 전부 불변**(4.77e-07·3.05e-05·1.95e-03·2.44e-04) · 4층 게이트 통과.
+> 청구항 분해 ABox(Tier 1/2/3 · 11.6M 트리플)는 **벤더 안 되는 별도 중심축 데이터셋**이라 G₀ 무관.
+> 상류 커밋 `d583b0c → d578bf3`. 구 44,221·49,210.
+>
 > **전문가 상세 경력 적재 (2026-07-21) — G₀ 44,221 → 49,210 (+4,906).** 상류 SDKB 가
 > `curated_profiles_kr.json` 의 경력 datatype 22종 · EquipmentModel 29 · ExpertCase 163(사례
 > reification) · 큐레이션 `ontology_alignment` 기반 역량 링크를 A-Box 로 실체화했다. G₁·G₂ 도

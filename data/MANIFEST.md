@@ -30,9 +30,10 @@ make baseline                       # graph_v0 재조립
 | 2026-07-14 | 〃 | `23d07a140cec` | 〃 + **Expert·Problem 라벨 규약 교정**(`rdfs:label` → `skos:prefLabel`, 전문가 EN 표기 `altLabel` 100) | 43,812 트리플 | (대체됨) |
 | 2026-07-15 | 〃 | `edb8ae48888` | 〃 + **US EAR/CCL 8·KR-ITPA 12 규제 인스턴스 + 개념↔통제 37 + FTO 청구항 어휘**(`ont:claimText`·`claimCount`) | **44,202 트리플** | (대체됨) |
 | 2026-07-20 | 〃 | `5cbf149ce8a6` | 〃 + **인력 축 이름 재부여**(전문가 가명 충돌 해소 · 고유 이름 56→110 · 삭제 0) + 프로비넌스 정본화(`docs/deidentification_protocol.md`) | **44,202 트리플** (불변) · 이후 SubProcess 한국어 별칭 승격 `da745ef` 로 **44,221** | (대체됨) |
-| 2026-07-21 | 〃 | `d583b0c` | 〃 + **전문가 상세 경력 A-Box 적재** — T-Box 신설(`ont:EquipmentModel`·`ont:ExpertCase`·경력 datatype 23종·사례 objprop 6) + `curated_profiles_kr.json` 상세 경력·장비 모델·사례 실체화(큐레이션 `ontology_alignment` 기반 링크) + 비식별 프로토콜 §1.5 갱신 | **49,210 트리플** (+4,906) | `graph_v0.ttl` |
+| 2026-07-21 | 〃 | `d583b0c` | 〃 + **전문가 상세 경력 A-Box 적재** — T-Box 신설(`ont:EquipmentModel`·`ont:ExpertCase`·경력 datatype 23종·사례 objprop 6) + `curated_profiles_kr.json` 상세 경력·장비 모델·사례 실체화(큐레이션 `ontology_alignment` 기반 링크) + 비식별 프로토콜 §1.5 갱신 | **49,210 트리플** (+4,906) | (대체됨) |
+| 2026-07-23 | 〃 | `d578bf3` | 〃 + **청구항-feature·거절판단 TBox 반영** — 상류 `sdkb-patent.ttl` 순수 TBox 선언(신규 클래스 4 `Claim`·`ClaimFeature`·`PriorArtJudgment`·`CitedPatent` + object property 10 + datatype property 5)을 재벤더로 반영. **ABox·엣지 0 변경**(realizesProcess 1565·concernsDevice 181·assignedTo 1053·Patent 1000 불변) → C₀ 20/49·H1 네 표본집합 p 전부 불변. 청구항 분해 ABox(Tier 1/2/3)는 벤더 제외 별도 중심축 | **49,307 트리플** (+97) | `graph_v0.ttl` |
 
-**G₀ 정의 변경 (2026-07-12) — 아래는 그 시점의 역사 서명이다.** 현재 G₀ 서명(트리플 49,210 ·
+**G₀ 정의 변경 (2026-07-12) — 아래는 그 시점의 역사 서명이다.** 현재 G₀ 서명(트리플 49,307 ·
 커버 20/49 · CQ06 58)은 **§3 과 [CANONICAL-INDEX.md](../01.code_spec/CANONICAL-INDEX.md) §1** 이 정본이다.
 아래 표(26,973 · C₀ 16/49 · 공백 33 · CQ06 61)는 2026-07-12 정의 순간의 값으로, 이후 공정 어휘
 복원·낡은 스냅샷 교정(C₀ 16→20)·규제 적재를 거치기 **전**이다. 역사 기록으로 남긴다.
@@ -184,13 +185,22 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 
 | 그래프 | 트리플 | 만드는 법 | 게이트 |
 |---|---:|---|---|
-| `graph_v0` (G₀) | **49,210** | `make baseline` (전문가 상세 경력 적재) | L1(완화)·L2·L3 27/28 |
+| `graph_v0` (G₀) | **49,307** | `make baseline` (청구항-feature·거절판단 TBox 반영) | L1(완화)·L2·L3 27/28 |
 | `delta_v1` | 370,077 | `make merge` 1단계 — 특허 24,179건 | L1(엄격): 개념 ≥1 |
 | `graph_v1` (G₁) | **868,669** | `make merge` 2단계 (+ §G1 Phase A 청구항 축 · Phase C 문제층) | L1 통과 · **L2 HermiT consistent=True** · L3 CQ |
 | `delta_v2` (소부장) | 385,577 | `make merge CORPUS=ksia-equipment` 1단계 — 특허 **12,339건** · 초록·청구항 포함 | L1(엄격): 개념 ≥1 |
 | `graph_v2` (G₂ · RQ3) | **434,342** | 2단계 — G₀ 위 KSIA 소부장 188사 델타 | L1 통과 · **L2 consistent=True** · L3 CQ **28/28** |
 | `graph_v2_{equipment,material,component}` (층별) | 각 층 subset | `make ksia-strata` — 층별 H1(표 5b) 전용, 같은 L1 게이트 | L1 통과 |
 
+> **G₀ 재동결 49,210 → 49,307 (2026-07-23).** 상류 SDKB `sdkb-patent.ttl` 의 **순수 TBox 선언**
+> (청구항-feature·거절판단 온톨로지 · SDKB `d583b0c→d578bf3`)을 재vendor·재동결했다. **+97 = TBox
+> 선언뿐** — 신규 클래스 4(`Claim`·`ClaimFeature`·`PriorArtJudgment`·`CitedPatent`) + 익명 unionOf 1 ·
+> ObjectProperty +10 · DatatypeProperty +5. G₀ 에는 이 어휘의 인스턴스가 0이라 ABox·엣지 불변
+> (realizesProcess 1565·concernsDevice 181·assignedTo 1053·Patent 1000 불변). **H1 네 표본집합 p
+> 전부 불변**(4.77e-07·3.05e-05·1.95e-03·2.44e-04) · C₀ 20/49 불변 · 4층 게이트 통과. 청구항 분해
+> ABox(Tier 1/2/3 · 11.6M)는 `VENDOR_FILES` 화이트리스트 밖의 별도 중심축 데이터셋이라 G₀ 무관.
+> (과거 44,192→44,202 "+10=TBox 선언 2개" 와 동형.)
+>
 > **G₀ 재동결 44,192 → 44,202 (2026-07-15).** 상류 SDKB 에 `ont:claimText`·`ont:claimCount`
 > (IP-R&D FTO 자기완결성 · SDKB `edb8ae4`)를 신설해 재vendor·재동결했다. **+10 = TBox 선언 2개**
 > 뿐이다 — G₀ 의 SIRP 특허는 청구항1만 있어 claimText 사용 0, ABox·엣지 불변. **H1 네 표본집합

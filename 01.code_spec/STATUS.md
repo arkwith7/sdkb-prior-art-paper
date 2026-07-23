@@ -2,8 +2,9 @@
 
 *최종 갱신: 2026-07-16 · 근거: `pytest` · `make gate` · `make h1 CORPUS=ksia-equipment` · `make ksia-strata` · G₂ 3층 게이트(L1·L2 consistent·L3 CQ 27/27) · SDKB 커밋 `edb8ae4`*
 
-> ⚠ **서명 수치의 정본은 [CANONICAL-INDEX.md](CANONICAL-INDEX.md) §1 이다.** 현재값: **G₀ 49,210 ·
-> G₁ 868,669 · G₂ 434,342 트리플** (2026-07-22~23 G₁ 청구항 축+문제층 재동결 · 커밋 `dfdb9dd` ·
+> ⚠ **서명 수치의 정본은 [CANONICAL-INDEX.md](CANONICAL-INDEX.md) §1 이다.** 현재값: **G₀ 49,307 ·
+> G₁ 868,669 · G₂ 434,342 트리플** (2026-07-23 G₀ 청구항-feature·거절판단 TBox 반영 재동결 49,210→49,307 ·
+> 순수 TBox +97 · ABox·엣지·C₀ 20/49·H1 불변 · SDKB `d578bf3`. 2026-07-22~23 G₁ 청구항 축+문제층 재동결 · 커밋 `dfdb9dd` ·
 > 엣지 중립: realizesProcess 11,647·concernsDevice 23,342·Patent 25,179 불변 → C₀ 20/49·H1 p·RQ3
 > 세 층 전부 불변). G₁ 418,738 은 청구항 축 적재 이전 값이다. 아래 "G₁ 서명"·"G₀ 서명" 표의 일부
 > 트리플 수(413,340·43,814)와 before 커버(16/33)는 재동결·교정 이전의 낡은 값이다 — 서사 맥락으로

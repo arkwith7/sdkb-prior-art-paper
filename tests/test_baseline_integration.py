@@ -31,7 +31,13 @@ from sdkb_paper.validate.vocab_coverage import measure
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 49210    # 2026-07-21 전문가 상세 경력 A-Box 적재(SDKB): +4,906 — 경력 datatype
+EXPECTED_TRIPLES = 49307    # 2026-07-23 청구항-feature·거절판단 순수 TBox 반영(SDKB d578bf3): +97 —
+                            # 신규 클래스 4(Claim·ClaimFeature·PriorArtJudgment·CitedPatent) + 익명
+                            # unionOf 1 · ObjectProperty +10 · DatatypeProperty +5. G₀ 에 이 어휘의
+                            # 인스턴스가 0이라(청구항 분해 ABox 는 보강 코퍼스 G₁·G₂ 전용) ABox·엣지 불변 —
+                            # realizesProcess 1565·concernsDevice 181·assignedTo 1053·Patent 1000 불변 →
+                            # C₀ 20/49·H1 네 표본집합 p 불변·4층 게이트 통과. 구 49,210.
+                            # 2026-07-21 전문가 상세 경력 A-Box 적재(SDKB): +4,906 — 경력 datatype
                             # 22종 · EquipmentModel 29 · ExpertCase 163(사례 reification) · 큐레이션
                             # ontology_alignment 기반 역량 링크. **특허↔공정 엣지는 한 건도 안 움직였다**
                             # (realizesProcess 1565 · concernsDevice 181 · assignedTo 1053 불변) —

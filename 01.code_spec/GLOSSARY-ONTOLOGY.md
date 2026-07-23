@@ -35,7 +35,7 @@ URL 처럼 생겼지만 **웹 주소일 필요는 없다** — 가리키는 것�
 | `pat:` | `https://w3id.org/sdkb/data/patent/` | 특허 인스턴스 서브트리 |
 | `gov:` | `https://w3id.org/sdkb/gov/` | 거버넌스 모듈(이 논문 미사용) |
 
-**그래프(graph) / 지식 그래프** — 트리플의 집합. 우리의 `graph_v0.ttl`(G₀) 은 49,210 트리플이다
+**그래프(graph) / 지식 그래프** — 트리플의 집합. 우리의 `graph_v0.ttl`(G₀) 은 49,307 트리플이다
 (보강 후 G₁ 868,669 · G₂ 434,342 — 정본은 [CANONICAL-INDEX §1](CANONICAL-INDEX.md)).
 
 **Turtle(`.ttl`)** — 트리플을 사람이 읽을 수 있게 적는 직렬화 형식. **RDF/XML**·**N-Triples** 는 다른 형식.

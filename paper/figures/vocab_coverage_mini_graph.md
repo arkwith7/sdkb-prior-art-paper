@@ -5,8 +5,8 @@
 
 | 축 | CQ 검증 | SHACL 검사 | **게이트(합집합)** | 사용됨 | **아무도 안 봄** |
 |---|---:|---:|---:|---:|---:|
-| 술어 | 36 (80.0%) | 10 | **45 (100.0%)** | 45 | **0** |
-| 클래스 | 18 (90.0%) | 12 | **20 (100.0%)** | 20 | **0** |
+| 술어 | 38 (77.6%) | 14 | **49 (100.0%)** | 49 | **0** |
+| 클래스 | 18 (85.7%) | 13 | **21 (100.0%)** | 21 | **0** |
 
 ## CQ 별 검증 어휘
 
@@ -39,6 +39,7 @@
 | CQ25_critical_control_concepts | 2 | — |
 | CQ26_patent_export_control_exposure | 3 | `Patent` · `concernsDevice` · `realizesProcess` |
 | CQ27_fto_claim_readiness | 1 | `Patent` · `assignedTo` · `claimCount` · `claimText` |
+| CQ28_patent_failuremode_expert | 1 | `Expert` · `Patent` · `caseFailureMode` · `exhibitsFailureMode` · `hasCaseExperience` |
 
 ## 아무도 보지 않는 어휘 (CQ 도 SHACL 도) — **0 이어야 한다**
 
@@ -50,8 +51,10 @@
 |---|---:|---|---|---:|
 | `applicationNumber` | 5 | | `IPCSymbol` | 2 |
 | `patentOffice` | 5 | | `Organization` | 2 |
-| `abstractText` | 2 | |  |  |
+| `abstractText` | 2 | | `ExpertCase` | 1 |
 | `firstClaimText` | 2 | |  |  |
+| `caseProcess` | 1 | |  |  |
+| `caseSource` | 1 | |  |  |
 | `examinationStatus` | 1 | |  |  |
 | `problemCategory` | 1 | |  |  |
 | `processFamily` | 1 | |  |  |

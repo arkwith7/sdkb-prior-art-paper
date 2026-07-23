@@ -117,7 +117,7 @@ function statusCard(key, info, sig) {
     const items = Object.entries(sig.drift).map(([k, v]) => `${k}: ${v.got}≠정본${v.expected}`).join(" · ");
     c.append(el("div", { class: "drift" }, "⚠ 정본 서명과 불일치 — " + items));
   } else if (sig.drift) {
-    c.append(el("div", { class: "ok-badge" }, "✓ 정본 서명과 일치 (트리플 49,210 · 커버 20/49)"));
+    c.append(el("div", { class: "ok-badge" }, "✓ 정본 서명과 일치 (트리플 49,307 · 커버 20/49)"));
   }
   return c;
 }

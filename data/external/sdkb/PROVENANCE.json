@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "d583b0c87b68063ead1fda1395fb97dd2d57f011",
-  "source_commit_date": "2026-07-21T14:28:39+09:00",
+  "source_commit": "d578bf3074edbab4cdd39c21917cb44684dc8400",
+  "source_commit_date": "2026-07-23T11:32:45+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-21T05:28:55+00:00",
+  "vendored_at": "2026-07-23T02:49:57+00:00",
   "baseline_counts": {
     "nodes": 261,
     "edges": 294,
@@ -14,7 +14,7 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-07-21T05:28:55+00:00",
+    "checked_at": "2026-07-23T02:49:57+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -120,7 +120,7 @@
       "file": "sdkb-patent.ttl",
       "source_path": "ontology/sdkb-patent.ttl",
       "role": "TBox: 특허 모듈(Patent/IPC/realizesProcess/concernsDevice)",
-      "sha256": "b165bcc2a1bb88972e1f00e6740a3c6a733b287cdb8bde49f4bae01ded57829b"
+      "sha256": "594071be3cb9d7a7ff27bcdb49f12e2b2df75b7058582bea9882df8e19f2b3a2"
     },
     {
       "file": "sdkb-foresight.ttl",
