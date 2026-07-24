@@ -1,10 +1,17 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq vocab gate h1 h2 cpc cpc-vintage figures serve
+.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq vocab gate h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
 
 lint:
 	uv run ruff check src tests
+
+# 서명 수치 표류 검사 — 원고·README·DATASET-CARD 가 CANONICAL-INDEX §1 과 정합한가.
+# 데이터에 L0(신선도)을 두는 것과 같은 이유로 문서에도 둔다: 해시/커밋은 "안 바뀌었음"만
+# 보장하지 "정본과 일치함"은 보장하지 않는다. 재산출로 서명이 바뀌면 CANONICAL §1 갱신
+# → 직전 세대를 scripts/check_signatures.py 의 HISTORICAL_SIGNATURES 로 이동.
+sig-check:
+	uv run python scripts/check_signatures.py
 
 test:
 	uv run pytest -q

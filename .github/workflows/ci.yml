@@ -24,6 +24,11 @@ jobs:
       - name: Lint
         run: uv run ruff check src tests
 
+      # 문서-정본 정합: 원고·README·DATASET-CARD 의 서명 수치가 CANONICAL-INDEX §1 과
+      # 일치하는가 (문서판 L0 — 낡은 세대 서명이 '현재 값'으로 남으면 실패).
+      - name: Signature drift check (docs vs CANONICAL-INDEX)
+        run: uv run python scripts/check_signatures.py
+
       # 단위 + 통합 테스트. 통합 테스트가 커밋된 스냅샷에서 baseline 을 재조립해
       # 관측 단위 수(Process 8 / SubProcess 12)·특허 0건·결정성·CQ 서명을 검증한다.
       - name: Unit + integration tests
