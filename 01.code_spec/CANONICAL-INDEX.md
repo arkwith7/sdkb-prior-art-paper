@@ -22,7 +22,7 @@
 | **얼린 상류 스냅샷** | `data/external/sdkb/` 13파일 (SDKB `d578bf3` — 청구항-feature·거절판단 TBox 반영) | git-tracked · sha256 in `PROVENANCE.json` |
 | **검증 게이트 (CQ·SHACL)** | `queries/cq/*.rq` **28개**(CQ01~CQ28) · `queries/shapes/graph/` 5개 + `shapes/delta/` 1개 | 전부 LIVE · 고아 0 |
 | **데이터셋 정의서 (G₀·G₁·G₂ 정체성)** | `DATASET-CARD.md` (6축: 정의·출처·서명·게이트·배제·상호관계 · 서명은 §1 종속) | `data/` |
-| **계약(SPEC)** | `SPEC-001~004` | `01.code_spec/specs/` (숫자는 §1 우선) |
+| **계약(SPEC)** | `SPEC-001~005` (SPEC-005 = T-Box 온톨로지 설계서 · 태스크 3종) | `01.code_spec/specs/` (숫자는 §1 우선) |
 | **진행 현황** | `STATUS.md` | `01.code_spec/` (서명 숫자는 §1·§2 우선) |
 | **논문 그림 본문 6장 + 그래픽 초록 · 표 11개** | `paper/figures/*.svg` **10개**(본문 6 + 초록 1 + 부록/진단 3) · `paper/tables/*.md` 11개 (전량 코드 생성) | `viz/figures.py` 산출 |
 
@@ -167,7 +167,7 @@
 | 분류 | 파일 |
 |---|---|
 | **PROGRESS (정본)** | `STATUS.md` — 진행/완료/대기의 판정자 (단 서명 숫자는 §1) |
-| **CANONICAL (계약)** | `specs/SPEC-001`(게이트) · `SPEC-002`(G₀) · `SPEC-003`(CQ) · `SPEC-004`(CQ 도출) |
+| **CANONICAL (계약)** | `specs/SPEC-001`(게이트) · `SPEC-002`(G₀) · `SPEC-003`(CQ) · `SPEC-004`(CQ 도출) · `SPEC-005`(T-Box 설계) |
 | **REFERENCE** | `README.md` · `GLOSSARY-{ONTOLOGY,SEMICONDUCTOR,STATISTICS}.md` · `REF-001`(IP-R&D) |
 | **PLAN — 완료(역사 기록)** | PLAN-001·002·004·005·006·007·009·010·013(부분)·014·015 |
 | **PLAN — 폐기/대체** | PLAN-008 (→ PLAN-009 가 대체) |
