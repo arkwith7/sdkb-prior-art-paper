@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge mapping candidates validate reason cq vocab gate h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check mapping candidates validate reason cq vocab gate h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -59,6 +59,16 @@ dart:
 merge:
 	uv run python -m sdkb_paper.ontology.delta $(if $(CORPUS),--corpus $(CORPUS),)
 	uv run python -m sdkb_paper.ontology.merge_cli $(if $(CORPUS),--corpus $(CORPUS),)
+
+# IR 벤치마크 코퍼스 조립 (PLAN-017 M1) — G₀/G₁/G₂ + sidecar 청구항 → 문서중심 코퍼스.
+# 산출: data/processed/ir/ir_corpus_v09.parquet · qrel_examiner.parquet(gitignore) +
+#       data/profiles/ir_corpus_v09.md(커밋). merge·central_axis(sidecar) 선행 필요.
+corpus:
+	uv run python -m sdkb_paper.corpus.assemble
+
+# 재조립 없이 산출물 성공기준(PLAN-017 §5)만 검증
+corpus-check:
+	uv run python -m sdkb_paper.corpus.assemble --check
 
 # IPC/CPC 룰 커버리지 — 특허를 수집하기 전에 매핑의 사각지대를 드러낸다
 mapping:

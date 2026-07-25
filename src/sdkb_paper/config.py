@@ -72,6 +72,16 @@ CENTRAL_AXIS_TBOX = SDKB_HOME / "ontology" / "sdkb-patent.ttl"              # �
 CENTRAL_AXIS_STORE = PROCESSED / "central_axis.oxstore"                     # 온디스크 스토어(gitignore)
 CENTRAL_AXIS_PROVENANCE = DATA / "external" / "sdkb-central-axis" / "PROVENANCE.json"  # 커밋 가능 핀
 
+# --- IR 벤치마크 코퍼스 (v0.9 · PLAN-017 M1) ------------------------------
+# 통합 문서 코퍼스와 심사관 qrel. 특허 전문(abstract/claim)을 담으므로 license_restricted →
+# data/processed/* 는 gitignore, `make corpus` 로 로컬 재생성한다(CLAUDE.md §1.4·§1.5).
+# 커밋되는 것은 프로파일(집계·서명)과 MANIFEST 뿐. 청구항 본문 = sidecar featureText 재구성이
+# 정본, firstClaimText(원문 claim1) 병기 (PLAN-017 §7 M1 확정).
+IR_DIR = PROCESSED / "ir"
+IR_CORPUS = IR_DIR / "ir_corpus_v09.parquet"          # 통합 문서 코퍼스
+QREL_EXAMINER = IR_DIR / "qrel_examiner.parquet"      # 심사관 인용 qrel (등급1)
+IR_PROFILE = DATA / "profiles" / "ir_corpus_v09.md"   # §4 데이터 프로파일 (커밋 가능)
+
 # --- 온톨로지 네임스페이스 ------------------------------------------------
 # SDKB v1.0 실물과 일치 (semiconductor-knowledge-base). slash 네임스페이스 3분리:
 #   ont:  TBox 어휘        ont:Patent, ont:Process, ont:realizesProcess …
