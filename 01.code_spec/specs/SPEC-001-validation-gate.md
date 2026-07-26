@@ -1,4 +1,11 @@
-# SPEC-001 · 검증 게이트 (4층 L0–L3)
+# SPEC-001 · 검증 게이트 (4층 L0–L3 + T-gate)
+
+> **v0.9 확장 (2026-07-26).** 이 문서의 L0–L3는 **구조·논리·기능 정합**을 검증한다. v0.9 정본 기조에서
+> 이 위에 **T-gate**(T1 검색 비열등 · T2 하위집단 안전성 · T3 교차 태스크 CQ 비회귀)가 얹혀 **진화
+> 안전성(C3 · 다중 태스크 작동성)**을 검증한다 — L0–L3만으로는 놓치는 회귀를 잡는다(§T-gate 절 신설,
+> 원고 §4·§6 · CLAUDE.md §5). v0.9 RQ1 = **검증 게이트**(H1 게이트 판별력·H2 승인 안전성).
+> 아래 본문의 "H1 before"·"H2 시계열"은 구 커버리지/시계열 라벨(**S1·S2**)이다 —
+> [../RECONCILIATION-v09.md](../RECONCILIATION-v09.md) §1.
 
 > **2026-07-18 갱신 — 3층 → 4층.** 이 문서는 "3층 + 스냅샷 무결성"으로 쓰여 있었고, 그때 L0 는
 > `make vendor` 안에서만 도는 반쪽이었다(`_reject_stale_artifacts()` 가 살아있는 SDKB 워킹트리를
@@ -8,7 +15,7 @@
 
 | | |
 |---|---|
-| 지지하는 것 | RQ1 (구조적 정합성) / 논문 §3.3 · §4.2 |
+| 지지하는 것 | RQ1 (검증 게이트 — L0–L3 구조·논리·기능 + T-gate) / 논문 §3.3 · §4 · §6 |
 | 구현 | `src/sdkb_paper/validate/{shacl_gate,reasoner_gate,cq_runner}.py`, `src/sdkb_paper/ontology/{vendor,merge}.py`, `queries/shapes/`, `queries/cq/` |
 | 검증 | `make gate` · `tests/test_shacl_gate.py` · `tests/test_merge_gate.py` · `tests/test_baseline_integration.py` |
 
@@ -68,6 +75,26 @@ L1–L3 는 내내 통과했는데, 공정 어휘 복원 **이전에** 빌드된
 
 **거부 경로가 살아 있다.** 통과만 확인하는 게이트는 게이트가 아니다. 스냅샷 변조, stray TTL,
 TBox range 위반, 출원일 누락, 개념 매핑 누락 — 각각이 실제로 거부되는지 테스트가 고정한다.
+
+---
+
+## T-gate (v0.9 확장 · C3 진화 안전성) — 미구현 🛑
+
+L0–L3는 그래프의 **구조·논리·기능** 정합을 본다. v0.9는 그 위에 **태스크 회귀**를 잡는 세 층을 얹는다.
+델타는 L0–L3와 T1–T3를 **모두** 통과해야 병합된다(CLAUDE.md §5 승인 규칙).
+
+| 층 | 검증 | 실패 조건 | 방법 |
+|---|---|---|---|
+| **T1** | 검색 비열등성 | `LB₉₅(ΔRecall@100) ≤ −ε` (ε=0.02) | 부트스트랩 신뢰구간 · 누출 감사 통과 전제 |
+| **T2** | 하위집단 안전성 | `max_s drop_s ≥ δ` (δ=0.05) — 거절근거·공정군·**언어(KR/외국)**별 국소 회귀 | 하위집단 Recall 비교 |
+| **T3** | 교차 태스크 CQ 비회귀 | `∃f∈{em,tf,core}: pass_f(new) < pass_f(old)` | 결정론적 CQ 통과율 비교(통계검정 아님) |
+
+- **승인 규칙**: `Accept = (L0=L1=L2=L3=pass) ∧ (LB₉₅(ΔR₁₀₀)>−ε) ∧ (max_s drop_s<δ) ∧ (∀f: pass_f(new)≥pass_f(old))`.
+- ε·δ는 **테스트 qrel 개봉 전 동결**(CLAUDE.md §1.3). T3 하락 시 즉시 실패, 예외는 waiver 토큰만(횟수 보고).
+- **T3는 통계가 아니라 명세 비교다** — em(전문가매칭)·tf(기술예측)·core 스위트가 선행기술 검색 보강으로
+  훼손되지 않음을 보증(= 다중 태스크 작동성). 이 세 스위트가 **S1/S2의 T3 회귀 감시 대상**이다.
+- **상태: 미구현.** 구현부는 `src/sdkb_paper/validate/{t1_noninferiority,t2_subgroup,t3_cross_task_cq}.py`
+  (PLAN-017 후속) · `make gate` 확장 예정. 이 절은 계약 명세이며 코드는 아직 없다.
 
 ---
 

@@ -1,4 +1,5 @@
-"""`make ksia-strata` 의 진입점 — **소부장 층별 H1 정식 재검정** (RQ3 · 논문 §4.6 · 표 5b).
+"""`make ksia-strata` 의 진입점 — **소부장 층별 커버리지 정식 재검정** (S3 구 RQ3 · 표 5b).
+v0.9: 코퍼스·매핑 이식성의 2차 재사용 증거(C1). RECONCILIATION-v09.md §1.
 
 G₂ 는 소부장 세 층이다: 장비(equipment) · 재료(material) · 부분품(component). 전체 소부장에서
 H1 이 지지돼도(표 5), 그 지지가 **어느 층 때문인지**는 층을 쪼개 봐야 안다. PLAN-014 §3.3 은
@@ -16,7 +17,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from sdkb_paper.analysis.coverage import compare_coverage, wilcoxon_h1
+from sdkb_paper.analysis.s1_coverage import compare_coverage, wilcoxon_h1
 from sdkb_paper.analysis.robustness_cli import SCOPES, _scopes
 from sdkb_paper.config import GRAPH_V0, PROCESSED, TABLES
 from sdkb_paper.ontology.delta import ACTIVITY_KSIA, _org_ksia, build_delta

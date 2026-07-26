@@ -1,4 +1,5 @@
-"""A — 기술개념 전수 인구조사 (PLAN-016).
+"""A — 기술개념 전수 인구조사 (PLAN-016 · S2 구 RQ2/시계열 재설계).
+v0.9: 공유 코어 시간분석의 2차 재사용 증거(C1). RECONCILIATION-v09.md §1.
 
 **이것은 유의성 검정이 아니라 음성·진단 증거다.** 소자 몇 개만 보면 "왜 4~7개뿐이냐"는
 체리피킹 의심을 못 지운다. 그래서 온톨로지의 **기술개념 전수**(소자·공정·소재·장비)에
@@ -24,7 +25,7 @@ import pandas as pd
 from rdflib import Graph
 from scipy.stats import binomtest
 
-from sdkb_paper.analysis.timeseries import (
+from sdkb_paper.analysis.s2_timeseries import (
     N_MIN, WINDOWS, annual_counts, assign_concepts, concept_series, detect_year,
 )
 from sdkb_paper.config import GRAPH_V0

@@ -3,6 +3,7 @@
 > **이 문서가 지지하는 것.** RQ/H 를 직접 지지하지는 않는다 — 이것은 **연구자가 T-Box/A-Box 를
 > 눈으로 조회하고 손으로 수정·보완할 때 쓰는 도구의 설치·운영 정본**이다. 도구로 손댄 뒤에는
 > 반드시 §5 게이트로 회귀를 확인해야 논문의 수치(G₀ 서명·H1·CQ)가 흔들리지 않는다.
+> **[v0.9: 이 문서의 "H1(커버리지)·RQ3" 라벨은 구 패러다임 → S1/S3. v0.9 확증가설 H1–H5는 별개 — [RECONCILIATION-v09.md](RECONCILIATION-v09.md) §1]**
 > 편집 대상·금지 구역은 [CLAUDE.md](../CLAUDE.md) §1·§5 를 그대로 따른다.
 
 ## 0. 결론 — 무엇을 설치했나 (2026-07-21, 실측)
@@ -56,7 +57,7 @@ T-Box 와 A-Box 가 여러 TTL 로 나뉘어 있으므로 **조립된 그래프 
 |---|---|---|
 | **G₀ 전체 (T-Box+A-Box)** | `data/processed/graph_v0_protege.ttl` | baseline 49,201 트리플 — H1 의 before |
 | **G₁ 보강 후** | `data/processed/graph_v1_protege.ttl` | 삼성·SK하이닉스 델타 (26M) |
-| **G₂ 소부장 (RQ3)** | `data/processed/graph_v2_protege.ttl` | KSIA 188사 (94M ⚠ 힙 6G 권장) |
+| **G₂ 소부장 (RQ3 → S3)** | `data/processed/graph_v2_protege.ttl` | KSIA 188사 (94M ⚠ 힙 6G 권장) |
 | **순수 T-Box 만** | `data/external/sdkb/sdkb-core.ttl` | 스키마만 (헤더 1개라 원본 그대로 열림 · ⚠ §4 직접 저장 금지) |
 
 > `*_protege.ttl` 은 아래 함정 스니펫으로 만든 **조회 전용 사본**이다(gitignore). 원본 `graph_v*.ttl`

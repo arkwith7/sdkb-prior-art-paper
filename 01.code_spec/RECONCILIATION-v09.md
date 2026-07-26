@@ -1,6 +1,7 @@
 # RECONCILIATION-v09 · v0.9 정합 원장 (표류 감사 + 전파 계획)
 
-> **상태: 감사 완료 · §1.4/§1.5 확정 반영 (2026-07-26) · 전파 미착수 🛑**
+> **상태: 전파 완료 ✅ (2026-07-26) · B0–B8 전부 완료 · §1.4/§1.5 확정 반영.** 잔여 = B7후속(산출 파일명·
+> figures 출력 경로 — figure/IR 하네스 재빌드 시 동반) · IR 하네스 구축(C2/C3 산출물). 상세 §2.5·§4.**
 > 정본 원고 [paper/논문_v0_9_SDKB_통합초안.md] 로의 라벨·주장 전파를 추적하는 **단일 원장**이다.
 > 이 문서 자체는 조치가 아니라 조치의 지도다 — 각 배치를 완료할 때 상태 열을 갱신한다.
 > 관련: [CANONICAL-INDEX.md](CANONICAL-INDEX.md)(재생 대상) · CLAUDE.md §0 · 메모리 `pivot-v09-retrieval-primary-task`.
@@ -72,28 +73,31 @@ H5←H3d(음성 대조군 특이성). **탐색적 강등:** H2c(운용 효율)·
 | 파일 | 상태 | 목표 | 조치 | 배치 |
 |---|---|---|---|---|
 | `paper/논문…md` §1.4/§1.5 | ✅ | 확정 완료 | H1–H5·기여 3 확정(§0.1). line 291 "H1–H3"→"H1–H5" **정정 완료**. 남은 것=커밋 동결 | B0 |
-| `CLAUDE.md` §0 | ⚠️ | H1–H5 정합 | **갱신 필요**: "11개 세부가설(H1a–d·H2a–c·H3a–d)" → "5개 확증 H1–H5 + 탐색적" · C3 문구를 "다중 태스크 작동성"으로(§0.1 주의2) · S-시리즈 각주 | B2 |
+| `CLAUDE.md` §0 | ✅ | H1–H5 정합 | **완료(2026-07-26)**: H1–H5 5개 확증+탐색적 강등 · C3 "다중 태스크 작동성" 재프레이밍 · S-시리즈 각주 추가. sig-check ✓ | B2 |
 | `SPEC-006/007` · `PLAN-017` | ✅ | 유지 | v0.9 신규. 조치 없음 | — |
 
 ### 2.2 중재자·상태 문서 (핵심 재생)
 | 파일 | 상태 | 목표 | 조치 | 배치 |
 |---|---|---|---|---|
-| `CANONICAL-INDEX.md` | ⚠️ | v0.9 정본 인덱스 | **재생**: C1/C2/C3·RQ1-3(v0.9)·S1-3 재기술 · fig/table 서명 재정립 · 이관 반영 | B5 |
-| `STATUS.md` | ❌(OLD 35·H/RQ 92) | v0.9 현황 | **재생 or 구본 archive + v0.9 STATUS 신설**. "H2 미지지" 등 구 판정 격리 | B5 |
-| `AUDIT-2026-07-18.md` | ❌ | 역사 보존 | 배너 "구 패러다임 감사·역사 참조·인용금지" | B4 |
+| `CANONICAL-INDEX.md` | ✅ | v0.9 정본 인덱스 | **완료(구본 archive + 신설)**: §1 서명표 승계 · §0.1 라벨규약(C·RQ·H·S) · §0.2 SPEC 001-07 · fig/table archive 반영 · sig-check 파싱 ✓. 구본=`archive/CANONICAL-INDEX-v05.md` | B5 |
+| `STATUS.md` | ✅ | v0.9 현황 | **완료(구본 archive + 신설)**: 세 주장 상태·완료/진행·S-시리즈 격리절. 구본=`archive/STATUS-v05.md`(배너·구 판정 보존) | B5 |
+| `AUDIT-2026-07-18.md` | ✅ | 역사 보존 | **완료(B4)**: "구 패러다임 감사·역사 참조·인용금지" 배너 삽입 | B4 |
 
 ### 2.3 게이트·CQ·용어 SPEC
 | 파일 | 상태 | 목표 | 조치 | 배치 |
 |---|---|---|---|---|
-| `SPEC-005-tbox-ontology-design` | ⚠️ | CQ 주석 재라벨 | RQ 참조는 v0.9 정합(유지). **CQ 주석의 "(H1 커버리지)"·"(H2 시계열/최소단위/대조군)"(CQ01·04·05·06·line 540 등) → S1/S2 재라벨** | B4 |
-| `SPEC-001-validation-gate` | ❌(L0–L3만) | L0–L3 + T-gate | **확장**: T1/T2/T3 조건 추가(원고 §4·§6) 또는 후속 SPEC 링크 | B4 |
-| `SPEC-002-baseline-g0` | ❌ | 역사 참조 | 배너(SPEC-006이 대체) — 이미 부분 표기, 확인·보강 | B4 |
-| `SPEC-003-competency-questions` | ❌ | v0.9 CQ 스위트 | CQ 28·스위트 pa/em/tf/core 프레임 반영 | B4 |
-| `SPEC-004-cq-derivation-protocol` | ❌(OLD 21) | 측정 운용 | v0.9 "게이트 아님·측정 운용" 반영(CLAUDE.md §5) | B4 |
+| `SPEC-005-tbox-ontology-design` | ✅ | CQ 주석 재라벨 | **완료**: §4 라벨 주의 블록 + CQ01/03/04/05/06·line 540·§4.6 "H1/H2"→S1/S2. RQ 참조·CQ10(RQ2) 유지 | B4 |
+| `SPEC-001-validation-gate` | ✅ | L0–L3 + T-gate | **완료**: v0.9 배너 + **T-gate 절 신설**(T1/T2/T3 조건·승인규칙·미구현 표기) · RQ1=검증게이트 재기술 | B4 |
+| `SPEC-002-baseline-g0` | ✅ | 역사 참조 | **완료**(B4 S1 에이전트): S1 구 패러다임 배너 + 지지선 H1→S1 | B4 |
+| `SPEC-003-competency-questions` | ✅ | v0.9 CQ 스위트 | **완료**: v0.9 배너(CQ 28·스위트 pa/em/tf/core·T3 감시 대상) + 27→28 정정 | B4 |
+| `SPEC-004-cq-derivation-protocol` | ✅ | 측정 운용 | **완료**: v0.9 배너(게이트 아님·측정 운용) + 지지선 방법론기여/S3 + P1 표 RQ→S1/S2/S3 + 27→28 | B4 |
 | `GLOSSARY-ONTOLOGY/SEMICONDUCTOR/STATISTICS` | ❌ | 용어 정합 | H1/H2/RQ 표제어에 S-시리즈·v0.9 정의 병기 | B6 |
 | `REF-001-ip-rnd-domain-framework` | ❌ | RQ3→S3 정합 | 옛 RQ3(이식성) 언급 S3로, IP-R&D 태스크는 유지 | B6 |
 
-### 2.4 구 패러다임 PLAN (배너 + 재라벨)
+### 2.4 구 패러다임 PLAN (배너 + 재라벨) — ✅ 전량 완료 (2026-07-26 · B4 병렬 에이전트 3종)
+> PLAN-001~016 전 17건에 S-시리즈 구 패러다임 배너 삽입 + 지지선 H1→S1·H2/H2′→S2·RQ3→S3 재라벨 완료.
+> PLAN-013은 "부분 유효" 배너(SHACL/CQ 품질부 v0.9 유효). PLAN-017은 v0.9 신규(조치 없음).
+
 | 파일군 | 상태 | 목표 | 조치 | 배치 |
 |---|---|---|---|---|
 | `PLAN-005`(h1-coverage) | ❌ | S1 | 배너 + H1→S1 재라벨 | B4 |
@@ -102,19 +106,21 @@ H5←H3d(음성 대조군 특이성). **탐색적 강등:** H2c(운용 효율)·
 | `PLAN-001/002/003/004/008/011/012/015` | ❌ | 역사·자원 | 배너 "구 패러다임·자원 형성 기록·S-시리즈 근거" | B4 |
 | `PLAN-013`(ontology-quality) | ⚠️(NEW 7) | v0.9 유효분 유지 | SHACL/CQ 품질부는 유지, H1/H2 언급만 재라벨 | B4 |
 
-### 2.5 코드 (S-시리즈 네임스페이스 재라벨)
-> 결정: **재라벨(S-시리즈)**. 코드 모듈·Makefile 타깃·산출 파일명을 S-시리즈로 이동해
-> 새 H1/H2(검색·T-gate)와 충돌 제거. 산출 CSV는 gitignore(커밋 영향 없음)이나 이름은 정합해야 한다.
+### 2.5 코드 (S-시리즈 네임스페이스 재라벨) — ✅ 핵심 완료 (2026-07-26 · 별칭 유지 결정)
+> 결정: **재라벨(S-시리즈)** · **구 별칭(`make h1`/`h2`) 유지**(사용자 결정). 모듈·Makefile 타깃·import·
+> docstring을 S-시리즈로 이동해 새 H1/H2(검색·T-gate)와의 잠재 충돌 제거. **lint ✓ · 재라벨 대상 테스트
+> 26/26 ✓ · 전 모듈 import ✓.** (baseline_integration 실패 12+3건은 gitignore된 벤더 스냅샷
+> `sdkb-abox-patents.ttl` 부재 — 재라벨과 무관·환경 조건.)
 
 | 대상 | 상태 | 조치 | 배치 |
 |---|---|---|---|
-| `analysis/h1_cli.py` · `coverage.py` | ❌ | → `s1_coverage_cli.py` · docstring "S1 자원 형성 타당성" | B7 |
-| `analysis/h2_cli.py` · `timeseries.py` · `emerging.py` | ❌ | → `s2_timeseries_cli.py` · "S2 2차 재사용" | B7 |
-| `analysis/{applicant_cli,ksia_strata_cli,robustness_cli}.py` | ❌ | S1/S3 강건성으로 재프레임(docstring·라벨) | B7 |
-| `viz/figures.py` (fig1_gap_map…fig11) | ❌ | S-시리즈 그림 생성부 분리, 산출 경로 `paper/archive/figures/` 정합 | B7 |
-| `Makefile` `h1`/`h2`/`figures` 타깃 | ❌ | → `s1`/`s2` (별칭 유지 가능), figures S-분리 | B7 |
-| `data/processed/h1_coverage.csv·h2_*.csv` | ❌(gitignore) | 코드 재라벨 시 `s1_*·s2_*`로 산출명 변경 | B7 |
-| `preprocess/profile.py` · `ontology/{baseline,delta,vendor}` 등 | ⬜ | docstring의 H1/H2 언급만 S-표기 경미 반영 | B7 |
+| `analysis/coverage.py`→`s1_coverage.py` · `h1_cli.py`→`s1_coverage_cli.py` | ✅ | git mv + docstring "S1 자원 형성 타당성" | B7 |
+| `analysis/timeseries.py`→`s2_timeseries.py` · `h2_cli.py`→`s2_timeseries_cli.py` | ✅ | git mv + docstring "S2 2차 재사용" (analysis.emerging는 없음 · ontology.emerging은 인프라·불변) | B7 |
+| `analysis/{applicant_cli,ksia_strata_cli,robustness_cli,census}.py` | ✅ | S1/S3/S2 강건성 docstring 재프레임 + import 갱신 | B7 |
+| `Makefile` `h1`/`h2` 타깃 | ✅ | → `s1`/`s2` + **구 별칭 `h1:s1`·`h2:s2` 유지** · ksia-strata/robustness 주석 S-표기 · .PHONY | B7 |
+| `viz/figures.py` (S-시리즈 그림 출력 경로) | ⬜ **연기** | fig7/8/10 등 S-그림 출력이 `FIGURES`(paper/figures)로 가나 실물은 `paper/archive/figures/`. **출력 경로 분리는 C2/C3 그림 신설·figure 재빌드 시 함께** (지금 `make figures` 미실행·C2/C3 그림 부재) | B7후속 |
+| `data/processed/h1_*.csv·h2_*.md` 산출명 | ⬜ **연기** | s1_*/s2_*로 변경은 **archive된 S-표(paper/archive/tables/)를 재생성해야** 정합 → archive 불변 원칙과 상충. IR 하네스·표 재빌드 시 함께 | B7후속 |
+| `preprocess/profile.py` · `ontology/{baseline,delta,vendor}` 등 | ⬜ | docstring H1/H2 언급 경미 · 미착수(라벨 무관 인프라) | B7후속 |
 | `collect/*` · `preprocess/{family,clean,ksia_crosswalk}` · `validate/vocab_coverage` · `corpus/*` | ⬜ | 라벨 무관(인프라/vocab). 조치 없음 | — |
 
 ### 2.6 루트·기타
@@ -131,12 +137,12 @@ H5←H3d(음성 대조군 특이성). **탐색적 강등:** H2c(운용 효율)·
 ```
 B0 원고 §1.4/§1.5 확정          ✅ 내용 확정 · line 291 정정 완료 (커밋 동결만 남음)
 B1 이 원장(RECONCILIATION)       ✅ 완료 (§0.1 반영)
-B2 CLAUDE.md §0 갱신             ◀ 활성 전선 · H1–H5·C3 프레이밍·S-시리즈 각주
-B4 구 SPEC/PLAN 배너 + 재라벨      기계적·대량 (라벨 사전 §1 적용 · SPEC-005 CQ주석 포함)
-B5 CANONICAL-INDEX·STATUS 재생    중재자 복원 (B4 후, 서명·개수 재정립)
-B6 GLOSSARY·REF-001·README        용어·개요 정합
-B7 코드 S-시리즈 재라벨            모듈·Makefile·산출명 (테스트 동반)
-B8 전체 sig-check + 최종 감사      표류 0 확인
+B2 CLAUDE.md §0 갱신             ✅ 완료 (2026-07-26) · H1–H5·C3 프레이밍·S-시리즈 각주 · sig-check ✓
+B4 구 SPEC/PLAN 배너 + 재라벨      ✅ 완료 (2026-07-26) · 17 PLAN + 5 SPEC + AUDIT 배너·S-재라벨 · SPEC-001 T-gate 절 신설 · sig-check ✓
+B5 CANONICAL-INDEX·STATUS 재생    ✅ 완료 (2026-07-26) · 구본 archive(-v05) + v0.9 신설 · sig-check ✓
+B6 GLOSSARY·REF-001·README        ✅ 완료 (2026-07-26) · 3 GLOSSARY+REF-001+code_spec README/TOOLING S-주석 · 루트 README v0.9 재작성 · check_signatures TARGETS v0.9 원고로 복원(sig-check ✓·warn 해소)
+B7 코드 S-시리즈 재라벨            ✅ 핵심 완료 (2026-07-26) · 모듈 4개 rename+import+Makefile 타깃·별칭·docstring · lint/test ✓ · 산출명·figures 경로는 B7후속(figure/IR 재빌드 시)
+B8 전체 sig-check + 최종 감사      ✅ 완료 (2026-07-26) · make s1/s2/h1/h2 dry-run OK · lint ✓ · sig-check ✓ · 브로큰 import 0
 ```
 
 - **B0 확정됨** — 정본이 굳었으니 B2–B7 전파가 1회로 끝난다(§0.1이 그 기준).
@@ -150,8 +156,8 @@ B8 전체 sig-check + 최종 감사      표류 0 확인
 
 1. ~~B0 원고 동결~~ **완료(2026-07-26)**: §1.4=H1–H5·§1.5=기여 3 확정, 내부 정합(§6.3·§7·부록B),
    line 291 잔존 정정. 남은 것은 커밋으로 동결 스냅샷 남기기뿐.
-2. **STATUS/CANONICAL-INDEX**: 재생 vs (구본 archive + 신설). 권고 = 신설 + 구본 archive(이력 보존).
-3. **코드 별칭**: `make h1`/`make h2`를 S-시리즈로 옮길 때 구 별칭을 한동안 유지할지(외부 스크립트 호환).
+2. ~~**STATUS/CANONICAL-INDEX**: 재생 vs 신설~~ **결정: 구본 archive + v0.9 신설**(2026-07-26 사용자). 완료(B5).
+3. ~~**코드 별칭**~~ **결정: 별칭 유지**(2026-07-26 사용자) — `make h1:s1`·`make h2:s2` 유지, 향후 제거. 완료(B7).
 
 > 다음 실행 후보: **B2(CLAUDE.md §0 갱신)** → **B4(구 SPEC/PLAN 배너·재라벨, 기계적)**.
 > B2는 정본이 굳었으니 지금 착수 가능. 지시 시 B2부터 진행.

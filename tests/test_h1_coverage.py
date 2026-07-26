@@ -1,8 +1,8 @@
-"""H1 검정의 계약 — 집계 · Wilcoxon · 표본 집합 · viz 경계.
+"""S1(구 커버리지 H1) 검정의 계약 — 집계 · Wilcoxon · 표본 집합 · viz 경계.
 
 이 파일이 지키는 것 (CLAUDE.md §5):
-  ontology(graph) → analysis.coverage : 고유 특허 수 · 0건 단계도 행으로 남는다
-  analysis.coverage → analysis.h1_cli : 검정의 사전 확정값(단측 · 동점 제외 · 표본 단위)
+  ontology(graph) → analysis.s1_coverage     : 고유 특허 수 · 0건 단계도 행으로 남는다
+  analysis.s1_coverage → s1_coverage_cli      : 검정의 사전 확정값(단측 · 동점 제외 · 표본 단위)
   analysis → viz                      : 컬럼 계약 (label/before/after/delta)
 
 검정 자체는 결과를 본 뒤 바꿀 수 없다 — 여기 고정된 것이 그 약속이다.
@@ -13,7 +13,7 @@ import pandas as pd
 import pytest
 from rdflib import RDF, Graph, Literal, URIRef
 
-from sdkb_paper.analysis.coverage import (
+from sdkb_paper.analysis.s1_coverage import (
     compare_coverage,
     coverage_by_process_step,
     legacy_scope_iris,

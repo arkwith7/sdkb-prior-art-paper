@@ -463,9 +463,13 @@ classDiagram
 
 ## 4. 태스크 3 · 기술예측
 
+> **라벨 주의 (v0.9).** 이 절과 §4.4/§4.5의 "H1"·"H2"는 **구 커버리지/시계열 패러다임 라벨**이며
+> v0.9에서 **S1(구 커버리지)·S2(구 시계열)** 로 읽는다 — C1의 2차 재사용 증거이지 v0.9 확증 가설
+> H1–H5가 아니다. 기준: [../RECONCILIATION-v09.md](../RECONCILIATION-v09.md) §1 라벨 사전.
+
 ### 4.1 무엇을 답하는가
 공정·소자 **개념 단위 시계열**(특허 출원일 기준)로 부상 신호를 읽고, 명칭·코드가 생기기 전
-**조합 개념**(∧/∨)으로 신흥기술을 조기 포착한다(H2). 나아가 STEEPVE 시나리오·리얼옵션·TRL·
+**조합 개념**(∧/∨)으로 신흥기술을 조기 포착한다(S2 구 시계열 H2). 나아가 STEEPVE 시나리오·리얼옵션·TRL·
 자원기반관점으로 **투자 의사결정** 어휘를 확장한다.
 
 ### 4.2 클래스 다이어그램
@@ -513,7 +517,7 @@ classDiagram
 ### 4.3 클래스
 
 **핵심(개념 시계열):** `ont:Process` · `ont:SubProcess` · `ont:Device` · `ont:TechnologyNode` +
-`ont:Patent`(`filingDate` 로 시계열). 개념 축 = **Process ∪ Device**(H2 사례가 공정만이 아니라
+`ont:Patent`(`filingDate` 로 시계열). 개념 축 = **Process ∪ Device**(S2 구 시계열 H2 사례가 공정만이 아니라
 디바이스 아키텍처이므로 둘 다 포함).
 
 **Foresight 모듈(`sdkb-foresight.ttl`):**
@@ -537,7 +541,7 @@ classDiagram
 
 | 속성 | 도메인 | 치역 | 의미 |
 |---|---|---|---|
-| `ont:realizesProcess` | `Patent` | `Process` | 특허↔공정(H1 커버리지의 링크) |
+| `ont:realizesProcess` | `Patent` | `Process` | 특허↔공정(S1 구 커버리지의 링크) |
 | `ont:concernsDevice` | `Patent` | `Device` | 특허↔소자 아키텍처 |
 | `ont:concernsTechnologyNode` | `Patent` | `TechnologyNode` | 특허↔기술세대(7nm …) |
 | `ont:relevantForTechNode` | `SubProcess` | `TechnologyNode` | 단계↔세대 |
@@ -557,17 +561,17 @@ classDiagram
 
 | CQ | 질문 | 핵심 어휘 |
 |---|---|---|
-| CQ01 | 공정 단계별 특허 수 | `realizesProcess` (H1 커버리지) |
+| CQ01 | 공정 단계별 특허 수 | `realizesProcess` (S1 구 커버리지) |
 | CQ02 | 특정 시점 이후 출원 | `filingDate` |
-| CQ03 | 특허 없는 공정 단계 | `realizesProcess` (H1 공백) |
-| CQ04 | 개념(공정∪소자)별 연도 시계열 | `filingDate` · `concernsDevice` (H2 최소단위) |
-| CQ05 | IPC 단위 연도 시계열 | `hasIPC` (H2 대조군/진단 D1) |
-| CQ06 | 최근 5년 출원 전무 개념 | `filingDate` (커버리지 공백) |
+| CQ03 | 특허 없는 공정 단계 | `realizesProcess` (S1 커버리지 공백) |
+| CQ04 | 개념(공정∪소자)별 연도 시계열 | `filingDate` · `concernsDevice` (S2 최소단위) |
+| CQ05 | IPC 단위 연도 시계열 | `hasIPC` (S2 대조군/진단 D1) |
+| CQ06 | 최근 5년 출원 전무 개념 | `filingDate` (S1 커버리지 공백) |
 | CQ07 | 소자↔공정 교차 | `concernsDevice` · `realizesProcess` |
 | CQ08 | 출원인별 공정 포트폴리오 | `assignedTo` · `realizesProcess` |
 
 ### 4.6 재응용 노트
-- **신규성 축**: 개념을 코드·명칭 이전에 정의하는 능력이 H2 의 존재증명이다. 시계열·리드타임의
+- **신규성 축**: 개념을 코드·명칭 이전에 정의하는 능력이 S2(구 시계열 H2)의 존재증명이다. 시계열·리드타임의
   대조군은 **시점 유효한 명칭 키워드**이고, 조합 정의(∧/∨)는 **분석층 텍스트매칭**이라 트리플이
   아니다 — T-Box 는 개념(Process∪Device)과 `filingDate` 만 제공한다.
 - foresight/commercialization/RBV 모듈은 대부분 **TBox 는 있으나 G₀ 인스턴스가 희소**하다 —

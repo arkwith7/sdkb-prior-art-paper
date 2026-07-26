@@ -1,4 +1,5 @@
-"""`make h1` 의 진입점 — H1 검정을 돌리고 논문 표 5 와 그림을 만든다.
+"""`make s1`(구 `make h1`) 의 진입점 — S1(구 커버리지 H1) 검정을 돌리고 표·그림을 만든다.
+v0.9: C1 2차 재사용 증거. 산출물은 paper/archive/(S-시리즈). RECONCILIATION-v09.md §1.
 
 입력은 게이트를 통과한 두 스냅샷(graph_v0 · graph_v1)이다. 그래프를 다시 만들지 않는다 —
 검정이 그래프를 조립하기 시작하면 "검정할 때마다 before 가 달라지는" 사태가 열린다.
@@ -9,7 +10,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from sdkb_paper.analysis.coverage import (
+from sdkb_paper.analysis.s1_coverage import (
     WilcoxonResult,
     compare_coverage,
     legacy_scope_iris,

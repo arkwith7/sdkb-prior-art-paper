@@ -1,4 +1,5 @@
-"""`make h2` 의 진입점 — H2 검정과 §4.5 민감도를 한 번에 낸다 (PLAN-006).
+"""`make s2`(구 `make h2`) 의 진입점 — S2(구 시계열 H2) 검정과 민감도를 한 번에 낸다 (PLAN-006).
+v0.9: C1 2차 재사용 증거. 산출물은 paper/archive/(S-시리즈). RECONCILIATION-v09.md §1.
 
 산출: data/processed/h2_timeseries.csv · h2_leadtime.csv · h2_report.md (논문 표 6 · §4.4)
 
@@ -10,7 +11,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from sdkb_paper.analysis.timeseries import (
+from sdkb_paper.analysis.s2_timeseries import (
     DEFINITIONS,
     H2P_DEFINITIONS,
     name_series,

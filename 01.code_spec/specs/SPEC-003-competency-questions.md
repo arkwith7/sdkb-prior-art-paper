@@ -7,9 +7,16 @@
 | 검증 | `make cq` · `tests/test_baseline_integration.py::test_baseline_cq_signature` |
 
 > ⚠ **이 문서의 수치는 작성 시점(K=8) 값이며 두 세대 낡았다. 정본은 [CANONICAL-INDEX.md](../CANONICAL-INDEX.md) §1.**
-> ① CQ 배터리는 8 → 14 → 22 → **27**개로 확장됐다 — 현행 계약은 [SPEC-004](SPEC-004-cq-derivation-protocol.md).
+> ① CQ 배터리는 8 → 14 → 22 → **28**개로 확장됐다 — 현행 계약은 [SPEC-004](SPEC-004-cq-derivation-protocol.md).
 > ② 아래 before 값은 낡은 스냅샷 교정(C₀ 16→20) **이전** 값이다. 현재: **CQ01=20**(공백 CQ03=**29**),
 > **CQ06=58**. 이 문서의 16·33·61·29/51 은 역사 기록으로 남긴다(교정 경위는 STATUS "낡은 스냅샷" 블록).
+
+> **v0.9 프레임 (2026-07-26).** 현행 배터리는 **28개**이며 **네 스위트**로 나뉜다 — **pa**(선행기술조사·
+> RQ2 검색 유용성) · **em**(전문가매칭) · **tf**(기술예측) · **core**(공용 중심축). v0.9에서 em·tf·core는
+> **T-gate T3(교차 태스크 CQ 비회귀)의 감시 대상**이다(선행기술 검색 보강이 타 태스크를 훼손하지
+> 않음을 보증 · CLAUDE.md §5 · [SPEC-001](SPEC-001-validation-gate.md)). 아래 K=8 표의 "H1(커버리지)"·
+> "H2(시계열)"는 구 라벨 **S1·S2**로 읽는다([../RECONCILIATION-v09.md](../RECONCILIATION-v09.md) §1) —
+> v0.9 확증 가설 H1–H5와 다르다. 이 문서는 초기 K=8 설계 근거의 역사 기록이다.
 
 ---
 

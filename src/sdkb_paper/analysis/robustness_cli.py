@@ -1,4 +1,5 @@
-"""`make robustness` 의 진입점 — **패밀리 중복 제거 전후 비교** (논문 §4.5).
+"""`make robustness` 의 진입점 — **패밀리 중복 제거 전후 비교** (S1·S2 구 H1·H2′ 강건성).
+v0.9: C1 2차 재사용 증거. RECONCILIATION-v09.md §1.
 
 원고 §3.2·§4.5 는 DOCDB 패밀리 단위 중복 제거를 예고했으나 수행되지 않았다(중복 제거는
 출원번호 기준뿐이었다). 여기서 실제로 수행하고 **전후를 나란히 싣는다**.
@@ -14,8 +15,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from sdkb_paper.analysis.coverage import compare_coverage, legacy_scope_iris, restrict, wilcoxon_h1
-from sdkb_paper.analysis.h2_cli import run_h2prime, union_corpus
+from sdkb_paper.analysis.s1_coverage import compare_coverage, legacy_scope_iris, restrict, wilcoxon_h1
+from sdkb_paper.analysis.s2_timeseries_cli import run_h2prime, union_corpus
 from sdkb_paper.collect.bq_family import FAMILY_MAP
 from sdkb_paper.config import DATA, GRAPH_V0, PROCESSED, TABLES
 from sdkb_paper.ontology.delta import build_delta

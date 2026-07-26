@@ -1,4 +1,4 @@
-"""H2 시계열의 계약 (PLAN-006).
+"""S2(구 시계열 H2) 시계열의 계약 (PLAN-006).
 
 이 파일이 지키는 것:
   신호 규칙(θ · n_min · 창 · 탐색 시작)  : 동결된 규칙이 코드와 어긋나지 않는다
@@ -13,7 +13,7 @@ import pandas as pd
 import pytest
 from rdflib import URIRef
 
-from sdkb_paper.analysis.timeseries import (
+from sdkb_paper.analysis.s2_timeseries import (
     N_MIN,
     SEARCH_START,
     THETA,
@@ -216,7 +216,7 @@ def test_vintage_reports_observation_year_not_filing_year(corpus):
     비공개) 신호 규칙을 y(T) 에 걸어, 늦은 해는 언제나 0 이고 이른 해는 미래 정보를 받았다.
     이 테스트가 그 회귀를 막는다.
     """
-    from sdkb_paper.analysis.timeseries import OBS_START, vintage_detect_year
+    from sdkb_paper.analysis.s2_timeseries import OBS_START, vintage_detect_year
 
     # 픽스처 3건이 2017-10 스냅샷에 보이고, 전부 FinFET 코드를 달고 있었다고 두자.
     snap = {row.application_number: ["H01L29/785"] for row in corpus.itertuples()}
@@ -231,7 +231,7 @@ def test_vintage_reports_observation_year_not_filing_year(corpus):
 
 def test_vintage_cannot_see_patents_absent_from_the_snapshot(corpus):
     """스냅샷에 없는 특허 = 그때 미공개. 결측이 아니라 관측값이므로 세지 않는다."""
-    from sdkb_paper.analysis.timeseries import vintage_detect_year
+    from sdkb_paper.analysis.s2_timeseries import vintage_detect_year
 
     empty = {s: {} for s in (201710, 201903, 202004, 202101, 202204, 202304)}
     assert vintage_detect_year(corpus, lambda codes, _row: True, empty, n_min=1) is None

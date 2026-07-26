@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check mapping candidates validate reason cq vocab gate h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -125,12 +125,15 @@ vocab: baseline
 # 머지 전 전체 게이트: L0(무결성+신선도) + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
 gate: l0 validate reason cq vocab
 
-# H1 검정 — 공정 단계별 커버리지 (Wilcoxon 단측). 게이트를 통과한 두 스냅샷을 읽기만 한다.
-# 표본 집합은 확장 49 와 복원 이전 20 **양쪽**으로 병기 보고된다 (PLAN-005).
-h1:
-	uv run python -m sdkb_paper.analysis.h1_cli $(if $(CORPUS),--corpus $(CORPUS),)
+# S1(구 H1) 자원 형성 타당성 — 공정 단계별 커버리지 (Wilcoxon 단측). 게이트를 통과한 두 스냅샷을 읽기만 한다.
+# 표본 집합은 확장 49 와 복원 이전 20 **양쪽**으로 병기 보고된다 (PLAN-005 · v0.9 S-시리즈 재라벨).
+# v0.9 확증 가설 H1(게이트 판별력)과 다른 개념 — RECONCILIATION-v09.md §1.
+s1:
+	uv run python -m sdkb_paper.analysis.s1_coverage_cli $(if $(CORPUS),--corpus $(CORPUS),)
 
-# RQ3 소부장 층별 H1 — 장비/재료/부분품 각각 별도 델타·그래프(같은 게이트)로 정식 검정 (표 5b).
+h1: s1   # 구 별칭 (호환 유지 · 향후 제거 예정) → make s1
+
+# S3(구 RQ3) 소부장 층별 커버리지 — 장비/재료/부분품 각각 별도 델타·그래프(같은 게이트)로 정식 검정 (표 5b).
 # 검정 방법·임계값·개념 정의는 불변 · 바뀌는 건 company_type 필터 하나 (PLAN-014 §3.3 사전등록).
 ksia-strata:
 	uv run python -m sdkb_paper.analysis.ksia_strata_cli
@@ -146,15 +149,17 @@ cpc:
 cpc-vintage:
 	uv run python -m sdkb_paper.collect.bq_cpc --vintage
 
-# H2 검정 — 개념 단위 vs 코드 단위 시계열의 탐지 시차 (단측 부호검정 · PLAN-006).
-# 사례 7건·신호 규칙·판정 규칙은 시계열을 보기 전에 동결됐다 (mappings/h2_cases.csv).
-h2:
-	uv run python -m sdkb_paper.analysis.h2_cli
+# S2(구 H2/RQ2) 시간분석 2차 재사용 — 개념 단위 vs 코드 단위 시계열의 탐지 시차 (단측 부호검정 · PLAN-006).
+# 사례 7건·신호 규칙·판정 규칙은 시계열을 보기 전에 동결됐다 (mappings/h2_cases.csv · v0.9 S-시리즈 재라벨).
+s2:
+	uv run python -m sdkb_paper.analysis.s2_timeseries_cli
+
+h2: s2   # 구 별칭 (호환 유지 · 향후 제거 예정) → make s2
 
 # §4.5 강건성 — 패밀리(DOCDB) 중복 제거 전후 비교.
 #   family     — BigQuery 에서 DOCDB family_id 조인 (GCP 인증 필요). KIPRIS 원데이터에는
 #                우선권·패밀리 필드가 없어 이 조인 외에는 패밀리를 정직하게 잴 방법이 없다.
-#   robustness — dedup 된 델타로 G₁ 을 다시 짓고(같은 게이트 통과) H1·H2′ 를 **재검정**한다.
+#   robustness — dedup 된 델타로 G₁ 을 다시 짓고(같은 게이트 통과) S1·S2(구 H1·H2′) 를 **재검정**한다.
 #                검정 방법·임계값·개념 정의는 불변 — 바뀌는 것은 입력 말뭉치 하나뿐이다.
 family:
 	uv run python -m sdkb_paper.collect.bq_family

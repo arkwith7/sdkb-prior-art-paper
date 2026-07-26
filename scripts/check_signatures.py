@@ -20,11 +20,10 @@ ROOT = Path(__file__).resolve().parent.parent
 CANONICAL = ROOT / "01.code_spec" / "CANONICAL-INDEX.md"
 
 # 검사 대상: 서명 수치를 '현재 값'으로 인용하는 문서
-# (STATUS.md 는 서사 정본이라 구 서명 보존이 설계 — 제외)
+# (STATUS.md 는 서사 정본이라 구 서명 보존이 설계 — 제외.
+#  구 원고 v0.5/v0.7 은 paper/archive/ 로 이관됨 — 동결 이력이라 검사 제외.)
 TARGETS = [
-    ROOT / "paper" / "논문_v0.5_SDKB.md",
-    ROOT / "paper" / "논문_v0.6_SDKB.md",
-    ROOT / "paper" / "논문_v0.7_SDKB.md",
+    ROOT / "paper" / "논문_v0_9_SDKB_통합초안.md",   # v0.9 정본 원고
     ROOT / "README.md",
     ROOT / "data" / "DATASET-CARD.md",
 ]

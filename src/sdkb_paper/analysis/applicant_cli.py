@@ -1,4 +1,5 @@
-"""`make by-applicant` 의 진입점 — **출원인별 분리 재검정** (논문 §4.5.2).
+"""`make by-applicant` 의 진입점 — **출원인별 분리 재검정** (S1 구 H1 강건성 · §4.5.2).
+v0.9: C1 2차 재사용 증거. RECONCILIATION-v09.md §1.
 
 G₁ 은 두 출원인이다(삼성전자 · SK하이닉스). 보강 효과가 **한 회사 때문에** 나온 것이라면
 "전 공정 보강"이라는 주장이 약해진다. 그래서 각 회사의 특허만으로 델타를 다시 짓고 H1·H2′ 를
@@ -20,8 +21,8 @@ from pathlib import Path
 import pandas as pd
 from rdflib import Graph
 
-from sdkb_paper.analysis.coverage import compare_coverage, wilcoxon_h1
-from sdkb_paper.analysis.h2_cli import run_h2prime, union_corpus
+from sdkb_paper.analysis.s1_coverage import compare_coverage, wilcoxon_h1
+from sdkb_paper.analysis.s2_timeseries_cli import run_h2prime, union_corpus
 from sdkb_paper.analysis.robustness_cli import SCOPES, _scopes
 from sdkb_paper.config import GRAPH_V0, ONT, PROCESSED, TABLES
 from sdkb_paper.ontology.delta import build_delta

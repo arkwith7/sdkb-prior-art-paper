@@ -1,8 +1,14 @@
 # SPEC-002 · baseline G₀ (H1 의 "보강 전 그래프")
 
+> **⚠️ 구 패러다임 문서 — 인용 시 S-시리즈로 재라벨.** 이 문서는 커버리지 H1 패러다임(v0.5/v0.7)의
+> 기록이다. v0.9 정본 기조(선행기술 검색 주 태스크 · paper/논문_v0_9_SDKB_통합초안.md)에서 이 작업은
+> **S1(구 커버리지 H1) — 자원 형성 타당성의 2차 재사용 증거**로 강등·보존된다. 본문의 "H1"은
+> **S1(구 H1)**을 뜻하며, v0.9 확증 가설 H1–H5와 혼동하지 않는다. 재라벨 기준:
+> [../RECONCILIATION-v09.md](../RECONCILIATION-v09.md) §1 라벨 사전.
+
 | | |
 |---|---|
-| 지지하는 것 | H1 (공정 커버리지) / 논문 §3.1 · §4.3 |
+| 지지하는 것 | S1 (구 커버리지 H1 · 공정 커버리지) / 논문 §3.1 · §4.3 |
 | 구현 | `src/sdkb_paper/ontology/{vendor,baseline}.py`, `data/external/sdkb/` |
 | 검증 | `make baseline` · `tests/test_baseline_integration.py` |
 
