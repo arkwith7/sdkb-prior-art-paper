@@ -130,7 +130,7 @@ B7 언어정책 결정(선행) → B1 질의청구항 → B3 코퍼스 조립 �
 5. 진입 임계치 BM25 Recall@100 산출(값 자체는 성패 아님 — 비공허 확인).
 
 ## 6. 비목표 (스코프 방어선)
-- 검색 시스템(Dense/Hybrid/Ontology reranking)·T-gate·결함주입·ablation — 후속 PLAN.
+- 검색 시스템(Dense/Hybrid/Ontology reranking)·T-gate·결함주입·ablation — 후속 **[PLAN-018](PLAN-018-v09-retrieval-tgate-harness.md)**(계층 B · 2026-07-26 신설·승인대기).
 - 새 CLAUDE.md 거버넌스 — 산출물 A(별도).
 - G0/G1/G2 그래프 자체의 온톨로지 변경 — 하지 않음(코퍼스는 파생 뷰).
 - 라이선스 제한 원문 커밋 — 하지 않음(식별자·해시·재구축 절차만).

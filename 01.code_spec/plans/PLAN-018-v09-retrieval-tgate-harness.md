@@ -1,0 +1,239 @@
+# PLAN-018 — v0.9 검색 시스템·T-gate·Ablation 하네스 (계층 B 설계·사전등록)
+
+> **상태: 승인 (2026-07-26 사용자) 🟢 · M2 착수 가능.** F12 확정: Titan v2 주-팔, PaECTER는 결과분석 후
+> 선행연구 비교 필요 시 추가(§11.2). F8 확정: 원고 Claim-only 주분석(코드가 원고에 정합).
+> PLAN-017(데이터셋 B)의 후속. PLAN-017 §6이 "후속 PLAN"으로 미룬 **검색 시스템·T-gate·결함주입·
+> ablation** 전량을 설계·사전등록한다. 이 문서는 **결과를 보기 전에 동결하는 사전등록**이다
+> (CLAUDE.md §2 Phase 3 · 규칙 #3 · 원고 §5.6·부록 A). 동결 후 결과를 보고 임계·모델·가중치를 바꾸지 않는다.
+> 정본 원고 [paper/논문_v0_9_SDKB_통합초안.md] §4.5–4.10·§5 를 구현으로 옮긴다 — 방법은 원고가 정본.
+> 관련: [PLAN-017](PLAN-017-v09-ir-benchmark-dataset.md) · [SPEC-007](../specs/SPEC-007-ir-corpus-asbuilt.md) ·
+> [SPEC-001](../specs/SPEC-001-validation-gate.md) · 메모리 `pivot-v09-retrieval-primary-task`.
+
+---
+
+## 0. 목적과 스코프
+
+**목적:** 조립된 IR 코퍼스(SPEC-007 · 40,552문서·qrel 2,416엣지) 위에 **선행기술 검색 하네스**를 세워
+C2(핵심증명)·C3(진화안전)의 미측정 산출물 — Recall@100·nDCG·T-gate·ablation·결함주입 매트릭스 — 을
+**검정 가능한 수치로** 만든다. 지지 축: **RQ2(H3 검색 유용성)·RQ3(H4 계층 기여·H5 음성대조군)·
+RQ1(H1 게이트 판별력·H2 승인 안전성 = T1/T2/T3)**.
+
+**계층 경계(PLAN-017 §6 재확인):**
+| | 다루는 것 | 위치 |
+|---|---|---|
+| PLAN-017 (계층 A · 데이터) | 코퍼스·qrel 조립(완료) + B2 family·B8 분할·B5 graded qrel·B4 hard neg·B6 누출차단(잔여) | `corpus/`·`validate/leakage_check` |
+| **PLAN-018 (계층 B · 검색·게이트)** | **B0–B5·P0–P2 검색 · 순위함수 · T1/T2/T3 · 결함주입 · ablation A1–A8 · 평가·통계** | `retrieval/`·`validate/`·`analysis/` |
+
+**fail-fast 첫 관문(PLAN-017 §4에서 승계):** M2 = **누출 없는 BM25 Recall@100 진입 임계치**. 이 수치가
+비공허(정답을 실제로 회수)임이 확인되기 전에는 초록·기여를 확정하지 않고 하류(Dense·Hybrid·T-gate)를
+착수하지 않는다.
+
+---
+
+## 1. 사전등록 동결 파라미터 (테스트 개봉 전 고정 · 결과 보고 바꾸지 않음) 🔒
+
+> 원고 부록 A(사전등록 체크리스트)·§5.6과 정합. **이 표가 p-hacking 방지의 계약이다.** 값 변경은
+> 사전 동결된 민감도 격자로만, 커밋 해시로 증거를 남긴다(CLAUDE.md 규칙 2·3).
+
+| # | 항목 | 동결값 | 출처·근거 |
+|---|---|---|---|
+| F1 | **주 지표** | family-level Recall@100 | 원고 §5.1 |
+| F2 | 비열등 마진 ε | **0.02** | 원고 §4.9·CLAUDE §5 |
+| F3 | 하위집단 마진 δ | **0.05** | 원고 §4.9·CLAUDE §5 |
+| F4 | 부트스트랩 | paired, **10,000회**, 95% CI, 질의 단위 | 원고 §5.2 |
+| F5 | 결함검정 | 결함 단위 대응 **McNemar** | 원고 §5.2 |
+| F6 | 다중비교 보정 | **Holm** (ablation A1–A8) | 원고 §5.2 |
+| F7 | 효과크기 | 평균차 + **Cliff's delta** + 질의별 승/패/동 | 원고 §5.2 |
+| F8 | 주 질의 표현 | **Claim-only(독립항, 불완전 시 청구항1+제목·초록 보조)** | 원고 §4.2. ⚠️SPEC-007과 대비 — §11.1 |
+| F9 | 시점 분할 | filingDate 정렬 **60/20/20** + **family-disjoint**, 경계는 데이터감사 후 `[동결후 기입]`·테스트 개봉 전 고정 | 원고 §4.3·PLAN-017 B8 |
+| F10 | 후보 컷오프 | \(t_{pub}(d) < t_{cutoff}(q)\)(=출원일) ∧ \(family(d)\neq family(q)\) | 원고 §4.4 |
+| F11 | low-overlap 정의 | **개발셋 분포 하위 사분위**, 형태소/char n-gram Jaccard(불용어 제거) — 결과 보고 정하지 않음 | 원고 §5.3 |
+| F12 | Dense 모델 | **Titan Embed Text v2(`amazon.titan-embed-text-v2:0`)** 다국어 주 · PaECTER 영어-피벗 보조(선택) | PLAN-017 §8.1. ⚠️원고 §4.6과 대비 — §11.2 |
+| F13 | 토큰화 | BM25 주=**nori `KoreanAnalyzer`(DecompoundMode.NONE) + SDKB 온톨로지 어휘 사용자사전**(전 시스템 동일 적용 토큰화 계층·ablation 밖) · **Kiwi=§5.3 민감도 비교자** · standard(EN)·언어별 색인 후 RRF | PLAN-017 §8.3 · §11.6 결정(2026-07-26) |
+| F14 | CQ 스위트 분할 | **pa / em / tf / core** — T3 감시 대상 = em·tf·core | 원고 §4.9·CLAUDE §5 |
+| F15 | 결함주입 유형 | 원고 §4.10 표 12종 · 강도 1%/5%/10% · 반복 `[동결후 기입]`회 | 원고 §4.10 |
+| F16 | 결정성 시드 | 분할·부트스트랩·hard neg 샘플링 시드 = **`config.SEED`(고정)** | 원고 §5.6 |
+| F17 | 3모드 분리 | Oracle-free(주) / Citation-assisted(보조) / GT-assisted(상한) 산출 분리 저장 | 원고 §4.5 |
+| F18 | 가중치 w | **개발셋에서만** 학습 또는 사전 격자 선택 · 테스트 qrel 최적화 금지 | 원고 §4.7 |
+
+**미결 동결값 3종은 M2 착수(데이터 감사) 시 확정하고 이 표를 갱신한다:** F9 경계·F15 반복수·F11 정확한
+n-gram 파라미터. 확정 시점은 **테스트 개봉 이전**이어야 하며 커밋으로 스냅샷을 남긴다.
+
+---
+
+## 2. 모듈 배치 (CLAUDE.md §3 배치표 준수 · 시그니처)
+
+```
+retrieval/                  ── 순위 산출만 (평가·게이트 없음)
+  bm25.py         build_index(corpus_df, lang) · search(qids, k) → run(qid→[(doc_id,score)])
+  dense.py        embed(texts)→np[N,1024](Titan·캐시) · FaissFlat.search(q_emb,k) → run
+  hybrid.py       rrf(runs:list[run], k, c=60) → run          # Pyserini HybridSearcher 대안 자체 RRF
+  ontology_rerank.py  concept_overlap·path_sim·feature_cov·ground_compat → rerank(run, features) → run
+  candidate.py    D_q(qid): 시점유효·family-disjoint 마스크(pandas) + hard-neg 병합
+  systems.py      B0–B5·P0–P2 조립(§3) — 각 시스템 = run 생성 레시피
+validate/                   ── L0–L3 + T-gate + 감사 (데이터 수정 없음)
+  leakage_check.py   금지간선/파생피처 마스킹·잔여 0 검증 (PLAN-017 B6 · 원고 §4.5·5.6)
+  t1_noninferiority.py  LB95(ΔR100) > −ε           (원고 §4.9 T1)
+  t2_subgroup.py        max_s Drop_s < δ (거절근거·공정·KR/외국) (T2)
+  t3_cross_task_cq.py   ∀f∈{em,tf,core}: pass_f(new) ≥ pass_f(old) — 결정론적 (T3)
+  tgate.py              Accept = L0–L3 ∧ T1 ∧ T2 ∧ T3 (원고 §4.9 승인식)
+  fault_inject.py       §4.10 12종 결함 × 강도 주입 → 결함 그래프 (검출매트릭스 입력)
+analysis/                   ── 검정·효과크기 (그림 없음)
+  metrics.py      recall@{50,100,500}·success·mrr·ndcg@20·bpref·set_recall·feature_cov (원고 §5.1·4.8)
+  bootstrap.py    paired_bootstrap(runA,runB,qrel,n=10000,seed) → (Δ, LB95, UB95)
+  ablation.py     A1–A8 계층 제거 → ΔRecall + Holm 보정 (원고 §5.4)
+  subgroup.py     거절근거·공정군·KR/외국 하위집단 분해 (원고 §5.2·5.3)
+  faults.py       결함 × 게이트층 검출 매트릭스 + McNemar (원고 §4.10·5.2)
+viz/figures.py    C2/C3 그림 신설 (성능표·ablation·검출매트릭스·CQ추이) — B7후속 경로 재라벨 동반
+```
+
+- **경계 계약(통합테스트로 강제):** `retrieval/`는 qrel을 읽지 않는다(누출) · `analysis/`는 순위를 만들지
+  않는다 · `validate/tgate`는 게이트 우회 경로를 만들지 않는다 · 3모드 산출은 분리 저장.
+- 신규 술어·어휘 발명 0(CLAUDE §1.6). 개념·경로 피처의 원천은 `ontology/`·SPEC-007 `concepts` 컬럼.
+
+---
+
+## 3. 검색 시스템과 순위 함수 (원고 §4.6·4.7)
+
+### 3.1 비교 시스템 (원고 §4.6 그대로)
+| ID | 시스템 | 증거 | 구현 |
+|---|---|---|---|
+| B0 | BM25-Claim | 청구항 어휘 | `bm25`(claims_full) |
+| B1 | BM25-Fielded | 제목·초록·청구항 | `bm25`(q_repr_title_abstract_claims 필드) |
+| B2 | Dense | Titan v2 임베딩 | `dense`(text_main) |
+| B3 | Text Hybrid | BM25+Dense RRF | `hybrid([B0/B1, B2])` — **가장 강한 텍스트 기준선** |
+| B4 | CPC/IPC | 분류 겹침·거리 | `ontology_rerank`(ipc/cpc만) |
+| B5 | Ontology-only | 개념 경로 단독 | `ontology_rerank`(concepts, 텍스트 0) |
+| P0 | Text+Ontology | B3 + 개념겹침·경로 | **핵심 제안** |
+| P1 | +ClaimFeature | P0 + 한정요소 포괄 | FeatureCoverage 항 |
+| P2 | +Ground-aware | P1 + 거절근거 호환(oracle-free 범위) | GroundCompatibility 항 |
+
+### 3.2 순위 함수 (원고 §4.7)
+`S(q,d) = w_b·B̃M25 + w_e·c̃os + w_c·ConceptOverlap + w_h·PathSim + w_f·FeatureCoverage + w_r·GroundCompat`
+각 항 질의별 [0,1] 정규화 · 가중치 **개발셋 학습/사전격자만**(F18) · 항별 기여·일치개념 기록(설명가능성).
+- ConceptOverlap = 공정·소자·재료·장비·고장 개념 가중 Jaccard(`concepts` 컬럼)
+- PathSim = 온톨로지 최단경로/정보량 유사도(T-Box 계층)
+- FeatureCoverage = 질의 독립항 ClaimFeature 중 후보 포괄 비율(sidecar)
+- GroundCompatibility = 거절근거 호환(oracle-free: 질의 rejectedFor 제외 설정에서 배제 — §4.5.1)
+
+---
+
+## 4. 3모드 누출 통제 (원고 §4.5 · PLAN-017 B6)
+
+| 모드 | 허용 | 배제 | 역할 |
+|---|---|---|---|
+| **Oracle-free(주)** | 질의 이전 공개 문서·언어중립 개념 | 질의 `hasPriorArtExaminer/hasPriorArt/overPriorArt`·qrel 파생 개념·`NoveltyScore`·(설정 시)`rejectedFor` | 배포가능 주 결론 |
+| Citation-assisted(보조) | 질의 이전 타 특허 인용망 | 질의 자체 인용 | 역사적 인용 활용 설정 |
+| GT-assisted(상한) | 심사관 GT 한정요소·거절근거 | — | "완전 정렬 상한"(성능주장 금지) |
+
+`leakage_check`가 마스킹 후 금지간선 0을 자동 강제(원고 §5.6). SPEC-007 §7이 코퍼스 컬럼에 파생값 0을
+이미 검증 — leakage_check는 **런타임 피처 생성 시점**의 잔여를 재검증한다.
+
+---
+
+## 5. T-gate와 결함주입 (원고 §4.9·4.10 · SPEC-001 T-gate 절)
+
+### 5.1 승인식 (원고 §4.9 · CLAUDE §5)
+`Accept(ΔG) = 1[L0=L1=L2=L3=pass] · 1[LB95(ΔR100)>−ε]_T1 · 1[max_s Drop_s<δ]_T2 · 1[∀f∈{em,tf,core}: PassRate_f(new)≥PassRate_f(old)]_T3`
+- T1 = 비열등성 검정(H0: Δ≤−ε, H1: Δ>−ε) · ε 검정력과 독립 사전등록(F2)
+- T2 = 거절근거·공정·**KR/외국 언어** 하위집단, 최소 질의수 충족 시만 차단 규칙
+- T3 = **통계검정 아님, 결정론적 통과율 비교** · 하락 시 즉시 실패 · 예외는 waiver 토큰(횟수 보고)
+
+### 5.2 결함주입 검출 매트릭스 (원고 §4.10 · H1 직접 검정)
+12종 결함 × 강도(1/5/10%) × 반복 → 각 결함이 **어느 층에서 검출되는가** 매트릭스. 핵심 = 마지막 2종
+교차결함(동의어 오병합·공유 계층 역전)이 **L0–L3·T1·T2 통과 후 T3에서만** 검출되면 H1 지지. McNemar로
+층간 검출률 비교. 위양성률(정상 델타 오거부) 병행 보고. T3 미검출 시 CQ 스위트 느슨 → 세분화 후 재실행(부록 F).
+
+---
+
+## 6. 평가·통계 (원고 §5)
+
+- **주 지표** family Recall@100(F1). 보조: Recall@{50,500}·Success@K·MRR@K·nDCG@20(등급2 부분집합)·
+  bpref·Candidate Reduction·지연/인덱스/메모리(운용은 탐색적 강등).
+- 신규성/진보성 분리(§4.8): Single-ref Feature Coverage·Set Recall@K·Set Feature Coverage@K·Min Evidence Set.
+- 통계: F4–F7. H3 조건부 = 어휘중첩 사분위 × 시스템 상호작용(F11). 소표본 하위집단 확정결론 금지.
+- 전문가 판정(§5.5): 50질의 층화 × 상위 미인용 5 = 최대 250쌍, 2인 블라인드, Cohen's κ. **미룸 — M5 선택**
+  (인적 자원 필요 · κ<0.4 시 부록만). 자동 파이프라인 밖 결정.
+
+---
+
+### 6.1 M2 착수 실측 발견 (2026-07-26 · 토큰화 기반 구축)
+- **아키텍처 확정:** nori·Kiwi를 **사전토큰화기**(`retrieval/tokenize.py`)로 두고 whitespace 색인 →
+  §5.3 토큰화 교체가 색인 파이프라인 무변경. jnius는 **`pyserini.pyclass.autoclass`**(fatjar 클래스패스
+  등록)로만 Lucene 클래스 접근 가능(순수 jnius.autoclass는 NoClassDefFound). stopTags=
+  `KoreanPartOfSpeechStopFilter.DEFAULT_STOP_TAGS`(30종).
+- **★ 사용자사전 필수성 실증:** nori는 OOV 외래어('플라즈마')를 **문맥의존적으로** 분절한다 — 질의
+  '플라즈마'→[플라] vs 문서 '플라즈마 식각'→[플라,식각], '플라즈마 공정'→[플,라즈,마]. 입력 동일 시
+  결정적(F16 안전)이나, **질의·문서 토큰이 문맥 따라 어긋나 BM25 매칭 훼손** → SDKB 어휘 사용자사전이
+  선택이 아니라 정확성 요건(F13 강화). M2 B0에서 userdict 적재를 색인 전 필수 단계로 둔다.
+- **테스트 실측(반도체 문장):** nori(NONE)+DEFAULT_STOP_TAGS = 조사 제거·'반도체'/'식각' 보존·'플라즈마'
+  OOV파편 · Kiwi = '플라즈마' 보존·'식각'→'식/각' · en = Porter 스테밍('etch','oxid').
+
+### 6.2 SDKB 사용자사전 = 정식 스펙 산출물 (다음 세션 M2 B0 · 사용자 지시 2026-07-26)
+> 사용자사전은 F13의 정확성 요건(§6.1 실증)이자 **재현성 대상 스펙**이다. 다음 규율로 만든다:
+> - **최대 용어 추출:** SDKB 온톨로지에서 반도체 도메인 어휘를 **되도록 많이** 끌어온다 — 공정·소자·
+>   재료·장비·고장(FailureMode) 클래스 인스턴스의 한국어 prefLabel·altLabel, 개념 라벨, 나아가 청구항
+>   ClaimFeature·기술노드 등 도메인 표층형까지. 빈약한 사전은 §6.1의 OOV 파편화를 남긴다.
+> - **정식 문서화(01.code_spec):** 어떤 반도체 용어가 형태소 분석기 사용자사전으로 정의됐는지 **검증
+>   가능하도록** as-built SPEC(가칭 **SPEC-008 · nori 사용자사전 인벤토리**)으로 남긴다 — SPEC-006/007과
+>   같은 규율(출처·건수·서명·재측정 스크립트·표층형 표본). 산출 사전 파일 = `config.IR_USERDICT`.
+> - **누출 안전:** 도메인 어휘(공정·소자명)만 — qrel 파생·정답 유래 표층형은 넣지 않는다(§4 누출).
+> - **적용 대칭:** 질의·문서·전 시스템(B0–P2)에 동일 사전으로 사전토큰화(§6.1 아키텍처).
+
+## 7. 마일스톤 (fail-fast · 각 후 게이트)
+
+```
+M2 진입 임계치   B6 leakage_check → B2 family → B8 분할 → make index → BM25 Recall@100
+                 ▶ 비공허 확인(PLAN-017 §5 성공기준5). 실패 시 상류 진단, 하류 착수 금지.
+M3 텍스트 기준선  B2 Dense(Titan) → B3 Hybrid(RRF) → metrics·bootstrap → B0–B3 성능표
+M4 온톨로지·제안  B4/B5·P0/P1/P2 순위함수 → ablation A1–A8 → subgroup → RQ2/RQ3 표
+M5 게이트·결함    T1/T2/T3 배선 → fault_inject 12종 → 검출매트릭스·McNemar → RQ1 표
+                 → figures 신설(C2/C3) + B7후속 경로 재라벨
+```
+
+- M2가 PLAN-017 §4 진입 임계치를 흡수 — **여기서 초록·기여 확정 해금**.
+- 각 마일스톤은 CLAUDE §2 5단계 압축 적용. 데이터/통계/게이트 변경엔 예외 없음(요구·설계 재승인).
+
+## 8. 결정성·재현성 (원고 §5.6)
+데이터·shape·CQ·인덱스·모델버전 해시 고정 · 시드/lockfile 공개(F16) · 분할·부트스트랩·hard-neg 시드 고정 ·
+Titan `:0`·Haiku temp0 동결·임베딩 캐시 해시 · 3모드 분리 저장 · `check_signatures.py` 서명 검증 ·
+FAISS **flat**(근사 인덱스 튜닝 파라미터 0 → ablation 오염 없음).
+
+## 9. 신규 의존성 (2026-07-26 사용자 승인·설치·검증 완료 ✅)
+`pyserini`(BM25 + FAISS Dense + RRF) · `faiss-cpu>=1.8`(flat 정확검색) · `boto3`(Titan·Haiku).
+pyproject `[ir]` 옵셔널 그룹 추가 · `uv sync --extra ir` 설치. **설치·기능 임포트 검증 실측(2026-07-26):**
+faiss 1.14.3 import ✓ · pyserini LuceneSearcher/FaissSearcher/LuceneIndexer import ✓ · JVM 부팅 ✓.
+**GPU faiss는 40k 규모 이득 미미(flat 밀리초) + RTX 5090 Blackwell pip 지원 난이도 → CPU 정본**, GPU 후속 옵션(§11.3).
+
+**환경 실측 발견 2종 (M2 착수 전 처리 필요):**
+- **E1 · JAVA_HOME 필수:** 장비에 JRE만 있고 javac(JDK) 부재 → pyjnius 자동탐지가 `Unable to find javac`로
+  실패. `JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64`(libjvm.so 확인) 명시 시 정상 부팅. **M2에서
+  `config`/Makefile/.env에 JAVA_HOME 배선**(하드코딩 아닌 탐지 or 환경변수).
+- **E2 · nori 사용 가능·토큰화 확정(2026-07-26 실측·결정 §11.6):** anserini-2.2.0 fatjar에
+  `org.apache.lucene.analysis.ko.KoreanAnalyzer`·`KoreanTokenizer`·`DecompoundMode` **번들 확인**.
+  pyserini `get_lucene_analyzer('ko')`의 CJK 바이그램은 편의 래퍼일 뿐 — jnius로 `KoreanAnalyzer` 직접
+  인스턴스화 시 형태소 분석 확인. **도메인 실측(반도체 특허 문장):** nori(NONE)는 외래어 '플라즈마'를
+  '플/라즈/마'로, Kiwi는 한자어 '식각'을 '식/각'으로 파편화 — **엔진 무관하게 도메인 사용자사전이
+  핵심 지렛대**. → F13 확정: **nori(NONE)+SDKB 어휘 사용자사전 주**, Kiwi 민감도 비교자.
+
+## 10. 비목표 (스코프 방어선)
+- 전문가매칭·기술예측 **성능 주장 없음**(원고 §8.3·8.4 · 별도 AFCP-EM). 이 둘은 C1 표현범위·T3 감시대상·A8 음성대조군으로만 등장.
+- G0/G1/G2 온톨로지 자체 변경 없음(코퍼스는 파생 뷰).
+- 라이선스 제한 원문 커밋 없음(집계·해시·재구축 절차만).
+- 운용효율(H2c)·법적맥락(H3b)·의미도달성(H3c)은 **탐색적 분석**(확증 아님 · §0.1).
+
+## 11. 미해결·사용자 결정 필요 🔒
+1. **F8 질의 표현 대비:** 원고 §4.2 주분석=**Claim-only**, SPEC-007/PLAN-017 §7 M1 주표현=**초록+청구항**.
+   원고가 SoT — Claim-only를 주분석으로, 초록+청구항은 강건성으로 둔다(코퍼스는 4종 필드 모두 보유해
+   양쪽 산출 가능). **원고 불변 · 코드가 원고에 맞춘다.** 확인 필요.
+2. **F12 Dense 모델 — 확정(2026-07-26 사용자):** **Titan v2 주-팔**(다국어 코퍼스 KR 질의·후보에 정합).
+   **PaECTER는 결과 분석 후 선행연구 비교가 필요하다는 판단이 서면 그때 추가 도출**(영어 정답 부분집합
+   대상 영어-피벗 강건성). 원고 §4.6이 "다언어 임베딩 보조 기준선 추가" 여지를 이미 열어둠 → 주/보조
+   역할은 이 결정으로 정합. RECONCILIATION §4에 기록.
+3. **GPU faiss 시도 여부:** CPU 정본으로 충분(권고). GPU는 M3 이후 선택 실험으로만.
+4. **가중치 학습(F18):** 개발셋 사전격자 vs 경량 학습 — M4 착수 시 격자 해상도 동결.
+5. **전문가 판정(§6 M5):** 인적 판정 2인 확보 여부 — 미확보 시 탐색적 부록으로 강등.
+6. **F13 토큰화 — 확정(2026-07-26 사용자):** nori(DecompoundMode.NONE)+**SDKB 온톨로지 어휘 사용자사전**
+   (공정·소자·재료·장비 + 개념 prefLabel) = 주. Kiwi(kiwipiepy) = §5.3 사전등록 민감도 비교자. mecab-ko 생략.
+   사용자사전은 **전 시스템(B0–P2) 동일 적용 토큰화 계층** — ablation 밖(기준선 보강 = 온톨로지팔 이득
+   보수적 하향). 개발셋에서 Kiwi 유의 승리 시 승격은 사전등록 선택지.

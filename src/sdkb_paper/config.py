@@ -82,6 +82,37 @@ IR_CORPUS = IR_DIR / "ir_corpus_v09.parquet"          # 통합 문서 코퍼스
 QREL_EXAMINER = IR_DIR / "qrel_examiner.parquet"      # 심사관 인용 qrel (등급1)
 IR_PROFILE = DATA / "profiles" / "ir_corpus_v09.md"   # §4 데이터 프로파일 (커밋 가능)
 
+# --- IR 검색 하네스 (v0.9 · PLAN-018 계층 B) ------------------------------
+# 색인·순위·산출물 경로. index/run 은 대용량·재생성 가능 → gitignore.
+IR_INDEX_DIR = IR_DIR / "index"                        # Lucene(BM25) · FAISS 색인
+IR_RUNS_DIR = IR_DIR / "runs"                          # 시스템별 순위 산출(run 파일)
+IR_USERDICT = IR_DIR / "userdict_sdkb.txt"             # nori 사용자사전 (SDKB 어휘 시드 · F13)
+# 결정성 시드 (F16 사전등록): 분할·부트스트랩·hard-neg 샘플링 전역 시드.
+SEED = 20260726
+
+
+def java_home() -> str:
+    """pyserini(JVM) 부팅용 JAVA_HOME 을 확정한다 (PLAN-018 E1).
+
+    장비에 JRE 만 있고 javac(JDK) 가 없으면 pyjnius 자동탐지가 실패한다. 환경변수
+    JAVA_HOME 이 있으면 존중하고, 없으면 libjvm.so 를 담은 표준 경로를 탐지해 설정한다.
+    하드코딩이 아니라 탐지 — 실패 시 명시적 예외로 사용자에게 알린다(CLAUDE §1.9 정신).
+    """
+    env = os.environ.get("JAVA_HOME")
+    if env and (Path(env) / "lib" / "server" / "libjvm.so").exists():
+        return env
+    for cand in (
+        "/usr/lib/jvm/java-21-openjdk-amd64",
+        "/usr/lib/jvm/default-java",
+    ):
+        if (Path(cand) / "lib" / "server" / "libjvm.so").exists():
+            os.environ["JAVA_HOME"] = cand
+            return cand
+    raise RuntimeError(
+        "JAVA_HOME 미확정: libjvm.so 를 담은 JDK/JRE 경로를 찾지 못했다. "
+        "JAVA_HOME 환경변수를 명시하라 (PLAN-018 §9 E1)."
+    )
+
 # --- 온톨로지 네임스페이스 ------------------------------------------------
 # SDKB v1.0 실물과 일치 (semiconductor-knowledge-base). slash 네임스페이스 3분리:
 #   ont:  TBox 어휘        ont:Patent, ont:Process, ont:realizesProcess …

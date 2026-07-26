@@ -19,6 +19,10 @@ dependencies = [
 [project.optional-dependencies]
 bq = ["google-cloud-bigquery>=3.19", "db-dtypes"]
 dev = ["pytest>=8.0", "ruff>=0.4", "jupyter"]
+# IR 검색 하네스 (PLAN-017 §8.4 · PLAN-018): BM25 nori + FAISS flat Dense + RRF.
+# boto3 = Bedrock (Titan Embed v2 임베딩 · Haiku 4.5 질의 번역). faiss-cpu = flat 정확검색
+# (40k×1024 밀리초 · ablation 오염 없음). GPU faiss는 40k 규모에 이득 미미 → CPU 정본.
+ir = ["pyserini>=0.22", "faiss-cpu>=1.8", "boto3>=1.34", "kiwipiepy>=0.20"]
 
 [build-system]
 requires = ["hatchling"]
