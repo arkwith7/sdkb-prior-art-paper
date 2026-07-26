@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check userdict index eval mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -59,6 +59,21 @@ dart:
 merge:
 	uv run python -m sdkb_paper.ontology.delta $(if $(CORPUS),--corpus $(CORPUS),)
 	uv run python -m sdkb_paper.ontology.merge_cli $(if $(CORPUS),--corpus $(CORPUS),)
+
+# nori 사용자사전 빌드 (PLAN-018 §6.2.1 · SPEC-008) — 온톨로지+매핑+코퍼스수확.
+# 산출: data/processed/ir/userdict_sdkb.txt (gitignore). 색인(make index) 선행 필수.
+# JAVA_HOME 필요(nori JVM · config.java_home 가 탐지). corpus 선행.
+userdict:
+	uv run python -m sdkb_paper.retrieval.userdict
+
+# BM25 색인·검색·평가 (PLAN-018 M2 · B0) — 사전토큰화(nori+사용자사전) → -pretokenized 색인 →
+# 질의=독립항 top-100 검색 → 문서수준 Recall@100 진입 임계치. userdict·corpus 선행. JAVA_HOME 필요.
+# retrieval/ 는 run 만 산출(qrel 미열람), 평가는 analysis/metrics 가 qrel 대조.
+index:
+	uv run python -m sdkb_paper.retrieval.bm25
+
+eval:
+	uv run python -m sdkb_paper.analysis.metrics
 
 # IR 벤치마크 코퍼스 조립 (PLAN-017 M1) — G₀/G₁/G₂ + sidecar 청구항 → 문서중심 코퍼스.
 # 산출: data/processed/ir/ir_corpus_v09.parquet · qrel_examiner.parquet(gitignore) +

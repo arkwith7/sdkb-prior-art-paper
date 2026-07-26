@@ -180,6 +180,29 @@ viz/figures.py    C2/C3 그림 신설 (성능표·ablation·검출매트릭스·
 > - **누출 안전:** 도메인 어휘(공정·소자명)만 — qrel 파생·정답 유래 표층형은 넣지 않는다(§4 누출).
 > - **적용 대칭:** 질의·문서·전 시스템(B0–P2)에 동일 사전으로 사전토큰화(§6.1 아키텍처).
 
+#### 6.2.1 사전등록 동결 — 어휘 원천·수확 규칙 (2026-07-26 M2 착수 관찰 후 확정 · 테스트 개봉 전) 🔒
+
+> **관찰 결과(2026-07-26 실측):** SDKB 온톨로지의 통제어휘 prefLabel 은 **전량 영어**이고 한국어
+> 표층형은 도메인 클래스 altLabel ~88개(Device 27·Material 22·SubProcess 19·Skill 11·Process 5·
+> FailureMode 4)에 그친다. 정작 §6.1 이 파편화로 지목한 OOV 외래어 **'플라즈마'는 온톨로지 라벨에
+> 부재**(785회 전부 특허 본문). 온톨로지·매핑만으로는 §6.1 문제를 못 덮으므로, 사용자 결정(2026-07-26)
+> 으로 **누출-안전 코퍼스 수확 원천을 추가**한다. 이 §6.2.1 은 §6.2 의 "정답 유래 표층형 배제"를
+> **문서-일반 빈도 규율로 명시 확장**한 사전등록 개정이며, 결과(Recall)를 보기 전 커밋으로 동결한다.
+
+| # | 항목 | 동결값 |
+|---|---|---|
+| U1 | 원천 A · 온톨로지 통제어휘 | 벤더 스냅샷 `data/external/sdkb/*.ttl` 의 **도메인 클래스 14종**(Process·SubProcess·Device·Material·Equipment·EquipmentClass·EquipmentModel·FailureMode·RootCause·Mitigation·Skill·Parameter·Metrology·TechnologyNode) 의 `skos:prefLabel`(en)+`skos:altLabel`(ko·en) |
+| U2 | 원천 A · 배제 클래스 | Patent·CitedPatent·RejectedPatent(제목=정답유래)·Expert(인명)·**Organization·Vendor(회사명 — 사용자 결정 2026-07-26 제외)**·TBox/governance 전부 |
+| U3 | 원천 B · 동결 매핑 CSV | `term_aliases.csv`(`term` 열 전량) · `si_concepts.csv`(`variant`) · `dart_terms.csv`(`pattern`) — `\|` 분리·정규식메타(`\b`,`?`) 제거·`AND`/`OR` 논리토큰 제거 후 표층형. JEDEC/SEMI/IRDS/DART 준거·frozen-2026-07-13·qrel 비유래 |
+| U4 | 원천 C · 코퍼스 수확 | `IR_CORPUS.text_main`(질의+후보 **대칭**) 을 **Kiwi**(nori 무관 중립 후보생성기)로 토큰화, 태그∈{SL 외래어, NNG 일반명사}·길이≥2 |
+| U5 | 수확 채택 조건 (전부 충족) | (a) **문서빈도 df(T) ≥ 30**(≈40k 중 — 문서-특정 아닌 도메인-일반 보증 = 인용쌍 정보 0의 누출 가드) · (b) **nori(NONE·무사전)가 T 를 ≥2 토큰으로 파편화하거나 ∅ 처리**(nori 가 이미 아는 단어는 불필요) · (c) 고유명 배제: Kiwi NNP·회사명 스톱리스트(Org/Vendor 라벨)·특허 `title` 토큰 제외 |
+| U6 | 수확 상한 | df 내림차순 **HARVEST_MAX = 2000**(초과 시 절단 건수 SPEC-008 에 보고 — 무언절단 금지) |
+| U7 | 출력 형식 | nori `UserDictionary` — **공백 없는 표층형** 1줄1항(공백 포함 다어절은 nori 단일토큰 불가 → 제외·건수 보고, 공백제거 변이는 altLabel 에 이미 존재) · dedup·정렬·UTF-8 · `#` 주석 헤더에 출처·건수·서명 |
+| U8 | 산출·문서화 | `config.IR_USERDICT` 생성 + **SPEC-008(nori 사용자사전 인벤토리)** as-built(SPEC-006/007 규율: 출처·건수·서명·재측정 스크립트·표층형 표본·수확어 전량 검증가능) |
+
+- **적용 대칭 재확인:** 이 사전은 질의·문서·전 시스템 동일 사전토큰화 계층(ablation 밖·기준선 보강 = 온톨로지팔 이득 보수적 하향).
+- **결정성:** 수확은 코퍼스 서명(SPEC-007 `ec5ea51b`)·Kiwi/nori 버전에 결정적. df·상한은 이 표로 동결 — 결과 보고 바꾸지 않는다(CLAUDE §1.2·1.3).
+
 ## 7. 마일스톤 (fail-fast · 각 후 게이트)
 
 ```
@@ -193,6 +216,32 @@ M5 게이트·결함    T1/T2/T3 배선 → fault_inject 12종 → 검출매트�
 
 - M2가 PLAN-017 §4 진입 임계치를 흡수 — **여기서 초록·기여 확정 해금**.
 - 각 마일스톤은 CLAUDE §2 5단계 압축 적용. 데이터/통계/게이트 변경엔 예외 없음(요구·설계 재승인).
+
+### 7.1 M2 진입 임계치 — **통과(2026-07-26 실측)** ✅
+
+> **fail-fast 관문 통과: BM25 단독으로 심사관 인용 선행기술을 비공허하게 회수한다.** 하류(Dense·
+> Hybrid·온톨로지·T-gate) 착수 해금 · 초록·기여 확정 해금.
+
+- **구성:** B0 · 문서=`text_main`(초록+청구항 · SPEC-007 주 색인 텍스트) · 질의=`claims_independent`
+  (F8 Claim-only 독립항) · nori(NONE)+SDKB 사용자사전(SPEC-008 · 275 표층형) 사전토큰화 → Lucene
+  `-pretokenized` whitespace 색인 · BM25(k1=0.9·b=0.4 Anserini 기본) · 자기검색 제외.
+- **결과(문서수준 · 매크로 · 정답≥1 질의 981):**
+
+  | K | Recall@K | Success@K |
+  |---|---:|---:|
+  | 10 | 0.1422 | 0.2579 |
+  | 50 | 0.2317 | 0.3976 |
+  | **100** | **0.2800** | **0.4659** |
+  | 500 | 0.4204 | 0.6218 |
+  | 1000 | 0.4681 | 0.6789 |
+
+  MRR 0.1447. 색인 40,491문서(빈 text_main 61 제외) · run `data/processed/ir/runs/bm25_b0_claim.txt`.
+- **해석:** Recall@1000 이 ~0.47 에서 포화 — 정답의 en 39%·ja 4%(SPEC-007 §6)가 한국어 BM25 로
+  도달 불가한 상한(≈57% 한국어)과 정합. 이 교차언어 격차가 **언어중립 개념 온톨로지팔이 가치를
+  증명할 무대**(원고 H2b) — M4 에서 측정.
+- **경계·미포함(정직 보고):** 이 진입 수치는 **문서수준**(family 집계 이전 · F1 주지표 family Recall@100
+  은 B2 family 그룹핑 후 M3) · 시점유효(F10)·family-disjoint 마스킹 미적용(정답은 정의상 시점선행이라
+  recall 측정에 무해) · 3모드 중 oracle-free 주모드. 재현: `make index && make eval`.
 
 ## 8. 결정성·재현성 (원고 §5.6)
 데이터·shape·CQ·인덱스·모델버전 해시 고정 · 시드/lockfile 공개(F16) · 분할·부트스트랩·hard-neg 시드 고정 ·
