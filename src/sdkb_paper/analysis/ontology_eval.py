@@ -104,6 +104,83 @@ def _r100(run, qrel, fam) -> float:
 SELECTED_ALPHA = 0.75
 SELECTED_W = (0.5, 0.0, 0.5)
 
+# --- P1: FeatureCoverage 확장 (PLAN-018 §7.5 P-2/P-3/P-4) --------------------
+TAUS = (0.5, 0.6, 0.7, 0.8)   # P-3 τ 격자
+
+
+def simplex4(res: float = GRID_RES):
+    """a+b+c+d=1, 각∈{0,res,..,1} 인 (w_c,w_h,w_i,w_f) 격자."""
+    steps = [round(i * res, 2) for i in range(int(round(1 / res)) + 1)]
+    out = []
+    for a in steps:
+        for b in steps:
+            for c in steps:
+                d = round(1.0 - a - b - c, 2)
+                if d in steps and d >= 0:
+                    out.append((a, b, c, d))
+    return out
+
+
+def component_cache_p1(feats, mask, base_run, qids, fc_index, taus=TAUS, pool_k=S.POOL_K,
+                       keep_axes=S.ALL_AXES, use_path=True, use_ipc=True):
+    """질의별 B3 풀 → [(doc, text_norm, concept, path, ipc, (fc@τ...))]. fc 는 τ별 스칼라.
+
+    keep_axes/use_path/use_ipc 로 ablation(A2/A3/A6/A8) 시 개념 항을 재계산. fc 는 τ별 재사용.
+    """
+    qrows = _query_features(feats)
+    cache = {}
+    for qid in qids:
+        qrow = qrows.get(qid)
+        pool = [d for d in base_run.get(qid, []) if mask.is_allowed(qid, d)][:pool_k]
+        m = len(pool)
+        rows = []
+        for rank0, d in enumerate(pool):
+            drow = feats.row.get(d)
+            tn = 1.0 - (rank0 / (m - 1)) if m > 1 else 1.0
+            if qrow is None or drow is None:
+                rows.append((d, tn, 0.0, 0.0, 0.0, tuple(0.0 for _ in taus)))
+                continue
+            qc = S._filter_concepts(feats, feats.concepts[qrow], keep_axes)
+            dc = S._filter_concepts(feats, feats.concepts[drow], keep_axes)
+            c = feats.concept_overlap(qc, dc)
+            p = feats.path_sim(qc, dc) if use_path else 0.0
+            ic = feats.ipc_sim(feats.ipc[qrow], feats.ipc[drow]) if use_ipc else 0.0
+            bs = fc_index.best_sims(qid, d)
+            fc = tuple(float((bs >= t).mean()) if bs.size else 0.0 for t in taus)
+            rows.append((d, tn, c, p, ic, fc))
+        cache[qid] = rows
+    return cache
+
+
+def rerank_p1(cache, tau_idx: int, alpha: float, w4, k: int = 1000):
+    """P1 재랭크: (1−α)text + α(w_c·c + w_h·p + w_i·ipc + w_f·fc[τ])."""
+    wc, wh, wi, wf = w4
+    out = {}
+    for qid, rows in cache.items():
+        scored = []
+        for d, tn, c, p, ic, fc in rows:
+            ont = wc * c + wh * p + wi * ic + wf * fc[tau_idx]
+            scored.append(((1.0 - alpha) * tn + alpha * ont, d))
+        scored.sort(key=lambda x: (-x[0], x[1]))
+        out[qid] = [d for _, d in scored[:k]]
+    return out
+
+
+def select_p1(cache, qrel, fam, taus=TAUS, k: int = 100) -> dict:
+    """dev family R@k 최대 (τ, α, w4) 선택. 동률: 낮은 α → 사전순. P-3/P-4."""
+    alphas = [0.25, 0.5, 0.75, 1.0]
+    simplex = simplex4()
+    results = []
+    for ti, _tau in enumerate(taus):
+        for al in alphas:
+            for w in simplex:
+                run = rerank_p1(cache, ti, al, w, k=k)
+                results.append((_r100(run, qrel, fam), taus[ti], al, w))
+    results.sort(key=lambda x: (-x[0], x[2], x[3]))
+    r, tau, al, w = results[0]
+    return {"best": {"r100": r, "tau": tau, "alpha": al, "w4": w}, "n_configs": len(results),
+            "all": results}
+
 
 def master_table(split: str, sel_alpha: float = SELECTED_ALPHA,
                  sel_w: tuple = SELECTED_W, k: int = 100, write_runs: bool = False) -> dict:
@@ -171,7 +248,8 @@ def select_p0(cache, qrel, fam, k: int = 100) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
-    ap.add_argument("--select", action="store_true", help="dev 격자선택 실행(F18)")
+    ap.add_argument("--select", action="store_true", help="dev 격자선택 실행(F18·P0★)")
+    ap.add_argument("--select-p1", action="store_true", help="dev P1 격자선택(τ×4가중·H4 준비)")
     ap.add_argument("--master", action="store_true", help="마스터표(B3·B4·B5·P0·P0★)+부트스트랩")
     ap.add_argument("--write-runs", action="store_true", help="마스터 run 파일 기록")
     ap.add_argument("--k", type=int, default=100)
@@ -206,6 +284,20 @@ def main() -> None:
         # α=0(텍스트 전용=B3 풀 재정렬 없음) 대조
         base = next(x for x in sel["all"] if x["alpha"] == 0.0)
         print(f"  텍스트전용(α=0) R@{args.k}={base['r100']:.4f}  ← P0★ 이 이걸 넘는가 = H3")
+
+    if args.select_p1:
+        from ..retrieval.feature_coverage import FeatureCoverageIndex
+        pool_docs = set(qids)
+        for qid in qids:
+            pool_docs.update([d for d in b3.get(qid, []) if mask.is_allowed(qid, d)][:S.POOL_K])
+        fc = FeatureCoverageIndex(restrict_docs=pool_docs)
+        cache = component_cache_p1(feats, mask, b3, qids, fc)
+        sel = select_p1(cache, qrel, fam, k=args.k)
+        b = sel["best"]
+        print(f"[P1 격자선택 · {args.split} family R@{args.k}]  {sel['n_configs']} 구성 · FC 미싱 {fc.n_missing}")
+        print(f"  ★ 최적: τ={b['tau']} · α={b['alpha']} · (w_c,w_h,w_i,w_f)={b['w4']} · R@{args.k}={b['r100']:.4f}")
+        for r, tau, al, w in sorted(sel["all"], key=lambda x: -x[0])[:6]:
+            print(f"    τ={tau} α={al} w={w} → {r:.4f}")
 
     if args.master:
         res = master_table(args.split, k=args.k, write_runs=args.write_runs)

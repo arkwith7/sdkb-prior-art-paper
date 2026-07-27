@@ -90,6 +90,11 @@ IR_USERDICT = IR_DIR / "userdict_sdkb.txt"             # nori 사용자사전 (S
 # 개념→축(axis)·TBox 계층 지도 (M4 온톨로지팔 입력 · PLAN-018 §7.3 M4-3/M4-4). 벤더 TTL 의
 # `a ont:X`·subClassOf 에서 결정적 추출 — 커밋 가능(집계·식별자·해시만). concept_axis.py 생성.
 IR_CONCEPT_AXIS = IR_DIR / "concept_axis.parquet"
+# claim-feature sidecar (P1/P2 · PLAN-018 §7.5). central_axis.oxstore 에서 추출한 특허별 청구항 피처
+# (doc_id·claim·is_independent·featureText·seq). **featureText=KIPRIS 원문 → gitignore·재생성**.
+IR_FEATURE_SIDECAR = IR_DIR / "feature_sidecar.parquet"
+# featureText Titan 임베딩 캐시(P1 FeatureCoverage). 텍스트해시→벡터 sqlite · gitignore.
+IR_FEATURE_EMB_CACHE = IR_INDEX_DIR / "feature_titan_cache.sqlite"
 # DOCDB family_id 지도 (B2 · F1 family-level 주지표). doc_id→family_id, raw(비커밋).
 # 원천은 BigQuery patents-public-data — 공개번호/출원번호 조인. 미조인은 fallback=자기자신(비율 보고).
 IR_FAMILY_MAP = RAW_BQ / "ir_family_map.parquet"

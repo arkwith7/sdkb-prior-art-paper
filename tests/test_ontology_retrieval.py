@@ -186,6 +186,45 @@ def test_holm_ordering():
     assert rej["c"] is False
 
 
+# --- P1 FeatureCoverage 격자 -------------------------------------------------
+def test_simplex4_sums_to_one():
+    from sdkb_paper.analysis.ontology_eval import simplex4
+    g = simplex4(0.25)
+    assert all(abs(sum(w) - 1.0) < 1e-9 for w in g)
+    assert (1.0, 0.0, 0.0, 0.0) in g and (0.0, 0.0, 0.0, 1.0) in g
+    assert len(g) == 35                # C(4+3,3)
+
+
+def test_rerank_p1_feature_weight_promotes():
+    from sdkb_paper.analysis.ontology_eval import rerank_p1
+    # 캐시: q 풀 [d1,d2]. d2 는 fc[τ0]=1.0(완전포괄)·d1 은 0. w_f=1 → d2 승격.
+    cache = {"q": [("d1", 0.9, 0.0, 0.0, 0.0, (0.0, 0.0)),
+                   ("d2", 0.1, 0.0, 0.0, 0.0, (1.0, 1.0))]}
+    r = rerank_p1(cache, tau_idx=0, alpha=1.0, w4=(0.0, 0.0, 0.0, 1.0), k=10)
+    assert r["q"][0] == "d2"
+    # α=0(텍스트만) → 원 순위 유지 d1 먼저
+    r2 = rerank_p1(cache, tau_idx=0, alpha=0.0, w4=(0.0, 0.0, 0.0, 1.0), k=10)
+    assert r2["q"][0] == "d1"
+
+
+def test_feature_coverage_best_sims_threshold():
+    """best_sims 를 여러 τ 로 스레숄딩 = coverage. 가짜 인덱스로 순수 로직."""
+    import numpy as np
+
+    from sdkb_paper.retrieval.feature_coverage import FeatureCoverageIndex
+    fc = object.__new__(FeatureCoverageIndex)
+    # q 독립항 피처 2개(행0,1) · d 후보 피처 2개(행2,3). 정규화 벡터.
+    fc.mat = np.array([[1, 0], [0, 1], [0.95, 0.31], [0.2, 0.98]], dtype="float32")
+    fc.mat /= np.linalg.norm(fc.mat, axis=1, keepdims=True)
+    fc.indep_rows = {"q": [0, 1]}
+    fc.all_rows = {"d": [2, 3]}
+    bs = fc.best_sims("q", "d")
+    assert bs.shape == (2,)
+    assert fc.coverage("q", "d", 0.9) == pytest.approx(1.0)   # 둘 다 ≥0.9 매칭
+    assert fc.coverage("q", "d", 0.99) < 1.0                  # 임계 높이면 감소
+    assert fc.coverage("q", "missing", 0.5) == 0.0            # 후보 피처 없음
+
+
 # --- 누출/경계 계약 -----------------------------------------------------------
 def test_concept_props_not_leakage():
     from sdkb_paper.corpus.assemble import CONCEPT_PROPS, FORBIDDEN

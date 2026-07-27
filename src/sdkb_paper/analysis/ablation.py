@@ -116,16 +116,91 @@ def _fmt(res: dict) -> str:
     return "\n".join(lines)
 
 
+def run_ablation_p1(split: str, tau: float, alpha: float, w4: tuple, k: int = 100) -> dict:
+    """P1(FeatureCoverage 포함) 기저에서 A1–A8 완비(A4=−FC·A5=−GroundCompat) + Holm. H4 검정.
+
+    w4=(w_c,w_h,w_i,w_f). A5(GroundCompat)는 oracle-free 주모드서 항이 0 → 구조적 Δ=0(P-5).
+    """
+    import pandas as pd
+
+    from ..collect.bq_family_ir import load_family_map
+    from ..retrieval.candidate import CandidateMask
+    from ..retrieval.feature_coverage import FeatureCoverageIndex
+    from ..retrieval.hybrid import RUN_B3
+    from ..retrieval.ontology_rerank import OntologyFeatures
+    from .ontology_eval import TAUS, component_cache_p1, rerank_p1
+    fam = load_family_map()
+    qrel = load_qrel()
+    if split != "all":
+        sp = pd.read_parquet(config.IR_SPLIT)
+        keep = set(sp.loc[sp["split"] == split, "doc_id"])
+        qrel = {q: pos for q, pos in qrel.items() if q in keep}
+    qids = [q for q, pos in qrel.items() if pos]
+    ti = list(TAUS).index(tau)
+
+    feats = OntologyFeatures()
+    mask = CandidateMask()
+    b3 = load_run(RUN_B3)
+    # FC 인덱스: 풀 후보 + 질의만 적재(메모리 절약)
+    pool_docs = set(qids)
+    for qid in qids:
+        pool_docs.update([d for d in b3.get(qid, []) if mask.is_allowed(qid, d)][:S.POOL_K])
+    fc = FeatureCoverageIndex(restrict_docs=pool_docs)
+
+    cache_full = component_cache_p1(feats, mask, b3, qids, fc)
+    run_full = rerank_p1(cache_full, ti, alpha, w4, k=1000)
+    r_full = evaluate(run_full, qrel, ks=(k,), family=fam)["recall"][k]
+
+    wc, wh, wi, wf = w4
+    specs = [
+        ("A1", "−CPC/IPC", "reweight", (wc, wh, 0.0, wf), {}),
+        ("A2", "−공정·소자", "recache", w4, dict(keep_axes=S.ALL_AXES - S.AXES_PROCESS_DEVICE)),
+        ("A3", "−재료·장비·고장", "recache", w4, dict(keep_axes=S.ALL_AXES - S.AXES_MATERIAL_EQUIP_FAILURE)),
+        ("A4", "−ClaimFeature(FC)", "reweight", (wc, wh, wi, 0.0), {}),
+        ("A5", "−거절근거(GroundCompat)", "ground0", w4, {}),
+        ("A6", "−계층경로", "recache", w4, dict(use_path=False)),
+        ("A7", "−전체온톨로지(=텍스트)", "textonly", (0.0, 0.0, 0.0, 0.0), {}),
+        ("A8", "−전문가계층(Skill)", "recache", w4, dict(keep_axes=S.ALL_AXES - S.AXES_EXPERT)),
+    ]
+    rows, pvals = [], []
+    for aid, desc, kind, w_ab, ckw in specs:
+        if kind == "ground0":
+            # oracle-free 에서 GroundCompat 항 부재 → 제거해도 동일 = Δ0 (구조적·P-5)
+            run_ab = run_full
+        elif kind == "textonly":
+            run_ab = rerank_p1(cache_full, ti, 0.0, (0.0, 0.0, 0.0, 0.0), k=1000)
+        elif kind == "reweight":
+            run_ab = rerank_p1(cache_full, ti, alpha, w_ab, k=1000)
+        else:  # recache (axis/path 재계산)
+            cache_ab = component_cache_p1(feats, mask, b3, qids, fc, **ckw)
+            run_ab = rerank_p1(cache_ab, ti, alpha, w_ab, k=1000)
+        r_ab = evaluate(run_ab, qrel, ks=(k,), family=fam)["recall"][k]
+        bs = paired_bootstrap(run_full, run_ab, qrel, k=k, family=fam)
+        rows.append({"id": aid, "desc": desc, "r_ablated": r_ab, "delta_loss": bs["delta"],
+                     "lb95": bs["lb95"], "ub95": bs["ub95"], "p": bs["p_two_sided"]})
+        pvals.append((aid, bs["p_two_sided"]))
+    reject = holm(pvals)
+    for row in rows:
+        row["holm_sig"] = reject[row["id"]]
+    return {"split": split, "alpha": alpha, "w": w4, "tau": tau, "r_full": r_full, "k": k, "rows": rows}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
-    ap.add_argument("--alpha", type=float, required=True, help="선택된 P0★ α")
-    ap.add_argument("--w", type=float, nargs=3, required=True, metavar=("Wc", "Wh", "Wi"))
+    ap.add_argument("--p1", action="store_true", help="P1(FeatureCoverage) 기저 A1–A8(H4)")
+    ap.add_argument("--tau", type=float, help="P1 선택 τ")
+    ap.add_argument("--alpha", type=float, required=True, help="선택된 α")
+    ap.add_argument("--w", type=float, nargs="+", required=True,
+                    metavar="W", help="P0★=Wc Wh Wi · P1=Wc Wh Wi Wf")
     ap.add_argument("--k", type=int, default=100)
     args = ap.parse_args()
     if args.split == "test":
         print("⚠️  test 개봉 — 사전등록 위반 가능(F9)")
-    res = run_ablation(args.split, args.alpha, tuple(args.w), args.k)
+    if args.p1:
+        res = run_ablation_p1(args.split, args.tau, args.alpha, tuple(args.w), args.k)
+    else:
+        res = run_ablation(args.split, args.alpha, tuple(args.w), args.k)
     print(_fmt(res))
 
 

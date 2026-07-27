@@ -50,9 +50,10 @@ def _client():
     return _CLIENT
 
 
-def _cache() -> sqlite3.Connection:
-    config.IR_DENSE_CACHE.parent.mkdir(parents=True, exist_ok=True)
-    c = sqlite3.connect(config.IR_DENSE_CACHE, check_same_thread=False)
+def _cache(cache_path=None) -> sqlite3.Connection:
+    path = cache_path or config.IR_DENSE_CACHE
+    path.parent.mkdir(parents=True, exist_ok=True)
+    c = sqlite3.connect(path, check_same_thread=False)
     c.execute("CREATE TABLE IF NOT EXISTS e (k TEXT PRIMARY KEY, v BLOB)")
     return c
 
@@ -94,11 +95,11 @@ def _invoke(text: str) -> list[float]:
     raise RuntimeError("Titan 임베딩 실패(재시도 소진)")
 
 
-def embed_texts(texts: list[str], workers: int = 16) -> list[list[float]]:
-    """텍스트 리스트 → 임베딩 리스트(순서 보존). 캐시 히트는 호출 생략."""
+def embed_texts(texts: list[str], workers: int = 16, cache_path=None) -> list[list[float]]:
+    """텍스트 리스트 → 임베딩 리스트(순서 보존). 캐시 히트는 호출 생략. cache_path 로 별도 캐시 지정."""
     if not MODEL:
         raise SystemExit("[dense] BEDROCK_EMBED_MODEL 미설정 — .env 확인")
-    cache = _cache()
+    cache = _cache(cache_path)
     keys = [_key(t) for t in texts]
     out: list[list[float] | None] = [None] * len(texts)
     todo = []
