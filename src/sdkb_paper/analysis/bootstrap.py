@@ -1,0 +1,108 @@
+"""페어드 부트스트랩 (PLAN-018 §6 · F4 · 원고 §5.2).
+
+두 시스템의 주지표(family-level Recall@100) 차이를 **질의 단위 페어드 부트스트랩**(10,000회, 95% CI)로
+검정한다. T1 비열등성(LB95(ΔR100) > −ε)과 B0–B3 성능차의 신뢰구간을 지지한다. 시드는 `config.SEED`
+고정(F16) — 같은 run·qrel → 같은 CI.
+
+- 페어드 = 같은 질의 표본에서 A·B 를 함께 평가해 질의난이도 상관을 제거한다.
+- 지표는 질의별 스칼라(recall@k)로 환원해 부트스트랩 — family 접힘은 지표 계산에 이미 반영.
+
+CLI: `python -m sdkb_paper.analysis.bootstrap --a RUN_A --b RUN_B [--k 100] [--family]`.
+"""
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+from .. import config
+from .metrics import _fold, load_qrel, load_run
+
+
+def per_query_recall(
+    run: dict[str, list[str]],
+    qrel: dict[str, set[str]],
+    k: int = 100,
+    family: dict[str, str] | None = None,
+) -> dict[str, float]:
+    """질의별 Recall@k (정답≥1 질의만). family 주면 fold-then-cut family 수준."""
+    if family is not None:
+        qrel = {q: {family.get(d, d) for d in pos} for q, pos in qrel.items()}
+    out: dict[str, float] = {}
+    for qid, pos in qrel.items():
+        if not pos:
+            continue
+        ranked = _fold(run.get(qid, []), family) if family is not None else run.get(qid, [])
+        hit = len(set(ranked[:k]) & pos)
+        out[qid] = hit / len(pos)
+    return out
+
+
+def paired_bootstrap(
+    run_a: dict[str, list[str]],
+    run_b: dict[str, list[str]],
+    qrel: dict[str, set[str]],
+    k: int = 100,
+    family: dict[str, str] | None = None,
+    n: int = 10000,
+    seed: int = config.SEED,
+) -> dict:
+    """A−B 의 평균 Recall@k 차이와 95% CI (질의 단위 페어드). 반환: mean_a·mean_b·delta·lb95·ub95."""
+    import numpy as np
+
+    ra = per_query_recall(run_a, qrel, k, family)
+    rb = per_query_recall(run_b, qrel, k, family)
+    qids = sorted(set(ra) & set(rb))       # 두 시스템 공통 평가질의(페어드)
+    a = np.array([ra[q] for q in qids])
+    b = np.array([rb[q] for q in qids])
+    m = len(qids)
+    diff = a - b
+
+    rng = np.random.default_rng(seed)
+    idx = rng.integers(0, m, size=(n, m))
+    boot = diff[idx].mean(axis=1)          # 각 리샘플의 평균 차이
+    lb, ub = np.percentile(boot, [2.5, 97.5])
+    return {
+        "k": k, "level": "family" if family is not None else "document", "n_queries": m,
+        "mean_a": float(a.mean()), "mean_b": float(b.mean()), "delta": float(diff.mean()),
+        "lb95": float(lb), "ub95": float(ub), "n_boot": n, "seed": seed,
+        "win": int((diff > 0).sum()), "loss": int((diff < 0).sum()), "tie": int((diff == 0).sum()),
+    }
+
+
+def _fmt(r: dict) -> str:
+    return (
+        f"[{r['level']} · Recall@{r['k']} · 페어드 {r['n_queries']}질의 · boot {r['n_boot']}·seed {r['seed']}]\n"
+        f"  mean_A {r['mean_a']:.4f}  mean_B {r['mean_b']:.4f}  Δ(A−B) {r['delta']:+.4f}"
+        f"  95%CI [{r['lb95']:+.4f}, {r['ub95']:+.4f}]\n"
+        f"  질의 승/패/동 {r['win']}/{r['loss']}/{r['tie']}"
+    )
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--a", type=Path, required=True, help="시스템 A run")
+    ap.add_argument("--b", type=Path, required=True, help="시스템 B run")
+    ap.add_argument("--k", type=int, default=100)
+    ap.add_argument("--family", action="store_true", help="family 수준(F1)")
+    ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
+    args = ap.parse_args()
+
+    qrel = load_qrel()
+    if args.split != "all":
+        import pandas as pd
+        sp = pd.read_parquet(config.IR_SPLIT)
+        keep = set(sp.loc[sp["split"] == args.split, "doc_id"])
+        qrel = {q: pos for q, pos in qrel.items() if q in keep}
+        if args.split == "test":
+            print("⚠️  test 개봉 — 최종 비교 전이면 사전등록 위반")
+    fam = None
+    if args.family:
+        from ..collect.bq_family_ir import load_family_map
+        fam = load_family_map()
+    r = paired_bootstrap(load_run(args.a), load_run(args.b), qrel, k=args.k, family=fam)
+    print(f"[split={args.split}]")
+    print(_fmt(r))
+
+
+if __name__ == "__main__":
+    main()

@@ -254,3 +254,10 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - qrel_test_sealed.parquet: test 479 엣지/198 질의 봉인 · 개발용 visible 1,937 엣지
 - 산출 raw(비커밋) · 동결 증거 = config 커밋 해시 · 프로파일 data/profiles/ir_split.md
 - 반영: F9 사전등록(CLAUDE 규칙 #3·#4) · B0 dev family Recall@100=0.2942
+
+## 2026-07-27 · Dense·Hybrid·bootstrap — B0–B3 텍스트 기준선 (PLAN-018 M3)
+- 명령: `make dense && make hybrid` + analysis.{metrics,bootstrap}
+- Titan Embed v2(amazon.titan-embed-text-v2:0·1024차원) 문서 40,491+질의 1,000 임베딩 · ~$0.5 · 캐시
+- run: bm25_b0_claim·dense_b2_claim·hybrid_b3_rrf (gitignore·재생성) · FAISS flat
+- dev family R@100: B0=0.2942·B2=0.2459·B3=0.3212 · 부트스트랩 B3−B0 CI[−0.0022,+0.0565]
+- 프로파일 data/profiles/ir_baselines_b0b3.md · 반영: C2 무대(강한 텍스트 기준선 B3 확립)

@@ -90,6 +90,9 @@ IR_USERDICT = IR_DIR / "userdict_sdkb.txt"             # nori 사용자사전 (S
 # DOCDB family_id 지도 (B2 · F1 family-level 주지표). doc_id→family_id, raw(비커밋).
 # 원천은 BigQuery patents-public-data — 공개번호/출원번호 조인. 미조인은 fallback=자기자신(비율 보고).
 IR_FAMILY_MAP = RAW_BQ / "ir_family_map.parquet"
+# Dense(B2 · F12 Titan Embed v2). 임베딩 캐시(텍스트해시→벡터)·FAISS flat 색인 · gitignore.
+IR_DENSE_CACHE = IR_INDEX_DIR / "dense_titan_cache.sqlite"
+IR_DENSE_DIM = 1024                                    # Titan v2 지원 256/512/1024 중 최대(동결)
 # 결정성 시드 (F16 사전등록): 분할·부트스트랩·hard-neg 샘플링 전역 시드.
 SEED = 20260726
 

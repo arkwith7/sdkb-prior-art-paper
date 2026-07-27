@@ -268,8 +268,24 @@ M5 게이트·결함    T1/T2/T3 배선 → fault_inject 12종 → 검출매트�
   `build_split` 이 절단결과를 config 동결 경계와 대조(표류 체크섬). **test 200질의 qrel 봉인**(479엣지/
   198질의 → `qrel_test_sealed.parquet`) · 개발용 visible 1,937. `metrics --split{train,dev,test,all}`.
   **B0 dev family Recall@100 = 0.2942**(train 0.2548·all 0.2905). 프로파일 `data/profiles/ir_split.md`.
-- **잔여(M3):** F10 family-disjoint/시점 후보 마스킹 배선 · Dense(Titan v2)·Hybrid(RRF)·bootstrap →
-  B0–B3 성능표(dev). Dense 는 Bedrock egress(임베딩 ~40k·재승인 대상).
+- **Dense·Hybrid·bootstrap 완료(2026-07-27 사용자 승인·유료실행):** `retrieval/dense.py`(Titan v2
+  1024차원·FAISS IndexFlatIP·텍스트해시 캐시) → B2 · `retrieval/hybrid.py`(RRF c=60) → B3 ·
+  `analysis/bootstrap.py`(페어드 10k·95%CI·seed 고정). 문서 40,491 임베딩(빈 61 제외)·~$0.5.
+
+  **dev · family-level 성능표 (C2 무대 · 프로파일 `data/profiles/ir_baselines_b0b3.md`):**
+
+  | 시스템 | R@100(주) | R@500 | S@100 | MRR |
+  |---|---:|---:|---:|---:|
+  | B0 BM25-Claim | 0.2942 | 0.4059 | 0.5076 | 0.1748 |
+  | B2 Dense-Titan | 0.2459 | 0.3458 | 0.4112 | 0.1265 |
+  | **B3 Hybrid-RRF** | **0.3212** | **0.4776** | **0.5635** | 0.1716 |
+
+  부트스트랩(dev·R@100): **B3−B0 Δ+0.0271 CI[−0.0022,+0.0565]**(양이나 95% 유의 아님·승27패16) ·
+  **B2−B0 Δ−0.0483 CI[−0.0936,−0.0026]**(Dense 단독 유의하게 낮음). 정직 해석: 하이브리드가 최강
+  텍스트 기준선이나 dev 소표본서 유의 미달 · Dense 단독은 교차언어 격차(M2 정합)로 BM25 하회, 융합서
+  상보. **이 표가 C2 무대 — 온톨로지 P0–P2 가 B3 를 넘는가가 H3 핵심(M4).** 성능주장 없음(기준선 관측).
+- **잔여(M3→M4):** F10 시점/family-disjoint 후보 마스킹 배선(현 run 은 미적용·정답 정의상 무해) ·
+  M4 온톨로지팔(B4/B5·P0–P2)·ablation·subgroup. (M3 텍스트 기준선 목표 달성.)
 
 ## 8. 결정성·재현성 (원고 §5.6)
 데이터·shape·CQ·인덱스·모델버전 해시 고정 · 시드/lockfile 공개(F16) · 분할·부트스트랩·hard-neg 시드 고정 ·

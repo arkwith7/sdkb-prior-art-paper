@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split userdict index eval mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -92,6 +92,14 @@ family:
 # 시점 분할 (B8 · F9 사전등록) — 60/20/20 family-disjoint · test qrel 봉인. 경계는 config 동결.
 split:
 	uv run python -m sdkb_paper.corpus.split
+
+# Dense 검색 (B2 · Titan v2 임베딩·FAISS flat). Bedrock 자격증명 필요 · 임베딩 캐시로 재실행 무료.
+dense:
+	uv run python -m sdkb_paper.retrieval.dense
+
+# Hybrid 검색 (B3 · BM25+Dense RRF). B0·B2 run 선행 필요.
+hybrid:
+	uv run python -m sdkb_paper.retrieval.hybrid
 
 # IPC/CPC 룰 커버리지 — 특허를 수집하기 전에 매핑의 사각지대를 드러낸다
 mapping:
