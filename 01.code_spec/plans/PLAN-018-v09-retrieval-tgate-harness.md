@@ -45,7 +45,7 @@ RQ1(H1 게이트 판별력·H2 승인 안전성 = T1/T2/T3)**.
 | F6 | 다중비교 보정 | **Holm** (ablation A1–A8) | 원고 §5.2 |
 | F7 | 효과크기 | 평균차 + **Cliff's delta** + 질의별 승/패/동 | 원고 §5.2 |
 | F8 | 주 질의 표현 | **Claim-only(독립항, 불완전 시 청구항1+제목·초록 보조)** | 원고 §4.2. ⚠️SPEC-007과 대비 — §11.1 |
-| F9 | 시점 분할 | filingDate 정렬 **60/20/20** + **family-disjoint**, 경계는 데이터감사 후 `[동결후 기입]`·테스트 개봉 전 고정 | 원고 §4.3·PLAN-017 B8 |
+| F9 | 시점 분할 | filingDate 정렬 **60/20/20** + **family-disjoint** · **경계 train/dev=2016-11-21·dev/test=2021-07-21 동결(2026-07-27)** · test 봉인 | 원고 §4.3·PLAN-017 B8 |
 | F10 | 후보 컷오프 | \(t_{pub}(d) < t_{cutoff}(q)\)(=출원일) ∧ \(family(d)\neq family(q)\) | 원고 §4.4 |
 | F11 | low-overlap 정의 | **개발셋 분포 하위 사분위**, 형태소/char n-gram Jaccard(불용어 제거) — 결과 보고 정하지 않음 | 원고 §5.3 |
 | F12 | Dense 모델 | **Titan Embed Text v2(`amazon.titan-embed-text-v2:0`)** 다국어 주 · PaECTER 영어-피벗 보조(선택) | PLAN-017 §8.1. ⚠️원고 §4.6과 대비 — §11.2 |
@@ -242,6 +242,34 @@ M5 게이트·결함    T1/T2/T3 배선 → fault_inject 12종 → 검출매트�
 - **경계·미포함(정직 보고):** 이 진입 수치는 **문서수준**(family 집계 이전 · F1 주지표 family Recall@100
   은 B2 family 그룹핑 후 M3) · 시점유효(F10)·family-disjoint 마스킹 미적용(정답은 정의상 시점선행이라
   recall 측정에 무해) · 3모드 중 oracle-free 주모드. 재현: `make index && make eval`.
+
+### 7.2 M3 진행 — B2 family + F1 주지표 성립 (2026-07-27) 🟢
+
+> **주지표(family-level Recall@100)가 성립했다.** B2 family 그룹핑의 선행조건 — 정답 문서의
+> DOCDB family_id 결측 — 을 BigQuery 공개번호 조인으로 해결(사용자 승인 2026-07-27).
+
+- **B2 family 지도:** `collect/bq_family_ir`(신설 · 시계열 `bq_family.py`와 분리). BQ
+  `patents-public-data.publications` 공개번호+출원번호 정규화 조인. 40,552 문서 1:1 · **DOCDB 95.8%**
+  (fallback-self 4.2%). 정답(qrel 2,211) DOCDB **88.1%**. KR 타입접두(`10`/`20`) 특례로 KR 정답
+  1,073건 추가 회수. 프로파일 `data/profiles/ir_family_map.md` · MANIFEST 2026-07-27. dry-run 10.26 GB·~$0.06.
+- **F1 정의 동결:** family-level = **fold-then-cut**(순위를 family로 중복 제거 후 top-K family =
+  'K개 서로 다른 발명 검토'). `analysis/metrics.evaluate(..., family=...)` · 미조인은 자기자신 family.
+- **F1 주지표 기준선(B0 · BM25-Claim):**
+
+  | 수준 | Recall@100 | Success@100 | MRR |
+  |---|---:|---:|---:|
+  | 문서 | 0.2800 | 0.4659 | 0.1447 |
+  | **family(F1)** | **0.2905** | 0.4801 | 0.1490 |
+
+  family 수준이 소폭↑(중복 공개 접힘). **이 데이터셋에선 family≈문서**(정답 병합 질의 5/981 ·
+  고유 정답 family 2,193 vs 문서 2,211) — 심사관 인용은 대개 서로 다른 발명이라는 정직한 관찰.
+- **B8 시점분할 + F9 동결·봉인(2026-07-27 사용자 승인):** `corpus/split.py` — 질의 60/20/20
+  family-disjoint, 경계 **train/dev=2016-11-21·dev/test=2021-07-21**(데이터감사 확정·정확히 600/200/200).
+  `build_split` 이 절단결과를 config 동결 경계와 대조(표류 체크섬). **test 200질의 qrel 봉인**(479엣지/
+  198질의 → `qrel_test_sealed.parquet`) · 개발용 visible 1,937. `metrics --split{train,dev,test,all}`.
+  **B0 dev family Recall@100 = 0.2942**(train 0.2548·all 0.2905). 프로파일 `data/profiles/ir_split.md`.
+- **잔여(M3):** F10 family-disjoint/시점 후보 마스킹 배선 · Dense(Titan v2)·Hybrid(RRF)·bootstrap →
+  B0–B3 성능표(dev). Dense 는 Bedrock egress(임베딩 ~40k·재승인 대상).
 
 ## 8. 결정성·재현성 (원고 §5.6)
 데이터·shape·CQ·인덱스·모델버전 해시 고정 · 시드/lockfile 공개(F16) · 분할·부트스트랩·hard-neg 시드 고정 ·

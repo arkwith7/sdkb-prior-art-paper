@@ -31,6 +31,36 @@ def test_evaluate_missing_query_in_run():
     assert res["recall"][1] == (1.0 + 0.0) / 2
 
 
+def test_family_fold_then_cut():
+    # a,b 는 같은 family F1; c 는 F2; 정답 {a, c}.
+    # 순위 [a, b, x, c]: family 로 접으면 [F1, x, F2] (b 는 F1 중복 → 제거).
+    # family top-2 = {F1, x} → 정답 family {F1, F2} 중 F1 만 → R@2 = 0.5.
+    fam = {"a": "F1", "b": "F1", "c": "F2"}
+    run = {"q1": ["a", "b", "x", "c"]}
+    qrel = {"q1": {"a", "c"}}
+    res = metrics.evaluate(run, qrel, ks=(2, 3), family=fam)
+    assert res["level"] == "family"
+    # 정답 family = {F1, F2} (a,c 접힘 · 서로 다름) → 분모 2
+    assert res["recall"][2] == 0.5          # top-2 family {F1,x} ∩ {F1,F2} = {F1}
+    assert res["recall"][3] == 1.0          # top-3 family {F1,x,F2} ⊇ {F1,F2}
+
+
+def test_family_merges_positives_into_one():
+    # 정답 두 문서가 같은 family → 분모 1, 한 번 회수로 R=1.
+    fam = {"a": "F1", "b": "F1"}
+    run = {"q1": ["a", "z"]}
+    qrel = {"q1": {"a", "b"}}
+    res = metrics.evaluate(run, qrel, ks=(1,), family=fam)
+    assert res["recall"][1] == 1.0          # family 분모 1, a 로 F1 회수
+
+
+def test_fold_dedups_first_occurrence():
+    fam = {"a": "F", "b": "F", "c": "G"}
+    assert metrics._fold(["a", "b", "c", "a"], fam) == ["F", "G"]
+    # 지도에 없는 doc 은 자기자신 family
+    assert metrics._fold(["a", "q"], fam) == ["F", "q"]
+
+
 def test_load_run_parses_rank_order(tmp_path):
     p = tmp_path / "run.txt"
     p.write_text("q1 Q0 d2 2 0.5 tag\nq1 Q0 d1 1 0.9 tag\n", encoding="utf-8")

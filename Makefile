@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check userdict index eval mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split userdict index eval mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -84,6 +84,14 @@ corpus:
 # 재조립 없이 산출물 성공기준(PLAN-017 §5)만 검증
 corpus-check:
 	uv run python -m sdkb_paper.corpus.assemble --check
+
+# DOCDB family 지도 (B2 · F1 주지표) — BigQuery 공개번호/출원번호 조인. --dry-run 으로 비용 확인.
+family:
+	uv run python -m sdkb_paper.collect.bq_family_ir
+
+# 시점 분할 (B8 · F9 사전등록) — 60/20/20 family-disjoint · test qrel 봉인. 경계는 config 동결.
+split:
+	uv run python -m sdkb_paper.corpus.split
 
 # IPC/CPC 룰 커버리지 — 특허를 수집하기 전에 매핑의 사각지대를 드러낸다
 mapping:

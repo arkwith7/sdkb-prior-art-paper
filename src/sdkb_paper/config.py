@@ -87,8 +87,23 @@ IR_PROFILE = DATA / "profiles" / "ir_corpus_v09.md"   # §4 데이터 프로파�
 IR_INDEX_DIR = IR_DIR / "index"                        # Lucene(BM25) · FAISS 색인
 IR_RUNS_DIR = IR_DIR / "runs"                          # 시스템별 순위 산출(run 파일)
 IR_USERDICT = IR_DIR / "userdict_sdkb.txt"             # nori 사용자사전 (SDKB 어휘 시드 · F13)
+# DOCDB family_id 지도 (B2 · F1 family-level 주지표). doc_id→family_id, raw(비커밋).
+# 원천은 BigQuery patents-public-data — 공개번호/출원번호 조인. 미조인은 fallback=자기자신(비율 보고).
+IR_FAMILY_MAP = RAW_BQ / "ir_family_map.parquet"
 # 결정성 시드 (F16 사전등록): 분할·부트스트랩·hard-neg 샘플링 전역 시드.
 SEED = 20260726
+
+# 시점 분할 산출물(B8). doc_id→split(train/dev/test) · family-disjoint. gitignore(파생·재생성).
+IR_SPLIT = IR_DIR / "split.parquet"
+# 봉인된 test qrel(F9 사전등록). 최종 비교 전까지 열지 않는다 — 개발은 dev 로만.
+IR_QREL_TEST_SEALED = IR_DIR / "qrel_test_sealed.parquet"
+# ── F9 사전등록 동결 (2026-07-27 · 데이터감사 후 확정 · 테스트 개봉 전) 🔒 ──────────────
+# 질의(거절특허 1,000)를 filingDate 순 60/20/20 로 나누되 **family 단위**(family-disjoint)로 배정한다.
+# family 대표일 = 그 family 질의들의 최소 출원일 · 동률은 family_id 사전순(결정적). 경계는 데이터
+# 감사 결과이지 자의 선택이 아니다(정확히 600/200/200 로 떨어졌다). CLAUDE 규칙 #3: 결과 보고 불변.
+F9_SPLIT_FRACTIONS = (0.60, 0.20, 0.20)                       # train / dev / test
+F9_BOUNDARY_TRAIN_DEV = "2016-11-21"                          # train ≤ 경계 < dev
+F9_BOUNDARY_DEV_TEST = "2021-07-21"                           # dev ≤ 경계 < test
 
 
 def java_home() -> str:

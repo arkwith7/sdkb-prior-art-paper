@@ -238,3 +238,19 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
 - 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성)
 - 반영: C2 입력 · 논문 §5–6
+
+## 2026-07-27 · IR DOCDB family 지도 (PLAN-018 M3 · B2 · F1 주지표)
+- 명령: `python -m sdkb_paper.collect.bq_family_ir` (dry-run 10.26 GB · 실행 ~$0.06 · 무료 티어)
+- 원천: BigQuery `patents-public-data.patents.publications` (공개번호+출원번호 정규화 조인)
+- ir_family_map.parquet: 40,552 행(코퍼스 1:1) · DOCDB 95.8% · fallback-self 4.2% · 고유 family 39,899
+- 입력 코퍼스 sha256 `ec5ea51b626d3ff9` (불변) · 산출은 raw(비커밋)
+- 프로파일: `data/profiles/ir_family_map.md`
+- 반영: F1 family-level Recall@100 성립 (B0 = 0.2905 · 문서수준 0.2800). C2 주지표 입력.
+
+## 2026-07-27 · 시점 분할 B8 + F9 동결·봉인 (PLAN-018 M3)
+- 명령: `python -m sdkb_paper.corpus.split`
+- F9 동결(config): 경계 train/dev=2016-11-21 · dev/test=2021-07-21 · 60/20/20 family-disjoint
+- split.parquet: 600/200/200 · 고유 family 959 · 체크섬(경계표류 감지) 통과
+- qrel_test_sealed.parquet: test 479 엣지/198 질의 봉인 · 개발용 visible 1,937 엣지
+- 산출 raw(비커밋) · 동결 증거 = config 커밋 해시 · 프로파일 data/profiles/ir_split.md
+- 반영: F9 사전등록(CLAUDE 규칙 #3·#4) · B0 dev family Recall@100=0.2942
