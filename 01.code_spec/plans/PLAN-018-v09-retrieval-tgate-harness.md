@@ -362,6 +362,27 @@ M5 게이트·결함    T1/T2/T3 배선 → fault_inject 12종 → 검출매트�
 - **비목표:** D1/D3 는 결정을 위한 진단이지 확증 산출이 아니다. T-Box 심화·개념링크 확충은 결과를 보고
   **사용자에게 상류 과제로 제기**할지 판단(임의 실행 금지). 어느 것도 사전등록 지표를 바꾸지 않는다.
 
+### 7.7 P1 FeatureCoverage + 진단 D1/D3 dev 결과 (2026-07-27 · 임베딩 1.02M 완료 · test 봉인) 🟢
+
+> **전량 dev·선택/개발용·확증 아님.** 프로파일 `data/profiles/ir_ontology_m4.md`. featureText 전량
+> (1,023,838) Titan 임베딩 완료. **임베딩 메모리 버그(반환벡터 30GB 누적→WSL OOM) 수정**(커밋 2a57f60·
+> 캐시전용 바운드 루프)·transient ModelError 재시도 강건화(0067b13).
+
+- **P1 격자선택:** τ=0.7·α=0.75·(w_c,w_h,w_i,w_f)=(0.25,0,0.25,0.5)·dev R@100=0.4170. **P0★(w_f=0)=0.4167
+  → FeatureCoverage 이득 ≈ 0.** w_h 여전히 0.
+- **P1 ablation A1–A8(dev·Holm m=8):** A7(전체온톨로지)+0.0425 **p0.004 Holm 유의** · A1(IPC)+0.0131 ·
+  **A4(−FeatureCoverage) −0.0013(음·제거가 개선)·A5(GroundCompat) 0** · A6(PathSim) 0 · A8(Skill 음성대조군)
+  +0.0036 n.s.
+- **★ H4 기각(dev):** A4/A5 손실(≈0·음) **<** A1(+0.0131). ClaimFeature·거절근거 계층이 분류보다 기여
+  크다는 가설 미성립. **H5 지지**(A8 n.s.). **이득 본체 = ConceptOverlap + IPC.**
+- **D1(밀도vs깊이):** PathSim-only R@100 이 개념밀도와 함께 상승(Q1 0.124→Q3 0.385)하나 전 분위 B3 하회
+  → 병목은 저밀도 붕괴(커버리지)+거친 경로신호 둘 다. **계층 심화 단독으론 한계.**
+- **D3(P1 이 near-miss 메우나):** 온톨로지 이득은 개념겹침 높은 Q3/Q4 집중(증폭)·**near-miss(Q1)은
+  B3≈P0★≈P1 로 아무 항도 못 살림.** FeatureCoverage 임베딩도 PathSim 자리 대체 못 함.
+- **상류 시사(사용자 판단 대상):** T-Box 재설계는 정당화 안 됨. near-miss(교차언어·의미격차) 회수는
+  계층·claim-feature 로 안 뚫리며, ABox 개념 커버리지·교차언어 검색이 더 우선(천장은 여전히 낮음).
+- **잔여:** ① **test 봉인 개봉**(사용자 승인)로 H3/H4/H5 확정 · ② figures(C2 성능표·ablation) · ③ M5 T-gate.
+
 ## 8. 결정성·재현성 (원고 §5.6)
 데이터·shape·CQ·인덱스·모델버전 해시 고정 · 시드/lockfile 공개(F16) · 분할·부트스트랩·hard-neg 시드 고정 ·
 Titan `:0`·Haiku temp0 동결·임베딩 캐시 해시 · 3모드 분리 저장 · `check_signatures.py` 서명 검증 ·
