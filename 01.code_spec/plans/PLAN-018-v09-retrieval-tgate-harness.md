@@ -287,6 +287,26 @@ M5 게이트·결함    T1/T2/T3 배선 → fault_inject 12종 → 검출매트�
 - **잔여(M3→M4):** F10 시점/family-disjoint 후보 마스킹 배선(현 run 은 미적용·정답 정의상 무해) ·
   M4 온톨로지팔(B4/B5·P0–P2)·ablation·subgroup. (M3 텍스트 기준선 목표 달성.)
 
+### 7.3 M4 사전등록 동결 — 온톨로지팔·순위함수·ablation (2026-07-27 사용자 승인 🟢 · 테스트 개봉 전) 🔒
+
+> M4 착수 시 데이터 관찰(Phase 2) 후 확정한 동결값. **결과(dev Recall)를 보기 전 이 커밋으로 동결한다**
+> (CLAUDE §1.3·§2 Phase 3). test qrel 봉인 유지. 값 변경은 사전 동결된 민감도 격자로만.
+
+| # | 항목 | 동결값 · 근거 |
+|---|---|---|
+| M4-1 | **확증 스코프** | B4·B5·**P0**(핵심 제안) + ablation + subgroup. **P1/P2 후속** — 입력 ClaimFeature/featureText ABox 가 벤더 스냅샷에 **0건**(실측 2026-07-27: `data/external/sdkb/` 에 `ClaimFeature` 인스턴스·`featureText`·`hasFeature` 전무). P1/P2 는 claim-feature ABox 재벤더(별도 사용자 승인·MANIFEST) 후 별건. |
+| M4-2 | **순위함수 활성 항(§3.2)** | `S(q,d) = (1−α)·T̃ext(B3) + α·[w_c·ConceptOverlap + w_h·PathSim]`. **w_f(FeatureCoverage)·w_r(GroundCompat)=0**(M4-1). T̃ext = B3 순위의 질의별 [0,1] 정규화(선형 rank-norm). 항별 기여 기록(설명가능성). |
+| M4-3 | **ConceptOverlap** | 코퍼스 `concepts`(141 고유·질의 97.7%) 집합의 **축 가중 Jaccard**. **축 가중치 = 균등 1.0 동결**(차등가중 근거 부재 → 민감도 후속). 축(axis)은 A2/A3 ablation 분할에만 사용. |
+| M4-4 | **PathSim** | 개념→ont:클래스 멤버십 기반 **Wu-Palmer**(TBox subClassOf DAG), 집합간 `mean_q max_d WP`. ⚠️ **as-built 관찰: 온톨로지 개념 계층이 사실상 평면**(개념간 관계 4건·TBox subClassOf 9건 — 실측 2026-07-27) → PathSim 은 거의 축-일치로 퇴화. w_h 는 dev 격자가 결정(선판단 없음), 퇴화 시 0 수렴 예상·정직 보고. |
+| M4-5 | **F18 가중치 격자** | α∈{0,0.25,0.5,0.75,1.0} × (w_c,w_h) 단체(simplex) 격자 {(1,0),(0.75,0.25),(0.5,0.5),(0.25,0.75),(0,1)}. **dev family Recall@100(F1)로만 선택**·test qrel 최적화 0. |
+| M4-6 | **F10 후보 마스크** | `D_q(q)` = 코퍼스 문서 중 (자기 제외) ∧ `publication_date(d) < filing_date(q)` ∧ `family(d)≠family(q)`. B4/B5 는 D_q 위에서만 채점, B0–B3 run 은 D_q 로 사후 필터(정답은 정의상 시점선행·타family → recall 중립). |
+| M4-7 | **B4 CPC/IPC** | IPC **주**(전 문서·평균 3.6), CPC 보조(**983/40,552 만 보유** → 희소 정직 보고). 접두 계층(섹션→클래스→서브클래스→그룹) 겹침·거리 유사도. |
+| M4-8 | **Ablation 이번 세션** | **A1**(CPC/IPC)·**A2**(공정·소자)·**A3**(재료·장비·고장)·**A6**(경로only)·**A7**(전체온톨로지)·**A8**(전문가계층=Skill·ExpertCase·Mitigation, 음성대조군). **A4·A5 후속**(ClaimFeature·거절근거 = P1/P2 항·입력 부재). Holm 보정(F6). |
+| M4-9 | **확증 가설 이번 세션** | **H3**(P0 vs B3 = C2 헤드라인) 검정 · **H5**(A8 음성대조군 특이성) 검정 · **H4**(A4/A5 손실>A1) **후속**(A4/A5 미가용). 페어드 부트스트랩 10k·95%CI(F4). |
+| M4-10 | **Subgroup(T2·§5.3)** | 거절근거(rejectedFor 유형)·공정군·**KR/외국 언어** 분해. 최소 질의수 미달 하위집단은 확정결론 금지·표에 n 명기. |
+
+**신규 모듈(§2 배치표):** `ontology/concept_axis.py`(개념→축·TBox 계층, 커밋가능 캐시) · `retrieval/candidate.py`(D_q·F10) · `retrieval/ontology_rerank.py`(ConceptOverlap·PathSim) · `retrieval/systems.py`(B0–B5·P0) · `analysis/ablation.py` · `analysis/subgroup.py`. **어휘 발명 0** — 축·계층은 벤더 TTL 의 `a ont:X`·subClassOf 에서 결정적 추출.
+
 ## 8. 결정성·재현성 (원고 §5.6)
 데이터·shape·CQ·인덱스·모델버전 해시 고정 · 시드/lockfile 공개(F16) · 분할·부트스트랩·hard-neg 시드 고정 ·
 Titan `:0`·Haiku temp0 동결·임베딩 캐시 해시 · 3모드 분리 저장 · `check_signatures.py` 서명 검증 ·
