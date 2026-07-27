@@ -37,6 +37,40 @@ def per_query_recall(
     return out
 
 
+def per_query_metric(
+    run: dict[str, list[str]],
+    qrel: dict[str, set[str]],
+    metric: str = "recall",
+    k: int = 100,
+    family: dict[str, str] | None = None,
+) -> dict[str, float]:
+    """질의별 스칼라 지표 — recall@k · ndcg@20 · mrr@k · bpref.
+
+    주지표(recall)와 **같은 페어드 부트스트랩 절차**를 보조지표에도 쓰기 위한 일반화다(원고 §5.1
+    보조지표). 지표 정의는 metrics.py 가 정본 — 여기서 다시 정의하지 않는다.
+    """
+    if metric == "recall":
+        return per_query_recall(run, qrel, k, family)
+    from .metrics import NDCG_K, _fold, bpref, ndcg_at_k
+
+    if family is not None:
+        qrel = {q: {family.get(d, d) for d in pos} for q, pos in qrel.items()}
+    out: dict[str, float] = {}
+    for qid, pos in qrel.items():
+        if not pos:
+            continue
+        ranked = _fold(run.get(qid, []), family) if family is not None else run.get(qid, [])
+        if metric == "ndcg":
+            out[qid] = ndcg_at_k(ranked, pos, NDCG_K)
+        elif metric == "bpref":
+            out[qid] = bpref(ranked, pos)
+        elif metric == "mrr":
+            out[qid] = next((1.0 / i for i, d in enumerate(ranked[:k], 1) if d in pos), 0.0)
+        else:
+            raise ValueError(f"알 수 없는 지표: {metric}")
+    return out
+
+
 def paired_bootstrap(
     run_a: dict[str, list[str]],
     run_b: dict[str, list[str]],
@@ -45,12 +79,13 @@ def paired_bootstrap(
     family: dict[str, str] | None = None,
     n: int = 10000,
     seed: int = config.SEED,
+    metric: str = "recall",
 ) -> dict:
-    """A−B 의 평균 Recall@k 차이와 95% CI (질의 단위 페어드). 반환: mean_a·mean_b·delta·lb95·ub95."""
+    """A−B 의 평균 지표 차이와 95% CI (질의 단위 페어드). 기본 지표 = 주지표 Recall@k."""
     import numpy as np
 
-    ra = per_query_recall(run_a, qrel, k, family)
-    rb = per_query_recall(run_b, qrel, k, family)
+    ra = per_query_metric(run_a, qrel, metric, k, family)
+    rb = per_query_metric(run_b, qrel, metric, k, family)
     qids = sorted(set(ra) & set(rb))       # 두 시스템 공통 평가질의(페어드)
     a = np.array([ra[q] for q in qids])
     b = np.array([rb[q] for q in qids])

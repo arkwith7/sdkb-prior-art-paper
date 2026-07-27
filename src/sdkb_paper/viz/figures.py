@@ -593,6 +593,177 @@ def fig_h2_timeseries(ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = 
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════════════════
+# v0.9 · 선행기술 검색 (C2) — analysis/ 가 배출한 CSV 만 읽는다. 여기서 계산하지 않는다.
+# ═══════════════════════════════════════════════════════════════════════════
+IR_CSV = PROCESSED / "ir"
+_ORDER = ["B0_bm25", "B2_dense", "B3_rrf", "B4_ipc", "B5_concept", "P0star", "P1"]
+_SHORT = {"B0_bm25": "B0\nBM25", "B2_dense": "B2\nDense", "B3_rrf": "B3\nText Hybrid",
+          "B4_ipc": "B4\nIPC only", "B5_concept": "B5\nOntology only",
+          "P0star": "P0★\n+온톨로지", "P1": "P1\n+ClaimFeature"}
+
+
+def fig_ir_increment(out: Path | None = None) -> Path:
+    """**그림 2** — 3단 증분(B0→B3→P1) · dev/test 나란히 (§6.2).
+
+    "온톨로지가 값을 더하는가"에 대한 가장 짧은 그림. 막대는 family Recall@100,
+    화살표 라벨은 단계 증분 Δ 와 p. **①(의미검색 추가)은 기술통계 증분**임을 캡션에 명시한다.
+    """
+    out = out or FIGURES / "ir_increment.svg"
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.2), sharey=True)
+    for ax, split in zip(axes, ("dev", "test")):
+        r = pd.read_csv(IR_CSV / f"ir_increment_{split}.csv")
+        d = pd.read_csv(IR_CSV / f"ir_increment_delta_{split}.csv")
+        colors = ["#B0B7C3", "#B0B7C3", TOBE, GREEN]
+        bars = ax.bar(range(len(r)), r["r100"], color=colors, width=0.62)
+        for i, (b, v) in enumerate(zip(bars, r["r100"])):
+            ax.text(b.get_x() + b.get_width() / 2, v + 0.008, f"{v:.3f}",
+                    ha="center", fontsize=9, color=INK)
+        ax.set_xticks(range(len(r)))
+        ax.set_xticklabels([s.split(" · ")[0] for s in r["label"]], fontsize=9)
+        n = int(d.iloc[0]["n_queries"]) if "n_queries" in d else 0
+        ax.set_title(f"{split} ({n}질의)", fontsize=11, color=INK)
+        ax.grid(axis="y", color=GRID, lw=0.8)
+        ax.set_axisbelow(True)
+        for spine in ("top", "right"):
+            ax.spines[spine].set_visible(False)
+        # 증분 주석 — B0→B3(①), B3→P1(②)
+        for row, (i, j) in zip(d.itertuples(index=False), [(0, 2), (2, 3)]):
+            y = max(r["r100"][i], r["r100"][j]) + 0.055
+            ax.annotate("", xy=(j, y), xytext=(i, y),
+                        arrowprops=dict(arrowstyle="-|>", color=MUTE, lw=1.3))
+            sig = "" if row.p_two_sided >= 0.05 else "*"
+            ax.text((i + j) / 2, y + 0.006,
+                    f"{row.delta:+.3f}{sig}\np={row.p_two_sided:.3f}",
+                    ha="center", fontsize=8.5, color=MUTE)
+    axes[0].set_ylabel("family Recall@100")
+    axes[0].set_ylim(0, 0.68)
+    fig.suptitle("검색 유용성의 증분 — 텍스트에 의미검색을 더할 때 vs 온톨로지를 더할 때",
+                 fontsize=12, color=INK)
+    plt.tight_layout()
+    return _save(fig, out)
+
+
+def fig_ir_metrics(out: Path | None = None) -> Path:
+    """**그림 3** — 시스템 × 지표: 깊은 회수는 오르고 상위 정밀도는 오르지 않는다 (§6.2).
+
+    왼쪽 = 주지표 family R@100, 오른쪽 = 보조지표(nDCG@20·MRR·bpref)의 B3 대비 Δ.
+    **가설에 불리한 관측을 숨기지 않기 위한 그림이다** — H3 의 사전등록 기준은 R@100 **및**
+    nDCG@20 개선을 요구하는데 nDCG 는 개선되지 않는다.
+    """
+    out = out or FIGURES / "ir_metrics.svg"
+    df = pd.read_csv(IR_CSV / "ir_performance_test.csv").set_index("system").loc[_ORDER]
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(11.5, 4.4),
+                                 gridspec_kw={"width_ratios": [1, 1.15]})
+
+    colors = [TOBE if s == "B3_rrf" else (GREEN if s in ("P0star", "P1") else "#B0B7C3")
+              for s in df.index]
+    a1.bar(range(len(df)), df["R@100"], color=colors, width=0.64)
+    for i, v in enumerate(df["R@100"]):
+        a1.text(i, v + 0.008, f"{v:.3f}", ha="center", fontsize=8.5, color=INK)
+    a1.axhline(df.loc["B3_rrf", "R@100"], color=TOBE, ls="--", lw=1.0)
+    a1.set_xticks(range(len(df)))
+    a1.set_xticklabels([_SHORT[s] for s in df.index], fontsize=8)
+    a1.set_ylabel("family Recall@100")
+    a1.set_title("(a) 주지표 — 깊은 회수", fontsize=11, color=INK)
+    a1.grid(axis="y", color=GRID, lw=0.8)
+    a1.set_axisbelow(True)
+
+    sub = df.loc[["P0star", "P1"]]
+    metrics = [("d_recall", "Recall@100"), ("d_ndcg", "nDCG@20"),
+               ("d_mrr", "MRR@500"), ("d_bpref", "bpref")]
+    xs = range(len(metrics))
+    for off, (sys_, col) in enumerate(zip(["P0star", "P1"], [GOLD, GREEN])):
+        vals = [sub.loc[sys_, m] for m, _ in metrics]
+        lo = [sub.loc[sys_, m.replace("d_", "lb_")] for m, _ in metrics]
+        hi = [sub.loc[sys_, m.replace("d_", "ub_")] for m, _ in metrics]
+        pos = [x + (off - 0.5) * 0.34 for x in xs]
+        a2.bar(pos, vals, width=0.3, color=col,
+               label="P0★ (사전지정 주)" if sys_ == "P0star" else "P1")
+        a2.errorbar(pos, vals, yerr=[[v - lo_ for v, lo_ in zip(vals, lo)],
+                                     [hi_ - v for v, hi_ in zip(vals, hi)]],
+                    fmt="none", ecolor=INK, elinewidth=1.0, capsize=3)
+    a2.axhline(0, color=INK, lw=1.0)
+    a2.set_xticks(list(xs))
+    a2.set_xticklabels([lbl for _, lbl in metrics], fontsize=9)
+    a2.set_ylabel("Δ vs B3 (텍스트 기준선)")
+    a2.set_title("(b) 보조지표까지 — 상위 정밀도는 오르지 않는다", fontsize=11, color=INK)
+    a2.legend(fontsize=9, frameon=False)
+    a2.grid(axis="y", color=GRID, lw=0.8)
+    a2.set_axisbelow(True)
+    for ax in (a1, a2):
+        for spine in ("top", "right"):
+            ax.spines[spine].set_visible(False)
+    plt.tight_layout()
+    return _save(fig, out)
+
+
+def fig_ir_ablation(out: Path | None = None) -> Path:
+    """**그림 4** — 계층 제거손실(A1–A8) · Holm 보정 (§6.4 · H4·H5).
+
+    양수 = 그 계층이 검색에 기여. **A8(음성 대조군)만 유의**하다는 것이 이 그림의 요점 —
+    특이성이 아니라 **태스크 결합**이 관측됐다(H5 기각).
+    """
+    out = out or FIGURES / "ir_ablation.svg"
+    df = pd.read_csv(IR_CSV / "ir_ablation_test.csv").sort_values("delta_loss")
+    fig, ax = plt.subplots(figsize=(8.6, 4.4))
+    colors = [ASIS if r.id == "A8" else (GREEN if r.holm_sig else "#B0B7C3")
+              for r in df.itertuples(index=False)]
+    y = range(len(df))
+    ax.barh(y, df["delta_loss"], color=colors, height=0.6)
+    ax.errorbar(df["delta_loss"], y,
+                xerr=[df["delta_loss"] - df["lb95"], df["ub95"] - df["delta_loss"]],
+                fmt="none", ecolor=INK, elinewidth=1.0, capsize=3)
+    ax.axvline(0, color=INK, lw=1.0)
+    ax.set_yticks(list(y))
+    ax.set_yticklabels([f"{r.id} {r.desc}" for r in df.itertuples(index=False)], fontsize=9)
+    for i, r in enumerate(df.itertuples(index=False)):
+        ax.text(max(r.ub95, r.delta_loss) + 0.002, i,
+                f"{r.delta_loss:+.4f}  p={r.p:.3f}{'  Holm 유의' if r.holm_sig else ''}",
+                va="center", fontsize=8.5, color=INK if r.holm_sig else MUTE)
+    ax.set_xlabel("제거손실 Δ family Recall@100  (full − ablated · 양수 = 계층 기여)")
+    ax.set_title("계층별 기여 — 유의한 것은 음성 대조군(A8)뿐 (test)", fontsize=11, color=INK)
+    ax.grid(axis="x", color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    for spine in ("top", "right"):
+        ax.spines[spine].set_visible(False)
+    plt.tight_layout()
+    return _save(fig, out)
+
+
+def fig_ir_subgroup(out: Path | None = None) -> Path:
+    """**그림 5** — 하위집단별 P1−B3 (forest) · T2 안전성 (§6.4).
+
+    n<20 집단은 회색으로 낮춰 그린다 — 확정 결론을 못 내는 집단을 시각적으로 같은 무게로
+    보여주면 그림이 거짓말을 한다.
+    """
+    out = out or FIGURES / "ir_subgroup.svg"
+    df = pd.read_csv(IR_CSV / "ir_subgroup_test.csv")
+    titles = {"rejection": "거절근거", "lex_overlap": "어휘 중첩(F11)",
+              "pos_lang": "정답 언어", "proc_group": "공정군"}
+    df = df[df["dim"].isin(titles)]
+    fig, ax = plt.subplots(figsize=(9.0, 0.42 * len(df) + 2.0))
+    labels, ys = [], []
+    for i, r in enumerate(df.itertuples(index=False)):
+        col = GREEN if (r.reliable and r.p < 0.05) else (INK if r.reliable else "#B0B7C3")
+        ax.errorbar(r.delta, i, xerr=[[r.delta - r.lb95], [r.ub95 - r.delta]],
+                    fmt="o", color=col, ecolor=col, elinewidth=1.2, capsize=3, ms=5)
+        labels.append(f"[{titles[r.dim]}] {r.group}  n={r.n}" + ("" if r.reliable else " ⚠"))
+        ys.append(i)
+    ax.axvline(0, color=INK, lw=1.0)
+    ax.set_yticks(ys)
+    ax.set_yticklabels(labels, fontsize=8.5)
+    ax.set_xlabel("Δ family Recall@100  (P1 − B3 · 양수 = 제안법 우세)")
+    ax.set_title("하위집단 안전성 — 국소 회귀 없음 (test · ⚠ = n<20 비확정)",
+                 fontsize=11, color=INK)
+    ax.grid(axis="x", color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    for spine in ("top", "right"):
+        ax.spines[spine].set_visible(False)
+    plt.tight_layout()
+    return _save(fig, out)
+
+
 def main() -> None:
     """CSV·상수에서 논문 그림 전량을 SVG 로 결정적으로 재생성한다."""
     made: list[Path] = []
@@ -611,6 +782,12 @@ def main() -> None:
         pd.read_csv(PROCESSED / "h2_timeseries.csv"),
         pd.read_csv(PROCESSED / "h2_leadtime.csv"),
     ))
+    # v0.9 · C2 선행기술 검색 (analysis/ 가 배출한 CSV 필요 — 없으면 건너뛰고 알린다)
+    for fn in (fig_ir_increment, fig_ir_metrics, fig_ir_ablation, fig_ir_subgroup):
+        try:
+            made.append(fn())
+        except FileNotFoundError as e:
+            print(f"  ⚠ {fn.__name__} 건너뜀 — 입력 CSV 없음: {e.filename}")
     for p in made:
         print(f"  ✓ {p.relative_to(FIGURES.parents[1])}")
     print(f"{len(made)} figures → {FIGURES}")

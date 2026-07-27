@@ -1,6 +1,6 @@
 """IR 평가 지표 (PLAN-018 §6 · 원고 §5.1).
 
-run(순위) × qrel(정답) → Recall@K·Success@K·MRR@K.
+run(순위) × qrel(정답) → Recall@K·Success@K·MRR@K·nDCG@K·bpref.
 - **문서수준**(family 집계 이전): `evaluate()`.
 - **family 수준(F1 주지표)**: `evaluate(..., family=<doc_id→family_id>)` — run·qrel 을 family 로
   접어 계산한다. 같은 발명의 국내외 중복 공개를 한 패밀리로 세어 회수를 정직하게 잰다(원고 §4.5·5.1).
@@ -60,13 +60,54 @@ def _fold(ranked: list[str], fam: dict[str, str]) -> list[str]:
     return out
 
 
+NDCG_K = 20     # 원고 §5.1 보조지표 nDCG@20 (동결)
+
+
+def ndcg_at_k(ranked: list[str], pos: set[str], k: int = NDCG_K) -> float:
+    """nDCG@k — **이진 이득**(gain=1).
+
+    원고 §5.1 은 "등급형 qrel 이 있는 부분집합"의 nDCG 를 예고했으나 as-built qrel 은 전량 등급 1
+    (심사관 인용 = 약한 양성 · 2,416행 모두 relevance=1)이라 **등급 자원이 없다**. 등급을 지어내지
+    않고 이진 이득으로 계산하며, 표에는 그렇게 라벨한다(등급형 nDCG 는 §5.5 전문가 판정 확보 시 후속).
+    """
+    import math
+
+    dcg = sum(1.0 / math.log2(i + 1) for i, d in enumerate(ranked[:k], start=1) if d in pos)
+    ideal = min(len(pos), k)
+    idcg = sum(1.0 / math.log2(i + 1) for i in range(1, ideal + 1))
+    return dcg / idcg if idcg > 0 else 0.0
+
+
+def bpref(ranked: list[str], pos: set[str]) -> float:
+    """bpref (Buckley & Voorhees 2004) — **retrieved-as-judged 관례**.
+
+    고전 bpref 는 "판정된 비적합 문서"만 세지만 본 qrel 은 **양성 전용**이라(§2.2 약한 정답)
+    판정 비적합 집합이 공집합 → 고전 정의로는 항상 1.0 인 공허한 지표가 된다. 그래서 **회수된
+    비양성 문서를 비적합으로 간주**하는 관례를 쓴다: 상위에 미인용 후보가 많이 끼어들수록 감점.
+    이는 관례이지 등급 자원이 아니며, 표·본문에 관례를 명시해 보고한다.
+
+    bpref = (1/R) Σ_{r∈회수된 양성} (1 − min(|r 위의 비양성|, R) / R)
+    """
+    r = len(pos)
+    if r == 0:
+        return 0.0
+    n_above = 0
+    total = 0.0
+    for d in ranked:
+        if d in pos:
+            total += 1.0 - min(n_above, r) / r
+        else:
+            n_above += 1
+    return total / r
+
+
 def evaluate(
     run: dict[str, list[str]],
     qrel: dict[str, set[str]],
     ks: tuple[int, ...] = (50, 100, 500),
     family: dict[str, str] | None = None,
 ) -> dict:
-    """Recall@K·Success@K·MRR@K (매크로, 정답≥1 질의만).
+    """Recall@K·Success@K·MRR@K·nDCG@20·bpref (매크로, 정답≥1 질의만).
 
     `family` 를 주면 run·qrel 을 family 로 접어 **family 수준**(F1 주지표)으로 잰다. fold-then-cut:
     순위를 family 로 중복 제거한 뒤 top-K family 를 취한다. 주면 안 주면 문서수준.
@@ -83,9 +124,13 @@ def evaluate(
     recall = {k: 0.0 for k in ks}
     success = {k: 0 for k in ks}
     mrr = 0.0
+    ndcg_sum = 0.0
+    bpref_sum = 0.0
     for qid in eval_qids:
         pos = qrel[qid]
         ranked = _fold(run.get(qid, []), family) if family is not None else run.get(qid, [])
+        ndcg_sum += ndcg_at_k(ranked, pos, NDCG_K)
+        bpref_sum += bpref(ranked, pos)
         # MRR: 첫 정답의 역수 순위 (상한 max(ks) 내)
         for i, d in enumerate(ranked[: max(ks)], start=1):
             if d in pos:
@@ -100,6 +145,8 @@ def evaluate(
     out["recall"] = {k: (recall[k] / n if n else 0.0) for k in ks}
     out["success"] = {k: (success[k] / n if n else 0.0) for k in ks}
     out["mrr"] = mrr / n if n else 0.0
+    out[f"ndcg@{NDCG_K}"] = ndcg_sum / n if n else 0.0
+    out["bpref"] = bpref_sum / n if n else 0.0
     return out
 
 
@@ -115,6 +162,8 @@ def _fmt(res: dict) -> str:
             f"Success@{k:<4} {res['success'][k]:.4f}"
         )
     lines.append(f"  MRR         {res['mrr']:.4f}")
+    lines.append(f"  nDCG@{NDCG_K}(이진이득) {res[f'ndcg@{NDCG_K}']:.4f}   "
+                 f"bpref(retrieved-as-judged) {res['bpref']:.4f}")
     return "\n".join(lines)
 
 

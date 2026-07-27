@@ -261,3 +261,27 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - run: bm25_b0_claim·dense_b2_claim·hybrid_b3_rrf (gitignore·재생성) · FAISS flat
 - dev family R@100: B0=0.2942·B2=0.2459·B3=0.3212 · 부트스트랩 B3−B0 CI[−0.0022,+0.0565]
 - 프로파일 data/profiles/ir_baselines_b0b3.md · 반영: C2 무대(강한 텍스트 기준선 B3 확립)
+
+## 2026-07-28 · 거절근거 법조 라벨 파생 스냅샷 (§5.2·§6.4 하위집단)
+- 명령: `python -m sdkb_paper.ontology.vendor --derive-rejection` (TTL 스냅샷 재동결 없음 · G₀ 서명 불변)
+- 원천: `~/Dev/sdkb/data/patents/rejected_patents_meta.parquet` 의 `rejection_legal_bases`
+  (`"§1×n|§2×m"` = 법조×해당 청구항 수). **원문 열 0개** — 식별자+법조만 추출해 커밋 가능(CLAUDE §1-5).
+- 산출: `data/external/sdkb/rejection_basis.csv` (1,000행 · sha256 `651f03010228…` · PROVENANCE 갱신)
+- 실측: 진보성(제29조 제2항) 400 · 신규성(제1항) 14 · **신규성 단독 0** · 라벨 없음 600
+- **상류 결함 기록:** `sdkb-abox-patents.ttl` 은 이 문자열을 단일 `ont:Rejection_Inventiveness` 로
+  접어 **신규성 축을 잃는다**(TTL 신규성 0건). 우회가 아니라 통로다 — 상류 수정은 별건.
+- 용도: 하위집단 분해 **전용**(순위 함수 입력 아님 · oracle-free 주모드 불변)
+- 반영: §6.4 거절근거 행 · §7.7 "신규성 vs 진보성" 을 자원 부재로 **후속 연구 질문으로 강등**
+
+## 2026-07-28 · §6.2·§6.4 표·그림 전량 산출 (N1·N2·N3·N7·N10)
+- 명령: `make tables SPLIT=dev && make tables SPLIT=test && make figures`
+- 새 검색 없음 — 동결 run(B0·B2·B3) 재평가 + 동결 설정 재랭크(P0★·P1). 재선택 없음.
+- 신규 지표: nDCG@20(**이진 이득** — qrel 전량 등급 1) · bpref(**retrieved-as-judged** 관례) ·
+  R@50/500 · Success@100 · MRR@500 · 단계별 지연(비결정적 측정)
+- F11 어휘중첩 동결: dev Q1 = **0.0079**(char 3-gram Jaccard·mean) → `data/processed/ir/overlap_threshold.json`
+  (test 27 low / 171 high · 임계는 test 분포로 재산출하지 않음)
+- 산출: `paper/tables/ir_{performance,subgroup,increment}_{dev,test}.md` ·
+  `paper/figures/ir_{increment,metrics,ablation,subgroup}.svg` · `data/processed/ir/ir_*.csv`(viz 입력)
+- **가설에 불리한 실측 3건**: ① nDCG@20 미개선(P1 −0.0176 p=0.227 · P0★ −0.0395 p=0.029 유의 악화)
+  ② low-overlap 집단 Δ−0.0586 < high +0.0711 (§7.3 반증) ③ 교차언어 집단 이득 유의 미달(+0.0140 p=0.518)
+- 반영: 원고 §5.1·§5.3·§6.2·§6.3·§6.4·§7.3·§7.5·§7.6·§7.7·§8.5·§9.1

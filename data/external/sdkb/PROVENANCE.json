@@ -213,6 +213,19 @@
       "source_path": "data/schema_report.json",
       "role": "원천의 sha256 + 노드/엣지 카운트",
       "sha256": "eed652d9ee3aebc3bafcea990a85f7e9593cfdccdc9afba7a67329b3cf0fb249"
+    },
+    {
+      "file": "rejection_basis.csv",
+      "source_path": "data/patents/rejected_patents_meta.parquet",
+      "role": "파생: 거절근거 법조 라벨(하위집단 전용 · 원문 0열 · 순위 입력 아님)",
+      "sha256": "651f03010228e8b9055a1b295a317a8bd8a3348cbbe670750b7a042aa7b0315b",
+      "derived": true,
+      "counts": {
+        "rows": 1000,
+        "novelty": 14,
+        "inventiveness": 400
+      }
     }
-  ]
+  ],
+  "derived_updated_at": "2026-07-27T14:47:22+00:00"
 }

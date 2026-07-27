@@ -1,4 +1,4 @@
-.PHONY: setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -74,6 +74,18 @@ index:
 
 eval:
 	uv run python -m sdkb_paper.analysis.metrics
+
+# 논문 §6.2·§6.4 표 전량 재생성 (동결 run 재평가 · 새 검색 없음 · 수기 기입 금지 CLAUDE §1-7).
+# 산출: paper/tables/ir_{performance,subgroup,increment}_{dev,test}.md + viz 입력 CSV.
+# SPLIT=dev 로 개발 분할만 돌릴 수 있다. test 는 봉인 개봉 후 재평가 전용 — 재선택 금지.
+SPLIT ?= test
+tables:
+	uv run python -m sdkb_paper.analysis.overlap --freeze
+	uv run python -m sdkb_paper.analysis.results_table --split $(SPLIT) --write --latency
+	uv run python -m sdkb_paper.analysis.subgroup --table --split $(SPLIT)
+	uv run python -m sdkb_paper.analysis.increment --split $(SPLIT) --write
+	uv run python -m sdkb_paper.analysis.ablation --split $(SPLIT) --p1 \
+		--tau 0.7 --alpha 0.75 --w 0.25 0.0 0.25 0.5 --write
 
 # IR 벤치마크 코퍼스 조립 (PLAN-017 M1) — G₀/G₁/G₂ + sidecar 청구항 → 문서중심 코퍼스.
 # 산출: data/processed/ir/ir_corpus_v09.parquet · qrel_examiner.parquet(gitignore) +

@@ -31,3 +31,39 @@ def test_paired_bootstrap_no_difference():
     qrel = {f"q{i}": {"a"} for i in range(10)}
     r = B.paired_bootstrap(run, run, qrel, k=1, n=500, seed=1)
     assert r["delta"] == 0.0 and r["lb95"] == 0.0 and r["ub95"] == 0.0
+
+
+# ── 보조지표 페어드 부트스트랩(N7) — 주지표와 같은 절차를 쓰는지 ─────────────
+def test_per_query_metric_dispatch():
+    from sdkb_paper.analysis.bootstrap import per_query_metric
+
+    run = {"q1": ["a", "x", "b"], "q2": ["y", "c"]}
+    qrel = {"q1": {"a", "b"}, "q2": {"c"}}
+    rec = per_query_metric(run, qrel, "recall", k=3)
+    ndcg = per_query_metric(run, qrel, "ndcg", k=3)
+    mrr = per_query_metric(run, qrel, "mrr", k=3)
+    bp = per_query_metric(run, qrel, "bpref", k=3)
+    assert rec["q1"] == 1.0 and abs(mrr["q1"] - 1.0) < 1e-12
+    assert abs(mrr["q2"] - 0.5) < 1e-12
+    assert 0.0 < ndcg["q1"] <= 1.0 and 0.0 < bp["q1"] <= 1.0
+
+
+def test_per_query_metric_rejects_unknown():
+    import pytest
+
+    from sdkb_paper.analysis.bootstrap import per_query_metric
+    with pytest.raises(ValueError):
+        per_query_metric({"q": ["a"]}, {"q": {"a"}}, "nosuch")
+
+
+def test_paired_bootstrap_metric_is_deterministic():
+    """같은 run·qrel·지표 → 같은 CI (시드 고정 F16)."""
+    from sdkb_paper.analysis.bootstrap import paired_bootstrap
+
+    a = {"q1": ["a", "b"], "q2": ["c", "x"]}
+    b = {"q1": ["x", "a"], "q2": ["x", "c"]}
+    qrel = {"q1": {"a"}, "q2": {"c"}}
+    r1 = paired_bootstrap(a, b, qrel, k=2, metric="ndcg", n=200)
+    r2 = paired_bootstrap(a, b, qrel, k=2, metric="ndcg", n=200)
+    assert r1 == r2
+    assert r1["delta"] > 0        # a 가 정답을 더 위에 둔다

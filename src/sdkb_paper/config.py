@@ -101,6 +101,12 @@ IR_FAMILY_MAP = RAW_BQ / "ir_family_map.parquet"
 # Dense(B2 · F12 Titan Embed v2). 임베딩 캐시(텍스트해시→벡터)·FAISS flat 색인 · gitignore.
 IR_DENSE_CACHE = IR_INDEX_DIR / "dense_titan_cache.sqlite"
 IR_DENSE_DIM = 1024                                    # Titan v2 지원 256/512/1024 중 최대(동결)
+# 거절근거 법조 라벨 (원고 §5.2·§6.4 하위집단 **전용** · 순위 입력 아님). vendor.py 가 상류
+# rejected_patents_meta 에서 식별자+법조만 파생해 얼린다 — 원문 0열이라 커밋 가능.
+# TTL 스냅샷은 §1×n|§2×m 을 Rejection_Inventiveness 하나로 접어 신규성 축을 잃는다(상류 결함).
+REJECTION_BASIS = EXTERNAL_SDKB / "rejection_basis.csv"
+# F11 어휘중첩 동결 임계(원고 §5.3). dev Q1 을 low-overlap 경계로 얼린 기록 — analysis/overlap.py.
+IR_OVERLAP_THRESHOLD = IR_DIR / "overlap_threshold.json"
 # 결정성 시드 (F16 사전등록): 분할·부트스트랩·hard-neg 샘플링 전역 시드.
 SEED = 20260726
 

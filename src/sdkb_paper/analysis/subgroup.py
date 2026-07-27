@@ -7,7 +7,12 @@
   (KR-only / 외국포함 / 혼합). 정답의 39% 가 영어·2% 일본어(SPEC-007) — 언어중립 개념 온톨로지팔이
   값을 증명할 무대(원고 H2b). 이 축이 T2 의 핵심 KR/외국 차원이다.
 - **공정군(process group):** 질의 지배 개념 축(Process·SubProcess / Device / Material / FailureMode …).
-- **거절근거:** 코퍼스에 부재(온톨로지 rejectedFor 조인 필요) → **후속**(레이블 배선 시 추가).
+- **거절근거(2026-07-27 배선):** 벤더 파생 `rejection_basis.csv`(config.REJECTION_BASIS)의 법조 라벨.
+  **주의 — 자원의 실상:** 상류 원본 1,000건 중 진보성(제29조 제2항) 400 · 신규성(제1항) 14이며
+  **신규성 단독 거절은 0건**(14건 전부 진보성과 병존) · 600건은 구조화 라벨 없음. 따라서
+  "신규성 vs 진보성" 대비는 성립하지 않는다 — 집단은 `inventiveness` / `novelty+inventiveness`
+  / `unlabeled` 셋이고 신규성 병존군은 MIN_N 미달(dev 4·test 3)이라 **확정 결론 금지**다.
+- **어휘 중첩(F11 · 원고 §5.3):** `analysis/overlap.py` 의 dev-Q1 동결 임계로 low/high 이분.
 
 최소 질의수(기본 20) 미달 하위집단은 확정결론 금지 · 표에 n 명기(M4-10).
 
@@ -36,8 +41,30 @@ def positive_lang_label(pos_docs: set[str], doc_lang: dict[str, str]) -> str:
     return "has_foreign" if foreign else "kr_only"
 
 
-def query_labels(qrel: dict[str, set[str]]) -> dict[str, dict[str, str]]:
-    """질의 → {'pos_lang': ..., 'proc_group': ...}."""
+def rejection_labels() -> dict[str, str]:
+    """doc_id → 'inventiveness' | 'novelty+inventiveness' | 'unlabeled' (벤더 파생 CSV).
+
+    신규성 단독 집단은 자원에 존재하지 않는다(상류 실측 0건) — 없는 집단을 만들지 않는다.
+    """
+    import csv
+
+    out: dict[str, str] = {}
+    if not config.REJECTION_BASIS.exists():
+        return out
+    with config.REJECTION_BASIS.open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            nov, inv = r["has_novelty"] == "1", r["has_inventiveness"] == "1"
+            out[r["doc_id"]] = ("novelty+inventiveness" if nov and inv else
+                                "novelty_only" if nov else
+                                "inventiveness" if inv else "unlabeled")
+    return out
+
+
+def query_labels(qrel: dict[str, set[str]], split: str | None = None) -> dict[str, dict[str, str]]:
+    """질의 → {'pos_lang', 'proc_group', 'rejection', 'lex_overlap'}.
+
+    split 을 주면 F11 어휘중첩 라벨(동결 임계)까지 붙인다 — 임계는 dev 에서만 산출된다.
+    """
     import pandas as pd
 
     from ..ontology.concept_axis import load_axis
@@ -57,12 +84,20 @@ def query_labels(qrel: dict[str, set[str]]) -> dict[str, dict[str, str]]:
                 return grp
         return "other"
 
+    rej = rejection_labels()
+    lex: dict[str, str] = {}
+    if split:
+        from .overlap import labels as overlap_labels
+        lex = overlap_labels(split)
+
     out = {}
     for qid, pos in qrel.items():
         if not pos:
             continue
         out[qid] = {"pos_lang": positive_lang_label(pos, doc_lang),
-                    "proc_group": proc_group(qid)}
+                    "proc_group": proc_group(qid),
+                    "rejection": rej.get(qid, "unlabeled"),
+                    "lex_overlap": lex.get(qid, "unknown")}
     return out
 
 
@@ -103,29 +138,111 @@ def _fmt(res: dict, delta: float) -> str:
     return "\n".join(lines)
 
 
+DIM_TITLES = {
+    "rejection": "거절근거 (특허법 제29조)",
+    "lex_overlap": "어휘 중첩 (F11 · dev-Q1 동결 임계)",
+    "pos_lang": "정답 언어 구성 (교차언어)",
+    "proc_group": "공정군 (질의 지배 개념축)",
+}
+GROUP_LABELS = {
+    "inventiveness": "진보성만(제2항)", "novelty+inventiveness": "신규성+진보성(제1·2항)",
+    "novelty_only": "신규성만(제1항)", "unlabeled": "구조화 라벨 없음",
+    "low_overlap": "low lexical overlap", "high_overlap": "high lexical overlap",
+    "unknown": "미상(정답 텍스트 부재)",
+    "kr_only": "정답 전량 한국어", "has_foreign": "정답에 외국어 포함",
+}
+
+
+def table_rows(run_new, run_old, qrel, fam, labels, dim: str, k: int = 100) -> list[dict]:
+    """하위집단별 (n · qrel 수 · R_old · R_new · Δ · 95%CI). Δ 는 집단 내 페어드 부트스트랩."""
+    from .bootstrap import paired_bootstrap
+
+    groups: dict[str, list[str]] = {}
+    for qid in (q for q, p in qrel.items() if p):
+        groups.setdefault(labels.get(qid, {}).get(dim, "unknown"), []).append(qid)
+    rows = []
+    for g in sorted(groups, key=lambda x: -len(groups[x])):
+        qids = groups[g]
+        sub = {q: qrel[q] for q in qids}
+        b = paired_bootstrap(run_new, run_old, sub, k=k, family=fam)
+        rows.append({"group": g, "n": len(qids), "n_qrel": sum(len(qrel[q]) for q in qids),
+                     "r_old": b["mean_b"], "r_new": b["mean_a"], "delta": b["delta"],
+                     "lb95": b["lb95"], "ub95": b["ub95"], "p": b["p_two_sided"],
+                     "reliable": len(qids) >= MIN_N})
+    return rows
+
+
+def render_table(split: str, dims: dict[str, list[dict]], k: int, new_label: str,
+                 old_label: str) -> str:
+    lines = [
+        f"# §6.4 하위집단 결과표 — {split} 분할",
+        "",
+        f"> 자동 생성: `python -m sdkb_paper.analysis.subgroup --table --split {split}`. "
+        "수기 기입 금지(CLAUDE.md §1-7).",
+        f"> 비교: **{new_label}** vs **{old_label}** · family Recall@{k} · "
+        f"집단 내 질의단위 페어드 부트스트랩 10k·seed {config.SEED}.",
+        f"> **n < {MIN_N} 집단은 확정 결론을 내지 않는다**(표에 ⚠ 표시). Δ = 제안법 − 기준선.",
+        "",
+    ]
+    for dim, rows in dims.items():
+        lines += [f"## {DIM_TITLES.get(dim, dim)}", "",
+                  f"| 집단 | 질의 수 | qrel 수 | {old_label} R@{k} | {new_label} R@{k} | Δ | 95% CI | p |",
+                  "|---|---:|---:|---:|---:|---:|---|---:|"]
+        for r in rows:
+            name = GROUP_LABELS.get(r["group"], r["group"])
+            flag = "" if r["reliable"] else f" ⚠(n<{MIN_N})"
+            lines.append(
+                f"| {name}{flag} | {r['n']} | {r['n_qrel']} | {r['r_old']:.4f} | "
+                f"{r['r_new']:.4f} | {r['delta']:+.4f} | "
+                f"[{r['lb95']:+.4f}, {r['ub95']:+.4f}] | {r['p']:.3f} |"
+            )
+        lines.append("")
+    return "\n".join(lines)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--a", type=Path, required=True, help="새 시스템 run(예: P0★)")
-    ap.add_argument("--b", type=Path, required=True, help="기준 run(예: B3)")
+    ap.add_argument("--a", type=Path, default=None, help="새 시스템 run(기본 P1)")
+    ap.add_argument("--b", type=Path, default=None, help="기준 run(기본 B3)")
     ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
     ap.add_argument("--k", type=int, default=100)
     ap.add_argument("--delta", type=float, default=0.05, help="T2 마진 δ(F3)")
+    ap.add_argument("--table", action="store_true", help="§6.4 표 생성(paper/tables 기록)")
     args = ap.parse_args()
     if args.split == "test":
         print("⚠️  test 개봉 — 사전등록 위반 가능(F9)")
 
-    from ..collect.bq_family_ir import load_family_map
     import pandas as pd
+
+    from ..collect.bq_family_ir import load_family_map
+    from .results_table import run_path
     fam = load_family_map()
     qrel = load_qrel()
     if args.split != "all":
         sp = pd.read_parquet(config.IR_SPLIT)
         keep = set(sp.loc[sp["split"] == args.split, "doc_id"])
         qrel = {q: pos for q, pos in qrel.items() if q in keep}
-    labels = query_labels(qrel)
-    run_a, run_b = load_run(args.a), load_run(args.b)
-    print(f"[하위집단 T2 · {args.split} · family R@{args.k} · δ={args.delta}]  new={args.a.name} old={args.b.name}")
-    for dim in ("pos_lang", "proc_group"):
+    labels = query_labels(qrel, split=args.split if args.table else None)
+    pa = args.a or run_path("P1", args.split)
+    pb = args.b or run_path("B3_rrf", args.split)
+    run_a, run_b = load_run(pa), load_run(pb)
+
+    if args.table:
+        dims = {d: table_rows(run_a, run_b, qrel, fam, labels, d, args.k)
+                for d in ("rejection", "lex_overlap", "pos_lang", "proc_group")}
+        md = render_table(args.split, dims, args.k, "P1 (제안)", "B3 (텍스트 기준선)")
+        print(md)
+        config.TABLES.mkdir(parents=True, exist_ok=True)
+        out = config.TABLES / f"ir_subgroup_{args.split}.md"
+        out.write_text(md, encoding="utf-8")
+        print(f"✓ {out}")
+        import pandas as pd     # viz 입력 (viz 는 계산하지 않는다 · CLAUDE.md §3)
+        pd.DataFrame([{"dim": d, **r} for d, rs in dims.items() for r in rs]).to_csv(
+            config.PROCESSED / "ir" / f"ir_subgroup_{args.split}.csv", index=False)
+        return
+
+    print(f"[하위집단 T2 · {args.split} · family R@{args.k} · δ={args.delta}]  new={pa.name} old={pb.name}")
+    for dim in ("pos_lang", "proc_group", "rejection"):
         print(_fmt(compare(run_a, run_b, qrel, fam, labels, dim, args.k), args.delta))
 
 

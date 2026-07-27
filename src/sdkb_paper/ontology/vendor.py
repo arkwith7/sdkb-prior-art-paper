@@ -56,6 +56,24 @@ VENDOR_FILES: list[tuple[str, str]] = [
 SOURCE_JSON = "data/semiconductor_v0_3.json"
 SCHEMA_REPORT = "data/schema_report.json"
 
+# --- 파생 스냅샷: 거절근거 법조 (원고 §5.2·§6.4 하위집단 라벨 전용) --------------------
+#
+# 왜 파생인가: 상류 `data/patents/rejected_patents_meta.parquet` 은 title/abstract/claim1 원문을
+# 담고 있어 **커밋할 수 없다**(CLAUDE.md §1-5). 그래서 파일을 통째로 vendor 하지 않고 식별자 +
+# 법조 라벨만 추출해 CSV 로 얼린다. 원문 0열.
+#
+# 왜 필요한가: TTL 스냅샷(sdkb-abox-patents.ttl)은 `§1×n|§2×m` 문자열을 `Rejection_Inventiveness`
+# 하나로 접어 **신규성(제29조 제1항) 축을 잃는다**(실측 2026-07-27: 상류 원본 신규성 14건 →
+# TTL 0건). 상류 결함이며 별건으로 고칠 것 — 이 CSV 는 그때까지의 라벨 원천이 아니라
+# **원본이 가진 해상도를 잃지 않고 옮기는 통로**다.
+#
+# **누출 규율(CLAUDE.md §1-4):** 이 라벨은 질의(거절특허) 속성이며 **하위집단 분해에만** 쓴다.
+# 순위 함수 입력이 아니다(oracle-free 주모드 — ablation A5 가 구조적 0 인 것과 같은 이유).
+# 인용 엣지별 법조(cited_doc_id 동반)는 정답 표면을 넓히므로 **의도적으로 vendor 하지 않는다**.
+REJECTION_SRC = "data/patents/rejected_patents_meta.parquet"
+REJECTION_OUT = "rejection_basis.csv"
+LEGAL_BASIS_NAMES = {"§1": "novelty", "§2": "inventiveness"}   # 특허법 제29조 제1항·제2항
+
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -289,6 +307,53 @@ def _reject_stale_artifacts(sdkb_home: Path) -> dict:
     }
 
 
+def _derive_rejection_basis(sdkb_home: Path, dest: Path) -> dict | None:
+    """상류 거절특허 메타 → 식별자 + 법조 라벨 CSV (원문 0열). 원천 부재면 None.
+
+    `rejection_legal_bases` 는 `"§1×2|§2×3"` 형식(법조×해당 청구항 수). 이를 조항별 카운트로
+    펼치고 boolean 플래그를 붙인다. 결정적(정렬·고정 열 순서) — 재실행하면 같은 sha256.
+    """
+    import csv
+    import re
+
+    src = sdkb_home / REJECTION_SRC
+    if not src.exists():
+        return None
+    import pandas as pd
+
+    df = pd.read_parquet(src, columns=["patent_id", "rejection_legal_bases",
+                                       "has_rejection_structured"])
+    rows = []
+    for r in df.itertuples(index=False):
+        counts: dict[str, int] = {}
+        for tok in str(r.rejection_legal_bases or "").split("|"):
+            m = re.match(r"§(\d+)×(\d+)$", tok.strip())
+            if m:
+                counts[f"§{m.group(1)}"] = counts.get(f"§{m.group(1)}", 0) + int(m.group(2))
+        rows.append({
+            "doc_id": str(r.patent_id).replace("patent:", ""),
+            "has_novelty": int("§1" in counts),
+            "has_inventiveness": int("§2" in counts),
+            "n_claims_novelty": counts.get("§1", 0),
+            "n_claims_inventiveness": counts.get("§2", 0),
+            "has_structured": int(bool(r.has_rejection_structured)),
+            "raw_bases": str(r.rejection_legal_bases or ""),
+        })
+    rows.sort(key=lambda x: x["doc_id"])
+    out = dest / REJECTION_OUT
+    with out.open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
+    n_nov = sum(r["has_novelty"] for r in rows)
+    n_inv = sum(r["has_inventiveness"] for r in rows)
+    print(f"[vendor] 거절근거 파생: {len(rows)}건 (신규성 {n_nov} · 진보성 {n_inv}) -> {out.name}")
+    return {"file": out.name, "source_path": REJECTION_SRC,
+            "role": "파생: 거절근거 법조 라벨(하위집단 전용 · 원문 0열 · 순위 입력 아님)",
+            "sha256": sha256(out), "derived": True,
+            "counts": {"rows": len(rows), "novelty": n_nov, "inventiveness": n_inv}}
+
+
 def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
     if not (sdkb_home / ".git").exists():
         raise SystemExit(f"[vendor] SDKB git repo 를 찾을 수 없음: {sdkb_home}")
@@ -312,6 +377,10 @@ def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
         out = dest / Path(rel).name
         shutil.copy2(sdkb_home / rel, out)
         files.append({"file": out.name, "source_path": rel, "role": role, "sha256": sha256(out)})
+
+    derived = _derive_rejection_basis(sdkb_home, dest)
+    if derived is not None:
+        files.append(derived)
 
     prov = {
         "source_repo": _git(sdkb_home, "remote", "get-url", "origin"),
@@ -348,7 +417,26 @@ def main() -> None:
         "--verify-freshness", action="store_true",
         help="L0 신선도 — 신선도 검사 이행 증명과 파생 산출물 신선도를 본다 (SDKB 원본 불필요).",
     )
+    ap.add_argument(
+        "--derive-rejection", action="store_true",
+        help="거절근거 라벨 CSV 만 파생·추가한다 (TTL 스냅샷 재동결 없음 — G₀ 서명 불변).",
+    )
     args = ap.parse_args()
+
+    if args.derive_rejection:
+        # 전면 vendor 는 상류 재빌드 + 전 TTL 재동결을 뜻해 G₀ 서명을 흔든다(CLAUDE.md §1-8).
+        # 여기서는 파생 CSV 한 개만 추가하고 PROVENANCE 의 files 항목을 제자리 갱신한다.
+        entry = _derive_rejection_basis(args.sdkb_home, EXTERNAL_SDKB)
+        if entry is None:
+            print(f"[vendor] ✗ 원천 없음: {args.sdkb_home / REJECTION_SRC}", file=sys.stderr)
+            sys.exit(1)
+        pf = EXTERNAL_SDKB / "PROVENANCE.json"
+        prov = json.loads(pf.read_text(encoding="utf-8"))
+        prov["files"] = [f for f in prov["files"] if f["file"] != entry["file"]] + [entry]
+        prov["derived_updated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        pf.write_text(json.dumps(prov, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"[vendor] ✓ PROVENANCE 갱신 — {entry['file']} sha256={entry['sha256'][:12]}…")
+        return
 
     if args.verify_freshness:
         problems = verify_freshness()

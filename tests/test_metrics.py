@@ -66,3 +66,50 @@ def test_load_run_parses_rank_order(tmp_path):
     p.write_text("q1 Q0 d2 2 0.5 tag\nq1 Q0 d1 1 0.9 tag\n", encoding="utf-8")
     run = metrics.load_run(p)
     assert run["q1"] == ["d1", "d2"]    # rank 순 정렬
+
+
+# ── nDCG@20(이진 이득) · bpref(retrieved-as-judged) — N7 보조지표 ──────────────
+def test_ndcg_perfect_and_empty():
+    """정답이 전부 최상위면 1.0 · 회수 0이면 0.0."""
+    assert abs(metrics.ndcg_at_k(["a", "b", "x"], {"a", "b"}, k=20) - 1.0) < 1e-12
+    assert metrics.ndcg_at_k(["x", "y"], {"a"}, k=20) == 0.0
+
+
+def test_ndcg_discounts_lower_ranks():
+    """같은 회수라도 순위가 낮으면 값이 작아야 한다 — 상위 정밀도 지표의 요건."""
+    hi = metrics.ndcg_at_k(["a", "x", "y"], {"a"}, k=20)
+    lo = metrics.ndcg_at_k(["x", "y", "a"], {"a"}, k=20)
+    assert hi > lo > 0.0
+    assert abs(hi - 1.0) < 1e-12                      # 1위 = 이상 DCG
+
+
+def test_ndcg_ideal_capped_at_k():
+    """정답이 k 보다 많으면 이상 DCG 는 k 개로 자른다(1.0 을 넘지 않는다)."""
+    ranked = [str(i) for i in range(5)]
+    v = metrics.ndcg_at_k(ranked, set(ranked), k=3)
+    assert abs(v - 1.0) < 1e-12
+
+
+def test_bpref_penalizes_nonrelevant_above():
+    """양성 위에 비양성이 많이 낄수록 감점 — 양성 전용 qrel 관례."""
+    clean = metrics.bpref(["a", "b", "x", "y"], {"a", "b"})
+    dirty = metrics.bpref(["x", "y", "a", "b"], {"a", "b"})
+    assert abs(clean - 1.0) < 1e-12
+    assert 0.0 <= dirty < clean
+
+
+def test_bpref_unretrieved_positive_contributes_zero():
+    """회수되지 않은 양성은 0 기여 — 분모는 정답 수 그대로."""
+    assert abs(metrics.bpref(["a"], {"a", "b"}) - 0.5) < 1e-12
+    assert metrics.bpref([], {"a"}) == 0.0
+    assert metrics.bpref(["x"], set()) == 0.0
+
+
+def test_evaluate_exposes_aux_metrics():
+    """evaluate() 가 nDCG·bpref 를 함께 낸다(§6.2 표의 열)."""
+    run = {"q1": ["a", "x"], "q2": ["y", "c"]}
+    qrel = {"q1": {"a"}, "q2": {"c"}}
+    res = metrics.evaluate(run, qrel, ks=(2,))
+    assert f"ndcg@{metrics.NDCG_K}" in res and "bpref" in res
+    assert 0.0 < res[f"ndcg@{metrics.NDCG_K}"] <= 1.0
+    assert 0.0 < res["bpref"] <= 1.0

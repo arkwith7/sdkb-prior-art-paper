@@ -194,6 +194,7 @@ def main() -> None:
     ap.add_argument("--w", type=float, nargs="+", required=True,
                     metavar="W", help="P0★=Wc Wh Wi · P1=Wc Wh Wi Wf")
     ap.add_argument("--k", type=int, default=100)
+    ap.add_argument("--write", action="store_true", help="§6.4 ablation 표·그림 입력 CSV 기록")
     args = ap.parse_args()
     if args.split == "test":
         print("⚠️  test 개봉 — 사전등록 위반 가능(F9)")
@@ -202,6 +203,13 @@ def main() -> None:
     else:
         res = run_ablation(args.split, args.alpha, tuple(args.w), args.k)
     print(_fmt(res))
+    if args.write:
+        import pandas as pd
+        df = pd.DataFrame(res["rows"])
+        df["r_full"] = res["r_full"]
+        out = config.PROCESSED / "ir" / f"ir_ablation_{args.split}.csv"
+        df.to_csv(out, index=False)
+        print(f"✓ {out}")
 
 
 if __name__ == "__main__":
