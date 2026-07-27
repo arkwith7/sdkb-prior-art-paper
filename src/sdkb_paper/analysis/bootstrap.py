@@ -61,10 +61,13 @@ def paired_bootstrap(
     idx = rng.integers(0, m, size=(n, m))
     boot = diff[idx].mean(axis=1)          # 각 리샘플의 평균 차이
     lb, ub = np.percentile(boot, [2.5, 97.5])
+    # 양측 부트스트랩 p (H0: Δ=0): 부호 반대편 꼬리 비율 ×2. Holm 보정 입력(ablation).
+    p_two = 2.0 * min(float((boot <= 0).mean()), float((boot >= 0).mean()))
     return {
         "k": k, "level": "family" if family is not None else "document", "n_queries": m,
         "mean_a": float(a.mean()), "mean_b": float(b.mean()), "delta": float(diff.mean()),
-        "lb95": float(lb), "ub95": float(ub), "n_boot": n, "seed": seed,
+        "lb95": float(lb), "ub95": float(ub), "p_two_sided": min(p_two, 1.0),
+        "n_boot": n, "seed": seed,
         "win": int((diff > 0).sum()), "loss": int((diff < 0).sum()), "tie": int((diff == 0).sum()),
     }
 

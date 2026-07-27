@@ -87,6 +87,9 @@ IR_PROFILE = DATA / "profiles" / "ir_corpus_v09.md"   # §4 데이터 프로파�
 IR_INDEX_DIR = IR_DIR / "index"                        # Lucene(BM25) · FAISS 색인
 IR_RUNS_DIR = IR_DIR / "runs"                          # 시스템별 순위 산출(run 파일)
 IR_USERDICT = IR_DIR / "userdict_sdkb.txt"             # nori 사용자사전 (SDKB 어휘 시드 · F13)
+# 개념→축(axis)·TBox 계층 지도 (M4 온톨로지팔 입력 · PLAN-018 §7.3 M4-3/M4-4). 벤더 TTL 의
+# `a ont:X`·subClassOf 에서 결정적 추출 — 커밋 가능(집계·식별자·해시만). concept_axis.py 생성.
+IR_CONCEPT_AXIS = IR_DIR / "concept_axis.parquet"
 # DOCDB family_id 지도 (B2 · F1 family-level 주지표). doc_id→family_id, raw(비커밋).
 # 원천은 BigQuery patents-public-data — 공개번호/출원번호 조인. 미조인은 fallback=자기자신(비율 보고).
 IR_FAMILY_MAP = RAW_BQ / "ir_family_map.parquet"
