@@ -328,6 +328,24 @@ M5 게이트·결함    T1/T2/T3 배선 → fault_inject 12종 → 검출매트�
 - **잔여:** ① **test 봉인 개봉**(사용자 승인 필요)로 H3/H5 확증 확정 · ② P1/P2(claim-feature 재벤더) →
   H4 · ③ figures 신설(C2 성능표·ablation) · ④ M5 T-gate 결함주입.
 
+### 7.5 P1/P2 사전등록 동결 — FeatureCoverage·GroundCompatibility (2026-07-27 사용자 승인 🟢 · 테스트 개봉 전) 🔒
+
+> H4(A4/A5 손실 > A1) 검정을 위해 P1/P2 를 추가한다. Phase-2 실측: `central_axis.oxstore`(11.6M트립·
+> 이미 빌드·sha 스탬프)에 `Patent —hasClaim→ Claim{isIndependent} —hasFeature→ ClaimFeature{featureText}`.
+> **질의 독립항 features 100%·후보 features 97.9% 도달**·doc_id↔patent IRI 직결(`kr_...`). featureText 는
+> KIPRIS 원문 → **비커밋**(런타임 계산·집계/해시만 커밋). 결과 보기 전 동결(CLAUDE §1.3).
+
+| # | 항목 | 동결값 |
+|---|---|---|
+| P-1 | **원천** | 기존 `central_axis.oxstore`(사용자 결정). 887MB 스냅샷 추가 안 함. 피처 sidecar parquet 추출(`corpus/claim_features.py` · gitignore 원문 · 집계/서명 커밋). |
+| P-2 | **FeatureCoverage(A4·P1)** | 질의 **독립항** ClaimFeature 집합 F_q, 후보 전체 ClaimFeature 집합 F_d. `FC(q,d) = |{f∈F_q : max_{g∈F_d} cos(emb(f),emb(g)) ≥ τ}| / |F_q|`. **Titan v2 임베딩(교차언어·기존 캐시 인프라)**. |
+| P-3 | **τ(매칭 임계)** | dev 격자 **{0.5, 0.6, 0.7, 0.8}** 에서 dev family R@100 로 선택·동결. test 최적화 0. |
+| P-4 | **순위함수 확장** | P0★ 에 `w_f·FeatureCoverage` 추가 → P1. F18 격자에 w_f 를 4번째 단체 차원으로(해상도 0.25 유지·구성 증가 SPEC 보고). |
+| P-5 | **GroundCompatibility(A5·P2)** | 거절근거 호환. **oracle-free 주모드에서 배제(§4.5.1) → 주결론 기여 0.** citation/gt-assisted 보조모드에서만 산출(성능주장 금지·상한). oracle-free H3 헤드라인 불변. |
+| P-6 | **Ablation 갱신** | A4(−FeatureCoverage=w_f→0)·A5(−GroundCompat) 추가 → A1–A8 완비. H4 = A4/A5 제거손실 > A1(IPC)·서지. Holm m 갱신(보고). |
+| P-7 | **누출 안전** | FeatureCoverage 는 질의 **자기** 독립항 피처(정답 파생 아님)만 사용 → 누출 없음. `leakage_check` 재확인. qrel 미열람. |
+| P-8 | **비용 게이트** | 임베딩은 유료 → sidecar 추출 후 **dev 풀 피처 물량·비용 실측 보고 → 사용자 유료 승인 후** 임베딩(M3 규율). |
+
 ## 8. 결정성·재현성 (원고 §5.6)
 데이터·shape·CQ·인덱스·모델버전 해시 고정 · 시드/lockfile 공개(F16) · 분할·부트스트랩·hard-neg 시드 고정 ·
 Titan `:0`·Haiku temp0 동결·임베딩 캐시 해시 · 3모드 분리 저장 · `check_signatures.py` 서명 검증 ·
