@@ -4,6 +4,8 @@ G₁ 413,749 · G₂ 429,353 트리플이다. 통째로 그리면 브라우저�
 미리 굽지 않고** 세 단계로 나눠 라이브 SPARQL 로 계산한다.
 
   L1 `domain_map`   공정 계층(Process→SubProcess) + 소자 축. 노드 ~83. 초기 화면.
+  L1 `people_map`   역량을 다리로 둔 인력·문제 축(전문가 매칭 뷰).
+  L1 `priorart_map` 선행기술조사 축 — 개념 · IPC 서브클래스(집계) · 거절유형(C2 의 검색 팔).
   L2 `expand`       개념 하나의 1-hop 이웃(특허·장비·재료·역량·통제). 상한 있음.
   L3 `detail`       노드 하나의 속성 전량. 사이드 패널·툴팁의 원천.
 
@@ -39,8 +41,12 @@ AXES = {
     "Organization": {"ko": "조직", "color": "#bf8700"},
     "Vendor": {"ko": "공급사", "color": "#9e6a03"},
     "TechnologyControl": {"ko": "수출통제", "color": "#da3633"},
+    "CitedPatent": {"ko": "인용 선행기술", "color": "#79c0ff"},
+    "RejectionType": {"ko": "거절 유형", "color": "#f0883e"},
     # 집계 노드 — 그래프의 개체가 아니라 problemCategory 를 묶은 것이다.
     "ProblemCategory": {"ko": "문제 범주(집계)", "color": "#8250df"},
+    # 집계 노드 — IPC 서브클래스는 그래프에 노드가 없다(IPCSymbol 의 notation 앞 4자리다).
+    "IPCSubclass": {"ko": "IPC 서브클래스(집계)", "color": "#1f6feb"},
 }
 
 # L2 확장에서 따라갈 관계. 리터럴 술어는 그래프가 아니라 속성 패널로 간다.
@@ -340,4 +346,244 @@ def expand_category(graph_key: str, cat: str, limit: int = _EXPAND_LIMIT) -> dic
             }
         )
         edges.append({"src": hub, "dst": p["value"], "pred": "problemCategory"})
+    return {"mode": "expand", "nodes": nodes, "edges": edges, "truncated": truncated}
+
+
+# ── 선행기술조사 축 ──────────────────────────────────────────────────
+# C2(핵심증명)의 무대다. 검색이 실제로 타는 두 팔 — **개념 링크(ConceptOverlap)** 와
+# **IPC** — 을 한 화면에 놓는다(§6.4 실측: 이득 본체는 ConceptOverlap+IPC).
+#
+# 세 축을 함께 그린다.
+#   개념       Process·SubProcess·Device·Material·Skill 중 특허 링크가 있는 것(실측 80).
+#   IPC        서브클래스(notation 앞 4자리)는 그래프에 노드가 없다 — `ipc:` 집계 노드다.
+#   거절유형   RejectionType 중 `rejectedFor` 로 실제 쓰인 것만(선언 5 · 사용 2).
+#
+# qrel(정답 인용) 간선은 **그리되 정답지임을 화면에 밝힌다** — 검색 파이프라인에서는
+# 마스킹되는 간선이다(CLAUDE.md §1.4 누출 통제). 화면에 있다고 검색이 쓰는 것이 아니다.
+IPC_PREFIX = "ipc:"
+
+_IPC_MIN_PATENTS = 20  # 서브클래스 203종 중 ≥20건만 그린다(43종) — 나머지는 note 로 밝힌다
+_IPC_TOP_PER_CONCEPT = 2  # 개념당 상위 공동출현 IPC — 625쌍 전부는 hairball 이다
+_QREL_TOP = 60  # qrel 개념→개념 흐름 상위(자기순환 제외)
+
+# 개념 링크 술어 — 검색 팔이 쓰는 네 술어다(실측: realizesProcess 4,174 · involvesMaterial
+# 2,068 · concernsSkill 1,994 · concernsDevice 430). involvesProcess 는 G₀ 에서 특허에 0건.
+_CONCEPT_UNION = """{ ?p ont:realizesProcess ?c } UNION { ?p ont:concernsDevice ?c }
+  UNION { ?p ont:involvesMaterial ?c } UNION { ?p ont:concernsSkill ?c }"""
+
+_PA_CONCEPTS = _PREFIX + f"""
+SELECT ?c ?cls ?label ?def (COUNT(DISTINCT ?p) AS ?n) WHERE {{
+  VALUES ?cls {{ ont:Process ont:SubProcess ont:Device ont:Material ont:Skill }}
+  ?c a ?cls ; skos:prefLabel ?label .
+  OPTIONAL {{ ?c skos:definition ?def }}
+  {_CONCEPT_UNION}
+}} GROUP BY ?c ?cls ?label ?def
+"""
+
+# 질의(거절특허) 쪽 건수만 따로 — 후보 코퍼스와 섞으면 "질의 밀도"가 보이지 않는다.
+_PA_QUERY_COUNTS = _PREFIX + f"""
+SELECT ?c (COUNT(DISTINCT ?p) AS ?n) WHERE {{
+  ?p a ont:RejectedPatent .
+  {_CONCEPT_UNION}
+}} GROUP BY ?c
+"""
+
+_PA_IPC = _PREFIX + """
+SELECT ?sub (COUNT(DISTINCT ?p) AS ?n) WHERE {
+  ?p ont:hasIPC ?ipc . ?ipc skos:notation ?not .
+  BIND(SUBSTR(REPLACE(?not, " ", ""), 1, 4) AS ?sub)
+} GROUP BY ?sub
+"""
+
+_PA_REJECTION = _PREFIX + """
+SELECT ?t ?label (COUNT(DISTINCT ?p) AS ?n) WHERE {
+  ?p ont:rejectedFor ?t . ?t skos:prefLabel ?label .
+} GROUP BY ?t ?label
+"""
+
+_PA_REJ_CONCEPT = _PREFIX + f"""
+SELECT ?t ?c (COUNT(DISTINCT ?p) AS ?n) WHERE {{
+  ?p ont:rejectedFor ?t .
+  {_CONCEPT_UNION}
+}} GROUP BY ?t ?c
+"""
+
+_PA_CONCEPT_IPC = _PREFIX + f"""
+SELECT ?c ?sub (COUNT(DISTINCT ?p) AS ?n) WHERE {{
+  {_CONCEPT_UNION}
+  ?p ont:hasIPC ?ipc . ?ipc skos:notation ?not .
+  BIND(SUBSTR(REPLACE(?not, " ", ""), 1, 4) AS ?sub)
+}} GROUP BY ?c ?sub
+"""
+
+# 질의 특허의 개념 → 그 질의의 심사관 인용(정답)의 개념. 공정·소자 축으로만 — 재료·역량까지
+# 넣으면 쌍이 폭발한다(실측 realizesProcess 만으로 248쌍).
+_PA_QREL_FLOW = _PREFIX + """
+SELECT ?a ?b (COUNT(DISTINCT ?q) AS ?n) WHERE {
+  ?q ont:hasPriorArtExaminer ?g .
+  { ?q ont:realizesProcess ?a } UNION { ?q ont:concernsDevice ?a }
+  { ?g ont:realizesProcess ?b } UNION { ?g ont:concernsDevice ?b }
+} GROUP BY ?a ?b
+"""
+
+_priorart_cache: dict[str, dict] = {}
+
+
+def priorart_map(graph_key: str) -> dict:
+    """L1(선행기술조사 축) — 개념 · IPC 서브클래스(집계) · 거절유형.
+
+    노드 크기는 **그 개념·분류에 걸린 특허 수**(질의 1,000 + 인용 후보 3,034 합산)다.
+    질의 쪽 건수는 `queries` 로 따로 실어 툴팁에서 분리해 보인다.
+    """
+    if graph_key in _priorart_cache:
+        return _priorart_cache[graph_key]
+
+    qcounts = {r[0]["value"]: int(r[1]["value"]) for r in run_query(graph_key, _PA_QUERY_COUNTS).rows}
+
+    nodes: list[dict] = []
+    concept_ids: set[str] = set()
+    for c, cls, label, definition, n in run_query(graph_key, _PA_CONCEPTS).rows:
+        cid = c["value"]
+        if cid in concept_ids:  # 한 개념이 두 클래스를 가질 수 있다 — 처음 것만 그린다
+            continue
+        concept_ids.add(cid)
+        cls_name = cls["value"].removeprefix(ONT)
+        nodes.append(
+            {
+                "id": cid,
+                "cls": cls_name,
+                "axis_ko": _axis_ko(cls_name),
+                "label": label["value"],
+                "definition": definition["value"] if definition else None,
+                "patents": int(n["value"]),
+                "queries": qcounts.get(cid, 0),
+            }
+        )
+
+    # IPC 서브클래스 집계. 상한 미달분은 감추되 **몇 개를 감췄는지 말한다.**
+    ipc_rows = [(r[0]["value"], int(r[1]["value"])) for r in run_query(graph_key, _PA_IPC).rows]
+    kept_ipc = {sub for sub, n in ipc_rows if n >= _IPC_MIN_PATENTS}
+    for sub, n in ipc_rows:
+        if sub not in kept_ipc:
+            continue
+        nodes.append(
+            {
+                "id": IPC_PREFIX + sub,
+                "cls": "IPCSubclass",
+                "axis_ko": _axis_ko("IPCSubclass"),
+                "label": sub,
+                "definition": None,
+                "patents": n,
+                "derived": True,
+                "derived_note": f"IPC 서브클래스 집계 — 이 분류의 특허 {n}건 (그래프의 개체가 아니다)",
+            }
+        )
+
+    # 거절유형 — 라벨이 ko·en 두 개다. 한국어를 고른다.
+    rej: dict[str, tuple[str, int]] = {}
+    for t, label, n in run_query(graph_key, _PA_REJECTION).rows:
+        tid = t["value"]
+        if tid not in rej or label.get("lang") == "ko":
+            rej[tid] = (label["value"], int(n["value"]))
+    for tid, (label, n) in rej.items():
+        nodes.append(
+            {
+                "id": tid,
+                "cls": "RejectionType",
+                "axis_ko": _axis_ko("RejectionType"),
+                "label": label,
+                "definition": None,
+                "patents": n,
+                "queries": n,
+            }
+        )
+
+    ids = {n["id"] for n in nodes}
+    edges: list[dict] = []
+
+    # (1) 공정 계층 뼈대 — 도메인 축과 같은 골격이라야 두 지도가 같은 세계로 읽힌다.
+    for src, dst in run_query(graph_key, _DOMAIN_EDGES).rows:
+        if src["value"] in ids and dst["value"] in ids:
+            edges.append({"src": src["value"], "dst": dst["value"], "pred": "hasSubprocess"})
+
+    # (2) 거절유형 → 개념
+    for t, c, n in run_query(graph_key, _PA_REJ_CONCEPT).rows:
+        if t["value"] in ids and c["value"] in ids:
+            edges.append(
+                {"src": t["value"], "dst": c["value"], "pred": "rejectedFor", "weight": int(n["value"])}
+            )
+
+    # (3) 개념 ↔ IPC 공동출현 — 개념당 상위 _IPC_TOP_PER_CONCEPT 개만(625쌍 전부는 못 읽는다)
+    by_concept: dict[str, list[tuple[str, int]]] = {}
+    for c, sub, n in run_query(graph_key, _PA_CONCEPT_IPC).rows:
+        if c["value"] in ids and sub["value"] in kept_ipc:
+            by_concept.setdefault(c["value"], []).append((sub["value"], int(n["value"])))
+    ipc_pairs_total = sum(len(v) for v in by_concept.values())
+    for cid, pairs in by_concept.items():
+        for sub, n in sorted(pairs, key=lambda x: -x[1])[:_IPC_TOP_PER_CONCEPT]:
+            edges.append(
+                {"src": cid, "dst": IPC_PREFIX + sub, "pred": "hasIPC", "weight": n}
+            )
+
+    # (4) qrel 흐름(질의 개념 → 정답 개념). 정답지다 — 검색 시에는 마스킹된다.
+    flow = [
+        (r[0]["value"], r[1]["value"], int(r[2]["value"]))
+        for r in run_query(graph_key, _PA_QREL_FLOW).rows
+        if r[0]["value"] in ids and r[1]["value"] in ids
+    ]
+    self_loops = sum(1 for a, b, _ in flow if a == b)
+    for a, b, n in sorted((f for f in flow if f[0] != f[1]), key=lambda x: -x[2])[:_QREL_TOP]:
+        edges.append({"src": a, "dst": b, "pred": "qrelFlow", "weight": n})
+
+    dropped_ipc = len(ipc_rows) - len(kept_ipc)
+    _priorart_cache[graph_key] = out = {
+        "mode": "priorart",
+        "nodes": nodes,
+        "edges": edges,
+        "truncated": bool(dropped_ipc or self_loops or ipc_pairs_total > len(by_concept) * _IPC_TOP_PER_CONCEPT),
+        "note": (
+            "⚠ 붉은 점선은 <b>정답지</b>(hasPriorArtExaminer)를 개념 단위로 집계한 흐름이다 — "
+            "검색 파이프라인에서는 마스킹되는 간선이며(누출 통제), 여기 보인다고 검색이 쓰는 것이 아니다. "
+            f"IPC 서브클래스는 특허 {_IPC_MIN_PATENTS}건 이상만 그렸다(감춘 것 {dropped_ipc}종). "
+            f"개념↔IPC 는 개념당 상위 {_IPC_TOP_PER_CONCEPT}개, qrel 흐름은 상위 {_QREL_TOP}쌍"
+            f"(동일 개념 자기순환 {self_loops}쌍 제외). 노드 크기 = 걸린 특허 수(질의+후보)."
+        ),
+    }
+    return out
+
+
+_IPC_PATENTS = _PREFIX + """
+SELECT ?p ?label ?cls WHERE {{
+  VALUES ?cls {{ ont:RejectedPatent ont:CitedPatent }}
+  ?p a ?cls ; skos:prefLabel ?label ; ont:hasIPC ?ipc .
+  ?ipc skos:notation ?not .
+  FILTER(STRSTARTS(REPLACE(?not, " ", ""), "{sub}"))
+}} LIMIT {limit}
+"""
+
+
+def expand_ipc(graph_key: str, sub: str, limit: int = _EXPAND_LIMIT) -> dict:
+    """IPC 집계 노드를 열면 그 서브클래스의 특허(질의·인용)가 나온다."""
+    safe = "".join(ch for ch in sub if ch.isalnum())
+    rows = run_query(graph_key, _IPC_PATENTS.format(sub=safe, limit=limit + 1)).rows
+    truncated = len(rows) > limit
+    hub = IPC_PREFIX + sub
+    nodes, edges, seen = [], [], set()
+    for p, label, cls in rows[:limit]:
+        pid = p["value"]
+        if pid in seen:
+            continue
+        seen.add(pid)
+        cls_name = cls["value"].removeprefix(ONT)
+        nodes.append(
+            {
+                "id": pid,
+                "cls": cls_name,
+                "axis_ko": _axis_ko(cls_name),
+                "label": label["value"],
+                "definition": None,
+                "patents": 0,
+            }
+        )
+        edges.append({"src": hub, "dst": pid, "pred": "hasIPC"})
     return {"mode": "expand", "nodes": nodes, "edges": edges, "truncated": truncated}

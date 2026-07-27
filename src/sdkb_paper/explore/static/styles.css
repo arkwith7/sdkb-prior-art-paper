@@ -179,3 +179,70 @@ tr:hover td { background: var(--panel2); }
 .sdkb-tip .t-use span { color: #3fb950; font-weight: 600; margin-right: 4px; }
 .sdkb-tip .t-id { border-top: 1px solid #30363d; padding-top: 6px; color: #8b98a5;
   font-family: ui-monospace, monospace; font-size: 11px; }
+
+/* ---------- 선행기술 검색 (IR 실험) ---------- */
+.ir-intro { margin-bottom: 12px; }
+.ir-formula { background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 14px; margin: 8px 0; font-size: 12.5px; line-height: 1.9; }
+.ir-formula code { font-family: var(--mono); }
+.t-text { color: var(--muted); }
+.t-c { color: var(--accent2); }
+.t-p { color: var(--warn); }
+.t-i { color: var(--accent); }
+.ir-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.ir-stat { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+.ir-stat .lab { color: var(--muted); font-size: 11.5px; }
+.ir-stat .val { font-size: 20px; font-weight: 650; margin: 2px 0; }
+.ir-layout { display: grid; grid-template-columns: 300px 1fr; gap: 14px; margin-top: 12px;
+  align-items: start; }
+.ir-list { max-height: 78vh; overflow-y: auto; }
+.ir-sort { margin-bottom: 8px; font-size: 12px; color: var(--muted); }
+.ir-q { border: 1px solid var(--border); border-radius: 9px; padding: 8px 10px; margin-bottom: 6px;
+  cursor: pointer; background: var(--panel); }
+.ir-q:hover { border-color: var(--accent); }
+.ir-q.active { border-color: var(--accent); background: var(--panel2); }
+.ir-q-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.ir-q-top code { font-size: 11px; font-family: var(--mono); color: var(--muted); }
+.ir-q-title { font-size: 12.5px; margin: 3px 0; line-height: 1.4; }
+.ir-delta { font-weight: 650; font-size: 12px; }
+.ir-delta.up { color: var(--accent2); }
+.ir-delta.down { color: var(--danger); }
+.ir-delta.flat { color: var(--muted); }
+.ir-detail { min-width: 0; }
+.ir-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 12px; }
+.ir-card h3 { margin: 0 0 4px; font-size: 15px; }
+.ir-qtitle { font-size: 14px; font-weight: 600; margin: 4px 0; }
+.ir-sub { color: var(--accent); font-size: 12px; font-weight: 600; margin: 12px 0 4px; }
+.ir-claim { background: var(--panel2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; margin: 0; font-size: 12.5px; line-height: 1.7; white-space: pre-wrap;
+  max-height: 220px; overflow-y: auto; font-family: var(--sans); }
+.ir-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.ir-chips .chip { background: var(--chip); border-radius: 6px; padding: 2px 8px; font-size: 11.5px;
+  font-family: var(--mono); }
+.ir-chips .chip.c { color: var(--accent2); }
+.ir-chips .chip.i { color: var(--accent); }
+.ir-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+.ir-table th { text-align: left; color: var(--muted); font-weight: 550; border-bottom: 1px solid var(--border);
+  padding: 5px 6px; font-size: 11.5px; }
+.ir-table td { border-top: 1px solid var(--border); padding: 6px; vertical-align: top; overflow-wrap: anywhere; }
+.ir-table td.num { text-align: right; font-family: var(--mono); }
+.ir-table tr.out { opacity: .65; }
+.ir-shared { color: var(--accent2); }
+.ir-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+.ir-col h4 { margin: 0 0 6px; font-size: 12.5px; color: var(--muted); font-weight: 600; }
+.ir-row { display: flex; gap: 8px; align-items: flex-start; border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 8px; margin-bottom: 5px; background: var(--panel2); }
+.ir-row.gold { border-color: var(--accent2); background: rgba(63,185,80,.10); }
+.ir-row .rk { font-family: var(--mono); font-size: 11.5px; color: var(--muted); min-width: 34px; }
+.ir-row .bd { min-width: 0; flex: 1; }
+.ir-row .ttl { font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; }
+.ir-row .trm { display: flex; flex-wrap: wrap; gap: 6px; font-size: 10.5px; font-family: var(--mono); margin-top: 3px; }
+.ir-row .mv { font-size: 11px; font-weight: 650; min-width: 34px; text-align: right; }
+.ir-row .mv.up { color: var(--accent2); }
+.ir-row .mv.down { color: var(--danger); }
+.ir-row .mv.flat { color: var(--muted); }
+@media (max-width: 1100px) {
+  .ir-layout { grid-template-columns: 1fr; }
+  .ir-cmp { grid-template-columns: 1fr; }
+}

@@ -14,7 +14,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from sdkb_paper.config import QUERIES_CQ
-from sdkb_paper.explore import anchor, findings, store, viewer
+from sdkb_paper.explore import anchor, findings, ir_panel, store, viewer
 
 STATIC = Path(__file__).parent / "static"
 
@@ -110,6 +110,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(self._interpret(payload))
             elif route == "/api/viewer":
                 self._json(self._viewer(payload))
+            elif route == "/api/ir":
+                self._json(self._ir(payload))
             else:
                 # 구버전 프로세스가 살아 있으면 새 라우트를 모른다 — 그 사실을 메시지에 담는다.
                 self._log(f"[404] 없는 라우트: {route} (서버가 구버전일 수 있다 — 재시작하라)")
@@ -185,8 +187,21 @@ class Handler(BaseHTTPRequestHandler):
             out = viewer.people_map(key)
             self._log(f"[뷰어] {key} L1 인력·문제 · 노드 {len(out['nodes'])} 엣지 {len(out['edges'])}")
             return out
+        if mode == "priorart":
+            out = viewer.priorart_map(key)
+            self._log(
+                f"[뷰어] {key} L1 선행기술조사 · 노드 {len(out['nodes'])} 엣지 {len(out['edges'])}"
+            )
+            return out
         if not iri:
             raise ValueError("iri 가 필요하다")
+        # 집계 노드는 접두사가 종류를 말한다 — 프런트가 무엇을 눌렀는지 서버가 다시 판정한다.
+        if iri.startswith(viewer.IPC_PREFIX):
+            sub = iri.removeprefix(viewer.IPC_PREFIX)
+            out = viewer.expand_ipc(key, sub)
+            cut = " (상한 절단)" if out["truncated"] else ""
+            self._log(f"[뷰어] {key} IPC 확장 {sub} · 특허 {len(out['nodes'])}{cut}")
+            return out
         if mode == "category":
             cat = iri.removeprefix(viewer.CATEGORY_PREFIX)
             out = viewer.expand_category(key, cat)
@@ -203,6 +218,36 @@ class Handler(BaseHTTPRequestHandler):
             self._log(f"[뷰어] {key} L3 상세 {out['label']} · 속성 {len(out['props'])}")
             return out
         raise ValueError(f"unknown mode: {mode}")
+
+    def _ir(self, payload: dict) -> dict:
+        """선행기술 검색(IR) 시연 — M4 산출물 재구성. dev 분할만(test 봉인)."""
+        if not ir_panel.ready():
+            raise ValueError(
+                "IR 산출물이 없다 — make index · retrieve 로 runs/hybrid_b3_rrf.txt 등을 먼저 만들 것"
+            )
+        mode = payload.get("mode", "queries")
+        d = ir_panel.demo()
+        if mode == "queries":
+            out = d.queries()
+            self._log(
+                f"[IR] dev 질의 {out['n_queries']}건 · 개선 {out['n_improved']}·악화 {out['n_degraded']}"
+                f" · R@100 B3 {out['mean_b3']:.4f} → P0★ {out['mean_p0']:.4f}"
+            )
+            return out
+        if mode == "detail":
+            qid = (payload.get("qid") or "").strip()
+            out = d.detail(qid)
+            self._log(
+                f"[IR] {qid} 상세 · 정답 {len(out['gold'])}건 · "
+                f"R@100 {out['r100_b3']:.3f} → {out['r100_p0']:.3f}"
+            )
+            for g in out["gold"]:
+                self._log(
+                    f"  [정답] {g['doc_id']} 개념공유 {len(g['shared_concepts'])} · "
+                    f"B3 {g['rank_b3'] or '풀밖'} → P0★ {g['rank_p0'] or '풀밖'}"
+                )
+            return out
+        raise ValueError(f"unknown ir mode: {mode}")
 
     def log_message(self, fmt, *args):  # 조용히 — 콘솔 노이즈 억제
         return

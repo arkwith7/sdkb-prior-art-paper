@@ -125,3 +125,64 @@ def test_expand_category_returns_its_problems() -> None:
 def test_expand_category_quotes_cannot_break_the_query() -> None:
     """범주 값은 리터럴로 들어간다 — 따옴표가 섞여도 질의가 깨지지 않아야 한다."""
     assert viewer.expand_category("v0", 'no"such\\category')["nodes"] == []
+
+
+# ── 선행기술조사 축 ──────────────────────────────────────────────────
+def test_priorart_map_shows_both_retrieval_arms() -> None:
+    """C2 의 무대다 — 이득 본체인 개념 링크와 IPC 가 둘 다 화면에 있어야 한다."""
+    d = viewer.priorart_map("v0")
+    assert d["mode"] == "priorart"
+    cls = {n["cls"] for n in d["nodes"]}
+    assert {"IPCSubclass", "RejectionType"} <= cls
+    assert cls & {"Process", "SubProcess", "Device", "Material", "Skill"}
+    assert len(d["nodes"]) < 200  # 초기 화면은 읽을 수 있어야 한다
+    preds = {e["pred"] for e in d["edges"]}
+    assert {"hasIPC", "qrelFlow", "rejectedFor"} <= preds
+
+
+def test_priorart_ipc_nodes_are_marked_as_derived() -> None:
+    """IPC 서브클래스는 그래프에 노드가 없다 — notation 앞 4자리 집계임을 밝힌다."""
+    d = viewer.priorart_map("v0")
+    ipc = [n for n in d["nodes"] if n["cls"] == "IPCSubclass"]
+    assert ipc and all(n["derived"] and n["id"].startswith(viewer.IPC_PREFIX) for n in ipc)
+    assert all(len(n["label"]) == 4 for n in ipc)
+    assert "H01L" in {n["label"] for n in ipc}
+
+
+def test_priorart_declares_what_it_hides() -> None:
+    """감춘 것을 말한다 — IPC 하한·qrel 상위 절단·자기순환 제외가 화면에 있어야 한다."""
+    note = viewer.priorart_map("v0")["note"]
+    assert "정답지" in note and "마스킹" in note
+    assert "감춘 것" in note and "자기순환" in note
+
+
+def test_priorart_query_counts_are_separated_from_candidates() -> None:
+    """질의(거절특허 1,000)와 후보 코퍼스를 섞지 않는다 — 분모 규율."""
+    d = viewer.priorart_map("v0")
+    concepts = [n for n in d["nodes"] if "queries" in n and n["cls"] != "RejectionType"]
+    assert concepts and all(n["queries"] <= n["patents"] for n in concepts)
+    assert [n for n in concepts if n["queries"] < n["patents"]]  # 후보만 걸린 개념이 실재한다
+
+
+def test_priorart_edges_only_connect_drawn_nodes() -> None:
+    d = viewer.priorart_map("v0")
+    ids = {n["id"] for n in d["nodes"]}
+    assert all(e["src"] in ids and e["dst"] in ids for e in d["edges"])
+    assert all(e["src"] != e["dst"] for e in d["edges"] if e["pred"] == "qrelFlow")
+
+
+def test_expand_ipc_returns_its_patents() -> None:
+    d = viewer.expand_ipc("v0", "H01L", limit=5)
+    assert d["nodes"] and all(n["cls"] in ("RejectedPatent", "CitedPatent") for n in d["nodes"])
+    assert all(e["src"] == viewer.IPC_PREFIX + "H01L" for e in d["edges"])
+    assert d["truncated"] is True
+
+
+def test_expand_ipc_injection_cannot_break_the_query() -> None:
+    """서브클래스는 리터럴로 들어간다 — 따옴표가 섞여도 질의가 깨지지 않아야 한다."""
+    assert viewer.expand_ipc("v0", 'H01L" }} #')["nodes"]  # 영숫자만 남아 H01L 로 조회된다
+    assert viewer.expand_ipc("v0", "ZZ99")["nodes"] == []
+
+
+def test_priorart_map_is_cached() -> None:
+    assert viewer.priorart_map("v0") is viewer.priorart_map("v0")

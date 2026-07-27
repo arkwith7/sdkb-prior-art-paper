@@ -21,6 +21,7 @@
       <button data-tab="findings">핵심 발견</button>
       <button data-tab="viewer">온톨로지 뷰어</button>
       <button data-tab="practical">실무 질의</button>
+      <button data-tab="ir">선행기술 검색 (IR 실험)</button>
     </nav>
   </header>
 
@@ -70,6 +71,7 @@
           <select id="vw-mode">
             <option value="domain">공정 · 소자 축</option>
             <option value="people">소부장 기술문제 · 전문가 축</option>
+            <option value="priorart">선행기술조사 축 (개념 · IPC · 거절유형)</option>
           </select>
         </label>
         <label>축 <span id="vw-legend" class="legend"></span></label>
@@ -113,6 +115,8 @@
         <div class="pcard" id="pc-priorart">
           <h3>② 연구개발 기술 → 선행기술 조사</h3>
           <p>아이디어를 온톨로지 개념으로 표현했을 때, 같은 개념을 실현하며 착상일보다 앞선 선행기술 후보를 찾습니다 (CQ10·RQ2).</p>
+          <p class="warn-note">※ 이것은 <b>그래프 SPARQL 질의</b>입니다 — 논문 §5–6 의 IR 실험(BM25·임베딩·재랭크)이
+             아닙니다. 실험 파이프라인은 상단 <b>「선행기술 검색 (IR 실험)」</b> 탭에서 봅니다.</p>
           <label>개념 키워드 (공정·디바이스 prefLabel 부분일치)</label>
           <input id="pa-kw" placeholder="예: plasma etch, HBM, GAA" />
           <label>착상 기준일 (이전 출원만)</label>
@@ -131,6 +135,45 @@
           <select id="fto-graph"></select>
           <button class="btn primary" onclick="runPractical('fto')">FTO 준비 현황</button>
           <div class="presult" id="fto-result"></div>
+        </div>
+      </div>
+    </section>
+    <!-- 선행기술 검색 (IR 실험) -->
+    <section id="ir" class="tab">
+      <div class="ir-intro">
+        <p class="meta">
+          논문 §5–6 의 <b>선행기술 검색 실험</b>을 질의 한 건 단위로 재생합니다. 여기 수치는
+          <b>M4 산출물</b>(<code>runs/hybrid_b3_rrf.txt</code>)과 <b>실험과 동일한 재랭크 함수</b>로
+          만든 것이며 새로 실험하지 않습니다. <b>dev 분할 전용</b> — test 질의는 봉인되어 노출되지 않습니다.
+        </p>
+        <div class="ir-formula">
+          <div><b>질의</b> = 거절특허의 <b>독립항 청구항 원문(한국어)</b> — 키워드 추출·검색식 작성 없음</div>
+          <div><b>S</b> = (1−α)·<span class="t-text">텍스트순위(B3)</span>
+            + α·[ w<sub>c</sub>·<span class="t-c">ConceptOverlap</span>
+            + w<sub>h</sub>·<span class="t-p">PathSim</span>
+            + w<sub>i</sub>·<span class="t-i">IpcSim</span> ]
+            <span id="ir-params" class="meta"></span></div>
+          <div class="meta">재랭크는 B3 상위 풀 <b>안에서만</b> 순서를 바꿉니다 — 풀 밖 문서는 살릴 수 없습니다(재랭크 천장).</div>
+        </div>
+        <div id="ir-summary" class="ir-summary"></div>
+      </div>
+      <div class="ir-layout">
+        <aside class="sidebar ir-list">
+          <h4>dev 질의 <span id="ir-count" class="meta"></span></h4>
+          <div class="ir-sort">
+            <label>정렬
+              <select id="ir-sort" onchange="renderIRList()">
+                <option value="delta">개선폭 Δ 큰 순</option>
+                <option value="delta_asc">악화 큰 순</option>
+                <option value="gold">정답 많은 순</option>
+                <option value="qid">질의 ID 순</option>
+              </select>
+            </label>
+          </div>
+          <div id="ir-queries"><div class="empty spin">불러오는 중…</div></div>
+        </aside>
+        <div id="ir-detail" class="ir-detail">
+          <div class="empty">왼쪽에서 질의를 클릭하면 그 질의의 검색 과정 전체가 여기에 나옵니다.</div>
         </div>
       </div>
     </section>

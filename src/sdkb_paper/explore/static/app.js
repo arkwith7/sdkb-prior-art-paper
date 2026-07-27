@@ -67,6 +67,7 @@ document.querySelectorAll("nav button").forEach((b) =>
     document.getElementById(b.dataset.tab).classList.add("active");
     if (b.dataset.tab === "findings") loadFindings();
     if (b.dataset.tab === "viewer" && !VW) loadDomain();
+    if (b.dataset.tab === "ir" && !IR) loadIR();
   })
 );
 
@@ -448,6 +449,16 @@ const VW_AXIS = {
   Patent: ["특허", "#7d8590"], RejectedPatent: ["거절 특허", "#6e7681"],
   Organization: ["조직", "#bf8700"], Vendor: ["공급사", "#9e6a03"],
   ProblemCategory: ["문제 범주(집계)", "#8250df"],
+  CitedPatent: ["인용 선행기술", "#79c0ff"], RejectionType: ["거절 유형", "#f0883e"],
+  IPCSubclass: ["IPC 서브클래스(집계)", "#1f6feb"],
+};
+// 엣지 표시 규약. qrelFlow = 심사관 인용(정답지)을 개념 단위로 집계한 흐름 —
+// 붉은 점선으로 따로 그린다. 검색 파이프라인에서는 마스킹되는 간선이다(누출 통제).
+const VW_EDGE = {
+  hasSubprocess: { color: "#3fb950", width: 1.6 },
+  rejectedFor: { color: "#f0883e", width: 1.4 },
+  hasIPC: { color: "#39506e", width: 1, dashes: [3, 4] },
+  qrelFlow: { color: "#f85149", width: 1.6, dashes: [6, 4] },
 };
 let VW = null;              // vis.Network 인스턴스
 let VW_NODES = null;        // vis.DataSet — 노드
@@ -480,14 +491,18 @@ function vwEls(d) {
       // detail·expand 가 읽는 원본 필드 — DataSet 에 실어둔다.
       _cls: cls, _axis: n.axis_ko || vwKo(cls), _derived: !!n.derived,
       _experts: n.experts, _problems: n.problems, _patents: n.patents || 0,
+      _queries: n.queries, _derivedNote: n.derived_note,
     });
   }
   for (const e of d.edges) {
-    const sub = e.pred === "hasSubprocess";
+    // 술어마다 다르게 그린다 — 특히 qrel 은 **정답지**이므로 한눈에 구분돼야 한다.
+    const st = VW_EDGE[e.pred] || {};
     edges.push({
       id: `${e.src}|${e.pred}|${e.dst}`, from: e.src, to: e.dst,
-      color: sub ? { color: "#3fb950", highlight: "#56d364" } : undefined,
-      width: sub ? 1.6 : 1,
+      color: st.color ? { color: st.color, highlight: st.color } : undefined,
+      width: st.width || 1,
+      dashes: st.dashes || false,
+      title: e.weight ? `${e.pred} · 특허 ${fmt(e.weight)}건` : e.pred,
     });
   }
   return { nodes, edges };
@@ -498,7 +513,8 @@ function vwEls(d) {
 function vwTitle(n) {
   const def = n.definition || "<i>정의 없음 — 그래프에 skos:definition 이 없습니다</i>";
   let use;
-  if (n.derived) use = `<span>집계</span> 이 범주의 실무문제 ${fmt(n.problems)}건 — 그래프의 개체가 아닙니다`;
+  if (n.derived) use = `<span>집계</span> ${n.derived_note || `이 범주의 실무문제 ${fmt(n.problems)}건 — 그래프의 개체가 아닙니다`}`;
+  else if (n.queries !== undefined && n.queries !== null) use = `<span>검색</span> 질의(거절특허) ${fmt(n.queries)}건 · 후보 포함 총 ${fmt(n.patents || 0)}건`;
   else if (n.experts !== undefined && n.experts !== null) use = `<span>인력</span> 보유 전문가 ${fmt(n.experts)}명 · 요구 실무문제 ${fmt(n.problems)}건`;
   else if (n.problems !== undefined && n.problems !== null) use = `<span>연결</span> 이 불량모드를 보이는 실무문제 ${fmt(n.problems)}건`;
   else use = `<span>연결</span> 이 개념을 실현·언급하는 특허 ${fmt(n.patents || 0)}건`;
@@ -575,9 +591,11 @@ async function vwDetail(iri, data) {
     panel.innerHTML = "";
     panel.append(el("h4", {}, data.label));
     panel.append(el("div", { class: "t-cat" }, data._axis));
-    panel.append(el("p", { class: "vw-def muted" },
-      `ont:problemCategory 집계 노드입니다 — 그래프의 개체가 아니라 실무문제 ${fmt(data._problems)}건을 묶은 것입니다.`));
-    panel.append(el("button", { class: "btn", onclick: () => vwExpand(iri, true) }, "이 범주의 문제 펼치기"));
+    panel.append(el("p", { class: "vw-def muted" }, data._derivedNote
+      || `ont:problemCategory 집계 노드입니다 — 그래프의 개체가 아니라 실무문제 ${fmt(data._problems)}건을 묶은 것입니다.`));
+    const isIpc = String(iri).startsWith("ipc:");
+    panel.append(el("button", { class: "btn", onclick: () => vwExpand(iri, true) },
+      isIpc ? "이 분류의 특허 펼치기" : "이 범주의 문제 펼치기"));
     return;
   }
   panel.innerHTML = '<div class="empty spin">속성 조회 중…</div>';
@@ -625,4 +643,153 @@ function vwLegend() {
   for (const cls of present) {
     box.append(el("span", { class: "lg" }, el("i", { style: `background:${vwColor(cls)}` }), vwKo(cls)));
   }
+}
+
+/* ---------- 선행기술 검색 (IR 실험) ----------
+   M4 산출물의 재구성이다 — 여기서 새 실험을 돌리지 않는다. dev 분할만(test 봉인). */
+let IR = null;          // {…queries()} 요약 + 질의목록
+let IR_SEL = null;      // 선택된 질의 id
+
+async function loadIR() {
+  const list = document.getElementById("ir-queries");
+  list.innerHTML = '<div class="empty spin">M4 산출물 적재·재랭크 중… (최초 1회 수십 초)</div>';
+  try {
+    IR = await api("/api/ir", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode: "queries" }) });
+  } catch (e) {
+    list.innerHTML = `<span class="err">${e.message}</span>`;
+    return;
+  }
+  const [wc, wh, wi] = IR.w;
+  document.getElementById("ir-params").textContent =
+    `— dev 격자선택 결과: α=${IR.alpha} · w_c=${wc} · w_h=${wh} · w_i=${wi}`;
+  document.getElementById("ir-count").textContent = `${IR.n_queries}건`;
+  const s = document.getElementById("ir-summary");
+  s.innerHTML = "";
+  s.append(
+    irStat("dev 질의", `${IR.n_queries}건`, "정답 ≥1 인 질의만"),
+    irStat("B3 (텍스트 기준선)", IR.mean_b3.toFixed(4), `family Recall@${IR.k} 평균`),
+    irStat("P0★ (온톨로지 재랭크)", IR.mean_p0.toFixed(4), `family Recall@${IR.k} 평균`),
+    irStat("Δ", (IR.mean_p0 - IR.mean_b3 >= 0 ? "+" : "") + (IR.mean_p0 - IR.mean_b3).toFixed(4),
+           `개선 ${IR.n_improved}건 · 악화 ${IR.n_degraded}건 · 무변화 ${IR.n_queries - IR.n_improved - IR.n_degraded}건`),
+  );
+  renderIRList();
+}
+
+function irStat(label, value, sub) {
+  return el("div", { class: "ir-stat" },
+    el("div", { class: "lab" }, label),
+    el("div", { class: "val" }, value),
+    el("div", { class: "meta" }, sub));
+}
+
+function renderIRList() {
+  if (!IR) return;
+  const mode = document.getElementById("ir-sort").value;
+  const rows = IR.queries.slice();
+  if (mode === "delta") rows.sort((a, b) => b.delta - a.delta || a.qid.localeCompare(b.qid));
+  else if (mode === "delta_asc") rows.sort((a, b) => a.delta - b.delta || a.qid.localeCompare(b.qid));
+  else if (mode === "gold") rows.sort((a, b) => b.n_gold - a.n_gold || a.qid.localeCompare(b.qid));
+  else rows.sort((a, b) => a.qid.localeCompare(b.qid));
+
+  const box = document.getElementById("ir-queries");
+  box.innerHTML = "";
+  for (const r of rows) {
+    const cls = r.delta > 0 ? "up" : r.delta < 0 ? "down" : "flat";
+    const item = el("div", { class: "ir-q" + (r.qid === IR_SEL ? " active" : ""), onclick: () => showIR(r.qid) },
+      el("div", { class: "ir-q-top" },
+        el("code", {}, r.qid),
+        el("span", { class: "ir-delta " + cls }, (r.delta >= 0 ? "+" : "") + r.delta.toFixed(3))),
+      el("div", { class: "ir-q-title" }, r.title || "(제목 없음)"),
+      el("div", { class: "meta" }, `정답 ${r.n_gold} · 개념 ${r.n_concepts} · R@100 ${r.r100_b3.toFixed(2)} → ${r.r100_p0.toFixed(2)}`));
+    box.append(item);
+  }
+}
+
+async function showIR(qid) {
+  IR_SEL = qid;
+  renderIRList();
+  const box = document.getElementById("ir-detail");
+  box.innerHTML = '<div class="empty spin">불러오는 중…</div>';
+  let d;
+  try {
+    d = await api("/api/ir", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode: "detail", qid }) });
+  } catch (e) { box.innerHTML = `<span class="err">${e.message}</span>`; return; }
+
+  box.innerHTML = "";
+  const q = d.query;
+
+  // ① 질의 — 실제로 검색 시스템에 들어가는 문자열이 무엇인지 보인다
+  const qcard = el("div", { class: "ir-card" },
+    el("h3", {}, "① 질의 — 거절특허 " + q.doc_id),
+    el("div", { class: "ir-qtitle" }, q.title || "(제목 없음)"),
+    el("div", { class: "meta" }, `출원일 ${q.filing_date} · 언어 ${q.lang} · B3 풀 ${d.pool_size}건`));
+  qcard.append(el("div", { class: "ir-sub" }, "검색 시스템에 들어가는 질의 문자열 = 독립항 청구항 원문"));
+  qcard.append(el("pre", { class: "ir-claim" }, q.claims_independent || "(청구항 없음 — 제목·초록 보조)"));
+  qcard.append(el("div", { class: "ir-sub" }, "재랭크에만 쓰이는 온톨로지 메타데이터 (검색어가 아님)"));
+  qcard.append(el("div", { class: "ir-chips" },
+    ...q.concepts.map((c) => el("span", { class: "chip c" }, c)),
+    ...q.ipc.map((c) => el("span", { class: "chip i" }, c))));
+  box.append(qcard);
+
+  // ② 정답이 어디로 움직였나 — 이 화면의 핵심
+  const gcard = el("div", { class: "ir-card" },
+    el("h3", {}, `② 심사관 정답 ${d.gold.length}건이 어디로 움직였나`),
+    el("div", { class: "meta" }, `family Recall@${d.k}: B3 ${d.r100_b3.toFixed(4)} → P0★ ${d.r100_p0.toFixed(4)}`));
+  const tb = el("table", { class: "ir-table" });
+  tb.append(el("tr", {}, ...["정답 특허", "언어", "공유 개념", "Concept", "IpcSim", "B3 순위", "P0★ 순위", ""].map((h) => el("th", {}, h))));
+  for (const g of d.gold) {
+    const inPool = g.rank_p0 !== null;
+    const moved = inPool && g.rank_b3 !== null ? g.rank_b3 - g.rank_p0 : null;
+    tb.append(el("tr", { class: inPool ? "" : "out" },
+      el("td", {}, el("code", {}, g.doc_id)),
+      el("td", {}, g.lang || "—"),
+      el("td", {}, g.shared_concepts.length ? el("span", { class: "ir-shared" }, `${g.shared_concepts.length}개 · ${g.shared_concepts.join(", ")}`) : el("span", { class: "meta" }, "0개")),
+      el("td", { class: "num" }, g.concept.toFixed(3)),
+      el("td", { class: "num" }, g.ipc_sim.toFixed(3)),
+      el("td", { class: "num" }, g.rank_b3 ?? "풀 밖"),
+      el("td", { class: "num" }, g.rank_p0 ?? "풀 밖"),
+      el("td", {}, moved === null ? el("span", { class: "ir-delta down" }, "재랭크로 못 살림")
+        : moved > 0 ? el("span", { class: "ir-delta up" }, `▲ ${moved}계단`)
+        : moved < 0 ? el("span", { class: "ir-delta down" }, `▼ ${-moved}계단`)
+        : el("span", { class: "meta" }, "변화 없음"))));
+  }
+  gcard.append(tb);
+  if (d.gold.some((g) => g.rank_p0 === null)) {
+    gcard.append(el("div", { class: "warn-note" },
+      "‘풀 밖’ = B3 가 애초에 상위 1,000 에 넣지 못한 정답. 재랭크는 풀 안에서만 순서를 바꾸므로 구조적으로 살릴 수 없다(재랭크 천장·진단 D3)."));
+  }
+  box.append(gcard);
+
+  // ③ 순위 나란히 보기
+  const cmp = el("div", { class: "ir-card" },
+    el("h3", {}, "③ 상위 순위 — 텍스트 기준선 vs 온톨로지 재랭크"),
+    el("div", { class: "meta" }, "초록 테두리 = 심사관 정답. 좌우 같은 문서를 찾아 몇 계단 움직였는지 보세요."));
+  cmp.append(el("div", { class: "ir-cmp" },
+    irRankCol("B3 (BM25+Dense RRF · 텍스트만)", d.top_b3, "b3"),
+    irRankCol("P0★ (B3 + 개념 + IPC 재랭크)", d.top_p0, "p0")));
+  box.append(cmp);
+}
+
+function irRankCol(title, rows, kind) {
+  const col = el("div", { class: "ir-col" }, el("h4", {}, title));
+  rows.forEach((r, i) => {
+    const other = kind === "b3" ? r.rank_p0 : r.rank_b3;
+    const cur = i + 1;
+    const mv = other === null ? null : (kind === "b3" ? cur - other : other - cur);
+    col.append(el("div", { class: "ir-row" + (r.is_gold ? " gold" : "") },
+      el("span", { class: "rk" }, "#" + cur),
+      el("div", { class: "bd" },
+        el("div", { class: "ttl" }, r.title || r.doc_id),
+        el("div", { class: "meta" },
+          `${r.doc_id} · ${r.lang} · ${r.publication_date || "공개일 결측"}` +
+          (r.shared_concepts.length ? ` · 공유개념 ${r.shared_concepts.length}` : "")),
+        el("div", { class: "trm" },
+          el("span", { class: "t-text" }, `text ${r.text_norm.toFixed(2)}`),
+          el("span", { class: "t-c" }, `concept ${r.concept.toFixed(2)}`),
+          el("span", { class: "t-p" }, `path ${r.path.toFixed(2)}`),
+          el("span", { class: "t-i" }, `ipc ${r.ipc_sim.toFixed(2)}`))),
+      el("span", { class: "mv " + (mv > 0 ? "up" : mv < 0 ? "down" : "flat") },
+        mv === null ? "" : mv > 0 ? `▲${mv}` : mv < 0 ? `▼${-mv}` : "=")));
+  });
+  return col;
 }
