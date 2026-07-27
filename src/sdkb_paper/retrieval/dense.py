@@ -71,11 +71,15 @@ def _unpack(blob: bytes) -> list[float]:
 
 
 def _invoke(text: str) -> list[float]:
-    """Titan v2 임베딩 1건. 토큰상한 초과 시 절반씩 적응 절단·스로틀 백오프."""
+    """Titan v2 임베딩 1건. 토큰상한 초과 시 절반씩 적응 절단·스로틀/일시서버오류 백오프."""
     import time
     cli = _client()
     body_text = text
-    for attempt in range(8):
+    # 일시적(재시도 가능) 서버측 오류 — 백오프 후 재시도. 대량 임베딩서 1건이라도 전체 중단 방지.
+    transient = ("Throttl", "ModelError", "ServiceUnavailable", "InternalServer",
+                 "InternalFailure", "500", "503")
+    transient_msg = ("Try your request again", "unexpected error", "timed out", "timeout")
+    for attempt in range(10):
         try:
             r = cli.invoke_model(
                 modelId=MODEL,
@@ -85,8 +89,10 @@ def _invoke(text: str) -> list[float]:
         except Exception as e:  # noqa: BLE001
             name = type(e).__name__
             msg = str(e)
-            if ("Throttl" in name or "Throttl" in msg) and attempt < 7:
-                time.sleep(min(2 ** attempt * 0.5, 16))
+            is_transient = any(t in name or t in msg for t in transient) \
+                or any(m in msg for m in transient_msg)
+            if is_transient and attempt < 9:
+                time.sleep(min(2 ** attempt * 0.5, 30))
                 continue
             if "Validation" in name and len(body_text) > 500:
                 body_text = body_text[: len(body_text) // 2]   # 토큰상한 → 적응 절단
