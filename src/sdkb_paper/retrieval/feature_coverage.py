@@ -21,13 +21,46 @@ from . import dense
 from ..corpus.claim_features import load_sidecar
 
 
-def embed_all_features(workers: int = 16) -> dict:
-    """sidecar 의 distinct featureText 전량을 Titan 임베딩 → IR_FEATURE_EMB_CACHE 캐시."""
+def embed_all_features(workers: int = 16, commit_every: int = 2000) -> dict:
+    """sidecar 의 distinct featureText 전량을 Titan 임베딩 → IR_FEATURE_EMB_CACHE 캐시.
+
+    **메모리 바운드(캐시 전용):** 반환 벡터를 누적하지 않는다(과거 버그: out 리스트가 1.02M×1024
+    float 를 파이썬 객체로 들고 ~30GB → WSL OOM). 기존 키만 로드(블롭 제외)해 미완료분만 임베딩하고
+    벡터는 즉시 sqlite 에 쓰고 버린다. 멱등 — 중단 후 재실행하면 완료분 스킵.
+    """
+    import sqlite3
+    from concurrent.futures import ThreadPoolExecutor
+
+    if not dense.MODEL:
+        raise SystemExit("[feature emb] BEDROCK_EMBED_MODEL 미설정 — .env 확인")
     df = load_sidecar()
     texts = df["feature_text"].drop_duplicates().tolist()
-    print(f"[feature emb] distinct featureText {len(texts):,} 임베딩(캐시 {config.IR_FEATURE_EMB_CACHE.name}) …")
-    dense.embed_texts(texts, workers=workers, cache_path=config.IR_FEATURE_EMB_CACHE)
-    return {"n_texts": len(texts)}
+    del df
+
+    config.IR_FEATURE_EMB_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(config.IR_FEATURE_EMB_CACHE)
+    conn.execute("CREATE TABLE IF NOT EXISTS e (k TEXT PRIMARY KEY, v BLOB)")
+    have = {k for (k,) in conn.execute("SELECT k FROM e")}   # 키만(블롭 제외 = 저메모리)
+
+    todo = [(dense._key(t), t) for t in texts if dense._key(t) not in have]
+    del texts, have
+    print(f"[feature emb] 미완료 {len(todo):,} 임베딩(캐시 {config.IR_FEATURE_EMB_CACHE.name}·메모리바운드) …")
+
+    def work(item):
+        k, t = item
+        return k, dense._invoke(t)      # 벡터는 즉시 캐시 후 폐기(누적 없음)
+
+    done = 0
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for k, vec in ex.map(work, todo):
+            conn.execute("INSERT OR REPLACE INTO e (k, v) VALUES (?, ?)", (k, dense._pack(vec)))
+            done += 1
+            if done % commit_every == 0:
+                conn.commit()
+                print(f"  임베딩 {done:,}/{len(todo):,} …", flush=True)
+    conn.commit()
+    conn.close()
+    return {"n_todo": len(todo), "n_done": done}
 
 
 class FeatureCoverageIndex:
@@ -96,7 +129,7 @@ def main() -> None:
     args = ap.parse_args()
     if args.embed:
         s = embed_all_features()
-        print(f"✓ feature 임베딩 완료 · {s['n_texts']:,} distinct → {config.IR_FEATURE_EMB_CACHE}")
+        print(f"✓ feature 임베딩 완료 · 이번 실행 {s['n_done']:,}/{s['n_todo']:,} → {config.IR_FEATURE_EMB_CACHE}")
 
 
 if __name__ == "__main__":
