@@ -27,7 +27,7 @@
 | **T-gate (T1·T2·T3)** | 계약 명세 = [SPEC-001](specs/SPEC-001-validation-gate.md) §T-gate — **미구현** | (예정) `validate/t{1,2,3}_*.py` |
 | **계약(SPEC)** | `SPEC-001~007` — §0.2 목록 | `01.code_spec/specs/` (숫자는 §1 우선) |
 | **진행 현황** | `STATUS.md` (v0.9) | `01.code_spec/` (서명 숫자는 §1 우선) |
-| **논문 그림·표** | **C2 전량 산출 완료(2026-07-28)** — 표 `paper/tables/ir_{performance,subgroup,increment}_{dev,test}.md` · 그림 2–5 `paper/figures/ir_{increment,metrics,ablation,subgroup}.svg` (`make tables && make figures`). **C3(§6.5·§6.6)은 미산출.** 구 S-시리즈는 `paper/archive/`(인용 금지) | `viz/figures.py` · `analysis/{results_table,subgroup,increment,ablation}.py` |
+| **논문 그림·표** | **C2 전량 산출 완료(2026-07-28)** — 표 `paper/tables/ir_{performance,subgroup,increment,crosslingual}_{dev,test}.md` · 그림 2–5 `paper/figures/ir_{increment,metrics,ablation,subgroup}.svg` (`make tables && make figures`). **§6.2f 교차언어 진단표 추가(2026-07-28 · PLAN-019 W1 · `make crosslingual`).** **C3(§6.5·§6.6)은 미산출.** 구 S-시리즈는 `paper/archive/`(인용 금지) | `viz/figures.py` · `analysis/{results_table,subgroup,increment,ablation,lang_recall}.py` |
 
 ---
 

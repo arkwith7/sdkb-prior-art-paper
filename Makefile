@@ -86,6 +86,12 @@ tables:
 	uv run python -m sdkb_paper.analysis.increment --split $(SPLIT) --write
 	uv run python -m sdkb_paper.analysis.ablation --split $(SPLIT) --p1 \
 		--tau 0.7 --alpha 0.75 --w 0.25 0.0 0.25 0.5 --write
+	uv run python -m sdkb_paper.analysis.lang_recall --split $(SPLIT) --write
+
+# 논문 §6.2f 교차언어 진단 (PLAN-019 W1) — 정답 언어별 회수·자원 커버리지·후보 풀 편향.
+# 동결 run 재집계(새 검색 0). 산출: paper/tables/ir_crosslingual_$(SPLIT).md + CSV.
+crosslingual:
+	uv run python -m sdkb_paper.analysis.lang_recall --split $(SPLIT) --write
 
 # IR 벤치마크 코퍼스 조립 (PLAN-017 M1) — G₀/G₁/G₂ + sidecar 청구항 → 문서중심 코퍼스.
 # 산출: data/processed/ir/ir_corpus_v09.parquet · qrel_examiner.parquet(gitignore) +
