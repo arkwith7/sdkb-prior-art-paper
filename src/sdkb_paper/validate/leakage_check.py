@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import sys
+import tempfile
 from pathlib import Path
 
 from .. import config
@@ -138,6 +139,59 @@ def audit_runs(split: str, k: int = 100) -> dict:
                      "examples": viol[:3]})
     return {"check": f"L-3 run 마스크 잔여 (top-{k} · split={split})", "systems": rows,
             "n_violations": total_viol, "n_runs": len(rows), "pass": total_viol == 0}
+
+
+def audit_graph(graph_path: Path, baseline: int | None = None) -> dict:
+    """G-층: **그래프 자체**의 누출 표면 (PLAN-020 W4 · 결함주입 F09·F10 표적).
+
+    L-1/L-2 는 산출물의 **컬럼명**을 본다. 그런데 정답 간선을 개념 링크로 **위장**해 넣으면
+    (`hasPriorArtExaminer` 의 대상 문서를 `realizesProcess` 의 객체로) 이름 검사는 그대로
+    통과한다 — 실제로 결함주입 F10 이 그렇게 만든다. 이름이 아니라 **모양**을 봐야 한다.
+
+    - **G-1 문서-as-개념:** 개념 술어의 객체가 문서(Patent/RejectedPatent/CitedPatent) 타입인가.
+      개념 자리에 문서가 들어오는 것은 정상 그래프에 없어야 할 모양이다 → 위반 수가 판정.
+    - **G-2 금지 술어 개념화:** 금지 술어가 개념 링크 술어로 쓰였는가(구조적으로 0 이어야).
+    - **G-3 정답 개념 복사:** 질의의 개념 집합이 자기 정답 문서의 개념 집합을 **통째로 포함**하는
+      (질의, 정답) 쌍 수. 정답을 보지 않고는 만들기 어려운 모양이라 F09(시간 누출)의 서명이다.
+      정상 그래프에서도 우연한 포함이 **552쌍** 있으므로(실측 2026-07-28 · graph_v0) 이 값은
+      절대 임계로 쓸 수 없다. 판정은 **같은 기준 그래프 대비 증가**로 한다 — 결함주입은 기준
+      그래프에서 결함만 다른 사본을 만들므로, 증가분은 전부 주입에 귀속된다(통계가 아니라 차분).
+      `baseline` 미지정 시 G-3 은 기록만 하고 판정에 넣지 않는다.
+    """
+    from pyoxigraph import RdfFormat, Store
+
+    from ..corpus.assemble import CONCEPT_PROPS
+    from .fault_inject import DOC_TYPES, ONT
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(path=str(Path(tmp) / "audit"))
+        with open(graph_path, "rb") as fh:
+            store.bulk_load(fh, format=RdfFormat.TURTLE)
+
+        props = " ".join(f"ont:{p}" for p in CONCEPT_PROPS)
+        types = " ".join(f"ont:{t}" for t in DOC_TYPES)
+        g1 = int(next(iter(store.query(
+            f"PREFIX ont:<{ONT}> SELECT (COUNT(*) AS ?n) WHERE {{"
+            f" VALUES ?p {{ {props} }} VALUES ?t {{ {types} }} ?s ?p ?o . ?o a ?t }}")))["n"].value)
+
+        concepts: dict[str, set[str]] = {}
+        for r in store.query(f"PREFIX ont:<{ONT}> SELECT ?s ?c WHERE "
+                             f"{{ VALUES ?p {{ {props} }} ?s ?p ?c }}"):
+            concepts.setdefault(r["s"].value, set()).add(r["c"].value)
+        gold: dict[str, set[str]] = {}
+        for r in store.query(f"PREFIX ont:<{ONT}> SELECT ?q ?g WHERE "
+                             f"{{ ?q a ont:RejectedPatent ; ont:hasPriorArtExaminer ?g }}"):
+            gold.setdefault(r["q"].value, set()).add(r["g"].value)
+
+    g3 = sum(1 for q, gs in gold.items() for g in gs
+             if concepts.get(g) and concepts[g] <= concepts.get(q, set()))
+
+    bad_props = [p for p in CONCEPT_PROPS if any(_norm(f) in _norm(p) for f in FORBIDDEN)]
+    g3_over = baseline is not None and g3 > baseline
+    return {"check": f"G 그래프 누출 표면 ({Path(graph_path).name})",
+            "g1_doc_as_concept": g1, "g2_forbidden_concept_props": bad_props,
+            "g3_gold_concept_copy_pairs": g3, "g3_baseline": baseline, "g3_exceeds": g3_over,
+            "pass": g1 == 0 and not bad_props and not g3_over}
 
 
 def audit_qrel() -> dict:

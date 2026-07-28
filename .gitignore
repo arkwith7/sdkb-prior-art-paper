@@ -38,3 +38,8 @@ dist/
 
 # Protégé/OWLAPI 가 온톨로지를 열 때 폴더에 자동 생성 (편집 도구 부산물 — 얼린 스냅샷 오염 방지)
 catalog-v*.xml
+
+# --- W4 결함주입 격리 구역 (PLAN-020) — 오염 산출물은 절대 커밋하지 않는다 ---
+data/quarantine/
+data/pristine_backup/
+data/PRISTINE.json

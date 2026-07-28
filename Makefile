@@ -1,4 +1,4 @@
-.PHONY: tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: faults faults-baseline faults-fc tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -189,6 +189,27 @@ cq-freeze:
 tgate:
 	uv run python -m sdkb_paper.validate.t_gate --split $(or $(SPLIT),dev) \
 		$(if $(GRAPH),--graph $(GRAPH),) --baseline $(or $(GEN),g0)
+
+# --- 결함주입 (원고 §4.10·§6.5 · H1 · PLAN-020 W4) ---------------------------
+# 게이트의 **판별력**을 재는 유일한 실험이다. 초록불 게이트는 판별력의 증거가 아니다.
+#
+# 오염 규율(사용자 지시 2026-07-28): 정본은 실험 전에 해시 봉인 + 실복사 백업하고, 결함
+#   산출물은 data/quarantine/ 밖으로 나가지 않는다. 인스턴스마다 정본 해시를 재검증하며
+#   한 바이트라도 변하면 즉시 중단한다. 격리본은 종료 시 읽기전용으로 잠긴다.
+#   격리 산출물은 gitignore — **논문 수치로 절대 쓰지 않는다.**
+#
+# 순서가 중요하다. baseline(기준선) → fc-cache(FC 성분 1회) → faults(매트릭스).
+#   FC 임베딩 인덱스는 최대 RSS 24.8GB 라 인스턴스마다 올리면 OOM 이다. 결함군 12종이
+#   featureText 를 건드리지 않으므로 한 번 계산해 재사용하며, 그 정합성은 fc-cache 가
+#   **동결 P1 run 재현**(top-100 197/197 일치)으로 확인한다.
+faults-baseline:
+	uv run python -m sdkb_paper.analysis.faults --baseline
+
+faults-fc:
+	uv run python -m sdkb_paper.analysis.faults --fc-cache
+
+faults:
+	uv run python -m sdkb_paper.analysis.faults --reps $(or $(REPS),3) --workers $(or $(WORKERS),10)
 
 # 머지 전 전체 게이트: L0(무결성+신선도) + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
 #   + 누출 감사 + T1·T2·T3. IR 산출물(run·코퍼스)이 없는 환경에서는 tgate 가 먼저 실패하므로

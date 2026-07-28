@@ -42,12 +42,15 @@ def _segment(iri: str) -> str:
     return parts[-2] if len(parts) >= 2 and "/data/" in iri else ""
 
 
-def build(snapshot: Path | None = None) -> dict:
-    """G₀∪G₁∪G₂ → 개념 축·클래스 계층 추출 → parquet + tree.json. 요약 dict 반환.
+def extract(graphs: dict[str, Path] | None = None, store=None) -> tuple:
+    """그래프 집합(또는 이미 적재된 store) → (axis_df, tree). **파일을 쓰지 않는다.**
 
-    코퍼스와 동일 원천(assemble 의 GRAPHS)에서 pyoxigraph 온디스크로 적재해 SPARQL 로 뽑는다
-    (rdflib 는 대용량 그래프서 메모리 폭주 — 메모리 `central-axis-use-oxigraph-ondisk`).
+    `build()` 가 정본 산출물을 만들 때도, 결함주입 실험(PLAN-020 W4)이 **오염된 합집합 store**
+    에서 대체 뷰를 만들 때도 **같은 이 함수**를 쓴다 — 추출 로직이 두 벌로 갈라지면 실험이
+    정본과 다른 것을 재고 있게 된다. `store` 를 주면 적재를 건너뛴다(오염본을 디스크에 쓰지
+    않기 위해 필요하다).
     """
+    import contextlib
     import tempfile
 
     import pandas as pd
@@ -55,13 +58,17 @@ def build(snapshot: Path | None = None) -> dict:
 
     from ..corpus.assemble import GRAPHS
 
-    with tempfile.TemporaryDirectory() as tmp:
-        store = Store(path=str(Path(tmp) / "s"))
-        for gname, path in GRAPHS.items():
-            if not Path(path).exists():
-                raise FileNotFoundError(f"그래프 없음: {path} (make merge 필요)")
-            with open(path, "rb") as fh:
-                store.bulk_load(fh, format=RdfFormat.TURTLE, to_graph=NamedNode(gname))
+    graphs = graphs or GRAPHS
+
+    with (contextlib.nullcontext(None) if store is not None
+          else tempfile.TemporaryDirectory()) as tmp:
+        if store is None:
+            store = Store(path=str(Path(tmp) / "s"))
+            for gname, path in graphs.items():
+                if not Path(path).exists():
+                    raise FileNotFoundError(f"그래프 없음: {path} (make merge 필요)")
+                with open(path, "rb") as fh:
+                    store.bulk_load(fh, format=RdfFormat.TURTLE, to_graph=NamedNode(gname))
 
         # ① 개념 IRI 우주 = CONCEPT_PROPS 의 객체 (누출원 미포함 — assemble 과 동일 규율)
         vals = " ".join(f"ont:{p}" for p in CONCEPT_PROPS)
@@ -126,6 +133,16 @@ def build(snapshot: Path | None = None) -> dict:
         "parent": parent,
         "depth": {c: depth(c) for c in sorted(classes_all)},
     }
+    return axis_df, tree
+
+
+def build(snapshot: Path | None = None) -> dict:
+    """G₀∪G₁∪G₂ → 개념 축·클래스 계층 추출 → parquet + tree.json. 요약 dict 반환.
+
+    코퍼스와 동일 원천(assemble 의 GRAPHS)에서 pyoxigraph 온디스크로 적재해 SPARQL 로 뽑는다
+    (rdflib 는 대용량 그래프서 메모리 폭주 — 메모리 `central-axis-use-oxigraph-ondisk`).
+    """
+    axis_df, tree = extract()
 
     config.IR_CONCEPT_AXIS.parent.mkdir(parents=True, exist_ok=True)
     axis_df.to_parquet(config.IR_CONCEPT_AXIS, index=False)
@@ -142,8 +159,8 @@ def build(snapshot: Path | None = None) -> dict:
         "n_seg_only": len(axis_df) - n_typed,
         "n_ambiguous": n_ambig,
         "axis_dist": axis_dist,
-        "n_classes": len(classes_all),
-        "n_subclassof_edges": sum(len(v) for v in parent.values()),
+        "n_classes": len(tree["depth"]),
+        "n_subclassof_edges": sum(len(v) for v in tree["parent"].values()),
         "max_class_depth": max_depth,
         "out": str(config.IR_CONCEPT_AXIS),
     }

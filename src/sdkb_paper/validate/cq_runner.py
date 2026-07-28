@@ -10,19 +10,27 @@ queries/cq/*.rq 를 전부 실행해 통과율을 리포트한다.
 적어 두어야 "타 태스크 통과율이 떨어졌는가"를 물을 수 있다(원고 §4.9). 라벨 없는 파일은 `core`
 로 떨어지지 않고 **에러**다 — 조용히 분모가 바뀌면 게이트가 공허해진다.
 
+**엔진(PLAN-020 W4-0).** 기본은 `oxigraph` 다 — rdflib 인메모리는 graph_v0(23MB)에서 150초가 걸려
+결함주입 108 인스턴스를 감당하지 못한다. 두 엔진은 `--verify-engines` 로 CQ 28개 전량 결과행이
+동일함을 확인한 뒤에만 교체됐다(불일치 1건이라도 나오면 게이트 판정이 엔진에 의존한다는 뜻이므로
+전환하지 않는다). `--engine rdflib` 로 언제든 되돌릴 수 있다.
+
 CLI:  python -m sdkb_paper.validate.cq_runner <graph.ttl> [--report] [--min-pass 1.0]
+      python -m sdkb_paper.validate.cq_runner <graph.ttl> --verify-engines
       통과율 < min-pass 이면 exit code 1 (CI 게이트)
 """
 from __future__ import annotations
 
 import argparse
 import sys
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-from rdflib import Graph
-
 from sdkb_paper.config import CQ_SUITES, QUERIES_CQ, ROOT
+
+ENGINES = ("oxigraph", "rdflib")
+DEFAULT_ENGINE = "oxigraph"
 
 
 @dataclass
@@ -56,15 +64,49 @@ def _parse_meta(rq_text: str) -> tuple[str, int, str]:
     return desc, expect_min, suite
 
 
-def run_cqs(graph_path: Path, cq_dir: Path = QUERIES_CQ) -> list[CQResult]:
+def _count_rdflib(graph_path: Path, texts: list[str]) -> list[int]:
+    from rdflib import Graph
+
     g = Graph().parse(graph_path)
-    results = []
-    for rq in sorted(cq_dir.glob("*.rq")):
-        text = rq.read_text(encoding="utf-8")
-        desc, expect_min, suite = _parse_meta(text)
-        rows = len(list(g.query(text)))
-        results.append(CQResult(rq.stem, desc, expect_min, rows, suite))
-    return results
+    return [len(list(g.query(t))) for t in texts]
+
+
+def _count_oxigraph(graph_path: Path, texts: list[str]) -> list[int]:
+    """pyoxigraph 온디스크 스토어로 같은 질의를 센다 (rdflib 대비 ~10배 빠름).
+
+    대용량 그래프에서 인메모리는 메모리를 폭주시킨다(메모리 `central-axis-use-oxigraph-ondisk`)
+    — 임시 디렉터리 스토어에 적재하고 종료 시 버린다. **기본 그래프에 적재**하므로 CQ 의
+    `?s ?p ?o` 패턴 의미가 rdflib 과 같다.
+    """
+    from pyoxigraph import RdfFormat, Store
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(path=str(Path(tmp) / "cq"))
+        with open(graph_path, "rb") as fh:
+            store.bulk_load(fh, format=RdfFormat.TURTLE)
+        return [sum(1 for _ in store.query(t)) for t in texts]
+
+
+def run_cqs(graph_path: Path, cq_dir: Path = QUERIES_CQ,
+            engine: str = DEFAULT_ENGINE) -> list[CQResult]:
+    if engine not in ENGINES:
+        raise ValueError(f"알 수 없는 CQ 엔진: '{engine}' (허용 {ENGINES})")
+    rqs = sorted(cq_dir.glob("*.rq"))
+    texts = [rq.read_text(encoding="utf-8") for rq in rqs]
+    metas = [_parse_meta(t) for t in texts]
+    counts = (_count_oxigraph if engine == "oxigraph" else _count_rdflib)(graph_path, texts)
+    return [CQResult(rq.stem, desc, expect_min, rows, suite)
+            for rq, (desc, expect_min, suite), rows in zip(rqs, metas, counts)]
+
+
+def verify_engines(graph_path: Path, cq_dir: Path = QUERIES_CQ) -> list[dict]:
+    """두 엔진의 CQ 별 결과행을 대조한다. 불일치가 있으면 엔진 전환은 무효다."""
+    rqs = sorted(cq_dir.glob("*.rq"))
+    texts = [rq.read_text(encoding="utf-8") for rq in rqs]
+    ox = _count_oxigraph(graph_path, texts)
+    rd = _count_rdflib(graph_path, texts)
+    return [{"cq": rq.stem, "oxigraph": o, "rdflib": r, "same": o == r}
+            for rq, o, r in zip(rqs, ox, rd)]
 
 
 def suite_pass_rates(results: list[CQResult]) -> dict[str, dict]:
@@ -95,9 +137,23 @@ def main() -> None:
         help="요구 통과율 (0~1). baseline(graph_v0)처럼 특허 0건인 그래프는 "
              "CQ01/CQ02 가 응답 불가인 것이 정상이므로 0 으로 두고 '측정'으로 쓴다.",
     )
+    ap.add_argument("--engine", choices=ENGINES, default=DEFAULT_ENGINE,
+                    help="SPARQL 엔진. 기본 oxigraph — rdflib 은 되돌림용/대조용")
+    ap.add_argument("--verify-engines", action="store_true",
+                    help="두 엔진 결과행 대조(전환 근거). 불일치 1건이라도 있으면 exit 1")
     args = ap.parse_args()
 
-    results = run_cqs(args.graph)
+    if args.verify_engines:
+        rows = verify_engines(args.graph)
+        bad = [r for r in rows if not r["same"]]
+        print(f"[cq_runner] 엔진 대조 · graph = {args.graph}  ({len(rows)} CQ)")
+        for r in rows:
+            mark = "✅" if r["same"] else "❌"
+            print(f"  {mark} {r['cq']:<40} oxigraph={r['oxigraph']:<8} rdflib={r['rdflib']}")
+        print(f"\n[cq_runner] 불일치 {len(bad)}건")
+        sys.exit(0 if not bad else 1)
+
+    results = run_cqs(args.graph, engine=args.engine)
     if not results:
         print("[cq_runner] no CQ files found")
         sys.exit(2)
