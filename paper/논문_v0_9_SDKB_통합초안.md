@@ -1271,7 +1271,7 @@ T1이 다세대 누적되면 온톨로지가 점진적으로 검색 편향으로
 
 # 10. 데이터 및 코드 가용성
 
-SDKB 저장소는 [https://github.com/arkwith7/sdkb-foresight-paper](https://github.com/arkwith7/sdkb-foresight-paper)에서 관리된다. 재현 패키지는 가능한 범위에서 다음을 포함한다.
+SDKB 저장소는 [https://github.com/arkwith7/sdkb-prior-art-paper](https://github.com/arkwith7/sdkb-prior-art-paper)에서 관리된다. 재현 패키지는 가능한 범위에서 다음을 포함한다.
 
 - G0·G1·G2의 공개 가능 메타데이터와 provenance (큐레이션 소스·라이선스 매니페스트 포함)
 - SDKB 공유 코어와 전문가 매칭·선행기술조사·기술예측 뷰의 TBox
