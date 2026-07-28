@@ -16,7 +16,11 @@
 
 거절 특허 1,000건과 심사관 인용 2,534건은 완전한 정답이 아닌 **심사관 검토에 정박된 양성 전용 약한 적합성 판단**으로 사용한다. 질의 인용 간선을 제거하고 시간·특허 패밀리를 분리한 평가에서 BM25, 특허 임베딩, 텍스트 하이브리드, 분류코드, 도메인 온톨로지 및 청구항 한정요소 재순위화를 Recall@100, Success@K, MRR@K와 nDCG@20으로 비교한다. 결함주입 실험은 형식 검증(L0–L3)만 통과하는 의미 결함과 함께 **게이트 태스크와 무관한 교차 태스크 결함**(동의어 오병합, 계층 역전)을 주입해 T3의 독립적 필요성을 검정하고, 절제 실험은 전문가 매칭 전용 계층을 **음성 대조군**으로 사용해 청구항 한정요소·거절근거 계층 효과의 특이성을 검정한다.
 
-봉인 해제 후 1회 수행한 확증 평가(198질의)에서 온톨로지·청구항 한정요소 재순위화는 최강 텍스트 하이브리드 기준선 대비 family-level Recall@100을 **+0.0534**(95% CI [+0.0145, +0.0926], *p* = .008) 개선했다. 그러나 결과는 세 방향에서 제한적이다. 첫째, 같은 시스템의 **nDCG@20은 개선되지 않았다** — 이득은 검토 깊이 안의 회수에 있고 최상위 정렬 품질에는 없다. 둘째, 이득은 사전에 예상한 저어휘중첩 질의가 아니라 **고중첩 질의에 집중**되어, 재순위화라는 결합 방식의 구조적 천장을 드러낸다. 셋째, 음성 대조군으로 설계한 전문가 매칭 계층의 제거가 검색을 **유의하게 악화**시켜(+0.0316, *p* = .002, Holm 보정 후 유일한 유의 결과), 절제 효과의 특이성 대신 **태스크 간 결합(task entanglement)**이 관측되었다. 마지막 결과는 부정적 결과이면서 동시에 교차 태스크 비회귀 조건(T3)이 왜 독립적으로 필요한지에 대한 직접 증거다.
+봉인 해제 후 1회 수행한 확증 평가(198질의)에서 온톨로지·청구항 한정요소 재순위화는 최강 텍스트 하이브리드 기준선 대비 family-level Recall@100을 **+0.0534**(95% CI [+0.0145, +0.0926], *p* = .008) 개선했다. 그러나 이 개선에는 세 방향의 경계가 있다. 첫째, 사전 지정한 주 순위 함수는 유의 수준에 이르지 못했고(*p* = .181), 위 수치는 부차 구성의 관측이다 — 결과를 본 뒤 주 시스템을 교체하지 않고 사전 지정 판정을 그대로 보고한다. 둘째, **nDCG@20은 개선되지 않았다** — 이득은 검토 깊이 안의 회수에 있고 최상위 정렬 품질에는 없다. 셋째, 이득은 사전에 예상한 저어휘중첩 질의가 아니라 **고중첩 질의에 집중**되어, 재순위화라는 결합 방식의 구조적 천장을 드러낸다.
+
+경계와 별개로 본 평가는 다태스크 온톨로지에 관한 두 가지 발견을 낳았으며, 이것이 검색 성능 수치보다 본 연구의 더 일반적인 산출이다. 첫째는 **태스크 결합(task entanglement)**이다. 검색과 이론적으로 무관하도록 설계해 음성 대조군으로 삼은 전문가 매칭 전용 계층을 제거하자 검색이 오히려 유의하게 악화되었다(+0.0316, *p* = .002; 8개 절제 중 Holm 보정 후 유일한 유의 결과). 하나의 T-Box를 공유하는 태스크는 통계적으로 분리되지 않으며, 한 태스크를 겨냥한 델타가 다른 태스크의 질의 경로를 조용히 훼손할 수 있다 — 절제 설계의 실패가 아니라 교차 태스크 비회귀 조건(T3)이 왜 형식 검증이나 단일 태스크 성능 검사와 **독립적으로** 필요한지에 대한 직접적 경험 근거다. 게이트 자체의 실측에서는 승인 안전성(T-gate가 승인한 델타는 동결 테스트셋에서 비열등하고 하위집단 하락이 허용한계 안)은 지지되었으나, 교차 태스크 결함이 T3에서만 검출된다는 **판별력 가설은 기각되었다** — L3와 T3의 검출 표면이 겹쳐 단독 검출이 층 정의상 성립하지 않았기 때문이며, 두 층을 서로소로 분리한 사후 재판정에서만 검출 방향이 역전되었다(탐색적).
+
+둘째는 **교차언어 축**이다. 개봉 후 진단에서 정답을 언어별로 분해하면 시스템 순위가 뒤집힌다. 한국어 질의의 어휘 검색은 두 분할 334건의 영어 정답을 **한 건도** 회수하지 못하는 반면, 개념 IRI만 사용하는 온톨로지 단독 팔은 영어 정답에서 텍스트 하이브리드의 2.3배를 회수해 전 시스템 중 가장 높다. 그러나 이 비교우위는 최종 시스템에 전달되지 않는다 — 재순위화가 텍스트 후보 풀 밖을 보지 못하기 때문이다. 명시적 온톨로지의 가치가 가장 큰 영역을 융합 아키텍처가 구조적으로 소거할 수 있다는 이 관측은 사전등록 가설이 아닌 사후 관측이며, 후속 사전등록 실험의 표적으로 남긴다.
 
 저장소 감사는 데이터셋의 표현 범위와 검색 준비도 사이의 차이를 드러낸다. 인용 선행기술의 노드 도달성은 95.3%인 반면 도메인 의미 관계 도달성은 54.6–70.5%이며, CQ10의 후보 수 증가는 후보 생성 능력이지 적합성 순위의 증거가 아니다. 본 연구는 데이터셋의 **넓은 태스크 표현 범위**와 하나의 운영 태스크에 대한 **집중된 정량 검증**, 그리고 나머지 태스크에 대한 **회귀 감시**를 분리·결합함으로써, 온톨로지 품질을 "그래프가 유효한가"에서 "과제 성능을 보존하며, 다른 태스크를 훼손하지 않고 진화하는가"로 확장한다.
 
@@ -26,13 +30,17 @@
 
 ## Abstract
 
-Knowledge-intensive engineering tasks in the semiconductor domain require more than process, device, material, and equipment taxonomies. They must connect technical problems to expert capabilities, patent claims to prior art, and time-indexed technology signals to strategic options. This paper presents the Semiconductor Domain Knowledge Base (SDKB), a **task-extensible semiconductor domain ontology dataset** whose shared T-Box supports three application views: expert matching through Problem–RootCause–Skill–Expert concepts; prior-art retrieval through Patent–Claim–ClaimFeature–PriorArtJudgment concepts; and technology foresight through TechnologyNode–Scenario–STEEPVEFactor–RealOption–TRL concepts. SHACL constraints and 28 competency questions (CQs) examine representational adequacy across these views; we do not claim that all three tasks have been performance-validated to the same degree.
+Knowledge-intensive engineering tasks in the semiconductor domain require more than process, device, material, and equipment taxonomies. They must connect technical problems to expert capabilities, patent claims to prior art, and time-indexed technology signals to strategic options. This paper presents the Semiconductor Domain Knowledge Base (SDKB), a **task-extensible semiconductor domain ontology dataset** whose shared T-Box supports three application views: expert matching through Problem–RootCause–Skill–Expert concepts; prior-art retrieval through Patent–Claim–ClaimFeature–PriorArtJudgment concepts; and technology foresight through TechnologyNode–Scenario–STEEPVEFactor–RealOption–TRL concepts. SHACL constraints and 31 competency questions (CQs) examine representational adequacy across these views — 28 of which form the denominator of gate verdicts, while the three claim-level CQs are operated as measurement rather than as a gate (§9.7); we do not claim that all three tasks have been performance-validated to the same degree.
 
 Prior-art retrieval is selected as the primary empirical task because examiner-grounded weak relevance judgments are available. However, when a single T-Box sustains three tasks through shared vocabulary, gating enrichment on one task's performance risks overfitting the ontology to that task and silently degrading the query paths of the others — concept merging that raises retrieval recall, for example, can erode the discriminative power of expert-matching `Skill` concepts. We therefore retain SDKB's four validation layers — freshness and integrity (L0), SHACL constraints (L1), logical consistency (L2), and CQ functionality (L3) — and introduce a three-condition task gate (T-gate) that checks, before any ontology delta is merged: (T1) non-inferiority of retrieval performance, (T2) subgroup safety across rejection grounds and process groups, and (T3) **cross-task non-regression of CQ pass rates for the remaining tasks**.
 
 The benchmark uses 1,000 rejected patent applications and 2,534 examiner-cited references as examiner-validated, positive-only weak relevance judgments rather than exhaustive ground truth. Evaluation is citation-edge-masked, temporally valid, and patent-family-disjoint. BM25, patent encoders, text-hybrid retrieval, classification-based retrieval, domain-ontology retrieval, and claim-feature reranking are compared using Recall@100 as the primary metric. Fault-injection experiments include not only semantically corrupted deltas that pass formal validation, but also **cross-task faults** (synonym over-merging, hierarchy inversion) that only T3 is expected to detect, establishing the independent necessity of the cross-task condition. Ablation employs the expert-matching-only layer as a **negative control** to test the specificity of claim-feature and rejection-ground effects.
 
-In a single confirmatory evaluation on the sealed test split (198 queries), ontology- and claim-feature-based reranking improved family-level Recall@100 by **+0.0534** (95% CI [+0.0145, +0.0926], *p* = .008) over the strongest text-hybrid baseline. The result is bounded in three ways. First, **nDCG@20 did not improve**: the gain lies in recall within the review depth, not in top-of-ranking ordering quality. Second, the gain concentrates in **high**-lexical-overlap queries rather than the low-overlap queries predicted in advance, exposing a structural ceiling of reranking as a fusion strategy. Third, removing the expert-matching layer — designed as a negative control — **significantly degraded** retrieval (+0.0316, *p* = .002; the only ablation surviving Holm correction), so what we observe is not ablation specificity but **task entanglement**. That last finding is simultaneously a negative result and direct evidence for why the cross-task non-regression condition (T3) is independently necessary.
+In a single confirmatory evaluation on the sealed test split (198 queries), ontology- and claim-feature-based reranking improved family-level Recall@100 by **+0.0534** (95% CI [+0.0145, +0.0926], *p* = .008) over the strongest text-hybrid baseline. The improvement is bounded in three ways. First, the pre-specified primary ranking function did not reach significance (*p* = .181); the figure above belongs to a secondary configuration, and we report the pre-specified verdict rather than substituting a primary system after seeing the results. Second, **nDCG@20 did not improve**: the gain lies in recall within the review depth, not in top-of-ranking ordering quality. Third, the gain concentrates in **high**-lexical-overlap queries rather than the low-overlap queries predicted in advance, exposing a structural ceiling of reranking as a fusion strategy.
+
+Beyond these bounds, the evaluation yielded two findings about multi-task ontologies that generalize further than the retrieval numbers themselves. The first is **task entanglement**: removing the expert-matching-only layer — designed to be theoretically irrelevant to retrieval and used as a negative control — *significantly degraded* retrieval (+0.0316, *p* = .002; the only ablation surviving Holm correction). Tasks sharing one T-Box are therefore not statistically separable, and a delta aimed at one task can silently damage the query paths of another. This is not a failed ablation design but direct empirical evidence that the cross-task non-regression condition (T3) is needed **independently** of formal validation and of single-task performance checks. On the gate itself, approval safety was supported — deltas approved by the T-gate were non-inferior on the sealed test split with subgroup drops within tolerance — but the **discriminative-power hypothesis was rejected**: L3 and T3 share a detection surface, so detection by T3 alone is definitionally impossible; only after separating the two layers into disjoint suites did the detection direction reverse (exploratory).
+
+The second finding is a **cross-lingual axis**. Decomposing the relevance judgments by language reverses system rankings: Korean-query lexical retrieval recovers **zero** of the 334 English-language positives across both splits, whereas the ontology-only arm — which matches on concept IRIs rather than surface terms — recovers 2.3× as many English positives as the text hybrid and ranks highest among all systems. That comparative advantage never reaches the deployed system, because reranking cannot see outside the text candidate pool. This observation, that a fusion architecture can structurally erase the very region where an explicit ontology is most valuable, is post-hoc rather than pre-registered and is left as a target for a separately pre-registered follow-up.
 
 A repository audit distinguishes ontology scope from task readiness: node-level reachability of examiner-cited prior art is 95.3%, whereas domain-semantic reachability ranges from 54.6% to 70.5%, and CQ10 candidate growth demonstrates candidate-generation capacity, not ranked relevance. The paper thus combines broad multi-task representational scope, focused quantitative validation of one operational task, and regression surveillance of the remaining tasks, extending ontology quality from "is the graph valid" to "does the graph evolve while preserving task performance without harming its sibling tasks."
 
@@ -157,14 +165,14 @@ SDKB는 이 함정을 벗어난다. SDKB의 T-Box는 전문가 매칭·선행기
 본 연구의 기여는 세 가지이며, 결론의 주장 순서와 일치한다.
 
 1. **정합성·완전성이 검증된 반도체 도메인 온톨로지 데이터셋.** 공정·소자·재료·장비·역량·특허를 하나의 공유 T-Box로 통합하고, 최종 정리된 T-Box와 A-Box(G0–G2)를 SHACL 제약, CQ 응답, 도달성 사다리로 계량 보고하는 재현 가능한 SDKB 릴리스를 제공한다.
-2. **다중 태스크 작동성의 실험적 검증.** 전문가 매칭(소부장 문제 대응)·선행기술조사·기술예측의 세 태스크 뷰가 동일 T-Box 위에서 상호 간섭 없이 작동함을, L0–L3에 3조건 T-gate(T1·T2·T3)를 더한 검증 게이트와 교차 태스크 결함 주입 실험으로 확인한다.
-3. **선행기술조사 태스크의 성능·유용성 실증.** 거절 특허와 심사관 인용을 정박점으로 삼은 누출 차단 벤치마크에서, 선행기술조사 뷰의 온톨로지 데이터셋을 이용한 검색이 성능을 보장하고 활용도가 높음을 계층별 기여 분해와 함께 증명한다.
+2. **다중 태스크 작동성의 검증 장치와, 태스크 결합의 실측.** 전문가 매칭(소부장 문제 대응)·선행기술조사·기술예측의 세 태스크 뷰가 동일 T-Box 위에서 상호 간섭 없이 작동하는지를, L0–L3에 3조건 T-gate(T1·T2·T3)를 더한 검증 게이트와 교차 태스크 결함 주입으로 판정한다. 이 축의 실측 산출은 두 갈래다. 게이트가 승인한 델타의 **안전성은 동결 테스트셋에서 지지**되었고(H2), 게이트의 **판별력 가설은 기각**되었으며 그 원인이 L3와 T3의 검출 표면 중첩임을 규명해 층 분리라는 처방과 함께 보고한다(H1·§6.5.3). 그리고 절제 실험의 음성 대조군이 무너지면서 얻은 **태스크 결합(task entanglement)의 정량 증거** — 검색과 무관하도록 설계한 전문가 매칭 계층을 제거하면 검색이 유의하게 악화된다 — 는 교차 태스크 조건이 형식 검증·단일 태스크 성능과 독립적으로 필요함을 보이는, 본 논문에서 가장 일반화 가능한 결과다(§7.6·신규 주장 F).
+3. **선행기술조사 태스크의 성능·유용성 실증 — 경계를 명시한 형태로.** 거절 특허와 심사관 인용을 정박점으로 삼은 누출 차단 벤치마크에서, 선행기술조사 뷰의 온톨로지 보강 검색이 최강 텍스트 기준선 대비 주 지표(family-level Recall@100)를 유의하게 개선함을 계층별 기여 분해와 함께 보인다. 동시에 그 개선이 **어디까지인지**를 같은 정밀도로 보고한다 — 사전 지정 주 순위 함수의 유의 미달, 최상위 정렬 품질(nDCG@20)의 미개선, 저중첩 예측의 반증, 그리고 이득의 본체가 계층 심화가 아니라 개념 겹침 하나라는 절제 결과다. 이 경계 분석은 온톨로지의 비교우위가 **교차언어 축**에 있으며 재순위화라는 융합 방식이 그것을 소거한다는 사후 관측으로 이어져, 하이브리드 설계에 대한 반증 가능한 후속 표적을 특정한다(§7.8·신규 주장 H).
 
 전문가 매칭의 방법론과 성능 평가는 본 논문의 범위 밖이며(§8.3), 기술예측과 소부장 코퍼스는 동일 T-Box의 재사용 가능성을 보이는 2차 증거로만 배치한다.
 
 ## 1.6 논문의 구성
 
-2장은 특허 검색, 온톨로지 품질과 진화 검증, 태스크 확장형 데이터셋과 지식그래프 하이브리드를 검토한다. 3장은 SDKB의 공유 코어, 세 태스크 뷰, 그래프 계보와 검색 근거 구조를 기술한다. 4장은 누출 방지 벤치마크와 3조건 T-gate를 제시한다. 5장은 실험 설계와 통계 분석 계획을 제시한다. 6장은 T-Box·CQ에서 확인된 표현 범위와 검색 자원 관측 결과를 먼저 보고하고, 이어 미실측 검색 결과 틀을 제시한다. 7장은 예상 발견과 신규 주장의 반증 조건을 명시한다. 8장은 비대칭 태스크 검증의 시사점을, 9장은 한계를, 10장과 11장은 가용성과 결론을 제시한다.
+2장은 특허 검색, 온톨로지 품질과 진화 검증, 태스크 확장형 데이터셋과 지식그래프 하이브리드를 검토한다. 3장은 SDKB의 공유 코어, 세 태스크 뷰, 그래프 계보와 검색 근거 구조를 기술한다. 4장은 누출 방지 벤치마크와 3조건 T-gate를 제시한다. 5장은 실험 설계와 통계 분석 계획을 제시한다. 6장은 T-Box·CQ에서 확인된 표현 범위와 검색 자원 관측을 먼저 보고하고, 이어 확증 분할 개봉 후 1회 수행한 검색 성능·가설 판정·하위집단·절제·결함주입·교차 태스크 CQ 결과를 제시한다. 7장은 사전에 명시한 예상 발견과 신규 주장에 실측 판정을 대응시키고, 사전등록 밖의 사후 관측을 구분해 반증 조건과 함께 남긴다. 8장은 비대칭 태스크 검증의 시사점을, 9장은 한계를, 10장과 11장은 가용성과 결론을 제시한다.
 
 ---
 # 2. 이론적 배경과 관련연구
@@ -176,6 +184,10 @@ SDKB는 이 함정을 벗어난다. SDKB의 T-Box는 전문가 매칭·선행기
 벤치마크 측면에서 CLEF-IP(Conference and Labs of the Evaluation Forum – Intellectual Property track, 2009–2013)는 EPO(European Patent Office, 유럽특허청) 기반 대규모 특허 컬렉션으로 선행기술 검색·분류를 평가한 대표 캠페인이며, 관련도 판정을 심사관 인용으로 생성했다. 특히 2012–2013 passage retrieval 태스크는 심사관 보고서의 X(신규성 파괴)·Y(진보성 파괴) 인용을 highly-relevant로 처리해, 인용 등급을 평가에 반영하는 선례를 제공한다. PatentMatch(Risch et al., 2020)는 EPO 심사관이 X/Y/A로 등급화한 청구항–선행문헌 구절 대응을 제공해 청구항 수준 평가의 직접 비교 대상이 되고, BigPatent(Sharma et al., 2019)는 130만 미국 특허 요약 데이터셋으로 도메인 코퍼스 규모의 기준점을 제공한다. 최근 PatenTEB(Kherwa et al., 2025)는 비대칭 검색을 포함한 15개 태스크의 특허 텍스트 임베딩 벤치마크를 제시해 신규성 비교선을 최신화한다.
 
 기존 검색 연구는 세 방향으로 발전했다. 첫째, BM25와 필드 가중 검색은 제목·초록·청구항의 어휘 증거를 결합한다. 둘째, PatentBERT, PatentSBERTa, PaECTER와 같은 특허 특화 표현은 문장 또는 문서 수준의 의미 유사도를 학습한다(Bekamiri et al., 2024; Ghosh et al., 2024). 셋째, 인용 네트워크와 질의 문서의 구조를 이용해 후보를 확장하거나 재순위화한다(Mahdabi & Crestani, 2014). 최근 조사 연구는 강한 검색 시스템이 하나의 표현에 의존하기보다 어휘, 의미, 분류, 인용, 메타데이터를 결합하는 방향으로 이동했음을 보여준다(Krestel et al., 2021; Shomee et al., 2025).
+
+**교차언어 축은 이 세 방향과 직교한다.** 선행기술의 공개는 언어와 무관하게 유효하므로, 완전한 선행기술 검색은 본질적으로 교차언어적이다. CLEF–IP가 처음부터 영어·독일어·프랑스어 세 언어 컬렉션으로 설계되고 교차언어 검색을 명시적 목표로 삼은 것도 이 요구를 반영하며(Piroi & Hanbury, 2019), 일본어 축에서는 NTCIR 특허 검색 태스크가 무효자료 조사 형태의 비영어 시험 컬렉션을 구축했다(Fujii et al., 2004). 이 흐름의 주된 통로는 번역이었다. 특허 질의는 청구항이나 명세서 전체처럼 길어 기계번역 비용이 일반 CLIR보다 크므로, 검색 전처리를 번역 학습 코퍼스에 미리 적용해 비용을 줄이는 기법(Magdy & Jones, 2011)과 번역 기술 선택이 대규모 선행기술 검색의 회수에 미치는 영향을 다룬 사례연구(Magdy & Jones, 2014)가 보고됐다. 언어별 형태론도 회수에 직접 작용해, 복합어 분해(decompounding)는 교차언어 특허 검색의 전처리 쟁점으로 별도로 다뤄졌고(Leveling et al., 2011), 다국어 컬렉션에서의 질의 생성 기법 비교도 수행됐다(Zhou et al., 2013). 한국어–영어 축에서는 KIPRIS가 K2E-PAT 자동번역을 기반으로 교차언어 검색을 제공해 왔으며(Choi, 2009), 특허 도메인의 한–영 번역 품질은 엔진에 따라 여전히 균질하지 않다(Lee & Choi, 2023). 최근에는 번역 대신 다국어 밀집 표현으로 언어 장벽을 넘는 접근이 확산되었고, 18개 언어 규모의 다국어 검색 벤치마크가 그 비교 기반을 제공한다(Zhang et al., 2023).
+
+**이 흐름이 남기는 공백.** 위 문헌에서 교차언어 통로는 사실상 둘 — 번역과 다국어 임베딩 — 이다. **명시적 온톨로지의 언어중립 식별자**를 세 번째 통로로 놓고 그 회수 기여를 정답 언어별로 분해해 측정한 평가는 확인되지 않는다. 나아가 온톨로지·KG 기반 특허 검색 연구(§2.5)는 대체로 단일 언어 컬렉션에서 평가되므로, 개념 링크가 T-Box 수준에서는 언어중립이면서 A-Box 수준에서는 언어에 따라 비대칭적으로 부착돼 있을 가능성 자체가 측정 대상이 되지 않는다. 본 연구의 벤치마크는 질의가 전량 한국어이고 후보 코퍼스가 다국어인 조건에서 번역 계층 없이 동결되어 있어, 이 공백을 정면으로 관측할 수 있는 조건에 해당한다. 실제로 회수를 정답 언어별 마이크로 단위로 분해하면 세 통로의 기여가 갈리며(§6.2f), 개념 단독 검색팔이 영어 정답에서 텍스트 하이브리드를 앞서면서도 그 우위가 재순위화 단계에서 소거되는 관측(§7.8)은 어느 통로를 보강해야 하는지를 특정한다. 다만 이 관측은 사후적이며 본 논문의 사전등록 가설이 아니고, 번역 계층을 요인으로 하는 비교는 동결 설계 밖의 별도 실험으로 남는다(§9.1).
 
 그러나 "검색 단위"는 여전히 쟁점이다. 문서 수준 검색은 확장성과 벤치마크 구성이 쉽지만, 심사 판단은 청구항과 그 한정요소에 관여한다. 본 연구는 전체 거절 특허에 대해서는 문헌 수준 평가를 1차 분석으로 유지하고, 명시적 `PriorArtJudgment–aboutClaim–overPriorArt` 연결이 있는 부분집합에서 청구항 수준 분석을 2차로 수행한다. 이렇게 해야 풍부한 부분집합을 전체 데이터의 속성으로 일반화하는 오류를 피할 수 있다.
 
@@ -242,6 +254,7 @@ SDKB는 세 태스크의 표현 범위를 데이터셋 수준에서 제시하고
 |---|---|---|---|---|
 | 특허 텍스트 검색 | Recall, MAP, MRR, nDCG | 과제 성능 직접 측정 | 명시적 도메인 의미와 그래프 진화 검증 부족 | 반도체 온톨로지 계층을 후보·재순위화에 결합 |
 | 인용·KG 검색 | 인용 qrel 기반 순위 성능 | 관계 신호 활용 | 질의 인용 누출 및 변화 게이트 문제 | 질의 간선 마스킹, 시간·패밀리 분리 |
+| 교차언어 특허검색(CLIR) | 번역 기반 회수·다국어 컬렉션 평가 | 언어 장벽을 직접 통제 | 통로가 번역·다국어 임베딩에 한정되고, 개념 자원의 언어 비대칭은 측정되지 않음 | 언어중립 개념 IRI를 제3 통로로 두고 정답 언어별 회수를 분해 측정(§6.2f·§7.8) |
 | 온톨로지 검증 | SHACL, 추론, CQ | 형식 오류와 기능 단절 탐지 | 순위 품질·교차 태스크 회귀를 보장하지 않음 | 3조건 T-gate와 비열등 병합 규칙 |
 | KG 다운스트림 평가 | 분류·클러스터링·추천 과제 성능 | 과제 관점 품질 추정 | 사후 비교에 머물고 승인 게이트가 아님 | 릴리스 전 사전 승인 게이트로 전환 |
 | 도메인 온톨로지 데이터셋 | FAIR, 스키마·인스턴스·CQ·provenance | 재사용 가능한 의미 백본 | 다중 태스크 표현과 단일 태스크 성능의 혼동 | 세 태스크 뷰·비대칭 검증·T3 감시 명시 |
@@ -1183,7 +1196,7 @@ SDKB의 T-Box와 CQ가 세 태스크를 포괄하더라도 이 논문의 정량 
 
 **재랭크 아키텍처의 천장(구성 타당도의 핵심 제약).** 제안 순위 함수는 텍스트 기준선의 상위 1,000을 재정렬할 뿐 후보 집합을 넓히지 않는다. 따라서 본 논문이 측정한 것은 "온톨로지가 선행기술 검색을 얼마나 개선하는가"의 상한이 아니라 **재랭크라는 결합 방식에서의 개선분**이다. 텍스트가 후보로 올리지 못한 문서는 어떤 온톨로지 특징으로도 회수되지 않으며, §7.3의 저중첩 예상이 반증된 직접적 원인이 여기에 있다. 온톨로지 기반 질의 확장·후보 생성은 F8·F13 동결 설계를 변경하므로 본 논문의 결과와 같은 사전등록 아래에서는 검정할 수 없고, 별도 실험으로만 가능하다.
 
-**단일 언어 검색 파이프라인 — 측정된 제약.** 본 벤치마크의 질의는 전량 한국어이고 후보 코퍼스는 다국어이며(한국어 38,246·영어 1,189·일본어 117), 알려진 양성의 41%가 비한국어다. 본 연구의 검색 파이프라인은 **단일 언어 질의 처리**로 동결되어 있다 — 질의·문서 번역 계층을 두지 않으며, 교차언어 통로는 다국어 임베딩(B2)과 언어중립 개념 IRI(B5) 둘뿐이다. 이 제약의 결과는 추정이 아니라 측정됐다(§6.2f): 한국어 질의의 어휘 검색은 영어 정답을 두 분할 334건 중 0건 회수하고, 최종 시스템은 비한국어 정답의 5%만 회수한다. 따라서 **본 논문이 보고하는 Recall은 다국어 선행기술 전체가 아니라 사실상 한국어 하위풀에 대한 회수에 가깝고, 교차언어 하위집단의 이득 유의 미달(§6.4)은 성능이 아니라 이 아키텍처 제약의 반영이다.** 세 원인 — 번역 부재(어휘)·비한국어 개념링크 결손(의미, 영어 69.6%·일본어 0%)·재랭크 천장(구조) — 은 §6.2f에서 분리되어 각각 다른 처방을 가리키지만, **본 논문의 동결 설계(F8 질의 표현·F13 토큰화) 안에서는 어느 것도 검정할 수 없다.** 번역 계층 추가, 비한국어 개념 보강, 온톨로지 기반 후보 생성을 요인으로 하는 비교는 별도 사전등록 실험으로 수행해야 하며, 그 설계는 다음 두 위협을 사전에 통제해야 한다. 첫째, **후보 풀 편향** — 영어 문서의 72.5%, 일본어 문서의 70.9%가 심사관 인용 정답이므로 외국어 하위풀에는 방해 문서가 희소하고, 교차언어 팔의 이득은 과대평가된다. 둘째, **일본어 자원 결손** — 일본어 정답의 본문 중앙 길이가 117자여서 회수 실패가 방법이 아니라 입력의 부재에서 온다.
+**단일 언어 검색 파이프라인 — 측정된 제약.** 본 벤치마크의 질의는 전량 한국어이고 후보 코퍼스는 다국어이며(한국어 38,246·영어 1,189·일본어 117), 알려진 양성의 41%가 비한국어다(**전체 qrel 2,321건 기준**; 확증 분할 479건으로 좁히면 29.0%다 — §6.2f. 두 수는 분모가 다르며 혼용하지 않는다). 본 연구의 검색 파이프라인은 **단일 언어 질의 처리**로 동결되어 있다 — 질의·문서 번역 계층을 두지 않으며, 교차언어 통로는 다국어 임베딩(B2)과 언어중립 개념 IRI(B5) 둘뿐이다. 이 제약의 결과는 추정이 아니라 측정됐다(§6.2f): 한국어 질의의 어휘 검색은 영어 정답을 두 분할 334건 중 0건 회수하고, 최종 시스템은 비한국어 정답의 5%만 회수한다. 따라서 **본 논문이 보고하는 Recall은 다국어 선행기술 전체가 아니라 사실상 한국어 하위풀에 대한 회수에 가깝고, 교차언어 하위집단의 이득 유의 미달(§6.4)은 성능이 아니라 이 아키텍처 제약의 반영이다.** 세 원인 — 번역 부재(어휘)·비한국어 개념링크 결손(의미, 영어 69.6%·일본어 0%)·재랭크 천장(구조) — 은 §6.2f에서 분리되어 각각 다른 처방을 가리키지만, **본 논문의 동결 설계(F8 질의 표현·F13 토큰화) 안에서는 어느 것도 검정할 수 없다.** 번역 계층 추가, 비한국어 개념 보강, 온톨로지 기반 후보 생성을 요인으로 하는 비교는 별도 사전등록 실험으로 수행해야 하며, 그 설계는 다음 두 위협을 사전에 통제해야 한다. 첫째, **후보 풀 편향** — 영어 문서의 72.5%, 일본어 문서의 70.9%가 심사관 인용 정답이므로 외국어 하위풀에는 방해 문서가 희소하고, 교차언어 팔의 이득은 과대평가된다. 둘째, **일본어 자원 결손** — 일본어 정답의 본문 중앙 길이가 117자여서 회수 실패가 방법이 아니라 입력의 부재에서 온다.
 
 **교차언어 제약이 남기는 외적 타당도 경고.** 위 제약은 §9.3의 일반화 한계와 결합해 특히 강하게 작용한다. 선행기술 조사 실무에서 누락된 외국어 문헌 하나가 무효 사유가 될 수 있으므로, 본 결과를 "온톨로지 보강이 선행기술 검색을 개선한다"로 일반화할 때는 **개선이 관측된 범위가 한국어 정답임을 함께 진술해야 한다.**
 
@@ -1246,9 +1259,13 @@ SDKB 저장소는 [https://github.com/arkwith7/sdkb-foresight-paper](https://git
 
 본 연구는 SDKB를 공정·소자·재료·장비·고장·역량·특허·기업·기술전략 지식을 통합하고, 전문가 매칭·선행기술조사·기술예측의 세 태스크 뷰를 지원하는 **태스크 확장형 반도체 도메인 온톨로지 데이터셋**으로 제시한다. 새 논리기조는 이 넓은 자원 정체성을 선행기술 검색용 그래프로 축소하지 않는다. 대신 세 태스크의 표현 범위는 T-Box·SHACL·CQ로 제시하고, 심사관 인용 약한 정답이 존재하는 선행기술 검색을 주 정량 검증으로 선택하며, 나머지 두 태스크는 교차 태스크 CQ 비회귀(T3)로 감시한다.
 
-현재 자원 감사만으로도 네 가지는 확인된다. 세 태스크의 핵심 어휘와 관계는 실제 T-Box에 존재한다. 선행기술 노드 도달성과 의미 도달성은 다르다. CQ 후보 수는 검색 적합성이 아니며, 청구항 한정요소 스키마의 존재와 인스턴스 완전성은 분리해 보고해야 한다. 아직 확인되지 않은 것은 온톨로지 하이브리드의 실제 검색 개선폭, 각 의미 계층의 인과적 기여, 그리고 교차 태스크 결함에 대한 T3의 실측 검출력이다. 따라서 본 초안은 그 결과를 꾸며 쓰지 않고 누출 방지 분할, 강한 기준선, 음성 대조군을 포함한 ablation, 교차 태스크 표적 결함 주입, 전문가 표본 판정과 명시적 기각 기준을 제시한다.
+자원 감사에서 네 가지가 확인된다. 세 태스크의 핵심 어휘와 관계는 실제 T-Box에 존재한다. 선행기술의 노드 도달성(95.3%)과 도메인 의미 관계 도달성(54.6–70.5%)은 같지 않다. CQ의 후보 수 증가는 후보 생성 능력이지 적합성 순위의 증거가 아니다. 청구항 한정요소 스키마의 존재와 인스턴스 완전성은 분리해 보고해야 한다.
 
-예상대로 T-gate가 L0–L3의 사각지대를 탐지하고 교차 결함이 T3에서만 검출된다면, 연구의 핵심 신규성은 특정 검색모델 하나가 아니라 **넓은 도메인 표현 범위를 유지하면서 주 과제의 성능을 보존하고 나머지 태스크를 훼손하지 않는 온톨로지 데이터셋 진화**라는 검증 패러다임에 있다. 하이브리드가 텍스트 기준선을 개선한다면 그 효과가 낮은 어휘 중첩, 청구항 한정요소와 거절근거에서 발생하는지를 설명할 수 있다. 개선하지 못하더라도 공유 T-Box, 비대칭 검증 설계, 도달성 사다리와 3조건 회귀 게이트는 자원이 실제 과제에 어느 수준까지 준비되었는지 판정하는 반증 가능하고 재현 가능한 기준을 제공한다. "최초"를 주장하기보다 검증 게이트·누출 통제·교차 태스크 비회귀·음성 대조군 절제의 결합과 실험설계의 차별성을 강조한다.
+봉인 분할을 1회 개봉해 수행한 확증 평가는 그 위에 세 층의 결과를 얹는다. **첫째, 검색 유용성은 주 지표에 한정해 지지된다.** 온톨로지·한정요소 재순위화는 최강 텍스트 하이브리드 대비 family-level Recall@100을 +0.0534(*p* = .008) 개선했으나, 사전 지정한 주 순위 함수는 유의 수준에 미달했고(*p* = .181) nDCG@20은 개선되지 않았으며, 이득은 예상과 반대로 고어휘중첩 질의에 몰렸다. 절제는 이득의 본체가 계층 심화가 아니라 개념 겹침 하나임을 가리킨다 — 청구항 한정요소 계층의 독립 기여 가설은 기각되었다. **둘째, 승인 안전성은 지지되고 게이트 판별력은 기각된다.** T-gate가 승인한 델타는 동결 테스트셋에서 비열등했고 하위집단 하락은 허용한계 안이었다. 그러나 교차 태스크 결함이 T3에서만 검출된다는 예측은 성립하지 않았고, 그 원인은 게이트의 무용함이 아니라 L3와 T3가 검출 표면을 공유해 단독 검출이 층 정의상 불가능했다는 데 있다. 두 층을 서로소로 분리하고 다시 판정했을 때 검출 방향은 역전되었으나, 이는 같은 데이터의 사후 재판정이므로 탐색적 근거로만 제시한다. **셋째, 음성 대조군이 무너졌다.** 검색과 무관하도록 설계한 전문가 매칭 전용 계층을 제거하자 검색이 유의하게 악화되어(+0.0316, *p* = .002), 특이성 대신 태스크 결합이 관측되었다.
+
+이 셋 가운데 본 연구가 가장 일반화 가능한 결과로 내세우는 것은 **태스크 결합**이다. 공유 T-Box 위의 태스크들은 통계적으로 분리되지 않으며, 한 태스크의 성능만으로 온톨로지 델타를 승인하는 관행은 다른 태스크의 질의 경로를 조용히 훼손할 수 있다. 이 결합은 형식 검증(L0–L3)에서도, 게이트 태스크의 성능 검사(T1·T2)에서도 보이지 않고 교차 태스크 조건(T3)에서만 감시된다. 따라서 연구의 핵심 신규성은 특정 검색모델이 아니라, **넓은 도메인 표현 범위를 유지하면서 주 과제의 성능을 보존하고 나머지 태스크를 훼손하지 않는 온톨로지 데이터셋 진화**라는 검증 패러다임과, 그 필요성을 부정적 결과로 실증했다는 데 있다. 함께 얻은 두 번째 축은 명시적 온톨로지의 비교우위가 **언어 경계**에서 가장 뚜렷하다는 사후 관측이다 — 한국어 질의의 어휘 검색이 영어 정답을 한 건도 회수하지 못하는 구간에서 개념 팔만이 회수에 성공하지만, 재순위화라는 융합 방식이 그 우위를 최종 시스템에서 소거한다.
+
+남은 것을 축소해 말하지 않는다. 세대별 CQ 통과율은 세대가 둘뿐이라 추이가 성립하지 않고, 전문가 표본 판정은 수행하지 않았으며(등급형 nDCG의 유일한 경로이므로 그 부재는 보조 지표 해석을 제약한다), 교차언어 처방과 온톨로지 기반 후보 생성은 본 논문의 동결 설계 밖이라 별도 사전등록 실험으로 남는다. "최초"를 주장하기보다, 검증 게이트·누출 통제·교차 태스크 비회귀·음성 대조군 절제를 결합한 설계와, 그 설계가 가설에 불리한 결과까지 판정 가능하게 만들었다는 점을 본 연구의 기여로 제시한다.
 
 ---
 
@@ -1270,9 +1287,13 @@ Buckley, C., & Voorhees, E. M. (2004). Retrieval evaluation with incomplete info
 
 Büttcher, S., Clarke, C. L. A., Yeung, P. C. K., & Soboroff, I. (2007). Reliable information retrieval evaluation with incomplete and biased judgements. In *Proceedings of the 30th Annual International ACM SIGIR Conference* (pp. 63–70). https://doi.org/10.1145/1277741.1277755
 
+Choi, Y. (2009). Korean to English Patent Automatic Translation (K2E-PAT) and cross lingual retrieval on KIPRIS. *World Patent Information, 31*(2), 135–136. https://doi.org/10.1016/j.wpi.2008.09.005
+
 Daniell, S., Buzhinsky, I., & Björkqvist, S. (2025). Graph Transformer-based dense retrieval for prior-art search. In *Proceedings of the PatentSemTech Workshop at SIGIR 2025*. arXiv:2508.10496 `[서지 재확인 필요]`
 
 Flouris, G., Manakanatas, D., Kondylakis, H., Plexousakis, D., & Antoniou, G. (2008). Ontology change: Classification and survey. *The Knowledge Engineering Review, 23*(2), 117–152. https://doi.org/10.1017/S0269888908001367
+
+Fujii, A., Iwayama, M., & Kando, N. (2004). The patent retrieval task in the fourth NTCIR workshop. In *Proceedings of the 27th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval* (pp. 560–561). https://doi.org/10.1145/1008992.1009120
 
 Ghosh, M., Rose, M. E., Erhardt, S., Buunk, E., & Harhoff, D. (2024). PaECTER: Patent-level representation learning using citation-informed transformers. *arXiv*. https://doi.org/10.48550/arXiv.2402.19411
 
@@ -1290,9 +1311,19 @@ Kontokostas, D., Westphal, P., Auer, S., Hellmann, S., Lehmann, J., Cornelissen,
 
 Krestel, R., Chikkamath, R., Hewel, C., & Risch, J. (2021). A survey on deep learning for patent analysis. *World Patent Information, 65*, 102035. https://doi.org/10.1016/j.wpi.2021.102035
 
+Lee, J., & Choi, H. (2023). A quality assessment of Korean–English patent machine translation: Automatic and human evaluations of K2E-PAT, Patent Translate and WIPO Translate translations. *FORUM: International Journal of Interpretation and Translation, 21*(2), 236–257. https://doi.org/10.1075/forum.00030.lee
+
+Leveling, J., Magdy, W., & Jones, G. J. F. (2011). An investigation of decompounding for cross-language patent search. In *Proceedings of the 34th International ACM SIGIR Conference on Research and Development in Information Retrieval* (pp. 1169–1170). https://doi.org/10.1145/2009916.2010103
+
 Lupu, M., & Hanbury, A. (2013). Patent retrieval. *Foundations and Trends in Information Retrieval, 7*(1), 1–97. https://doi.org/10.1561/1500000027
 
+Magdy, W., & Jones, G. J. F. (2011). An efficient method for using machine translation technologies in cross-language patent search. In *Proceedings of the 20th ACM International Conference on Information and Knowledge Management* (pp. 1925–1928). https://doi.org/10.1145/2063576.2063856
+
+Magdy, W., & Jones, G. J. F. (2014). Studying machine translation technologies for large-data CLIR tasks: A patent prior-art search case study. *Information Retrieval, 17*(5–6), 492–519. https://doi.org/10.1007/s10791-013-9231-6
+
 Mahdabi, P., & Crestani, F. (2014). Query-driven mining of citation networks for patent citation retrieval and recommendation. In *Proceedings of the 23rd ACM International Conference on Information and Knowledge Management* (pp. 1659–1668). https://doi.org/10.1145/2661829.2661899
+
+Piroi, F., & Hanbury, A. (2019). Multilingual patent text retrieval evaluation: CLEF–IP. In *Information Retrieval Evaluation in a Changing World* (The Information Retrieval Series, pp. 365–387). Springer. https://doi.org/10.1007/978-3-030-22948-1_15
 
 Potoniec, J., Wiśniewski, D., Ławrynowicz, A., & Keet, C. M. (2020). Dataset of ontology competency questions to SPARQL-OWL queries translations. *Data in Brief, 29*, 105098. https://doi.org/10.1016/j.dib.2019.105098 `[TDD 계열 대표 서지로 재확인 필요]`
 
@@ -1313,6 +1344,10 @@ W3C. (2017). *Shapes Constraint Language (SHACL)*. W3C Recommendation. https://w
 Wilkinson, M. D., Dumontier, M., Aalbersberg, I. J., et al. (2016). The FAIR Guiding Principles for scientific data management and stewardship. *Scientific Data, 3*, 160018. https://doi.org/10.1038/sdata.2016.18
 
 Zaveri, A., Rula, A., Maurino, A., Pietrobon, R., Lehmann, J., & Auer, S. (2016). Quality assessment for linked data: A survey. *Semantic Web, 7*(1), 63–93. https://doi.org/10.3233/SW-150175
+
+Zhang, X., Thakur, N., Ogundepo, O., Kamalloo, E., Alfonso-Hermelo, D., Li, X., Liu, Q., Rezagholizadeh, M., & Lin, J. (2023). MIRACL: A multilingual retrieval dataset covering 18 diverse languages. *Transactions of the Association for Computational Linguistics, 11*, 1114–1131. https://doi.org/10.1162/tacl_a_00595
+
+Zhou, D., Liu, J., & Zhang, S. (2013). Query generation techniques for patent prior-art search in multiple languages. In *Natural Language Processing and Chinese Computing (NLPCC 2013)* (Communications in Computer and Information Science, pp. 310–321). Springer. https://doi.org/10.1007/978-3-642-41644-6_29
 
 `[미확정 서지: PatenTEB(2025, arXiv:2510.22264)·CLEF-IP 공식 overview 논문·IPRally Graph Transformer의 정확한 저자·서지 사항은 투고 전 원문 대조 필요. 본문 인용 표기와 함께 일괄 검증할 것.]`
 
