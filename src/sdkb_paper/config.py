@@ -181,6 +181,21 @@ DEDUP_EXEMPTION_LOG = CQ_GEN_DIR / "dedup_exemption_log.jsonl"
 T3_WAIVER_TOKEN = "T3-WAIVER:"
 # T-gate 종합 판정 산출(JSON). 재생성 가능 → data/processed(gitignore).
 TGATE_REPORT = PROCESSED / "tgate_report.json"
+# ── W9 홀드아웃 결함 사전등록 동결 (PLAN-025 v2 · 2026-07-28 · 주입 실행 전) 🔒 ──────────
+# H1‴ 확증. 1차(W4·W4b·W4c)는 **같은 결함 인스턴스를 세 번 판정**했으므로 확증이 아니다 —
+# 층 정의(L3_SUITES ⊥ T3_SUITES)를 동결한 채 **아직 판정한 적 없는 인스턴스**로 복제한다.
+#   축 A(복제): F11·F12 를 새 rep 으로 · 축 B(일반화): 신규 교차결함 F13·F14·F15.
+# `run_matrix` 의 rep 은 `range(reps)` = {0,1,2} 이므로 홀드아웃은 offset 3 → {3,4,5} 다.
+# `seed_for` 가 sha256(key,rate,rep) 이라 rep 이 다르면 다른 결함 그래프다(테스트로 강제).
+FAULT_HOLDOUT_RUN_ID = "w9_holdout"
+FAULT_HOLDOUT_REP_OFFSET = 3        # 1차 rep {0,1,2} 와 겹치지 않는 첫 인덱스
+FAULT_HOLDOUT_REPS = 3              # rep ∈ {3,4,5}
+FAULT_HOLDOUT_CROSS_KEYS = ("F11", "F12", "F13", "F14", "F15")   # 교차결함 45 = H1‴ 판정 대상
+FAULT_HOLDOUT_NORMAL_KEYS = ("N01", "N02", "N03")                # 정상 델타 27 = 위양성 분모
+# 위양성 임계 — 정상 델타 거부 비율이 이 값을 넘으면 H1‴ 기각(PLAN-025 §3.4-3). 하드코딩 금지.
+FAULT_FP_MAX_RATE = 0.05
+# 비교차 결함군 F01–F10 은 재주입하지 않는다(판정식에 들어가지 않는다). 이 절단은 §6.5.4 에
+# 명시한다 — 조용한 축소는 "전량 커버"로 읽힌다(CLAUDE.md §8).
 # ── F9 사전등록 동결 (2026-07-27 · 데이터감사 후 확정 · 테스트 개봉 전) 🔒 ──────────────
 # 질의(거절특허 1,000)를 filingDate 순 60/20/20 로 나누되 **family 단위**(family-disjoint)로 배정한다.
 # family 대표일 = 그 family 질의들의 최소 출원일 · 동률은 family_id 사전순(결정적). 경계는 데이터
