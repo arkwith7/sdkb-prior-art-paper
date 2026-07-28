@@ -5,6 +5,10 @@
 (ii) 게이트 태스크 성능(T1·T2)이 잡아야 할 의미 결함, (iii) **교차 태스크(T3)만 잡을 수 있는 것**.
 마지막 2종(동의어 오병합·공유 계층 역전)이 L0–L3·T1·T2 를 통과하고 T3 에서만 걸리면 H1 지지다.
 
+**W9 홀드아웃(PLAN-025 · 동결 `a474126`)에서 교차결함 3종(F13·F14·F15)이 추가됐다.** 판정 규칙은
+바뀌지 않는다 — 추가된 것은 데이터(아직 판정한 적 없는 결함 인스턴스)뿐이며, 이 3종의 조작 술어는
+주 태스크(pa) CQ 가 읽는 술어와 **교집합이 공집합**임을 테스트가 `.rq` 정적 추출로 강제한다.
+
 **오염 규율(사용자 요구 2026-07-28).** 이 모듈은 정본을 **절대 쓰지 않는다**. 입력 그래프는 읽기
 전용으로 열고, 결함본은 `validate.quarantine` 이 발급한 격리 디렉터리에만 쓴다. 러너는 매
 인스턴스 뒤 정본 해시를 재검증한다(`quarantine.verify_pristine`).
@@ -261,6 +265,114 @@ def f12_hierarchy_inversion(store: Store, rate: float, rng: random.Random) -> di
     return {"predicate": "hasSubprocess", "n_candidates": len(quads), "n_affected": len(hit)}
 
 
+# --- W9 홀드아웃 신규 교차결함 3종 (PLAN-025 §3.2 · 사전등록 동결 후 구현) -------
+# 교차성을 **결과가 아니라 구성**으로 보증한다: 아래 술어 집합은 pa 스위트(주 태스크) CQ 가
+# 참조하는 술어 20개와 교집합이 **공집합**이며, 이는 `queries/cq/*.rq` 정적 추출로 테스트가
+# 강제한다(tests/test_holdout_faults.py). 조작 술어는 전량 상류 스냅샷 실물이다(CLAUDE.md §1-6).
+CROSS_FAULT_PREDICATES: dict[str, tuple[str, ...]] = {
+    "F13": ("hasProcessExpertise", "hasEquipmentExperience", "hasMaterialExpertise", "hasSkill"),
+    "F14": ("caseFailureMode",),
+    "F15": ("providedBy", "madeBy"),
+}
+HUB_K = 2          # 허브 집중화가 몰아넣는 목적지 수 (술어·타입군당)
+
+
+def _pooled_quads(store: Store, preds: tuple[str, ...]) -> list[Quad]:
+    """여러 술어의 후보를 **풀링**해 정렬한다 (PLAN-025 §0 개정 3).
+
+    술어별로 따로 표본하면 희소 술어(`hasMaterialExpertise` N=5)에서 `_n` 하한 1 때문에 강도
+    격자가 1/1/1 로 붕괴해 강도 단조성을 잴 수 없다. 풀링하면 강도가 총량에 걸린다.
+    """
+    quads: list[Quad] = []
+    for p in preds:
+        quads += list(store.quads_for_pattern(None, ont(p), None, None))
+    return sorted(quads, key=lambda q: (str(q.subject), str(q.predicate), str(q.object)))
+
+
+def _type_sig(store: Store, node) -> tuple[str, ...]:
+    """개체의 rdf:type 서명. 이 서명이 같은 개체끼리만 바꿔치기해 **range 를 보존**한다."""
+    return tuple(sorted(str(q.object) for q in store.quads_for_pattern(node, RDF_TYPE, None, None)))
+
+
+def _rewire(store: Store, hit: list[Quad], pool_of, rng: random.Random) -> dict:
+    """간선의 **객체만** 바꾼다 — 링크 수는 보존한다(중복이 될 재배선은 건너뛴다).
+
+    왜 중복을 건너뛰는가: RDF 는 집합이라 (s,p,hub) 가 이미 있으면 제거+추가가 간선 1개를
+    **없앤다**. 그러면 결함이 "분포 왜곡"이 아니라 "삭제"가 되어 표적 층이 달라진다. 건너뛴
+    수는 stats 에 남긴다 — 조용한 절단은 금지다(CLAUDE.md §8).
+    """
+    n_rewired = n_skipped = 0
+    for q in hit:
+        cands = [o for o in pool_of(q) if str(o) != str(q.object)]
+        rng.shuffle(cands)
+        tgt = next((o for o in cands
+                    if not list(store.quads_for_pattern(q.subject, q.predicate, o, None))), None)
+        if tgt is None:
+            n_skipped += 1
+            continue
+        store.remove(q)
+        store.add(Quad(q.subject, q.predicate, tgt, q.graph_name))
+        n_rewired += 1
+    return {"n_rewired": n_rewired, "n_skipped_collision": n_skipped}
+
+
+def f13_expertise_hub_collapse(store: Store, rate: float, rng: random.Random) -> dict:
+    """**교차결함(T3·em 표적)** — 전문가 역량 간선을 소수 **허브**로 몰아 조인 분포를 붕괴시킨다.
+
+    간선 수를 보존하고 객체만 **같은 타입 서명 안에서** 바꾸므로 SHACL(L1)의 range 제약을
+    통과하고, TBox 에 disjointness 가 없어 L2 도 무반응이며(PLAN-025 §3.3a), pa 스위트 CQ 는
+    이 술어를 하나도 읽지 않는다. 검색 피처는 개념·IPC 라 T1 도 무영향이다 — 남는 것은
+    전문가매칭 CQ 의 **분포**뿐이다.
+    """
+    preds = CROSS_FAULT_PREDICATES["F13"]
+    quads = _pooled_quads(store, preds)
+    hubs: dict[tuple, list] = {}
+    for q in quads:
+        hubs.setdefault((str(q.predicate), _type_sig(store, q.object)), []).append(q.object)
+    for k, objs in hubs.items():        # 허브 = 그 (술어·타입군)에서 사전순 앞 HUB_K 개 (결정적)
+        hubs[k] = sorted({str(o): o for o in objs}.values(), key=str)[:HUB_K]
+    hit = _sample(rng, quads, rate)
+    st = _rewire(store, hit, lambda q: hubs[(str(q.predicate), _type_sig(store, q.object))], rng)
+    return {"predicates": list(preds), "pooled": True, "hub_k": HUB_K,
+            "n_candidates": len(quads), "n_affected": len(hit), **st}
+
+
+def f14_case_failuremode_rewire(store: Store, rate: float, rng: random.Random) -> dict:
+    """**교차결함(T3·em 표적)** — 전문가 사례–결함모드 간선을 FailureMode 풀 안에서 재배치.
+
+    객체가 `ont:FailureMode` 로 남으므로 `expert_shape.ttl` 의 `sh:class` 를 통과한다. F11(노드
+    병합)과 **다른 축**(간선 재배치)이라 판정 규칙이 특정 결함에 맞춰진 게 아님을 잰다. CQ28 의
+    `?case ont:caseFailureMode ?fm` 조인이 특허↔전문가 다리를 끊는다.
+    """
+    quads = _pooled_quads(store, CROSS_FAULT_PREDICATES["F14"])
+    pool = sorted({str(q.object): q.object for q in quads}.values(), key=str)
+    hit = _sample(rng, quads, rate)
+    st = _rewire(store, hit, lambda q: list(pool), rng)
+    return {"predicates": ["caseFailureMode"], "n_candidates": len(quads),
+            "n_pool": len(pool), "n_affected": len(hit), **st}
+
+
+def f15_supply_direction_flip(store: Store, rate: float, rng: random.Random) -> dict:
+    """**교차결함(T3·core 표적)** — 밸류체인 공급관계의 방향을 뒤집는다(`providedBy`·`madeBy` 풀링).
+
+    링크 수 불변 · 두 술어는 `queries/shapes/` 에 제약이 없어 L1 미제약 · TBox 에 disjointness 가
+    0 이라 L2 도 모순을 못 만든다(§3.3a). core CQ13·14 가 방향에 의존하면 T3 에서 걸린다.
+    """
+    preds = CROSS_FAULT_PREDICATES["F15"]
+    quads = _pooled_quads(store, preds)
+    hit = _sample(rng, quads, rate)
+    n_flipped = n_skipped = 0
+    for q in hit:
+        if list(store.quads_for_pattern(q.object, q.predicate, q.subject, None)):
+            n_skipped += 1               # 역방향이 이미 있으면 뒤집기가 간선을 지운다 — 건너뛴다
+            continue
+        store.remove(q)
+        store.add(Quad(q.object, q.predicate, q.subject, q.graph_name))
+        n_flipped += 1
+    return {"predicates": list(preds), "pooled": True, "n_candidates": len(quads),
+            "n_affected": len(hit), "n_flipped": n_flipped, "n_skipped_collision": n_skipped}
+
+
 # --- 정상 델타 (위양성률 분모 · 결함이 아니다) --------------------------------
 # 게이트가 **거부하면 안 되는** 변경이다. 여기서 거부가 나오면 그것이 위양성이다.
 
@@ -457,6 +569,12 @@ FAULTS: tuple[FaultSpec, ...] = (
     FaultSpec("F10", "qrel 누출", "누출감사", False, f10_qrel_leak),
     FaultSpec("F11", "동의어 오병합(교차)", "T3", True, f11_synonym_merge),
     FaultSpec("F12", "공유 계층 역전(교차)", "T3", True, f12_hierarchy_inversion),
+    # PLAN-025 W9 §3.2 — 홀드아웃 신규 교차결함. 판정 규칙은 한 글자도 바꾸지 않고 **데이터만
+    # 새것**이다(F11·F12 두 결함에 맞춘 규칙이 아님을 보이는 일반화 축).
+    FaultSpec("F13", "전문가 역량 허브 집중(교차)", "T3(em)", True, f13_expertise_hub_collapse),
+    FaultSpec("F14", "전문가 사례–결함모드 재배치(교차)", "T3(em)", True,
+              f14_case_failuremode_rewire),
+    FaultSpec("F15", "밸류체인 방향 역전(교차)", "T3(core)", True, f15_supply_direction_flip),
     # PLAN-022 §2.1 — 면제 규칙이 새로 여는 구멍을 스스로 잰다. 기대 검출 경로는 면제 자동
     # 검증의 불승인이며, 불승인되면 일반 델타로 판정돼 분포검사를 그대로 받는다.
     FaultSpec("N03A", "면제 악용(거짓 dedup 선언)", "면제검증", False,

@@ -133,6 +133,29 @@ def _parse_meta(rq_text: str) -> tuple[str, int, str, str, str]:
     return desc, expect_min, suite, monotone, target
 
 
+def suite_predicates(cq_dir: Path = QUERIES_CQ) -> dict[str, set[str]]:
+    """스위트 → 그 스위트 CQ 가 **실제로 참조하는 술어** 집합 (`.rq` 정적 추출).
+
+    PLAN-025 §2.3 의 "교차성은 결과가 아니라 구성으로 보증한다"를 코드가 지탱하게 하는 함수다.
+    신규 교차결함군의 조작 술어가 주 태스크(pa) 스위트와 교집합이 없음은 결과와 무관하게 사전
+    검증 가능한 성질이므로, 수기 목록이 아니라 질의 원문에서 뽑는다(문서는 표류한다).
+
+    소문자로 시작하는 지역명만 술어로 센다 — 대문자는 클래스다(`ont:Patent` 등).
+    주석 줄은 제외한다(설명문에 적힌 술어 이름이 섞이면 교집합이 거짓으로 커진다).
+    """
+    import re
+
+    out: dict[str, set[str]] = {}
+    for rq in sorted(cq_dir.glob("*.rq")):
+        text = rq.read_text(encoding="utf-8")
+        suite = _parse_meta(text)[2]
+        body = "\n".join(ln for ln in text.splitlines() if not ln.strip().startswith("#"))
+        preds = set(re.findall(r"\bont:([a-z][A-Za-z0-9_]*)", body))
+        preds |= {f"skos:{m}" for m in re.findall(r"\bskos:([a-z][A-Za-z0-9_]*)", body)}
+        out.setdefault(suite, set()).update(preds)
+    return out
+
+
 def _count_rdflib(graph_path: Path, texts: list[str]) -> list[int]:
     from rdflib import Graph
 

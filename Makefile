@@ -1,4 +1,4 @@
-.PHONY: faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -229,6 +229,16 @@ faults-n03adv:
 
 faults-rejudge-v3:
 	uv run python -m sdkb_paper.analysis.faults --rejudge-v3 --workers $(or $(WORKERS),10)
+
+# W9 (PLAN-025 · 사전등록 동결 a474126) — H1‴ 확증. 판정 규칙·층 정의는 **바꾸지 않고**
+#   아직 판정한 적 없는 72 인스턴스(F11·F12 새 rep + 신규 교차결함 F13·F14·F15 + 정상 델타 27)를
+#   주입해 복제한다. 인스턴스당 L2(HermiT) ~55초가 지배적 → 9-way 병렬 약 1.1시간.
+#   `faults-holdout-judge` 는 격리본을 읽기만 해서 다시 판정한다(재주입 없음).
+faults-holdout:
+	uv run python -m sdkb_paper.analysis.faults --holdout --workers $(or $(WORKERS),9)
+
+faults-holdout-judge:
+	uv run python -m sdkb_paper.analysis.faults --holdout-judge --workers $(or $(WORKERS),9)
 
 # 머지 전 전체 게이트: L0(무결성+신선도) + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
 #   + 누출 감사 + T1·T2·T3. IR 산출물(run·코퍼스)이 없는 환경에서는 tgate 가 먼저 실패하므로

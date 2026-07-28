@@ -65,3 +65,12 @@
 {"instance": "N03A_s10_r0", "fault": "N03A", "strength": 0.1, "seed": 1073760975, "delta_type": "dedup", "exempt": false, "n_groups": 649, "n_mismatch": 649}
 {"instance": "N03A_s10_r1", "fault": "N03A", "strength": 0.1, "seed": 1747188019, "delta_type": "dedup", "exempt": false, "n_groups": 649, "n_mismatch": 649}
 {"instance": "N03A_s10_r2", "fault": "N03A", "strength": 0.1, "seed": 1380867318, "delta_type": "dedup", "exempt": false, "n_groups": 649, "n_mismatch": 649}
+{"instance": "N03_s01_r3", "fault": "N03", "strength": 0.01, "seed": 2621501592, "delta_type": "dedup", "exempt": true, "n_groups": 1, "n_mismatch": 0}
+{"instance": "N03_s01_r4", "fault": "N03", "strength": 0.01, "seed": 1530146796, "delta_type": "dedup", "exempt": true, "n_groups": 1, "n_mismatch": 0}
+{"instance": "N03_s01_r5", "fault": "N03", "strength": 0.01, "seed": 3289418207, "delta_type": "dedup", "exempt": true, "n_groups": 1, "n_mismatch": 0}
+{"instance": "N03_s05_r3", "fault": "N03", "strength": 0.05, "seed": 3174467662, "delta_type": "dedup", "exempt": true, "n_groups": 1, "n_mismatch": 0}
+{"instance": "N03_s05_r4", "fault": "N03", "strength": 0.05, "seed": 4215912229, "delta_type": "dedup", "exempt": true, "n_groups": 1, "n_mismatch": 0}
+{"instance": "N03_s05_r5", "fault": "N03", "strength": 0.05, "seed": 2880763860, "delta_type": "dedup", "exempt": true, "n_groups": 1, "n_mismatch": 0}
+{"instance": "N03_s10_r3", "fault": "N03", "strength": 0.1, "seed": 23745876, "delta_type": "dedup", "exempt": true, "n_groups": 1, "n_mismatch": 0}
+{"instance": "N03_s10_r4", "fault": "N03", "strength": 0.1, "seed": 2901598782, "delta_type": "dedup", "exempt": true, "n_groups": 1, "n_mismatch": 0}
+{"instance": "N03_s10_r5", "fault": "N03", "strength": 0.1, "seed": 1488592385, "delta_type": "dedup", "exempt": true, "n_groups": 1, "n_mismatch": 0}

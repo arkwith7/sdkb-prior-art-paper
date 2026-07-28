@@ -421,11 +421,15 @@ def summarize(results: list[dict]) -> dict:
 def run_matrix(reps: int = 3, strengths: tuple = FI.STRENGTHS, workers: int = 12,
                split: str = "dev", faults: tuple | None = None,
                skip_t12: bool = False, run_id: str | None = None,
-               report: Path = REPORT) -> dict:
+               report: Path = REPORT, rep_offset: int = 0) -> dict:
+    """`rep_offset` 은 홀드아웃용이다 — 1차가 rep ∈ {0,1,2} 를 썼으므로 offset 3 이면
+    rep ∈ {3,4,5} 가 되고 `seed_for` 가 sha256(key,rate,rep) 이라 **겹치지 않는 결함 그래프**다.
+    """
     run_id = run_id or f"w4_r{reps}"
     keys = faults or tuple(f.key for f in FI.FAULTS + FI.NORMALS)
     jobs = [(k, s, r, run_id, split, skip_t12)
-            for k in keys for s in strengths for r in range(reps)]
+            for k in keys for s in strengths
+            for r in range(rep_offset, rep_offset + reps)]
     results = []
     t0 = time.time()
     with ProcessPoolExecutor(max_workers=workers) as ex:
@@ -436,7 +440,8 @@ def run_matrix(reps: int = 3, strengths: tuple = FI.STRENGTHS, workers: int = 12
             print(f"  [{i}/{len(jobs)}] {r['fault']} s={r['strength']} r={r['rep']} "
                   f"→ {r.get('first_layer') or r.get('error') or '미검출'}", flush=True)
     results.sort(key=lambda r: (r["fault"], r["strength"], r["rep"]))
-    out = {"run_id": run_id, "split": split, "reps": reps, "strengths": list(strengths),
+    out = {"run_id": run_id, "split": split, "reps": reps, "rep_offset": rep_offset,
+           "strengths": list(strengths),
            "workers": workers, "elapsed_s": round(time.time() - t0, 1),
            "summary": summarize(results), "instances": results}
     report.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -855,6 +860,232 @@ def render_table_v3(res: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+# --- W9 홀드아웃 확증 (PLAN-025 · H1‴) ----------------------------------------
+# 1차(W4·W4b·W4c)는 **같은 결함 인스턴스를 세 번 판정**했다 — 성립한 판정(H1″)이 전부 사후적이다.
+# 여기서는 판정 규칙을 하나도 바꾸지 않고(조작 변인 없음) **아직 판정한 적 없는 72 인스턴스**로
+# 복제한다: 축 A(F11·F12 를 새 rep 으로) + 축 B(신규 교차결함 F13·F14·F15) + 정상 델타 27.
+REPORT_HOLDOUT = config.PROCESSED / "fault_matrix_holdout.json"
+REPORT_HOLDOUT_V4 = config.PROCESSED / "fault_matrix_v4.json"
+HOLDOUT_KEYS = tuple(config.FAULT_HOLDOUT_CROSS_KEYS) + tuple(config.FAULT_HOLDOUT_NORMAL_KEYS)
+HOLDOUT_NEW_KEYS = ("F13", "F14", "F15")            # 축 B(일반화) — 보조 판정의 부분집합
+# "T3 단독검출" 의 배제 조건. **누출감사(leak) 발화도 '다른 층 검출'로 센다**(PLAN-025 §3.4).
+OTHER_LAYERS = tuple(L for L in LAYERS if L != "T3")
+
+
+def mcnemar_one_sided(pairs: list[tuple[bool, bool]]) -> dict:
+    """단측 McNemar 정확검정 — 방향은 **사전 지정**(T3 우세)이다 (PLAN-025 §3.4-2).
+
+    pairs = [(L3 검출, T3 검출)]. b = L3 만 · c = T3 만. 반대 방향(b > c)이 나오면 p 가 크게
+    나와 자동으로 기각되며, 그 사실을 `direction` 에 남긴다 — 방향을 결과에 맞춰 바꾸지 않는다.
+    """
+    from scipy import stats
+
+    b = sum(1 for x, y in pairs if x and not y)
+    c = sum(1 for x, y in pairs if y and not x)
+    n = b + c
+    direction = "T3" if c > b else ("L3" if b > c else "tie")
+    if n == 0:
+        return {"b": 0, "c": 0, "n_discordant": 0, "p": 1.0, "direction": "none",
+                "test": "none(불일치 0)"}
+    return {"b": b, "c": c, "n_discordant": n,
+            "p": float(stats.binomtest(c, n, 0.5, alternative="greater").pvalue),
+            "direction": direction, "test": "exact binomial (단측 · 사전지정 방향 T3 우세)"}
+
+
+def holdout_kill_switch(res: dict) -> dict:
+    """정지 규칙 (PLAN-025 §3.4) — 위반이 **하나라도** 있으면 판정하지 않고 구현 오류로 처리한다.
+
+    검사 셋: (1) 검출력 불변량 `L3_all ⟺ L3_pa ∨ T3` 가 τ 격자 전량에서 성립 (2) L3∩T3 = ∅
+    (3) L3∪T3 = 게이트 CQ 전량. 판정 전에 이걸 먼저 보는 이유는, 층 정의가 미끄러지면 "T3
+    단독검출" 이라는 수치 자체가 의미를 잃기 때문이다.
+    """
+    viol = []
+    for tau, inv in res.get("invariant", {}).items():
+        if not inv["holds"]:
+            viol.append(f"검출력 불변량 위반 τ={tau}: {inv['n_violation']}/{inv['n_checked']}")
+    l3, t3 = set(config.L3_SUITES), set(config.T3_SUITES)
+    if l3 & t3:
+        viol.append(f"L3∩T3 ≠ ∅: {sorted(l3 & t3)}")
+    try:
+        suite_of = load_baseline()["cq_suite"]
+    except FileNotFoundError:
+        suite_of = {}
+    if suite_of:
+        covered = sum(1 for s in suite_of.values() if s in l3 | t3)
+        if covered != len(suite_of):
+            viol.append(f"L3∪T3 가 CQ 전량을 덮지 못한다: {covered}/{len(suite_of)}")
+    return {"pass": not viol, "violations": viol,
+            "l3_suites": sorted(l3), "t3_suites": sorted(t3), "n_cq": len(suite_of)}
+
+
+def _holdout_verdict(instances: list[dict], tau: float) -> dict:
+    """교차결함 부분집합 하나에 대한 §3.4 주 판정 (1 T3 단독검출 ≥1 · 2 단측 McNemar)."""
+    merged = [_merged_layers(r, tau, "split") for r in instances]
+    t3_only = [(r, m) for r, m in zip(instances, merged)
+               if m.get("T3") and not any(m.get(L) for L in OTHER_LAYERS)]
+    mc = mcnemar_one_sided([(bool(m.get("L3")), bool(m.get("T3"))) for m in merged])
+    return {"n_cross": len(instances),
+            "n_t3_detected": sum(1 for m in merged if m.get("T3")),
+            "n_l3_detected": sum(1 for m in merged if m.get("L3")),
+            "n_t3_only": len(t3_only),
+            "t3_only": [{"fault": r["fault"], "strength": r["strength"], "rep": r["rep"]}
+                        for r, _ in t3_only],
+            "by_fault": {k: sum(1 for r, _ in t3_only if r["fault"] == k)
+                         for k in sorted({r["fault"] for r in instances})},
+            "mcnemar": mc,
+            "c1_t3_only": len(t3_only) >= 1,
+            "c2_mcnemar": mc["direction"] == "T3" and mc["p"] < 0.05}
+
+
+def judge_holdout(res: dict, tau: float | None = None) -> dict:
+    """**H1‴ 판정** — 사전등록 §3.4 그대로. 결과를 본 뒤 규칙을 바꾸지 않는다.
+
+    지지 = (T3 단독검출 ≥ 1) ∧ (단측 McNemar c>b · p<0.05) ∧ (위양성률 ≤ 5%). 셋 중 하나라도
+    깨지면 **기각**이며 §3.5 에 미리 적어둔 서술 경로로 간다.
+    """
+    tau = res["tau_main"] if tau is None else tau
+    insts = res["instances"]
+    cross = [r for r in insts if r["cross_task"]]
+    normals = [r for r in insts if r["fault"] in NORMAL_KEYS]
+    fp = [r for r in normals
+          if any(_merged_layers(r, tau, "split").get(L) for L in LAYERS)]
+    fp_rate = (len(fp) / len(normals)) if normals else None
+    main = _holdout_verdict(cross, tau)
+    c3 = fp_rate is not None and fp_rate <= config.FAULT_FP_MAX_RATE
+    out = {"tau": tau, "attribution": "split",
+           "main": main,
+           "false_positive": {"n_normal": len(normals), "n_rejected": len(fp), "rate": fp_rate,
+                              "threshold": config.FAULT_FP_MAX_RATE,
+                              "rejected": [{"fault": r["fault"], "strength": r["strength"],
+                                            "rep": r["rep"]} for r in fp]},
+           "c3_false_positive": c3,
+           # 보조(사전 지정) — 복제 축과 일반화 축이 갈리면 **갈린 대로** 보고한다
+           "replicate_only": _holdout_verdict([r for r in cross
+                                               if r["fault"] in ("F11", "F12")], tau),
+           "novel_only": _holdout_verdict([r for r in cross
+                                           if r["fault"] in HOLDOUT_NEW_KEYS], tau)}
+    out["supported"] = bool(main["c1_t3_only"] and main["c2_mcnemar"] and c3)
+    out["verdict"] = "지지" if out["supported"] else "기각"
+    return out
+
+
+def holdout_judgment(res: dict) -> dict:
+    """τ 격자 전량 + 주 τ 판정 + 정지 규칙을 한 덩이로 (표 6.5d 의 입력)."""
+    kill = holdout_kill_switch(res)
+    return {"kill_switch": kill,
+            "tau_main": res["tau_main"],
+            "main": None if not kill["pass"] else judge_holdout(res, res["tau_main"]),
+            "by_tau": {} if not kill["pass"]
+                      else {f"{t:.2f}": judge_holdout(res, t) for t in res["taus"]}}
+
+
+def render_table_v4(res: dict) -> str:
+    """원고 표 6.5d — **홀드아웃** 결함 검출 매트릭스 (PLAN-025 · H1‴). 수기 기입 없음."""
+    j = res["holdout"]
+    tau = res["tau_main"]
+    s = res["summary_split"][f"{tau:.2f}"]
+    kill, m = j["kill_switch"], j["main"]
+    lines = [
+        "# 표 6.5d 홀드아웃 결함 주입 — H1‴ 확증 (PLAN-025 · 사전등록 동결 `a474126`)",
+        "",
+        f"판정 규칙·층 정의는 **하나도 바꾸지 않았다**(조작 변인 없음) — 바뀐 것은 데이터뿐이다. "
+        f"L3 = {'·'.join(res['l3_suites'])} ⊥ T3 = {'·'.join(res['t3_suites'])} · 규칙 "
+        f"{res['rule_version']} · 주 τ={tau} · 격자 {res['taus']} · 분할 dev(확증 분할 미개봉).",
+        "",
+        "홀드아웃 = 축 A 복제(F11·F12 × 새 rep "
+        f"{{{','.join(str(config.FAULT_HOLDOUT_REP_OFFSET + i) for i in range(config.FAULT_HOLDOUT_REPS))}}}) "
+        "+ 축 B 일반화(신규 교차결함 F13·F14·F15) + 정상 델타(위양성 분모). "
+        "**비교차 결함군 F01–F10 은 재주입하지 않았다** — H1‴ 판정식에 들어가지 않으며 1차 결과는 "
+        "이미 표 6.5·6.5c 에 있다(PLAN-025 §3.3 · 은폐된 절단 금지).",
+        "",
+        "## 정지 규칙 (판정 전에 확인해야 하는 것)",
+        "",
+        f"위반 **{len(kill['violations'])}건** — "
+        + ("검출력 불변량·층 서로소·CQ 전량 피복이 모두 성립한다. 판정을 진행한다."
+           if kill["pass"] else
+           "**판정을 진행하지 않는다**(구현 오류): " + " · ".join(kill["violations"])),
+        "",
+    ]
+    if not kill["pass"]:
+        return "\n".join(lines) + "\n"
+
+    lines += ["| 결함 | 예상층 | " + " | ".join(LAYERS) + " | T3 단독 | 최초 검출층 | 미탐지 |",
+              "|---|---|" + "---:|" * len(LAYERS) + "---:|---|---:|"]
+    for key, r in s["by_fault"].items():
+        if key in NORMAL_KEYS:
+            continue
+        name = f"**{r['label']}**" if r["cross_task"] else r["label"]
+        cells = " | ".join(f"{r['rates'][L]:.2f}" for L in LAYERS)
+        lines.append(f"| {name} | {r['expected']} | {cells} | "
+                     f"{m['main']['by_fault'].get(key, 0)}/{r['n']} | "
+                     f"{r['first_layer'] or '—'} | {r['undetected']}/{r['n']} |")
+    mc, fp = m["main"]["mcnemar"], m["false_positive"]
+    lines += [
+        "",
+        f"## H1‴ 판정 — **{m['verdict']}** (사전등록 §3.4 · 세 조건 모두 충족해야 지지)",
+        "",
+        f"1. **T3 단독검출 ≥ 1**: {m['main']['n_t3_only']}/{m['main']['n_cross']} → "
+        f"{'충족' if m['main']['c1_t3_only'] else '미충족'} "
+        f"(T3 가 잡은 교차결함 {m['main']['n_t3_detected']}/{m['main']['n_cross']} · "
+        f"L3 {m['main']['n_l3_detected']}/{m['main']['n_cross']})",
+        f"2. **단측 McNemar**(L3 vs T3 · 사전지정 방향 T3 우세): b={mc['b']} · c={mc['c']} · "
+        f"불일치 {mc['n_discordant']} · p={mc['p']:.4f} ({mc['test']}) · 방향 {mc['direction']} → "
+        f"{'충족' if m['main']['c2_mcnemar'] else '미충족'}",
+        f"3. **위양성률 ≤ {fp['threshold']:.0%}**: {fp['n_rejected']}/{fp['n_normal']}"
+        + (f" = {fp['rate']:.1%}" if fp["rate"] is not None else "")
+        + f" → {'충족' if m['c3_false_positive'] else '미충족'}",
+        "",
+        "## 보조 판정 (사전 지정 — 갈리면 갈린 대로 보고한다)",
+        "",
+        "| 부분집합 | n | T3 단독 | T3 검출 | McNemar b/c | p |",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    for lbl, key in (("전체 교차결함(주 판정)", "main"),
+                     ("축 A 복제 F11·F12", "replicate_only"),
+                     ("축 B 일반화 F13·F14·F15", "novel_only")):
+        vv = m[key]
+        mcx = vv["mcnemar"]
+        lines.append(f"| {lbl} | {vv['n_cross']} | {vv['n_t3_only']} | {vv['n_t3_detected']} | "
+                     f"{mcx['b']}/{mcx['c']} | {mcx['p']:.4f} |")
+    lines += ["", "## τ 민감도 (사전 동결 격자 · 결과를 보고 고르지 않는다)", "",
+              "| τ | T3 단독 | T3 검출 | L3 검출 | 위양성 | McNemar p | 판정 |",
+              "|---:|---:|---:|---:|---:|---:|:--:|"]
+    for t in res["taus"]:
+        jt = j["by_tau"][f"{t:.2f}"]
+        mm, ff = jt["main"], jt["false_positive"]
+        lines.append(f"| {t:.2f} | {mm['n_t3_only']}/{mm['n_cross']} | "
+                     f"{mm['n_t3_detected']}/{mm['n_cross']} | "
+                     f"{mm['n_l3_detected']}/{mm['n_cross']} | "
+                     f"{ff['n_rejected']}/{ff['n_normal']} | "
+                     f"{mm['mcnemar']['p']:.4f} | {jt['verdict']} |")
+    lines += ["", "## 정상 델타(위양성 분모) 상세", ""]
+    for key in sorted(NORMAL_KEYS):
+        r = s["by_fault"].get(key)
+        if r:
+            lines.append(f"- {key} {r['label']}: 거부 {r['n'] - r['undetected']}/{r['n']}")
+    return "\n".join(lines) + "\n"
+
+
+def run_holdout(workers: int = 9, split: str = "dev") -> dict:
+    """홀드아웃 72 인스턴스 주입 → 격리본 재판정 → H1‴ 판정. 정본은 읽기만 한다."""
+    Q.verify_pristine(strict=True)
+    inj = run_matrix(reps=config.FAULT_HOLDOUT_REPS, workers=workers, split=split,
+                     faults=HOLDOUT_KEYS, run_id=config.FAULT_HOLDOUT_RUN_ID,
+                     report=REPORT_HOLDOUT, rep_offset=config.FAULT_HOLDOUT_REP_OFFSET)
+    print(f"\n[홀드아웃 주입] {len(inj['instances'])}인스턴스 · "
+          f"오류 {inj['summary']['n_errors']} · {inj['elapsed_s']}초 → {REPORT_HOLDOUT}")
+    return judge_holdout_run(workers=workers)
+
+
+def judge_holdout_run(workers: int = 9) -> dict:
+    """이미 격리된 홀드아웃 인스턴스를 **읽기만 해서** 재판정한다(재주입 없음)."""
+    res = rejudge(runs=(config.FAULT_HOLDOUT_RUN_ID,), workers=workers,
+                  report=REPORT_HOLDOUT_V4)
+    res["holdout"] = holdout_judgment(res)
+    REPORT_HOLDOUT_V4.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+    return res
+
+
 def render_table(res: dict) -> str:
     """원고 표 6.5 — 결함 × 게이트 층 검출 매트릭스. 수기 기입 없음(CLAUDE §1-7)."""
     s = res["summary"]
@@ -862,7 +1093,8 @@ def render_table(res: dict) -> str:
     sep = "|---|---|" + "---:|" * len(LAYERS) + "---|---:|"
     lines = ["# 표 6.5 결함 주입 × 게이트 층 검출 매트릭스",
              "",
-             f"분할 {res['split']} · 결함 12종 × 강도 {res['strengths']} × 반복 {res['reps']} "
+             f"분할 {res['split']} · 결함 {len(s['by_fault']) - len(NORMAL_KEYS)}종 × 강도 "
+             f"{res['strengths']} × 반복 {res['reps']} "
              f"= {s['n_instances']}인스턴스 (정상 델타 {s['false_positive']['n_normal']}건 별도) · "
              f"셀 = 해당 층 검출률", "", head, sep]
     for key, r in s["by_fault"].items():
@@ -931,6 +1163,10 @@ def main() -> None:
                     help="PLAN-022 N03A(거짓 dedup 선언) 주입 → run_id w5_n03adv")
     ap.add_argument("--rejudge-v3", action="store_true",
                     help="PLAN-022 재판정 — L3·T3 표면 분리 + 중복제거 면제 (재주입 없음)")
+    ap.add_argument("--holdout", action="store_true",
+                    help="PLAN-025 W9 홀드아웃 72 인스턴스 주입 + H1‴ 판정 (run_id w9_holdout)")
+    ap.add_argument("--holdout-judge", action="store_true",
+                    help="홀드아웃 격리본만 재판정 (재주입 없음)")
     args = ap.parse_args()
 
     if args.baseline:
@@ -1020,6 +1256,37 @@ def main() -> None:
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(render_table_v3(res), encoding="utf-8")
         print(f"  표 → {out}\n  → {REPORT_V3}")
+        return
+
+    if args.holdout or args.holdout_judge:
+        res = (judge_holdout_run(workers=args.workers) if args.holdout_judge
+               else run_holdout(workers=min(args.workers, 9), split=args.split))
+        j = res["holdout"]
+        kill = j["kill_switch"]
+        print(f"\n[W9 홀드아웃] 규칙 {res['rule_version']} · 주 τ={res['tau_main']} · "
+              f"{res['elapsed_s']}초")
+        print(f"  정지 규칙: 위반 {len(kill['violations'])}건"
+              + ("" if kill["pass"] else " → " + " · ".join(kill["violations"])))
+        out = config.ROOT / "paper" / "tables" / "fault_matrix_v4.md"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(render_table_v4(res), encoding="utf-8")
+        if not kill["pass"]:
+            print("  ❌ 판정하지 않는다 — 구현 오류로 처리한다(PLAN-025 §3.4 정지 규칙)")
+            print(f"  표 → {out}\n  → {REPORT_HOLDOUT_V4}")
+            raise SystemExit(2)
+        m = j["main"]
+        mm, mc, fp = m["main"], m["main"]["mcnemar"], m["false_positive"]
+        print(f"  T3 단독검출 {mm['n_t3_only']}/{mm['n_cross']} · "
+              f"T3 검출 {mm['n_t3_detected']} · L3 검출 {mm['n_l3_detected']}")
+        print(f"  단측 McNemar b={mc['b']} c={mc['c']} p={mc['p']:.4f} (방향 {mc['direction']})")
+        print(f"  위양성 {fp['n_rejected']}/{fp['n_normal']}"
+              + (f" = {fp['rate']:.1%}" if fp["rate"] is not None else ""))
+        print(f"  축 A 복제 T3 단독 {m['replicate_only']['n_t3_only']}/"
+              f"{m['replicate_only']['n_cross']} · 축 B 일반화 "
+              f"{m['novel_only']['n_t3_only']}/{m['novel_only']['n_cross']}")
+        print(f"  ★ H1‴ **{m['verdict']}** (c1={m['main']['c1_t3_only']} · "
+              f"c2={m['main']['c2_mcnemar']} · c3={m['c3_false_positive']})")
+        print(f"  표 → {out}\n  → {REPORT_HOLDOUT_V4}")
         return
 
     if args.from_report:
