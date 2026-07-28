@@ -642,7 +642,7 @@ H4는 A4와 A5의 성능 저하가 A1 및 서지 특징 제거보다 큰지를 �
 - 데이터·온톨로지·shape·CQ·인덱스·모델 버전을 해시로 고정한다.
 - 난수 시드와 패키지 lockfile을 공개한다(분할·부트스트랩·hard negative 샘플링 포함).
 - 학습·개발·테스트 식별자 목록을 저장한다.
-- qrel 마스킹 후 남은 금지 간선 수가 0인지 자동 검사한다(`leakage_check.py`).
+- qrel 마스킹 후 남은 금지 간선 수가 0인지 자동 검사한다(`validate/leakage_check.py` · `make leakage`). 검사는 네 층이다: 코퍼스 피처 · 런타임 피처 자원(개념축·claim-feature sidecar) · 산출된 run 상위 100의 후보 마스크(F10) 잔여 · qrel 해시와 봉인 상태. 개발 분할 실측은 7개 시스템 run 전량에서 위반 0이다.
 - 테스트 개봉 전 연구질문, 주 지표, 임계값, 제외 기준을 타임스탬프 문서로 동결한다.
 - 트리플 서명 105,588 세대의 정합을 자동 검증한다(`check_signatures.py`).
 - 원문 재배포가 제한되면 원천 API 질의, 전처리 코드, 문서 식별자와 체크섬을 제공한다.
@@ -1067,10 +1067,11 @@ SDKB 저장소는 [https://github.com/arkwith7/sdkb-foresight-paper](https://git
 - SHACL shapes와 CQ 28개(태스크 스위트 분할본) 및 실행 결과
 - TBox/ABox와 그래프별 자동 계수 보고서
 - qrel 생성·중복 제거·시간 및 패밀리 분할 코드
-- 질의 인용 간선 마스킹과 누출 검사 (`leakage_check.py`)
+- 질의 인용 간선 마스킹과 누출 검사 (`src/sdkb_paper/validate/leakage_check.py` · `make leakage`)
 - BM25·Dense·Hybrid·Ontology reranking 설정
-- 결함 주입 스크립트(교차 태스크 결함군 포함)와 T-gate 승인 보고서
-- 교차 태스크 CQ 회귀 검사기 (`cq_regression_check.py`)와 세대별 통과율 아티팩트
+- 결함 주입 스크립트(교차 태스크 결함군 포함)와 T-gate 승인 보고서 (`validate/t_gate.py` · `make tgate` → `data/processed/tgate_report.json`)
+- T1·T2 판정기 (`validate/t1_noninferiority.py`·`validate/t2_subgroup.py`)
+- 교차 태스크 CQ 회귀 검사기 (`validate/t3_cross_task_cq.py`)와 세대별 통과율 아티팩트 (`data/cq_generations/*.json`·waiver 로그)
 - 트리플 서명 정합 검사 (`check_signatures.py`)
 - 테스트 개봉 전 동결된 분석 프로토콜
 - 라이선스상 재배포 가능한 qrel 식별자와 파생 통계
@@ -1225,7 +1226,7 @@ Zaveri, A., Rula, A., Maurino, A., Pietrobon, R., Lehmann, J., & Auer, S. (2016)
 
 ## D-0. 선결 과제 (원고 확정 이전)
 
-1. **CQ 스위트 확정.** CQ13·14·19·21을 CQ-CORE로 귀속시키고, 선행기술 CQ(현재 4개)를 청구항 수준으로 분해해 8–10개로 세분화한다. 이는 "가장 작은 조각만 평가한다"는 심사 지적에 대한 가장 직접적인 대응이자, T3 검출력(H1)의 전제 조건이다.
+1. **CQ 스위트 확정 (2026-07-28 완료 · 세분화는 미실행).** CQ 28개 전량을 파일 헤더 `# suite:`로 네 스위트에 배정하고 T-gate 실행 전에 동결했다(부록 E-1 · PLAN-019 §3.2). CQ13·14·19·21의 CQ-CORE 귀속도 이때 반영됐다. 남은 과제는 **선행기술 CQ(현재 5개)의 청구항 수준 세분화**로, "가장 작은 조각만 평가한다"는 지적에 대한 대응이자 T3 검출력(H1) 실측이 느슨하게 나올 경우의 처방이다(§4.10 · 부록 F).
 2. **Dense 주 모델·토큰화 확정.** 한국어 특허 성능과 라이선스 검토 후 개발셋 개봉 전에 고정한다.
 
 ## D-1. 데이터 인프라 (최우선)
@@ -1258,46 +1259,44 @@ Zaveri, A., Rula, A., Maurino, A., Pietrobon, R., Lehmann, J., & Auer, S. (2016)
   tbox.ttl                  # 공유 코어 + 3태스크 뷰
   sdkb-patent.ttl           # 선행기술조사 모듈
   shapes/                   # SHACL shapes
-/cq
-  pa.rq                     # 선행기술 CQ 스위트  (CQ09·10·22·27 + 세분화분)
-  em.rq                     # 전문가 매칭 CQ 스위트 (CQ11·12·15-18·20·28)
-  tf.rq                     # 기술예측 CQ 스위트   (CQ01-08·23-26)
-  core.rq                   # 공유 코어 CQ 스위트  (CQ13·14·19·21)
+/queries/cq  CQ01–CQ28.rq             # 스위트는 파일 헤더 `# suite:` 로 라벨 (as-built)
+                                      #   pa   = CQ09·10·16·26·27      (선행기술조사 · 주 태스크)
+                                      #   em   = CQ11·12·17·18·20·28   (전문가 매칭)
+                                      #   tf   = CQ02·03·04·05·06      (기술예측)
+                                      #   core = CQ01·07·08·13·14·15·19·21·22·23·24·25 (공유)
 /data      G0-Core, G1, G2, claim-feature sidecar
+/data/cq_generations  cq_<세대>.json  # 세대별 스위트 통과율 아티팩트 + waiver 로그 (표 6.6)
 /qrels     dev/, test-sealed/        # test는 해시 고정 + 접근 로그
 /splits    family_time/
 /baselines bm25/, dense/, hybrid/, cpc_overlap/, ontology/
-/eval_harness  run_eval.py, leakage_check.py, bootstrap.py
-/gates     structural_check.py, shacl_check.py, cq_run.py, cq_regression_check.py
-/faults    inject_faults.py           # 교차 태스크 결함군 포함
+/src/sdkb_paper/analysis   metrics.py, bootstrap.py, subgroup.py, ablation.py, lang_recall.py
+/src/sdkb_paper/validate   shacl_gate.py, reasoner_gate.py, cq_runner.py, vocab_coverage.py,
+                           leakage_check.py, t1_noninferiority.py, t2_subgroup.py,
+                           t3_cross_task_cq.py, t_gate.py
+/faults    inject_faults.py           # 교차 태스크 결함군 포함 (미구현 — 부록 D-2)
 /ci        quality-gate.yml
 /scripts   split_by_family_time.py, check_signatures.py
 ```
 
+스위트 배정은 CQ 파일 헤더에 기록돼 있고(`# suite:`), 라벨이 없거나 허용값 밖이면 러너가 오류로 멈춘다 — 분모가 조용히 바뀌면 T3는 공허해지기 때문이다. 배정은 **T-gate 실행 이전에 동결**했다(PLAN-019 §4.1).
+
 ## E-2. CI quality-gate 배선
 
-기존 `sig-check` 타깃 위에 게이트를 얹는다. CI에서 L0→T3를 fail-fast로 실행하고, 어느 단계든 실패하면 머지를 차단한다.
+기존 `sig-check` 타깃 위에 게이트를 얹는다. 어느 단계든 실패하면 비영 종료로 머지를 차단한다. 다만 **공개 저장소 CI가 실제로 돌리는 범위는 L0–L3·린트·테스트·서명 정합까지**다 — 검색 산출물(코퍼스·색인·run)은 KIPRIS 비재배포 조건으로 커밋되지 않으므로 T1·T2는 원문 데이터를 보유한 환경에서 `make gate`로 실행하고 그 판정 보고서를 아티팩트로 남긴다. T3는 그래프만 있으면 되므로 데이터 없이도 재현된다.
 
-```yaml
-# ci/quality-gate.yml (개요)
-jobs:
-  gate:
-    steps:
-      - run: python gates/structural_check.py                 # L0·L1 구조
-      - run: python gates/shacl_check.py                      # L1 SHACL
-      - run: python gates/reasoner_check.py                   # L2 논리
-      - run: python gates/cq_run.py --suite all               # L3 CQ 기능
-      - run: python eval_harness/leakage_check.py             # 누출 사전 검사
-      - run: python eval_harness/run_eval.py \
-               --split dev --metric recall@100 \
-               --non-inferiority-margin 0.02 \
-               --subgroup-drop-limit 0.05                     # T1 + T2
-      - run: python gates/cq_regression_check.py \
-               --suites em,tf,core --baseline last-release    # T3
-      - run: python scripts/check_signatures.py               # 서명 정합
+```make
+# Makefile (as-built) — make gate 하나가 L0→T3를 fail-fast로 관통한다
+gate: gate-graph leakage tgate
+gate-graph: l0 validate reason cq vocab      # L0 신선도·무결성 / L1 SHACL / L2 HermiT / L3 CQ
+leakage:  python -m sdkb_paper.validate.leakage_check --split dev
+tgate:    python -m sdkb_paper.validate.t_gate --split dev --baseline g0   # T1 + T2 + T3
+cq-freeze: python -m sdkb_paper.validate.t3_cross_task_cq <graph> --freeze <세대>
+sig-check: python scripts/check_signatures.py
 ```
 
-`cq_regression_check.py`는 이전 정본의 태스크별 통과율을 릴리스 아티팩트로 저장해 두고 현재 값과 비교하며, 하락 시 비영(non-zero) 종료한다. waiver는 커밋 메시지의 명시적 토큰으로만 허용하고 그 횟수를 로그로 남겨 논문(표 6.6)에 보고한다.
+ε·δ는 명령행 인자가 아니라 `config.T_EPSILON=0.02`·`config.T_DELTA=0.05`로 코드에 동결돼 있다 — 호출 시점에 마진을 바꿀 수 있으면 사전등록이 아니기 때문이다. `t_gate.py`는 승인식을 **곱**으로 계산하고 하나라도 0이면 비영 종료하며, 판정과 근거를 `tgate_report.json`으로 남긴다.
+
+`t3_cross_task_cq.py`는 이전 정본의 태스크별 통과율을 세대 아티팩트(`data/cq_generations/cq_<세대>.json`)로 저장해 두고 현재 값과 비교하며, 하락 시 비영 종료한다. 스위트가 통째로 사라진 경우도 통과율 0으로 취급해 "CQ를 지워 통과시키는" 우회로를 막는다. waiver는 커밋 메시지의 명시적 토큰(`T3-WAIVER:`)으로만 허용하고 그 횟수를 로그(`data/cq_generations/waiver_log.jsonl`)로 남겨 논문(표 6.6)에 보고한다.
 
 ## E-3. 재현성 체크리스트
 
@@ -1340,8 +1339,8 @@ AEI(Advanced Engineering Informatics, Elsevier)는 지식표현 형식·추론 �
 
 # 부록 H. 미확인 사항 (Caveats)
 
-- **CQ 귀속·세분화 미확정.** CQ13·14·19·21의 CQ-CORE 귀속과 선행기술 CQ 세분화는 결정 사항이나 미실행 상태다(부록 D-0).
-- **정량 결과의 현재 상태 (2026-07-28 갱신).** 표 6.2(및 6.2b–6.2e)·6.3·6.4와 그림 2–5는 **실측으로 채워졌다** — 전량 코드 생성이며 수기 기입은 없다(`make tables && make figures`). 반면 **표 6.5(결함 주입)·표 6.6(세대별 CQ 통과율)은 여전히 미산출**이며, T-gate(T1·T2·T3) 코드가 구현되기 전이므로 H1·H2에 대한 성능 주장은 기술하지 않는다.
+- **CQ 세분화 미실행.** CQ13·14·19·21의 CQ-CORE 귀속은 스위트 배정과 함께 완료됐으나(부록 E-1), 선행기술 CQ의 청구항 수준 세분화는 여전히 미실행이다(부록 D-0).
+- **정량 결과의 현재 상태 (2026-07-28 2차 갱신).** 표 6.2(및 6.2b–6.2e)·6.3·6.4와 그림 2–5는 **실측으로 채워졌다** — 전량 코드 생성이며 수기 기입은 없다(`make tables && make figures`). **T-gate(T1·T2·T3)와 누출 감사는 이제 코드로 존재하고 개발 분할에서 실행된다**(`make gate` · 부록 E-2). 다만 **표 6.5(결함 주입)·표 6.6(세대별 CQ 통과율)은 아직 미산출**이다 — 전자는 결함 주입기 미구현, 후자는 세대가 기준 하나뿐이기 때문이다. 따라서 H1(게이트 판별력)·H2(승인 안전성)에 대한 성능 주장은 여전히 기술하지 않는다.
 - **지표 관례 두 가지가 원고 §5.1의 예고와 다르다.** qrel이 전량 등급 1이어서 nDCG@20은 **이진 이득**, bpref는 **retrieved-as-judged** 관례로 계산했다(§5.1·§6.2 고지). 등급형 평가는 §5.5 전문가 판정 확보가 선결 조건이다.
 - **검색 파이프라인은 단일 언어 질의 처리로 동결되어 있다(2026-07-28 측정·갱신).** 번역 계층을 두지 않으므로 교차언어 회수는 다국어 임베딩과 언어중립 개념 IRI 두 통로에만 의존한다. 그 결과는 §6.2f에 정답 언어별로 분해해 실측 보고했다(어휘 검색의 영어 정답 회수 0/334 · 최종 시스템의 비한국어 정답 회수 5%). 번역·개념 보강·후보 생성을 요인으로 하는 개선 실험은 F8·F13 동결을 변경하므로 **별도 사전등록**으로만 가능하다(§9.1 · PLAN-019).
 - **문헌 서지 재확인 필요.** 참고문헌 말미에 표시한 미확정 서지(PatenTEB, CLEF-IP overview, IPRally, Keet & Khan, Potoniec et al.)는 투고 전 원문 대조가 필요하다.

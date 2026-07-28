@@ -1,4 +1,5 @@
 # desc: 어떤 거절특허가 수출통제 대상 공정·소자를 구현하는가? — 특허 포트폴리오의 수출통제 노출 (라이선싱·기술이전 심사, IP-R&D 산출물 4)
+# suite: pa
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX gov:  <https://w3id.org/sdkb/gov/>

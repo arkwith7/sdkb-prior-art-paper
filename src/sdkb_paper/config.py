@@ -114,6 +114,28 @@ SEED = 20260726
 IR_SPLIT = IR_DIR / "split.parquet"
 # 봉인된 test qrel(F9 사전등록). 최종 비교 전까지 열지 않는다 — 개발은 dev 로만.
 IR_QREL_TEST_SEALED = IR_DIR / "qrel_test_sealed.parquet"
+
+# --- T-gate 승인 규칙 (v0.9 · PLAN-019 W3 · 원고 §4.9) ---------------------
+# Accept(ΔG) = 1[L0=L1=L2=L3=pass] · 1[LB95(ΔR100) > −ε]_T1 · 1[max_s Drop_s < δ]_T2
+#              · 1[∀f∈{em,tf,core}: PassRate_f(new) ≥ PassRate_f(old)]_T3
+# ε·δ 는 **테스트 개봉 전 동결**된 사전등록 값이다(F2·F3). 결과를 본 뒤 바꾸지 않는다.
+T_EPSILON = 0.02        # T1 비열등 마진 (family Recall@100)
+T_DELTA = 0.05          # T2 하위집단 최대 허용 하락
+T2_MIN_N = 20           # 차단 규칙에 쓸 수 있는 하위집단 최소 질의수(미달=확정결론 금지)
+T2_DIMS = ("pos_lang", "proc_group", "rejection")   # 사전 지정 하위집단 축(원고 §4.9 s)
+# CQ 스위트 배정 (PLAN-019 §3.2 · 2026-07-28 동결). `.rq` 헤더 `# suite:` 가 정본이며 여기는
+# 유효값 목록일 뿐이다. T3 는 **주 태스크(pa)를 제외한** 타 태스크·공유 스위트만 본다 —
+# pa 의 회귀는 T1 이 통계적으로 담당하기 때문이다.
+CQ_SUITES = ("pa", "em", "tf", "core")
+T3_SUITES = ("em", "tf", "core")
+# 세대별 CQ 통과율 아티팩트(표 6.6 의 원천)와 waiver 로그. **집계·해시만** 담으므로 커밋 가능
+# (data/processed 와 달리 gitignore 되지 않는다 · CLAUDE.md §1-5).
+CQ_GEN_DIR = DATA / "cq_generations"
+T3_WAIVER_LOG = CQ_GEN_DIR / "waiver_log.jsonl"
+# T3 예외 토큰. 커밋 메시지에 이 토큰이 있을 때만 통과율 하락을 승인하며 횟수를 로그에 남긴다.
+T3_WAIVER_TOKEN = "T3-WAIVER:"
+# T-gate 종합 판정 산출(JSON). 재생성 가능 → data/processed(gitignore).
+TGATE_REPORT = PROCESSED / "tgate_report.json"
 # ── F9 사전등록 동결 (2026-07-27 · 데이터감사 후 확정 · 테스트 개봉 전) 🔒 ──────────────
 # 질의(거절특허 1,000)를 filingDate 순 60/20/20 로 나누되 **family 단위**(family-disjoint)로 배정한다.
 # family 대표일 = 그 family 질의들의 최소 출원일 · 동률은 family_id 사전순(결정적). 경계는 데이터

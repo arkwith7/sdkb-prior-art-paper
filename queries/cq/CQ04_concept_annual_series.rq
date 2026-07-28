@@ -1,4 +1,5 @@
 # desc: 온톨로지 개념(공정 ∪ 디바이스)별 연도별 출원 건수를 낼 수 있는가? — H2 개념 단위 시계열의 최소 단위
+# suite: tf
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>

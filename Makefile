@@ -1,4 +1,4 @@
-.PHONY: tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -171,8 +171,31 @@ vocab: baseline
 	uv run python -m sdkb_paper.validate.vocab_coverage data/processed/graph_v0.ttl --report
 	uv run python -m sdkb_paper.validate.vocab_coverage data/samples/mini_graph.ttl --report
 
+# --- T-gate (원고 §4.9 · PLAN-019 W3) ----------------------------------------
+# Accept(ΔG) = 1[L0=L1=L2=L3] · 1[LB95(ΔR100)>−ε]_T1 · 1[max_s Drop_s<δ]_T2 · 1[CQ 비회귀]_T3
+# ε=0.02 · δ=0.05 는 **테스트 개봉 전 동결된 사전등록 값**(config.T_EPSILON/T_DELTA) — 결과를
+# 본 뒤 바꾸지 않는다. 판정은 곱이라 하나만 0 이어도 승인은 0 이다.
+
+# 누출 감사 — T1 의 전제. 금지간선·qrel 파생 피처·F10 마스크 잔여를 산출물에서 재검증한다.
+leakage:
+	uv run python -m sdkb_paper.validate.leakage_check --split $(or $(SPLIT),dev)
+
+# T3 기준 세대 동결 (표 6.6 축적). make cq-freeze GEN=g0 GRAPH=data/processed/graph_v0.ttl
+cq-freeze:
+	uv run python -m sdkb_paper.validate.t3_cross_task_cq \
+		$(or $(GRAPH),data/processed/graph_v0.ttl) --freeze $(or $(GEN),g0)
+
+# T1·T2·T3 종합 판정 (+ 누출 감사). 실패 시 비영 종료 — 우회 경로 없음.
+tgate:
+	uv run python -m sdkb_paper.validate.t_gate --split $(or $(SPLIT),dev) \
+		$(if $(GRAPH),--graph $(GRAPH),) --baseline $(or $(GEN),g0)
+
 # 머지 전 전체 게이트: L0(무결성+신선도) + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
-gate: l0 validate reason cq vocab
+#   + 누출 감사 + T1·T2·T3. IR 산출물(run·코퍼스)이 없는 환경에서는 tgate 가 먼저 실패하므로
+#   그래프만 검증하려면 `make gate-graph` 를 쓴다.
+gate: gate-graph leakage tgate
+
+gate-graph: l0 validate reason cq vocab
 
 # S1(구 H1) 자원 형성 타당성 — 공정 단계별 커버리지 (Wilcoxon 단측). 게이트를 통과한 두 스냅샷을 읽기만 한다.
 # 표본 집합은 확장 49 와 복원 이전 20 **양쪽**으로 병기 보고된다 (PLAN-005 · v0.9 S-시리즈 재라벨).

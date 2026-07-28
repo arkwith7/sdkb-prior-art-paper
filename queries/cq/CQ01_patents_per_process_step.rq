@@ -1,4 +1,5 @@
 # desc: 공정 단계별로 매핑된 특허가 몇 건인가? (커버리지 기본 질의 — Process/SubProcess 두 층위)
+# suite: core
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>

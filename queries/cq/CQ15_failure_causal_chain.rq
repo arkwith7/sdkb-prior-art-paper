@@ -1,4 +1,5 @@
 # desc: 어떤 불량이 어느 공정에서 나고, 그 근본원인과 완화책은 무엇이며, 완화에 필요한 스킬은? — 소부장 문제 해결의 인과 사슬 (SDKB 가 설계된 추론 경로)
+# suite: core
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
