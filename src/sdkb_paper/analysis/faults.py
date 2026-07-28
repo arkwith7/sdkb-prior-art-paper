@@ -17,6 +17,11 @@
 | T2 | max_s drop_s ≥ δ |
 | T3 | {em,tf,core} 통과율이 정상 세대보다 하락 |
 
+**CQ 조회 대상 고정 (PLAN-023 · 2026-07-28).** 이 모듈의 `run_cqs` 호출은 전부
+`targets=("graph",)` 다. 결함은 격리본 **TTL 에만** 주입되므로 사이드카(청구항 층) 조회는
+무의미하고, 무엇보다 표 6.5·6.5v2·6.5v3 이 **28-CQ 체제로 동결**돼 있어 CQ 를 늘린 뒤에도
+같은 명령이 같은 수를 내야 한다. 이 인자를 빼면 동결된 결함 실험의 재현성이 깨진다.
+
 **오염 규율.** 결함 그래프·파생 뷰는 `validate.quarantine` 격리 디렉터리에만 쓰고, 인스턴스마다
 정본 해시를 재검증한다. 정본이 한 바이트라도 변하면 즉시 중단한다(부분 오염으로 가둔다).
 
@@ -50,7 +55,7 @@ def measure_baseline(graph: Path | None = None) -> dict:
     from ..validate.leakage_check import audit_graph
 
     g = graph or config.GRAPH_V0
-    res = run_cqs(g)
+    res = run_cqs(g, targets=("graph",))
     leak = audit_graph(g)
     return {"graph": str(g), "n_cq_pass": sum(r.passed for r in res), "n_cq": len(res),
             "suites": suite_pass_rates(res),
@@ -303,7 +308,7 @@ def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
     out["detected"]["L2"] = not check_consistency(faulted)
 
     # 5) L3 · T3 — CQ 는 한 번만 돌려 두 층이 나눠 쓴다
-    cq = run_cqs(faulted)
+    cq = run_cqs(faulted, targets=("graph",))
     n_pass = sum(r.passed for r in cq)
     suites = suite_pass_rates(cq)
     out["n_cq_pass"] = n_pass
@@ -462,7 +467,7 @@ def t3_prime(run_id: str = "w4_r3") -> dict:
         if not (g.exists() and res_path.exists()):
             continue
         inst = json.loads(res_path.read_text(encoding="utf-8"))
-        rows = {r.name: r.rows for r in run_cqs(g)}
+        rows = {r.name: r.rows for r in run_cqs(g, targets=("graph",))}
         dropped = {k: (rows_base[k], rows[k]) for k in rows_base
                    if rows.get(k, 0) < rows_base[k]}
         dropped_cross = {k: v for k, v in dropped.items() if suite_of[k] in cross}
@@ -506,7 +511,7 @@ def _rejudge_one(args: tuple) -> dict:
     d, taus, exempt = Path(args[0]), args[1], bool(args[2])
     base = load_baseline()
     inst = json.loads((d / "result.json").read_text(encoding="utf-8"))
-    res = run_cqs(d / "graph_faulted.ttl")
+    res = run_cqs(d / "graph_faulted.ttl", targets=("graph",))
     base_rows = base["cq_rows"]
     gen_suites = json.loads((config.CQ_GEN_DIR / "cq_g0.json").read_text(encoding="utf-8"))["suites"]
     base_pa = base["suites"].get("pa", {}).get("n_pass", 0)

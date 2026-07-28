@@ -29,7 +29,7 @@ import sys
 from pathlib import Path
 
 from .. import config
-from .cq_runner import run_cqs, suite_pass_rates
+from .cq_runner import run_cqs, sidecar_provenance, suite_pass_rates, target_measurements
 
 
 def compare_rates(new: dict[str, dict], old: dict[str, dict],
@@ -105,11 +105,18 @@ def freeze_generation(graph_path: Path, label: str, against: str | None = None,
     suites = suite_pass_rates(results, base, tau)
     gpath = Path(graph_path).resolve()
     rel = gpath.relative_to(config.ROOT) if gpath.is_relative_to(config.ROOT) else gpath
+    meas = target_measurements(results, base, tau)
     rec = {"generation": label, "graph": str(rel),
            "graph_sha256": sha256_file(graph_path),
            # 판정 규칙과 τ 는 표 6.6 의 **스위트 버전 이력**으로 함께 실린다(PLAN-021 §1).
            "rule_version": rule, "tau": tau, "against": against,
            "n_cq": len(results), "suites": suites,
+           # 조회 대상별 측정 — 사이드카 CQ 는 게이트 분모 밖이라 여기서만 보인다(PLAN-023 §1).
+           # 출처를 함께 핀한다: 사이드카가 상류 재벤더로 바뀌었는데 세대 비교가 조용히
+           # 진행되는 일을 막는다(§3-2).
+           "measurements": meas,
+           "sidecar_provenance": (sidecar_provenance()
+                                  if any(r.target == "sidecar" for r in results) else None),
            "per_cq": {r.name: {"suite": r.suite, "rows": r.rows, "monotone": r.monotone,
                                "expect_min": r.expect_min, "passed": r.passed}
                       for r in results}}
@@ -168,14 +175,17 @@ def render_generations() -> str:
     """
     gens = sorted(config.CQ_GEN_DIR.glob("cq_*.json"), key=lambda p: p.stat().st_mtime)
     lines = ["# 표 6.6 세대별 CQ 통과율 추이 (T3 이력 · 게이트 표류 감시)", "",
-             "| 보강 세대 | 판정 규칙 | CQ-PA | CQ-EM | CQ-TF | CQ-CORE | T3 판정 | waiver |",
-             "|---|---|---:|---:|---:|---:|---|---:|"]
+             "| 보강 세대 | 판정 규칙 | CQ-PA | CQ-EM | CQ-TF | CQ-CORE | 청구항층(측정) | T3 판정 | waiver |",
+             "|---|---|---:|---:|---:|---:|---:|---|---:|"]
     for p in gens:
         g = json.loads(p.read_text(encoding="utf-8"))
         s = g.get("suites", {})
         cells = " | ".join(
             f"{s[k]['rate']:.3f} ({s[k]['n_pass']}/{s[k]['n_total']})" if k in s else "—"
             for k in ("pa", "em", "tf", "core"))
+        side = (g.get("measurements") or {}).get("sidecar")
+        cells += " | " + (f"{side['rate']:.3f} ({side['n_pass']}/{side['n_total']})"
+                          if side else "— (미측정)")
         v = g.get("verdict")
         if v is None:
             if g.get("against"):
@@ -204,6 +214,11 @@ def render_generations() -> str:
               "- **L3 = pa · T3 = em·tf·core 로 검출 표면이 서로소다**(2026-07-28 개정 · PLAN-022). "
               "주 태스크 CQ 의 기능 회귀는 L3, 검색 성능 회귀는 T1, 타 태스크 CQ 회귀는 T3 가 맡는다. "
               "구 정의(L3 가 전 스위트를 셈)에서는 L3 ⊇ T3 가 성립해 T3 단독검출이 원리적으로 0 이었다.",
+              "- **청구항층 열은 게이트가 아니라 측정이다**(2026-07-28 신설 · PLAN-023 §1). "
+              "CQ29–31 은 사이드카(`central_axis.oxstore` · Claim 586,567 · ClaimFeature 1,289,300)를 "
+              "조회하며 **시험 대상 그래프에 무반응인 상수항**이라 L3·T3 분모에 넣지 않는다 — "
+              "넣으면 항상 통과하는 CQ 가 실패를 희석해 검출력이 떨어진다. 이 층의 회귀는 델타 "
+              "단위가 아니라 **세대 간 비교**로 잡으며, 세대 아티팩트에 상류 출처(PROVENANCE)를 핀한다.",
               "- **판정 규칙 이력**: v1 = 존재검사(`rows ≥ expect-min`) · v2 = 존재검사 ∧ 기준선 대비 "
               "분포검사(PLAN-021 동결 · 극성 `# monotone:` 선언 · τ 사전 동결). 규칙이 바뀌면 "
               "통과율의 의미가 바뀌므로 세대 비교는 같은 규칙끼리만 유효하다."]

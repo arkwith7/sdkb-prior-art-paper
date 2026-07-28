@@ -1,0 +1,460 @@
+{
+  "generation": "g0_cq31",
+  "graph": "data/processed/graph_v0.ttl",
+  "graph_sha256": "a79a8a27db593a775b95715c287d4795b6a165d2d2887b5ea8af305c42a1b6d4",
+  "rule_version": "v2",
+  "tau": 0.05,
+  "against": null,
+  "n_cq": 31,
+  "suites": {
+    "core": {
+      "n_pass": 12,
+      "n_total": 12,
+      "rate": 1.0
+    },
+    "tf": {
+      "n_pass": 5,
+      "n_total": 5,
+      "rate": 1.0
+    },
+    "pa": {
+      "n_pass": 4,
+      "n_total": 5,
+      "rate": 0.8
+    },
+    "em": {
+      "n_pass": 6,
+      "n_total": 6,
+      "rate": 1.0
+    }
+  },
+  "measurements": {
+    "graph": {
+      "n_pass": 27,
+      "n_total": 28,
+      "cqs": [
+        {
+          "cq": "CQ01_patents_per_process_step",
+          "suite": "core",
+          "rows": 20,
+          "passed": true
+        },
+        {
+          "cq": "CQ02_recent_patents_by_step",
+          "suite": "tf",
+          "rows": 365,
+          "passed": true
+        },
+        {
+          "cq": "CQ03_uncovered_process_steps",
+          "suite": "tf",
+          "rows": 29,
+          "passed": true
+        },
+        {
+          "cq": "CQ04_concept_annual_series",
+          "suite": "tf",
+          "rows": 304,
+          "passed": true
+        },
+        {
+          "cq": "CQ05_concept_vs_ipc_series",
+          "suite": "tf",
+          "rows": 1959,
+          "passed": true
+        },
+        {
+          "cq": "CQ06_concepts_without_recent_patents",
+          "suite": "tf",
+          "rows": 58,
+          "passed": true
+        },
+        {
+          "cq": "CQ07_device_process_crosswalk",
+          "suite": "core",
+          "rows": 55,
+          "passed": true
+        },
+        {
+          "cq": "CQ08_applicant_process_portfolio",
+          "suite": "core",
+          "rows": 316,
+          "passed": true
+        },
+        {
+          "cq": "CQ09_rejection_prior_art",
+          "suite": "pa",
+          "rows": 414,
+          "passed": true
+        },
+        {
+          "cq": "CQ10_prior_art_candidates_by_concept",
+          "suite": "pa",
+          "rows": 8,
+          "passed": true
+        },
+        {
+          "cq": "CQ11_experts_for_process_skill",
+          "suite": "em",
+          "rows": 66,
+          "passed": true
+        },
+        {
+          "cq": "CQ12_problem_process_equipment_expert",
+          "suite": "em",
+          "rows": 3134,
+          "passed": true
+        },
+        {
+          "cq": "CQ13_value_chain_vendor_portfolio",
+          "suite": "core",
+          "rows": 21,
+          "passed": true
+        },
+        {
+          "cq": "CQ14_value_chain_role_distribution",
+          "suite": "core",
+          "rows": 18,
+          "passed": true
+        },
+        {
+          "cq": "CQ15_failure_causal_chain",
+          "suite": "core",
+          "rows": 6,
+          "passed": true
+        },
+        {
+          "cq": "CQ16_material_incompatibility",
+          "suite": "pa",
+          "rows": 3,
+          "passed": true
+        },
+        {
+          "cq": "CQ17_material_problem_expert",
+          "suite": "em",
+          "rows": 35,
+          "passed": true
+        },
+        {
+          "cq": "CQ18_patents_by_skill",
+          "suite": "em",
+          "rows": 10,
+          "passed": true
+        },
+        {
+          "cq": "CQ19_process_control_and_metrology",
+          "suite": "core",
+          "rows": 6,
+          "passed": true
+        },
+        {
+          "cq": "CQ20_experts_by_equipment",
+          "suite": "em",
+          "rows": 395,
+          "passed": true
+        },
+        {
+          "cq": "CQ21_process_hierarchy_portfolio",
+          "suite": "core",
+          "rows": 38,
+          "passed": true
+        },
+        {
+          "cq": "CQ22_patent_equipment_and_technode",
+          "suite": "core",
+          "rows": 9,
+          "passed": true
+        },
+        {
+          "cq": "CQ23_concept_export_control",
+          "suite": "core",
+          "rows": 37,
+          "passed": true
+        },
+        {
+          "cq": "CQ24_national_core_technology",
+          "suite": "core",
+          "rows": 12,
+          "passed": true
+        },
+        {
+          "cq": "CQ25_critical_control_concepts",
+          "suite": "core",
+          "rows": 7,
+          "passed": true
+        },
+        {
+          "cq": "CQ26_patent_export_control_exposure",
+          "suite": "pa",
+          "rows": 1249,
+          "passed": true
+        },
+        {
+          "cq": "CQ27_fto_claim_readiness",
+          "suite": "pa",
+          "rows": 0,
+          "passed": false
+        },
+        {
+          "cq": "CQ28_patent_failuremode_expert",
+          "suite": "em",
+          "rows": 40,
+          "passed": true
+        }
+      ],
+      "rate": 0.9642857142857143
+    },
+    "sidecar": {
+      "n_pass": 3,
+      "n_total": 3,
+      "cqs": [
+        {
+          "cq": "CQ29_claim_level_rejection_judgment",
+          "suite": "pa",
+          "rows": 5917,
+          "passed": true
+        },
+        {
+          "cq": "CQ30_independent_claim_features",
+          "suite": "pa",
+          "rows": 3117,
+          "passed": true
+        },
+        {
+          "cq": "CQ31_dependent_claim_hierarchy",
+          "suite": "pa",
+          "rows": 4906,
+          "passed": true
+        }
+      ],
+      "rate": 1.0
+    }
+  },
+  "sidecar_provenance": {
+    "sdkb_commit": "d578bf3074edbab4cdd39c21917cb44684dc8400",
+    "triples": 11606318,
+    "source_sha256": {
+      "sdkb-abox-claim-features.ttl": "9792f8e859aada30ad4f2a8fcbb2430b8088c02c5a85038e3a0f7da55a439051",
+      "sdkb-patent.ttl": "594071be3cb9d7a7ff27bcdb49f12e2b2df75b7058582bea9882df8e19f2b3a2"
+    }
+  },
+  "per_cq": {
+    "CQ01_patents_per_process_step": {
+      "suite": "core",
+      "rows": 20,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ02_recent_patents_by_step": {
+      "suite": "tf",
+      "rows": 365,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ03_uncovered_process_steps": {
+      "suite": "tf",
+      "rows": 29,
+      "monotone": "down",
+      "expect_min": 0,
+      "passed": true
+    },
+    "CQ04_concept_annual_series": {
+      "suite": "tf",
+      "rows": 304,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ05_concept_vs_ipc_series": {
+      "suite": "tf",
+      "rows": 1959,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ06_concepts_without_recent_patents": {
+      "suite": "tf",
+      "rows": 58,
+      "monotone": "down",
+      "expect_min": 0,
+      "passed": true
+    },
+    "CQ07_device_process_crosswalk": {
+      "suite": "core",
+      "rows": 55,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ08_applicant_process_portfolio": {
+      "suite": "core",
+      "rows": 316,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ09_rejection_prior_art": {
+      "suite": "pa",
+      "rows": 414,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ10_prior_art_candidates_by_concept": {
+      "suite": "pa",
+      "rows": 8,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ11_experts_for_process_skill": {
+      "suite": "em",
+      "rows": 66,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ12_problem_process_equipment_expert": {
+      "suite": "em",
+      "rows": 3134,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ13_value_chain_vendor_portfolio": {
+      "suite": "core",
+      "rows": 21,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ14_value_chain_role_distribution": {
+      "suite": "core",
+      "rows": 18,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ15_failure_causal_chain": {
+      "suite": "core",
+      "rows": 6,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ16_material_incompatibility": {
+      "suite": "pa",
+      "rows": 3,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ17_material_problem_expert": {
+      "suite": "em",
+      "rows": 35,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ18_patents_by_skill": {
+      "suite": "em",
+      "rows": 10,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ19_process_control_and_metrology": {
+      "suite": "core",
+      "rows": 6,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ20_experts_by_equipment": {
+      "suite": "em",
+      "rows": 395,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ21_process_hierarchy_portfolio": {
+      "suite": "core",
+      "rows": 38,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ22_patent_equipment_and_technode": {
+      "suite": "core",
+      "rows": 9,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ23_concept_export_control": {
+      "suite": "core",
+      "rows": 37,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ24_national_core_technology": {
+      "suite": "core",
+      "rows": 12,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ25_critical_control_concepts": {
+      "suite": "core",
+      "rows": 7,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ26_patent_export_control_exposure": {
+      "suite": "pa",
+      "rows": 1249,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ27_fto_claim_readiness": {
+      "suite": "pa",
+      "rows": 0,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": false
+    },
+    "CQ28_patent_failuremode_expert": {
+      "suite": "em",
+      "rows": 40,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ29_claim_level_rejection_judgment": {
+      "suite": "pa",
+      "rows": 5917,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ30_independent_claim_features": {
+      "suite": "pa",
+      "rows": 3117,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CQ31_dependent_claim_hierarchy": {
+      "suite": "pa",
+      "rows": 4906,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    }
+  }
+}

@@ -35,8 +35,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from sdkb_paper.config import (
+    CENTRAL_AXIS_PROVENANCE,
+    CENTRAL_AXIS_STORE,
+    CQ_GATE_TARGET,
     CQ_MONOTONE,
     CQ_SUITES,
+    CQ_TARGETS,
     CQ_TAU,
     L3_SUITES,
     QUERIES_CQ,
@@ -56,6 +60,16 @@ class CQResult:
     rows: int
     suite: str = "core"
     monotone: str = "up"
+    target: str = "graph"
+
+    @property
+    def in_gate(self) -> bool:
+        """L3·T3 판정 분모에 드는가 (PLAN-023 §1 희석 금지).
+
+        사이드카 CQ 는 시험 대상 그래프에 무반응인 상수항이라 게이트 분모에 넣으면 실패를
+        희석한다. 측정으로는 보고하되 판정에는 넣지 않는다.
+        """
+        return self.target == CQ_GATE_TARGET
 
     @property
     def passed(self) -> bool:
@@ -87,9 +101,13 @@ class CQResult:
         return base_rows is None or not self.regressed(base_rows, tau)
 
 
-def _parse_meta(rq_text: str) -> tuple[str, int, str, str]:
-    """(desc, expect_min, suite, monotone). 라벨 누락·오값은 ValueError(조용한 기본값 금지)."""
-    desc, expect_min, suite, monotone = "", 1, "", ""
+def _parse_meta(rq_text: str) -> tuple[str, int, str, str, str]:
+    """(desc, expect_min, suite, monotone, target). 라벨 누락·오값은 ValueError(조용한 기본값 금지).
+
+    `# target:` 만은 생략 가능하며 기본이 `graph` 다 — 기존 28개 CQ 를 건드리지 않기 위한
+    하위호환이고, 기본값이 **게이트에 드는 쪽**이라 누락이 감시를 약화시키지 않는다.
+    """
+    desc, expect_min, suite, monotone, target = "", 1, "", "", "graph"
     for line in rq_text.splitlines():
         line = line.strip()
         if line.startswith("# desc:"):
@@ -100,15 +118,19 @@ def _parse_meta(rq_text: str) -> tuple[str, int, str, str]:
             suite = line.removeprefix("# suite:").strip()
         elif line.startswith("# monotone:"):
             monotone = line.removeprefix("# monotone:").strip()
+        elif line.startswith("# target:"):
+            target = line.removeprefix("# target:").strip()
         elif line and not line.startswith("#"):
             break
+    if target not in CQ_TARGETS:
+        raise ValueError(f"CQ 조회 대상 라벨이 잘못됐다: '{target}' (허용 {CQ_TARGETS})")
     if suite not in CQ_SUITES:
         raise ValueError(f"CQ 스위트 라벨이 없거나 잘못됐다: '{suite}' (허용 {CQ_SUITES})")
     if monotone not in CQ_MONOTONE:
         raise ValueError(f"CQ 극성 라벨이 없거나 잘못됐다: '{monotone}' (허용 {CQ_MONOTONE}) — "
                          "극성 없이 '행수 하락=회귀'로 판정하면 공백 탐색 질의(CQ03·CQ06)의 "
                          "정당한 개선이 회귀로 오판된다(PLAN-021 §2)")
-    return desc, expect_min, suite, monotone
+    return desc, expect_min, suite, monotone, target
 
 
 def _count_rdflib(graph_path: Path, texts: list[str]) -> list[int]:
@@ -134,26 +156,88 @@ def _count_oxigraph(graph_path: Path, texts: list[str]) -> list[int]:
         return [sum(1 for _ in store.query(t)) for t in texts]
 
 
+def _count_sidecar(texts: list[str]) -> list[int]:
+    """청구항 분해 사이드카(`central_axis.oxstore`)에 같은 질의를 센다 (PLAN-023 §3).
+
+    **읽기 전용**이다 — 결함주입은 이 스토어를 건드리지 않는다. 스토어가 없으면 **에러**다:
+    조용히 건너뛰면 분모가 소리 없이 바뀌고, 그것이 정확히 게이트를 공허하게 만드는 경로다
+    (스위트 라벨 누락을 에러로 처리한 것과 같은 규율).
+    """
+    from pyoxigraph import Store
+
+    if not CENTRAL_AXIS_STORE.exists():
+        raise FileNotFoundError(
+            f"사이드카 스토어 없음: {CENTRAL_AXIS_STORE} — "
+            "`python -m sdkb_paper.ontology.central_axis build` 로 빌드하라. "
+            "target=sidecar CQ 를 조용히 건너뛰지 않는다(PLAN-023 §3-1)")
+    store = Store(path=str(CENTRAL_AXIS_STORE))
+    return [sum(1 for _ in store.query(t)) for t in texts]
+
+
+def sidecar_provenance() -> dict:
+    """세대 아티팩트에 핀할 사이드카 출처 (PLAN-023 §3-2). 없으면 에러."""
+    import json as _json
+
+    if not CENTRAL_AXIS_PROVENANCE.exists():
+        raise FileNotFoundError(f"사이드카 PROVENANCE 없음: {CENTRAL_AXIS_PROVENANCE}")
+    p = _json.loads(CENTRAL_AXIS_PROVENANCE.read_text(encoding="utf-8"))
+    return {"sdkb_commit": p.get("sdkb_commit"), "triples": p.get("triples"),
+            "source_sha256": {k: v.get("sha256") for k, v in p.get("source_files", {}).items()}}
+
+
 def run_cqs(graph_path: Path, cq_dir: Path = QUERIES_CQ,
-            engine: str = DEFAULT_ENGINE) -> list[CQResult]:
+            engine: str = DEFAULT_ENGINE,
+            targets: tuple[str, ...] = CQ_TARGETS) -> list[CQResult]:
+    """CQ 전량 실행. `# target:` 에 따라 그래프와 사이드카로 나눠 조회한다(PLAN-023 §1).
+
+    `targets` 로 조회 대상을 좁힐 수 있다. **게이트 경로는 절대 이 인자를 쓰지 않는다** —
+    분모를 줄이는 우회로가 되기 때문이다. 쓰는 곳은 둘뿐이며 이유가 다르다:
+      · `analysis/faults.py` — 결함주입은 TTL 만 건드리므로 사이드카 조회가 무의미하고,
+        28-CQ 체제로 동결된 표 6.5 계열의 **재현성**을 위해 graph 로 고정한다.
+      · 사이드카 스토어(gitignore·1.8GB)가 없는 환경의 테스트.
+    """
     if engine not in ENGINES:
         raise ValueError(f"알 수 없는 CQ 엔진: '{engine}' (허용 {ENGINES})")
+    bad = set(targets) - set(CQ_TARGETS)
+    if bad:
+        raise ValueError(f"알 수 없는 CQ 조회 대상: {sorted(bad)} (허용 {CQ_TARGETS})")
     rqs = sorted(cq_dir.glob("*.rq"))
     texts = [rq.read_text(encoding="utf-8") for rq in rqs]
     metas = [_parse_meta(t) for t in texts]
-    counts = (_count_oxigraph if engine == "oxigraph" else _count_rdflib)(graph_path, texts)
-    return [CQResult(rq.stem, desc, expect_min, rows, suite, mono)
-            for rq, (desc, expect_min, suite, mono), rows in zip(rqs, metas, counts)]
+    keep = [i for i, m in enumerate(metas) if m[4] in targets]
+    rqs = [rqs[i] for i in keep]
+    texts = [texts[i] for i in keep]
+    metas = [metas[i] for i in keep]
+    idx_graph = [i for i, m in enumerate(metas) if m[4] == "graph"]
+    idx_side = [i for i, m in enumerate(metas) if m[4] == "sidecar"]
+    counts: list[int] = [0] * len(rqs)
+    counter = _count_oxigraph if engine == "oxigraph" else _count_rdflib
+    for i, n in zip(idx_graph, counter(graph_path, [texts[i] for i in idx_graph])):
+        counts[i] = n
+    if idx_side:
+        for i, n in zip(idx_side, _count_sidecar([texts[i] for i in idx_side])):
+            counts[i] = n
+    return [CQResult(rq.stem, desc, expect_min, rows, suite, mono, target)
+            for rq, (desc, expect_min, suite, mono, target), rows in zip(rqs, metas, counts)]
 
 
 def verify_engines(graph_path: Path, cq_dir: Path = QUERIES_CQ) -> list[dict]:
-    """두 엔진의 CQ 별 결과행을 대조한다. 불일치가 있으면 엔진 전환은 무효다."""
+    """두 엔진의 CQ 별 결과행을 대조한다. 불일치가 있으면 엔진 전환은 무효다.
+
+    사이드카 CQ 는 **엔진 고정**이다 — rdflib 인메모리는 11.6M 에서 OOM 이다(메모리
+    `central-axis-use-oxigraph-ondisk`). 조용히 빼지 않고 `engine_fixed` 로 명시 보고한다.
+    """
     rqs = sorted(cq_dir.glob("*.rq"))
     texts = [rq.read_text(encoding="utf-8") for rq in rqs]
-    ox = _count_oxigraph(graph_path, texts)
-    rd = _count_rdflib(graph_path, texts)
-    return [{"cq": rq.stem, "oxigraph": o, "rdflib": r, "same": o == r}
-            for rq, o, r in zip(rqs, ox, rd)]
+    targets = [_parse_meta(t)[4] for t in texts]
+    g = [i for i, t in enumerate(targets) if t == "graph"]
+    ox = _count_oxigraph(graph_path, [texts[i] for i in g])
+    rd = _count_rdflib(graph_path, [texts[i] for i in g])
+    out = [{"cq": rqs[i].stem, "oxigraph": o, "rdflib": r, "same": o == r,
+            "engine_fixed": False} for i, o, r in zip(g, ox, rd)]
+    out += [{"cq": rqs[i].stem, "oxigraph": None, "rdflib": None, "same": True,
+             "engine_fixed": True} for i, t in enumerate(targets) if t == "sidecar"]
+    return sorted(out, key=lambda d: d["cq"])
 
 
 def suite_pass_rates(results: list[CQResult], base_rows: dict[str, int] | None = None,
@@ -163,9 +247,15 @@ def suite_pass_rates(results: list[CQResult], base_rows: dict[str, int] | None =
     `base_rows`(CQ명 → 기준 세대 결과행)를 주면 **판정 v2**(존재검사 ∧ ¬분포회귀)로 센다.
     주지 않으면 v1 이다 — 기존 호출부·세대 아티팩트가 그대로 동작한다.
     `exempt_regress` 는 검증된 중복제거 델타의 분포검사 면제(PLAN-022 §2).
+
+    **사이드카 CQ 는 세지 않는다**(PLAN-023 §1 희석 금지) — 시험 대상 그래프에 무반응인
+    상수항을 판정 분모에 넣으면 실패가 희석돼 검출력이 떨어진다. 측정은
+    `target_measurements()` 가 따로 보고한다.
     """
     out: dict[str, dict] = {}
     for r in results:
+        if not r.in_gate:
+            continue
         rec = out.setdefault(r.suite, {"n_pass": 0, "n_total": 0})
         rec["n_total"] += 1
         base = None if base_rows is None else base_rows.get(r.name)
@@ -193,6 +283,26 @@ def layer_pass_counts(results: list[CQResult], base_rows: dict[str, int] | None 
         n_total = sum(per.get(s, {}).get("n_total", 0) for s in suites)
         out[layer] = {"suites": tuple(suites), "n_pass": n_pass, "n_total": n_total,
                       "rate": n_pass / n_total if n_total else 0.0}
+    return out
+
+
+def target_measurements(results: list[CQResult], base_rows: dict[str, int] | None = None,
+                        tau: float = CQ_TAU) -> dict[str, dict]:
+    """조회 대상별 통과 계수 — **게이트가 아니라 측정**이다 (PLAN-023 §1).
+
+    사이드카 CQ 는 승인식에 들어가지 않으므로 여기서만 보이며, 세대 아티팩트와 표 6.6 에
+    별도로 실린다. 보이지 않는 검사는 없는 검사와 같으므로 조용히 빼지 않는다.
+    """
+    out: dict[str, dict] = {}
+    for r in results:
+        rec = out.setdefault(r.target, {"n_pass": 0, "n_total": 0, "cqs": []})
+        rec["n_total"] += 1
+        base = None if base_rows is None else base_rows.get(r.name)
+        ok = r.judge(base, tau)
+        rec["n_pass"] += int(ok)
+        rec["cqs"].append({"cq": r.name, "suite": r.suite, "rows": r.rows, "passed": ok})
+    for rec in out.values():
+        rec["rate"] = rec["n_pass"] / rec["n_total"] if rec["n_total"] else 0.0
     return out
 
 
@@ -246,16 +356,25 @@ def main() -> None:
         print("[cq_runner] no CQ files found")
         sys.exit(2)
 
-    lines = ["| CQ | 스위트 | 질문 | 결과행 | 기준 | 통과 |", "|---|---|---|---:|---:|:--:|"]
+    lines = ["| CQ | 스위트 | 대상 | 질문 | 결과행 | 기준 | 통과 |",
+             "|---|---|---|---|---:|---:|:--:|"]
     for r in results:
-        lines.append(f"| {r.name} | {r.suite} | {r.desc} | {r.rows} | ≥{r.expect_min} | "
-                     f"{'✅' if r.passed else '❌'} |")
-    n_pass = sum(r.passed for r in results)
-    rate = n_pass / len(results)
+        lines.append(f"| {r.name} | {r.suite} | {r.target} | {r.desc} | {r.rows} | "
+                     f"≥{r.expect_min} | {'✅' if r.passed else '❌'} |")
+    # **종료코드는 게이트 대상(target=graph)만 센다** — 사이드카 CQ 는 시험 대상 그래프에
+    # 무반응인 상수항이라 판정에 넣으면 통과율을 희석한다(PLAN-023 §1). 측정은 아래에 따로 찍는다.
+    gated = [r for r in results if r.in_gate]
+    n_pass = sum(r.passed for r in gated)
+    rate = n_pass / len(gated) if gated else 0.0
     table = "\n".join(lines)
     print(f"[cq_runner] graph = {args.graph}")
     print(table)
-    print(f"\n[cq_runner] pass rate = {rate:.0%} ({n_pass}/{len(results)})")
+    print(f"\n[cq_runner] pass rate = {rate:.0%} ({n_pass}/{len(gated)})  [게이트 대상 target=graph]")
+    meas = target_measurements(results)
+    for tgt, rec in sorted(meas.items()):
+        if tgt != CQ_GATE_TARGET:
+            print(f"  ~ [측정·게이트 아님] target={tgt:<9} {rec['rate']:.0%} "
+                  f"({rec['n_pass']}/{rec['n_total']})  ← PLAN-023 §1 희석 금지")
     for suite, rec in sorted(suite_pass_rates(results).items()):
         print(f"  · {suite:<5} {rec['rate']:.0%} ({rec['n_pass']}/{rec['n_total']})")
     # 층 귀속 표시 (PLAN-022 §1). **종료코드는 여전히 28개 전량의 곱이다** — 귀속을 나누는 것이
@@ -269,7 +388,8 @@ def main() -> None:
         out = args.out or report_path(args.graph)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(
-            f"# CQ 응답률 — `{args.graph}`\n\n{table}\n\npass rate: {rate:.0%} ({n_pass}/{len(results)})\n",
+            f"# CQ 응답률 — `{args.graph}`\n\n{table}\n\n"
+            f"pass rate (게이트 대상 target=graph): {rate:.0%} ({n_pass}/{len(gated)})\n",
             encoding="utf-8",
         )
         print(f"[cq_runner] report -> {out}")
