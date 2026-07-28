@@ -414,8 +414,9 @@ def summarize(results: list[dict]) -> dict:
 
 def run_matrix(reps: int = 3, strengths: tuple = FI.STRENGTHS, workers: int = 12,
                split: str = "dev", faults: tuple | None = None,
-               skip_t12: bool = False) -> dict:
-    run_id = f"w4_r{reps}"
+               skip_t12: bool = False, run_id: str | None = None,
+               report: Path = REPORT) -> dict:
+    run_id = run_id or f"w4_r{reps}"
     keys = faults or tuple(f.key for f in FI.FAULTS + FI.NORMALS)
     jobs = [(k, s, r, run_id, split, skip_t12)
             for k in keys for s in strengths for r in range(reps)]
@@ -432,7 +433,7 @@ def run_matrix(reps: int = 3, strengths: tuple = FI.STRENGTHS, workers: int = 12
     out = {"run_id": run_id, "split": split, "reps": reps, "strengths": list(strengths),
            "workers": workers, "elapsed_s": round(time.time() - t0, 1),
            "summary": summarize(results), "instances": results}
-    REPORT.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+    report.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     Q.lock(Q.QUARANTINE / run_id)
     return out
 
@@ -478,6 +479,193 @@ def t3_prime(run_id: str = "w4_r3") -> dict:
     for rec in by_fault.values():
         rec["cqs"] = sorted(rec["cqs"])
     return {"run_id": run_id, "by_fault": by_fault, "instances": out}
+
+
+# --- W4b 재판정 (PLAN-021) — 결함을 다시 넣지 않는다 ---------------------------
+REPORT_V2 = config.PROCESSED / "fault_matrix_v2.json"
+REJUDGE_RUNS = ("w4_r3", "w4b_n03")
+
+
+def _rejudge_one(args: tuple) -> dict:
+    """격리 인스턴스 하나를 **읽기만 해서** CQ 를 다시 세고 τ 격자 전체로 판정한다."""
+    from ..validate.cq_runner import regressions, run_cqs, suite_pass_rates
+
+    d, taus = Path(args[0]), args[1]
+    base = load_baseline()
+    inst = json.loads((d / "result.json").read_text(encoding="utf-8"))
+    res = run_cqs(d / "graph_faulted.ttl")
+    base_rows = base["cq_rows"]
+    gen_suites = json.loads((config.CQ_GEN_DIR / "cq_g0.json").read_text(encoding="utf-8"))["suites"]
+
+    from ..validate.t3_cross_task_cq import t3_gate
+    per_tau = {}
+    for tau in taus:
+        n_pass = sum(1 for r in res if r.judge(base_rows.get(r.name), tau))
+        rates = suite_pass_rates(res, base_rows, tau)
+        t3 = t3_gate(rates, gen_suites)
+        regs = regressions(res, base_rows, tau)
+        per_tau[f"{tau:.2f}"] = {
+            "L3": n_pass < base["n_cq_pass"], "T3": not t3["pass"],
+            "n_cq_pass": n_pass, "regressed_suites": t3["regressed"],
+            "regressed_cqs": [r["cq"] for r in regs],
+            "cross_regressed_cqs": [r["cq"] for r in regs if r["suite"] in config.T3_SUITES],
+        }
+    return {"fault": inst["fault"], "label": inst["label"], "expected": inst["expected"],
+            "cross_task": inst["cross_task"], "strength": inst["strength"], "rep": inst["rep"],
+            "v1": inst["detected"], "v2_by_tau": per_tau}
+
+
+def rejudge(runs: tuple = REJUDGE_RUNS, taus: tuple = config.CQ_TAU_GRID,
+            workers: int = 10) -> dict:
+    """**W4b — 판정 규칙만 바꿔 W4 격리본을 다시 읽는다** (PLAN-021 §4).
+
+    결함을 다시 주입하지 않는다: 바뀐 것은 CQ 판정 규칙(v1 존재검사 → v2 존재∧분포)뿐이고,
+    L0·L1·L2·누출·T1·T2 는 결함 그래프의 함수라 v1 인스턴스의 저장값을 그대로 승계한다.
+    같은 인스턴스의 **대응 비교**가 되므로 McNemar 가 정당하고, 1,908초 배치·47GB 재생성이
+    사라진다. 격리본은 0444 잠금 그대로 — 읽기만 한다.
+    """
+    dirs = []
+    for run_id in runs:
+        root = Q.QUARANTINE / run_id
+        if not root.exists():
+            continue
+        dirs += [d for d in sorted(root.iterdir())
+                 if (d / "graph_faulted.ttl").exists() and (d / "result.json").exists()]
+    if not dirs:
+        raise FileNotFoundError(f"재판정할 격리 인스턴스가 없다: {runs}")
+
+    t0 = time.time()
+    out = []
+    with ProcessPoolExecutor(max_workers=workers) as ex:
+        futs = [ex.submit(_rejudge_one, (str(d), taus)) for d in dirs]
+        for i, fut in enumerate(as_completed(futs), 1):
+            r = fut.result()
+            out.append(r)
+            print(f"  [{i}/{len(dirs)}] {r['fault']} s={r['strength']} r={r['rep']} "
+                  f"→ v2(τ={config.CQ_TAU}) L3={r['v2_by_tau'][f'{config.CQ_TAU:.2f}']['L3']} "
+                  f"T3={r['v2_by_tau'][f'{config.CQ_TAU:.2f}']['T3']}", flush=True)
+    out.sort(key=lambda r: (r["fault"], r["strength"], r["rep"]))
+    res = {"runs": list(runs), "taus": list(taus), "rule_version": config.CQ_RULE_VERSION,
+           "tau_main": config.CQ_TAU, "elapsed_s": round(time.time() - t0, 1),
+           "summary": {f"{t:.2f}": summarize_v2(out, t) for t in taus},
+           "instances": out}
+    REPORT_V2.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+    Q.verify_pristine(strict=True)
+    return res
+
+
+def _merged_layers(inst: dict, tau: float) -> dict:
+    """v1 의 층 판정에 v2 의 L3·T3 를 얹은 최종 검출 벡터."""
+    v2 = inst["v2_by_tau"][f"{tau:.2f}"]
+    d = dict(inst["v1"])
+    d["L3"], d["T3"] = v2["L3"], v2["T3"]
+    return d
+
+
+def summarize_v2(instances: list[dict], tau: float) -> dict:
+    """τ 하나에서의 v1 vs v2 요약 — 검출률·McNemar·H1′·위양성."""
+    by_fault: dict[str, dict] = {}
+    for spec in FI.FAULTS + FI.NORMALS:
+        rs = [r for r in instances if r["fault"] == spec.key]
+        if not rs:
+            continue
+        merged = [_merged_layers(r, tau) for r in rs]
+        firsts = [next((L for L in LAYERS if m.get(L)), None) for m in merged]
+        by_fault[spec.key] = {
+            "label": spec.label, "expected": spec.expected, "cross_task": spec.cross_task,
+            "n": len(rs),
+            "rates": {L: sum(1 for m in merged if m.get(L)) / len(rs) for L in LAYERS},
+            "v1_L3": sum(1 for r in rs if r["v1"].get("L3")),
+            "v1_T3": sum(1 for r in rs if r["v1"].get("T3")),
+            "v2_L3": sum(1 for m in merged if m["L3"]),
+            "v2_T3": sum(1 for m in merged if m["T3"]),
+            "first_layer": max(set(firsts), key=firsts.count) if firsts else None,
+            "undetected": sum(1 for f in firsts if f is None),
+            "cross_cqs": sorted({c for r in rs
+                                 for c in r["v2_by_tau"][f"{tau:.2f}"]["cross_regressed_cqs"]}),
+        }
+    faults = [r for r in instances if not r["fault"].startswith("N")]
+    normals = [r for r in instances if r["fault"].startswith("N")]
+    fp = [r for r in normals
+          if any(_merged_layers(r, tau).get(L) for L in LAYERS)]
+    pairs = [(any(_merged_layers(r, tau).get(L) for L in ("L0", "L1", "L2", "L3")),
+              any(_merged_layers(r, tau).get(L) for L in ("T1", "T2", "T3")))
+             for r in faults]
+    cross = [r for r in faults if r["cross_task"]]
+    t3_only = [r for r in cross
+               if _merged_layers(r, tau)["T3"]
+               and not any(_merged_layers(r, tau).get(L)
+                           for L in ("L0", "L1", "L2", "L3", "T1", "T2"))]
+    return {"tau": tau, "n_instances": len(faults), "by_fault": by_fault,
+            "n_t3_v1": sum(1 for r in faults if r["v1"].get("T3")),
+            "n_t3_v2": sum(1 for r in faults if _merged_layers(r, tau)["T3"]),
+            "n_l3_v1": sum(1 for r in faults if r["v1"].get("L3")),
+            "n_l3_v2": sum(1 for r in faults if _merged_layers(r, tau)["L3"]),
+            "false_positive": {"n_normal": len(normals), "n_rejected": len(fp),
+                               "rate": (len(fp) / len(normals)) if normals else None,
+                               "rejected": [{"fault": r["fault"], "strength": r["strength"]}
+                                            for r in fp]},
+            "mcnemar": mcnemar(pairs),
+            "h1p": {"n_cross_instances": len(cross), "n_t3_only": len(t3_only),
+                    "n_t3_detected": sum(1 for r in cross if _merged_layers(r, tau)["T3"]),
+                    "rate_t3_only": (len(t3_only) / len(cross)) if cross else 0.0}}
+
+
+def render_table_v2(res: dict) -> str:
+    """원고 표 6.5v2 — 판정 규칙 v1 vs v2. 수기 기입 없음(CLAUDE §1-7)."""
+    tau = res["tau_main"]
+    s = res["summary"][f"{tau:.2f}"]
+    lines = [
+        "# 표 6.5v2 결함 주입 재판정 — CQ 판정 v1(존재검사) vs v2(존재∧분포검사)",
+        "",
+        f"판정 규칙 {res['rule_version']} · 주 τ={tau} · 사전 동결 격자 {res['taus']} · "
+        f"결함 재주입 없음(격리본 재판정 · PLAN-021 §4)",
+        "",
+        "**H1 은 사전등록대로 기각된 채다.** 아래는 부록 F 가 실행 전에 예고한 처방(CQ 세분화)을 "
+        "수행한 뒤의 **사후 재설계 검정 H1′**이며, 같은 데이터의 재판정이므로 독립 증거가 아니다.",
+        "",
+        "| 결함 | 예상층 | " + " | ".join(LAYERS) + " | L3 v1→v2 | T3 v1→v2 | 최초 검출층 | 미탐지 |",
+        "|---|---|" + "---:|" * len(LAYERS) + "---:|---:|---|---:|",
+    ]
+    for key, r in s["by_fault"].items():
+        if key.startswith("N"):
+            continue
+        name = f"**{r['label']}**" if r["cross_task"] else r["label"]
+        cells = " | ".join(f"{r['rates'][L]:.2f}" for L in LAYERS)
+        lines.append(f"| {name} | {r['expected']} | {cells} | "
+                     f"{r['v1_L3']}→{r['v2_L3']} | {r['v1_T3']}→{r['v2_T3']} | "
+                     f"{r['first_layer'] or '—'} | {r['undetected']}/{r['n']} |")
+    m, h, fp = s["mcnemar"], s["h1p"], s["false_positive"]
+    lines += [
+        "",
+        f"- **T3 검출** v1 {s['n_t3_v1']}/{s['n_instances']} → **v2 {s['n_t3_v2']}/{s['n_instances']}** · "
+        f"L3 검출 v1 {s['n_l3_v1']} → v2 {s['n_l3_v2']}",
+        f"- **H1′ 교차결함 T3 단독검출**: {h['n_t3_only']}/{h['n_cross_instances']} "
+        f"(T3 가 잡은 교차결함은 {h['n_t3_detected']}/{h['n_cross_instances']})",
+        f"- **McNemar**(L0–L3 vs T-gate · 결함 단위 대응): b={m['b']} · c={m['c']} · "
+        f"p={m['p']:.4f} ({m['test']})",
+        f"- **위양성**(정상 델타 거부): {fp['n_rejected']}/{fp['n_normal']}"
+        + (f" = {fp['rate']:.1%}" if fp["rate"] is not None else ""),
+    ]
+    for key in ("N01", "N02", "N03"):
+        r = s["by_fault"].get(key)
+        if r:
+            lines.append(f"  - {key} {r['label']}: 거부 {r['n'] - r['undetected']}/{r['n']}")
+    lines += ["", "## τ 민감도 (사전 동결 격자 · 결과를 보고 고르지 않는다)", "",
+              "| τ | T3 검출 | L3 검출 | 위양성 | H1′ T3 단독 |", "|---:|---:|---:|---:|---:|"]
+    for t in res["taus"]:
+        st = res["summary"][f"{t:.2f}"]
+        lines.append(f"| {t:.2f} | {st['n_t3_v2']}/{st['n_instances']} | "
+                     f"{st['n_l3_v2']}/{st['n_instances']} | "
+                     f"{st['false_positive']['n_rejected']}/{st['false_positive']['n_normal']} | "
+                     f"{st['h1p']['n_t3_only']}/{st['h1p']['n_cross_instances']} |")
+    cross_rows = [(k, r) for k, r in s["by_fault"].items() if r["cross_task"] or r["cross_cqs"]]
+    if cross_rows:
+        lines += ["", "## v2 에서 회귀로 판정된 교차 태스크 CQ", "",
+                  "| 결함 | 하락한 교차 태스크 CQ |", "|---|---|"]
+        for k, r in cross_rows:
+            lines.append(f"| {r['label']} | {', '.join(c.split('_')[0] for c in r['cross_cqs']) or '—'} |")
+    return "\n".join(lines) + "\n"
 
 
 def render_table(res: dict) -> str:
@@ -548,6 +736,10 @@ def main() -> None:
     ap.add_argument("--from-report", action="store_true", help="재실행 없이 기존 매트릭스로 표만")
     ap.add_argument("--t3-prime", action="store_true",
                     help="CQ 세분화 대리지표(탐색적 진단 · 격리 그래프 재질의)")
+    ap.add_argument("--n03", action="store_true",
+                    help="W4b 정상 델타 N03(완전중복 병합)만 주입 → run_id w4b_n03")
+    ap.add_argument("--rejudge", action="store_true",
+                    help="W4b 재판정 — 격리본을 읽어 CQ 판정 v1 vs v2 × τ 격자 (재주입 없음)")
     args = ap.parse_args()
 
     if args.baseline:
@@ -575,6 +767,34 @@ def main() -> None:
             print(f"  {k}  {r['t3']:>2} / {r['t3_prime']:>2} / {r['n']:>2}   "
                   f"{','.join(r['cqs'][:6])}")
         print(f"  → {out}")
+        return
+
+    if args.n03:
+        Q.verify_pristine(strict=True)
+        res = run_matrix(args.reps, workers=min(args.workers, 9), split=args.split,
+                         faults=("N03",), run_id="w4b_n03",
+                         report=config.PROCESSED / "fault_matrix_n03.json")
+        s = res["summary"]
+        print(f"\n[N03 정상 델타] {s['n_instances'] + s['false_positive']['n_normal']}인스턴스 · "
+              f"오류 {s['n_errors']} · {res['elapsed_s']}초 · "
+              f"거부 {s['false_positive']['n_rejected']}/{s['false_positive']['n_normal']}")
+        return
+
+    if args.rejudge:
+        res = rejudge(workers=args.workers)
+        tau = res["tau_main"]
+        s = res["summary"][f"{tau:.2f}"]
+        print(f"\n[W4b 재판정] 규칙 {res['rule_version']} · 주 τ={tau} · {res['elapsed_s']}초")
+        print(f"  T3 검출 v1 {s['n_t3_v1']}/{s['n_instances']} → v2 {s['n_t3_v2']}/{s['n_instances']}"
+              f"  ·  L3 v1 {s['n_l3_v1']} → v2 {s['n_l3_v2']}")
+        print(f"  H1′ 교차결함 T3 단독검출 {s['h1p']['n_t3_only']}/{s['h1p']['n_cross_instances']} "
+              f"(T3 검출 {s['h1p']['n_t3_detected']}/{s['h1p']['n_cross_instances']})")
+        print(f"  McNemar b={s['mcnemar']['b']} c={s['mcnemar']['c']} p={s['mcnemar']['p']:.4f}")
+        print(f"  위양성 {s['false_positive']['n_rejected']}/{s['false_positive']['n_normal']}")
+        out = config.ROOT / "paper" / "tables" / "fault_matrix_v2.md"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(render_table_v2(res), encoding="utf-8")
+        print(f"  표 → {out}\n  → {REPORT_V2}")
         return
 
     if args.from_report:

@@ -92,14 +92,22 @@ def freeze_generation(graph_path: Path, label: str) -> dict:
     rel = gpath.relative_to(config.ROOT) if gpath.is_relative_to(config.ROOT) else gpath
     rec = {"generation": label, "graph": str(rel),
            "graph_sha256": sha256_file(graph_path),
+           # 기준 세대 자신은 v1 로 센다 — 자기 자신 대비 회귀는 정의상 0 이다.
+           # 판정 규칙과 τ 는 표 6.6 의 **스위트 버전 이력**으로 함께 실린다(PLAN-021 §1).
+           "rule_version": config.CQ_RULE_VERSION, "tau": config.CQ_TAU,
            "n_cq": len(results), "suites": suite_pass_rates(results),
-           "per_cq": {r.name: {"suite": r.suite, "rows": r.rows,
+           "per_cq": {r.name: {"suite": r.suite, "rows": r.rows, "monotone": r.monotone,
                                "expect_min": r.expect_min, "passed": r.passed}
                       for r in results}}
     config.CQ_GEN_DIR.mkdir(parents=True, exist_ok=True)
     generation_path(label).write_text(json.dumps(rec, ensure_ascii=False, indent=2),
                                       encoding="utf-8")
     return rec
+
+
+def baseline_rows(gen: dict) -> dict[str, int]:
+    """세대 아티팩트에서 CQ별 기준 결과행을 뽑는다 — 판정 v2 의 분모(PLAN-021 §1)."""
+    return {k: v["rows"] for k, v in gen.get("per_cq", {}).items()}
 
 
 def load_generation(label: str) -> dict:
@@ -124,6 +132,35 @@ def waiver_count() -> int:
                if line.strip())
 
 
+def render_generations() -> str:
+    """원고 표 6.6 — 세대별 CQ 통과율 추이 + **판정 규칙 버전 이력**(부록 F 요구).
+
+    세대 아티팩트가 있는 만큼만 싣는다. 없는 세대를 만들어 채우지 않는다 — 표를 채우려고
+    세대를 지어내면 그 순간 게이트 이력이 허구가 된다(CLAUDE.md §1-1).
+    """
+    gens = sorted(config.CQ_GEN_DIR.glob("cq_*.json"), key=lambda p: p.stat().st_mtime)
+    lines = ["# 표 6.6 세대별 CQ 통과율 추이 (T3 이력 · 게이트 표류 감시)", "",
+             "| 보강 세대 | 판정 규칙 | CQ-PA | CQ-EM | CQ-TF | CQ-CORE | T3 판정 | waiver |",
+             "|---|---|---:|---:|---:|---:|---|---:|"]
+    for p in gens:
+        g = json.loads(p.read_text(encoding="utf-8"))
+        s = g.get("suites", {})
+        rule = g.get("rule_version", "v1")
+        tau = g.get("tau")
+        rule_s = rule + (f" (τ={tau})" if rule != "v1" and tau is not None else "")
+        cells = " | ".join(
+            f"{s[k]['rate']:.3f} ({s[k]['n_pass']}/{s[k]['n_total']})" if k in s else "—"
+            for k in ("pa", "em", "tf", "core"))
+        verdict = "— (기준)" if g["generation"] == "g0" else "[기입]"
+        lines.append(f"| {g['generation']} | {rule_s} | {cells} | {verdict} | — |")
+    lines += ["", f"- 누적 waiver {waiver_count()}회 (T3 예외 승인 이력 · 0 이 아니면 사유를 함께 읽어야 한다)",
+              "- T3 는 {em, tf, core} 만 판정한다 — pa 의 회귀는 T1 이 통계적으로 담당한다(이중계상 방지).",
+              "- **판정 규칙 이력**: v1 = 존재검사(`rows ≥ expect-min`) · v2 = 존재검사 ∧ 기준선 대비 "
+              "분포검사(PLAN-021 동결 · 극성 `# monotone:` 선언 · τ 사전 동결). 규칙이 바뀌면 "
+              "통과율의 의미가 바뀌므로 세대 비교는 같은 규칙끼리만 유효하다."]
+    return "\n".join(lines) + "\n"
+
+
 def format_report(r: dict) -> str:
     lines = [f"[T3 교차 태스크 CQ 비회귀] 스위트 {', '.join(r['suites'])} "
              "(주 태스크 pa 는 T1 담당 — 분모 아님)",
@@ -142,12 +179,26 @@ def format_report(r: dict) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("graph", type=Path, help="판정 대상 그래프 TTL")
+    ap.add_argument("graph", type=Path, nargs="?", help="판정 대상 그래프 TTL")
     ap.add_argument("--freeze", metavar="LABEL", default=None,
                     help="현재 통과율을 세대 아티팩트로 동결(판정하지 않는다)")
     ap.add_argument("--baseline", metavar="LABEL", default=None,
                     help="비교 기준 세대 라벨(기본 g0)")
+    ap.add_argument("--rule", choices=("v1", "v2"), default=config.CQ_RULE_VERSION,
+                    help="CQ 판정 규칙. v1=존재검사 · v2=존재검사∧분포검사(PLAN-021 동결)")
+    ap.add_argument("--tau", type=float, default=config.CQ_TAU,
+                    help=f"v2 허용 변동폭(동결 주값 {config.CQ_TAU} · 격자 {config.CQ_TAU_GRID})")
+    ap.add_argument("--table", action="store_true",
+                    help="표 6.6(세대별 통과율·규칙 버전 이력) 생성 — 그래프 인자 무시")
     args = ap.parse_args()
+
+    if args.table:
+        out = config.ROOT / "paper" / "tables" / "cq_generations.md"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(render_generations(), encoding="utf-8")
+        print(render_generations())
+        print(f"→ {out}")
+        return
 
     if args.freeze:
         rec = freeze_generation(args.graph, args.freeze)
@@ -157,10 +208,12 @@ def main() -> None:
         return
 
     old = load_generation(args.baseline or "g0")
-    new_rates = suite_pass_rates(run_cqs(args.graph))
+    base = None if args.rule == "v1" else baseline_rows(old)
+    new_rates = suite_pass_rates(run_cqs(args.graph), base, args.tau)
     waiver = commit_waiver()
     r = t3_gate(new_rates, old["suites"], waiver=waiver)
-    print(f"[T3] new={args.graph.name}  old=세대 '{old['generation']}'")
+    print(f"[T3] new={args.graph.name}  old=세대 '{old['generation']}'  "
+          f"판정규칙 {args.rule}" + (f" (τ={args.tau})" if args.rule != "v1" else ""))
     print(format_report(r))
     if r["waived"]:
         log_waiver({"generation_old": old["generation"], "graph": str(args.graph),

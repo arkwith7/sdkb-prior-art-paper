@@ -4,7 +4,14 @@ queries/cq/*.rq 를 전부 실행해 통과율을 리포트한다.
 각 .rq 파일 첫 줄들의 주석 메타데이터를 해석한다:
     # desc: <자연어 질문>
     # suite: <pa|em|tf|core — 태스크 스위트, T3 의 분모 · PLAN-019 §3.2 동결>
+    # monotone: <up|down|flat — 판정 v2 의 회귀 방향 · PLAN-021 §2 동결>
     # expect-min: <최소 결과 행 수, 기본 1>
+
+**판정 규칙 v1 / v2 (PLAN-021 동결).** v1 은 존재검사(`rows ≥ expect-min`)뿐이라 결함이 CQ 를
+0행으로 만들어야만 발화했고, 그래서 W4 결함주입에서 T3 가 0/108 을 냈다. v2 는 여기에 **기준
+세대 대비 분포검사**를 더한다 — `regress = rows < (1−τ)·base` (극성 up). 극성이 필요한 이유는
+CQ03·CQ06 이 **공백 탐색 질의**여서 행 수 감소가 개선이기 때문이다(극성 없이 하락=회귀로 두면
+정당한 보강이 게이트에 걸린다). `base_rows` 를 주지 않으면 v1 그대로다(하위호환).
 
 **스위트는 T3(교차 태스크 CQ 비회귀)의 전제다.** 어떤 CQ 가 어느 태스크의 명세인지 파일 안에
 적어 두어야 "타 태스크 통과율이 떨어졌는가"를 물을 수 있다(원고 §4.9). 라벨 없는 파일은 `core`
@@ -27,7 +34,7 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-from sdkb_paper.config import CQ_SUITES, QUERIES_CQ, ROOT
+from sdkb_paper.config import CQ_MONOTONE, CQ_SUITES, CQ_TAU, QUERIES_CQ, ROOT
 
 ENGINES = ("oxigraph", "rdflib")
 DEFAULT_ENGINE = "oxigraph"
@@ -40,15 +47,33 @@ class CQResult:
     expect_min: int
     rows: int
     suite: str = "core"
+    monotone: str = "up"
 
     @property
     def passed(self) -> bool:
+        """v1 존재검사. v2 판정은 기준선이 필요하므로 `judge()` 가 따로 한다."""
         return self.rows >= self.expect_min
 
+    def regressed(self, base_rows: int, tau: float = CQ_TAU) -> bool:
+        """기준선 대비 분포 회귀인가 (v2). base=0 이면 비율이 정의되지 않아 항상 False."""
+        if base_rows <= 0:
+            return False
+        if self.monotone == "up":
+            return self.rows < (1.0 - tau) * base_rows
+        if self.monotone == "down":
+            return self.rows > (1.0 + tau) * base_rows
+        return abs(self.rows - base_rows) > tau * base_rows
 
-def _parse_meta(rq_text: str) -> tuple[str, int, str]:
-    """(desc, expect_min, suite). suite 미기재·미지정값은 ValueError(조용한 기본값 금지)."""
-    desc, expect_min, suite = "", 1, ""
+    def judge(self, base_rows: int | None = None, tau: float = CQ_TAU) -> bool:
+        """v2 통과 판정 = 존재검사 ∧ ¬회귀. base 를 주지 않으면 v1 과 같다."""
+        if not self.passed:
+            return False
+        return base_rows is None or not self.regressed(base_rows, tau)
+
+
+def _parse_meta(rq_text: str) -> tuple[str, int, str, str]:
+    """(desc, expect_min, suite, monotone). 라벨 누락·오값은 ValueError(조용한 기본값 금지)."""
+    desc, expect_min, suite, monotone = "", 1, "", ""
     for line in rq_text.splitlines():
         line = line.strip()
         if line.startswith("# desc:"):
@@ -57,11 +82,17 @@ def _parse_meta(rq_text: str) -> tuple[str, int, str]:
             expect_min = int(line.removeprefix("# expect-min:").strip())
         elif line.startswith("# suite:"):
             suite = line.removeprefix("# suite:").strip()
+        elif line.startswith("# monotone:"):
+            monotone = line.removeprefix("# monotone:").strip()
         elif line and not line.startswith("#"):
             break
     if suite not in CQ_SUITES:
         raise ValueError(f"CQ 스위트 라벨이 없거나 잘못됐다: '{suite}' (허용 {CQ_SUITES})")
-    return desc, expect_min, suite
+    if monotone not in CQ_MONOTONE:
+        raise ValueError(f"CQ 극성 라벨이 없거나 잘못됐다: '{monotone}' (허용 {CQ_MONOTONE}) — "
+                         "극성 없이 '행수 하락=회귀'로 판정하면 공백 탐색 질의(CQ03·CQ06)의 "
+                         "정당한 개선이 회귀로 오판된다(PLAN-021 §2)")
+    return desc, expect_min, suite, monotone
 
 
 def _count_rdflib(graph_path: Path, texts: list[str]) -> list[int]:
@@ -95,8 +126,8 @@ def run_cqs(graph_path: Path, cq_dir: Path = QUERIES_CQ,
     texts = [rq.read_text(encoding="utf-8") for rq in rqs]
     metas = [_parse_meta(t) for t in texts]
     counts = (_count_oxigraph if engine == "oxigraph" else _count_rdflib)(graph_path, texts)
-    return [CQResult(rq.stem, desc, expect_min, rows, suite)
-            for rq, (desc, expect_min, suite), rows in zip(rqs, metas, counts)]
+    return [CQResult(rq.stem, desc, expect_min, rows, suite, mono)
+            for rq, (desc, expect_min, suite, mono), rows in zip(rqs, metas, counts)]
 
 
 def verify_engines(graph_path: Path, cq_dir: Path = QUERIES_CQ) -> list[dict]:
@@ -109,15 +140,34 @@ def verify_engines(graph_path: Path, cq_dir: Path = QUERIES_CQ) -> list[dict]:
             for rq, o, r in zip(rqs, ox, rd)]
 
 
-def suite_pass_rates(results: list[CQResult]) -> dict[str, dict]:
-    """스위트별 {n_pass, n_total, rate} — T3 의 입력. 결정론적 집계이며 검정이 아니다."""
+def suite_pass_rates(results: list[CQResult], base_rows: dict[str, int] | None = None,
+                     tau: float = CQ_TAU) -> dict[str, dict]:
+    """스위트별 {n_pass, n_total, rate} — T3 의 입력. 결정론적 집계이며 검정이 아니다.
+
+    `base_rows`(CQ명 → 기준 세대 결과행)를 주면 **판정 v2**(존재검사 ∧ ¬분포회귀)로 센다.
+    주지 않으면 v1 이다 — 기존 호출부·세대 아티팩트가 그대로 동작한다.
+    """
     out: dict[str, dict] = {}
     for r in results:
         rec = out.setdefault(r.suite, {"n_pass": 0, "n_total": 0})
         rec["n_total"] += 1
-        rec["n_pass"] += int(r.passed)
+        base = None if base_rows is None else base_rows.get(r.name)
+        rec["n_pass"] += int(r.judge(base, tau))
     for rec in out.values():
         rec["rate"] = rec["n_pass"] / rec["n_total"] if rec["n_total"] else 0.0
+    return out
+
+
+def regressions(results: list[CQResult], base_rows: dict[str, int],
+                tau: float = CQ_TAU) -> list[dict]:
+    """v2 에서 회귀로 판정된 CQ 목록(진단·표 6.5v2 의 '어느 CQ 가 떨어졌나' 열)."""
+    out = []
+    for r in results:
+        base = base_rows.get(r.name)
+        if base is not None and r.regressed(base, tau):
+            out.append({"cq": r.name, "suite": r.suite, "monotone": r.monotone,
+                        "rows": r.rows, "base": base,
+                        "delta_rate": (r.rows - base) / base if base else None})
     return out
 
 

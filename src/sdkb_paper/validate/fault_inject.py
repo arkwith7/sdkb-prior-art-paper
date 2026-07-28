@@ -300,6 +300,48 @@ def n02_label_preserving(store: Store, rate: float, rng: random.Random) -> dict:
             "n_affected": len(hit)}
 
 
+def n03_exact_duplicate_merge(store: Store, rate: float, rng: random.Random) -> dict:
+    """**정당 중복 병합** — IRI 를 제외한 트리플 집합이 **완전히 동일한** 개체들을 하나로 합친다.
+
+    v2(분포 검사) 의 진짜 시험대다. N01·N02 는 행 수를 사실상 건드리지 않아 τ 규칙에 무자극인데,
+    실제 큐레이션이 하는 정당한 변경 중에는 **행 수를 줄이는 것**이 있다 — 중복 제거가 그것이다.
+    게이트가 이것을 거부하면 진짜 개선을 차단하는 것이므로 위양성이다.
+
+    정당성을 **데이터가 자동 검증**한다(트리플 동일성). 라벨 유사도로 동의어를 판정하지 않는다 —
+    실측에서 `raon_tech`(㈜라온테크·장비)와 `raontech_inc`(㈜라온텍·설계)는 ASCII 정규화만 같고
+    서로 다른 회사였다(PLAN-021 §3). 그런 쌍을 병합했다면 결함을 정상 델타로 라벨해 위양성률을
+    조작하는 셈이 된다.
+
+    **서명은 나가는 간선과 들어오는 간선을 모두 본다.** 나가는 쪽만 보면 실측에서 CitedPatent
+    12군이 중복으로 잡히는데, 그중 10군은 **인용 주체가 서로 달라** 실제로는 별개 개체다
+    (엄격 기준 적용 시 13군·126개체가 남는다). 들어오는 간선까지 같아야 두 개체가 그래프에서
+    구별 불가능하고, 그때만 병합이 정보를 잃지 않는다.
+    """
+    subjects = {q.subject for q in store.quads_for_pattern(None, RDF_TYPE, None)}
+    sigs: dict[tuple, list] = {}
+    for s in sorted(subjects, key=str):
+        out_sig = tuple(sorted((str(p.predicate), str(p.object))
+                               for p in store.quads_for_pattern(s, None, None)))
+        in_sig = tuple(sorted((str(p.subject), str(p.predicate))
+                              for p in store.quads_for_pattern(None, None, s)))
+        sigs.setdefault((out_sig, in_sig), []).append(s)
+    groups = [g for g in sigs.values() if len(g) > 1]
+    groups.sort(key=lambda g: str(g[0]))
+    hit = _sample(rng, groups, rate)
+    n_removed = 0
+    for grp in hit:
+        keep, rest = grp[0], grp[1:]
+        for b in rest:
+            for q in _sorted_quads(store, None, None, b):
+                store.remove(q)
+                store.add(Quad(q.subject, q.predicate, keep, q.graph_name))
+            for q in _sorted_quads(store, b, None, None):
+                store.remove(q)
+            n_removed += 1
+    return {"criterion": "IRI 제외 트리플 집합 완전 동일", "n_candidates": len(groups),
+            "n_affected": len(hit), "n_entities_merged": n_removed}
+
+
 @dataclass(frozen=True)
 class FaultSpec:
     key: str
@@ -330,6 +372,7 @@ FAULTS: tuple[FaultSpec, ...] = (
 NORMALS: tuple[FaultSpec, ...] = (
     FaultSpec("N01", "정상 델타(실제 병합 부분집합)", "none", False, n01_real_merge_subdelta),
     FaultSpec("N02", "정상 델타(의미보존 보강)", "none", False, n02_label_preserving),
+    FaultSpec("N03", "정상 델타(완전중복 병합)", "none", False, n03_exact_duplicate_merge),
 )
 
 BY_KEY = {f.key: f for f in FAULTS + NORMALS}

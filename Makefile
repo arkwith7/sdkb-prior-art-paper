@@ -1,4 +1,4 @@
-.PHONY: faults faults-baseline faults-fc tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: faults faults-baseline faults-fc faults-n03 faults-rejudge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -210,6 +210,14 @@ faults-fc:
 
 faults:
 	uv run python -m sdkb_paper.analysis.faults --reps $(or $(REPS),3) --workers $(or $(WORKERS),10)
+
+# W4b (PLAN-021) — CQ 판정 v2. 결함을 **다시 주입하지 않는다**: 새로 넣는 것은 정상 델타 N03
+# 뿐이고, 나머지는 W4 격리본을 읽어 판정 규칙만 바꿔 다시 센다(대응 비교 · 정본·격리본 불변).
+faults-n03:
+	uv run python -m sdkb_paper.analysis.faults --n03 --reps $(or $(REPS),3) --workers $(or $(WORKERS),9)
+
+faults-rejudge:
+	uv run python -m sdkb_paper.analysis.faults --rejudge --workers $(or $(WORKERS),10)
 
 # 머지 전 전체 게이트: L0(무결성+신선도) + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
 #   + 누출 감사 + T1·T2·T3. IR 산출물(run·코퍼스)이 없는 환경에서는 tgate 가 먼저 실패하므로
