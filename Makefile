@@ -1,4 +1,4 @@
-.PHONY: faults faults-baseline faults-fc faults-n03 faults-rejudge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -218,6 +218,13 @@ faults-n03:
 
 faults-rejudge:
 	uv run python -m sdkb_paper.analysis.faults --rejudge --workers $(or $(WORKERS),10)
+
+# PLAN-022 N5c — 면제 악용 결함 주입(신규 격리 run) → L3·T3 표면 분리 재판정(재주입 없음)
+faults-n03adv:
+	uv run python -m sdkb_paper.analysis.faults --n03adv --reps $(or $(REPS),3) --workers $(or $(WORKERS),9)
+
+faults-rejudge-v3:
+	uv run python -m sdkb_paper.analysis.faults --rejudge-v3 --workers $(or $(WORKERS),10)
 
 # 머지 전 전체 게이트: L0(무결성+신선도) + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
 #   + 누출 감사 + T1·T2·T3. IR 산출물(run·코퍼스)이 없는 환경에서는 tgate 가 먼저 실패하므로

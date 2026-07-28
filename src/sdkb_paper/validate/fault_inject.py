@@ -300,6 +300,86 @@ def n02_label_preserving(store: Store, rate: float, rng: random.Random) -> dict:
             "n_affected": len(hit)}
 
 
+def _signature_index(store: Store) -> tuple[dict, dict]:
+    """타입이 붙은 개체 전량의 (나가는·들어오는) 서명. `_dup_groups`·`_fake_dup_groups` 공용.
+
+    한 번의 주사로 둘 다 만든다 — 완전중복군(정당 병합의 근거)과 서명 불일치 쌍(면제 악용
+    N03A 의 재료)은 같은 서명표의 앞뒷면이다.
+    """
+    # **명명 노드만 본다.** 공백노드 라벨은 적재할 때마다 새로 붙으므로(pyoxigraph bulk_load),
+    # 정렬 키에 섞이면 같은 시드가 같은 선택을 내지 못한다 — F16 결정성 위반이다. 실측: G₀ 의
+    # N03 후보 13군에는 공백노드가 0개라 이 필터는 W4b 격리본 재현에 영향이 없고(대조로 확인),
+    # N03A 후보 6,496쌍 중 9쌍이 공백노드였다.
+    subjects = {q.subject for q in store.quads_for_pattern(None, RDF_TYPE, None)
+                if isinstance(q.subject, NamedNode)}
+    sig_of, by_sig = {}, {}
+    for s in sorted(subjects, key=str):
+        out_sig = tuple(sorted((str(p.predicate), str(p.object))
+                               for p in store.quads_for_pattern(s, None, None)))
+        in_sig = tuple(sorted((str(p.subject), str(p.predicate))
+                              for p in store.quads_for_pattern(None, None, s)))
+        sig_of[str(s)] = (out_sig, in_sig)
+        by_sig.setdefault((out_sig, in_sig), []).append(s)
+    return sig_of, by_sig
+
+
+def _dup_groups(store: Store) -> list[list]:
+    """완전중복 개체군 — N03 의 후보. **정렬·순서를 바꾸면 W4b 격리본 재현이 깨진다.**"""
+    _, by_sig = _signature_index(store)
+    groups = [g for g in by_sig.values() if len(g) > 1]
+    groups.sort(key=lambda g: str(g[0]))
+    return groups
+
+
+def _fake_dup_groups(store: Store) -> list[list]:
+    """**서명이 다른** 같은 클래스 개체를 짝짓는다 — N03A(면제 악용)의 후보.
+
+    같은 클래스로 제한하는 이유: 클래스가 다르면 dedup 선언 자체가 육안으로도 거짓이라 규칙의
+    구멍을 시험하지 못한다. 어려운 쪽(그럴듯한 위장)을 고른다.
+    """
+    sig_of, _ = _signature_index(store)
+    by_class: dict[str, list] = {}
+    for q in _sorted_quads(store, None, RDF_TYPE, None):
+        if isinstance(q.subject, NamedNode):        # 공백노드 제외 — 위 결정성 사유와 같다
+            by_class.setdefault(str(q.object), []).append(q.subject)
+    groups = []
+    for _cls, items in sorted(by_class.items()):
+        uniq = sorted({str(s): s for s in items}.values(), key=str)
+        for i in range(0, len(uniq) - 1, 2):
+            a, b = uniq[i], uniq[i + 1]
+            if sig_of.get(str(a)) != sig_of.get(str(b)):     # 완전중복이면 제외 — 그건 정당 병합이다
+                groups.append([a, b])
+    return groups
+
+
+def _merge_groups(store: Store, groups: list[list]) -> int:
+    """개체군을 첫 원소로 병합한다(참조 이전 후 나머지 소멸). 반환 = 제거된 개체 수."""
+    n_removed = 0
+    for grp in groups:
+        keep, rest = grp[0], grp[1:]
+        for b in rest:
+            for q in _sorted_quads(store, None, None, b):
+                store.remove(q)
+                store.add(Quad(q.subject, q.predicate, keep, q.graph_name))
+            for q in _sorted_quads(store, b, None, None):
+                store.remove(q)
+            n_removed += 1
+    return n_removed
+
+
+def dedup_selection(store: Store, key: str, rate: float, seed: int) -> list[list[str]]:
+    """격리본에 기록되지 않은 **병합쌍을 결정적으로 복원**한다 (PLAN-022 §2 면제 검증 입력).
+
+    같은 (결함·강도·시드)면 주입 때와 같은 쌍이 나온다 — 선택은 정본 G₀ 의 함수이고 표본은
+    고정 시드이기 때문이다. 결함을 다시 주입하지 않고도 면제 자동 검증을 돌릴 수 있다.
+    """
+    selector = {"N03": _dup_groups, "N03A": _fake_dup_groups}.get(key)
+    if selector is None:
+        return []
+    return [[str(m) for m in g]
+            for g in _sample(random.Random(seed), selector(store), rate)]
+
+
 def n03_exact_duplicate_merge(store: Store, rate: float, rng: random.Random) -> dict:
     """**정당 중복 병합** — IRI 를 제외한 트리플 집합이 **완전히 동일한** 개체들을 하나로 합친다.
 
@@ -316,30 +396,37 @@ def n03_exact_duplicate_merge(store: Store, rate: float, rng: random.Random) -> 
     12군이 중복으로 잡히는데, 그중 10군은 **인용 주체가 서로 달라** 실제로는 별개 개체다
     (엄격 기준 적용 시 13군·126개체가 남는다). 들어오는 간선까지 같아야 두 개체가 그래프에서
     구별 불가능하고, 그때만 병합이 정보를 잃지 않는다.
+
+    **선택 로직은 `_dup_groups` 로 분리했다** — PLAN-022 재판정이 같은 seed 로 병합쌍을 정확히
+    복원해 면제 자동 검증(§2)에 넣어야 하는데 W4b 격리본에는 쌍이 기록돼 있지 않기 때문이다.
+    정렬·표본 규칙은 한 글자도 바꾸지 않았다(바꾸면 격리본 재현이 어긋난다).
     """
-    subjects = {q.subject for q in store.quads_for_pattern(None, RDF_TYPE, None)}
-    sigs: dict[tuple, list] = {}
-    for s in sorted(subjects, key=str):
-        out_sig = tuple(sorted((str(p.predicate), str(p.object))
-                               for p in store.quads_for_pattern(s, None, None)))
-        in_sig = tuple(sorted((str(p.subject), str(p.predicate))
-                              for p in store.quads_for_pattern(None, None, s)))
-        sigs.setdefault((out_sig, in_sig), []).append(s)
-    groups = [g for g in sigs.values() if len(g) > 1]
-    groups.sort(key=lambda g: str(g[0]))
+    groups = _dup_groups(store)
     hit = _sample(rng, groups, rate)
-    n_removed = 0
-    for grp in hit:
-        keep, rest = grp[0], grp[1:]
-        for b in rest:
-            for q in _sorted_quads(store, None, None, b):
-                store.remove(q)
-                store.add(Quad(q.subject, q.predicate, keep, q.graph_name))
-            for q in _sorted_quads(store, b, None, None):
-                store.remove(q)
-            n_removed += 1
+    n_removed = _merge_groups(store, hit)
     return {"criterion": "IRI 제외 트리플 집합 완전 동일", "n_candidates": len(groups),
-            "n_affected": len(hit), "n_entities_merged": n_removed}
+            "n_affected": len(hit), "n_entities_merged": n_removed,
+            "groups": [[str(m) for m in g] for g in hit]}
+
+
+def n03a_fake_dedup_merge(store: Store, rate: float, rng: random.Random) -> dict:
+    """**면제 악용 결함(N03A)** — `delta_type=dedup` 을 선언하되 **완전중복이 아닌** 쌍을 합친다.
+
+    PLAN-022 §2 의 면제 규칙은 델타 단위다 — dedup 을 선언하고 그 안에 다른 변경을 숨기면
+    분포검사를 빠져나갈 수 있다. **규칙과 함께 그 구멍도 잰다.** 기대는 자동 검증(`dedup_exempt.
+    verify_groups`)이 서명 불일치를 잡아 면제를 불승인하고, 그 결과 일반 델타로 판정돼 검출되는
+    것이다. 검증이 통과시키면 그것은 면제 규칙의 결함이며 **그대로 보고한다**(CLAUDE.md §1-2).
+
+    이것은 결함이지 정상 델타가 아니다 — 위양성 분모에 넣지 않는다. 서명이 다른 개체를 합치는
+    것은 실제로 정보를 파괴한다.
+    """
+    groups = _fake_dup_groups(store)
+    hit = _sample(rng, groups, rate)
+    n_removed = _merge_groups(store, hit)
+    return {"criterion": "같은 클래스 · 서명 불일치 쌍(dedup 선언은 거짓)",
+            "n_candidates": len(groups), "n_affected": len(hit),
+            "n_entities_merged": n_removed,
+            "groups": [[str(m) for m in g] for g in hit]}
 
 
 @dataclass(frozen=True)
@@ -349,6 +436,9 @@ class FaultSpec:
     expected: str       # 원고가 예상한 검출층 (사전 예측 — 결과로 고치지 않는다)
     cross_task: bool    # H1 직접 검정 대상(교차결함)인가
     fn: object
+    # 델타가 **선언하는** 유형(PLAN-022 §2). "dedup" 은 자동 검증을 통과할 때만 분포검사를
+    # 면제받는다 — 선언은 주장일 뿐이고 근거는 데이터다. N03A 는 이 선언이 거짓인 경우다.
+    delta_type: str = "generic"
 
     def inject(self, store: Store, rate: float, seed: int) -> dict:
         return self.fn(store, rate, random.Random(seed))
@@ -367,12 +457,17 @@ FAULTS: tuple[FaultSpec, ...] = (
     FaultSpec("F10", "qrel 누출", "누출감사", False, f10_qrel_leak),
     FaultSpec("F11", "동의어 오병합(교차)", "T3", True, f11_synonym_merge),
     FaultSpec("F12", "공유 계층 역전(교차)", "T3", True, f12_hierarchy_inversion),
+    # PLAN-022 §2.1 — 면제 규칙이 새로 여는 구멍을 스스로 잰다. 기대 검출 경로는 면제 자동
+    # 검증의 불승인이며, 불승인되면 일반 델타로 판정돼 분포검사를 그대로 받는다.
+    FaultSpec("N03A", "면제 악용(거짓 dedup 선언)", "면제검증", False,
+              n03a_fake_dedup_merge, delta_type="dedup"),
 )
 
 NORMALS: tuple[FaultSpec, ...] = (
     FaultSpec("N01", "정상 델타(실제 병합 부분집합)", "none", False, n01_real_merge_subdelta),
     FaultSpec("N02", "정상 델타(의미보존 보강)", "none", False, n02_label_preserving),
-    FaultSpec("N03", "정상 델타(완전중복 병합)", "none", False, n03_exact_duplicate_merge),
+    FaultSpec("N03", "정상 델타(완전중복 병합)", "none", False, n03_exact_duplicate_merge,
+              delta_type="dedup"),
 )
 
 BY_KEY = {f.key: f for f in FAULTS + NORMALS}

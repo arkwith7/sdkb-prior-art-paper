@@ -7,8 +7,10 @@
 메시지의 명시적 waiver 토큰(`config.T3_WAIVER_TOKEN`)뿐이고, 그 **횟수는 로그에 남아 표 6.6에
 보고된다**(면제가 조용해지면 게이트는 장식이 된다).
 
-주 태스크(pa)는 T3 의 분모가 아니다 — 선행기술 검색의 회귀는 T1 이 통계적으로 담당한다. T3 가
-지키는 것은 "다른 뷰가 조용히 부서지지 않았는가"다(원고 §7.6 태스크 결합 발견이 근거).
+주 태스크(pa)는 T3 의 분모가 아니다 — 검색 성능 회귀는 T1 이 통계적으로, **CQ 기능 회귀는 L3 가
+결정론적으로** 담당한다(`config.L3_SUITES` · 2026-07-28 PLAN-022 개정). 두 표면은 서로소이며
+합집합이 CQ 전량이라 검출력은 불변이고 귀속만 갈린다. T3 가 지키는 것은 "다른 뷰가 조용히
+부서지지 않았는가"다(원고 §7.6 태스크 결합 발견이 근거).
 
 **세대 아티팩트.** 기준값은 `data/cq_generations/<label>.json` 에 얼린다(집계·해시만 → 커밋 가능).
 `--freeze <label>` 로 현재 그래프의 통과율을 세대로 기록하고, 이후 델타는 그 세대와 비교한다.
@@ -153,8 +155,15 @@ def render_generations() -> str:
             for k in ("pa", "em", "tf", "core"))
         verdict = "— (기준)" if g["generation"] == "g0" else "[기입]"
         lines.append(f"| {g['generation']} | {rule_s} | {cells} | {verdict} | — |")
+    from .dedup_exempt import exemption_count
+
     lines += ["", f"- 누적 waiver {waiver_count()}회 (T3 예외 승인 이력 · 0 이 아니면 사유를 함께 읽어야 한다)",
-              "- T3 는 {em, tf, core} 만 판정한다 — pa 의 회귀는 T1 이 통계적으로 담당한다(이중계상 방지).",
+              f"- 누적 중복제거 면제 승인 {exemption_count()[0]}건 "
+              f"(판정 로그 {exemption_count()[1]}행 — 불승인·재판정 반복분 포함 · PLAN-022 §2). "
+              "조용한 면제는 게이트를 장식으로 만든다.",
+              "- **L3 = pa · T3 = em·tf·core 로 검출 표면이 서로소다**(2026-07-28 개정 · PLAN-022). "
+              "주 태스크 CQ 의 기능 회귀는 L3, 검색 성능 회귀는 T1, 타 태스크 CQ 회귀는 T3 가 맡는다. "
+              "구 정의(L3 가 전 스위트를 셈)에서는 L3 ⊇ T3 가 성립해 T3 단독검출이 원리적으로 0 이었다.",
               "- **판정 규칙 이력**: v1 = 존재검사(`rows ≥ expect-min`) · v2 = 존재검사 ∧ 기준선 대비 "
               "분포검사(PLAN-021 동결 · 극성 `# monotone:` 선언 · τ 사전 동결). 규칙이 바뀌면 "
               "통과율의 의미가 바뀌므로 세대 비교는 같은 규칙끼리만 유효하다."]
@@ -163,7 +172,7 @@ def render_generations() -> str:
 
 def format_report(r: dict) -> str:
     lines = [f"[T3 교차 태스크 CQ 비회귀] 스위트 {', '.join(r['suites'])} "
-             "(주 태스크 pa 는 T1 담당 — 분모 아님)",
+             "(주 태스크 pa 는 L3·T1 담당 — T3 분모 아님)",
              f"    {'스위트':<8}{'구':>10}{'신':>10}{'하락':>10}"]
     for row in r["rows"]:
         flag = "  ❌ 회귀" if row["regressed"] else ""

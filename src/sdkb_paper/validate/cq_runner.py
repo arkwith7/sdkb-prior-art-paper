@@ -34,7 +34,15 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-from sdkb_paper.config import CQ_MONOTONE, CQ_SUITES, CQ_TAU, QUERIES_CQ, ROOT
+from sdkb_paper.config import (
+    CQ_MONOTONE,
+    CQ_SUITES,
+    CQ_TAU,
+    L3_SUITES,
+    QUERIES_CQ,
+    ROOT,
+    T3_SUITES,
+)
 
 ENGINES = ("oxigraph", "rdflib")
 DEFAULT_ENGINE = "oxigraph"
@@ -64,10 +72,18 @@ class CQResult:
             return self.rows > (1.0 + tau) * base_rows
         return abs(self.rows - base_rows) > tau * base_rows
 
-    def judge(self, base_rows: int | None = None, tau: float = CQ_TAU) -> bool:
-        """v2 통과 판정 = 존재검사 ∧ ¬회귀. base 를 주지 않으면 v1 과 같다."""
+    def judge(self, base_rows: int | None = None, tau: float = CQ_TAU,
+              exempt_regress: bool = False) -> bool:
+        """v2 통과 판정 = 존재검사 ∧ ¬회귀. base 를 주지 않으면 v1 과 같다.
+
+        `exempt_regress` 는 **중복제거 면제**(PLAN-022 §2)다 — 분포검사만 면제하고 존재검사는
+        면제하지 않는다. 중복 병합은 CQ 를 0행으로 만들 수 없으므로(중복이 아닌 개체는 남는다)
+        존재검사까지 풀어 줄 근거가 없다.
+        """
         if not self.passed:
             return False
+        if exempt_regress:
+            return True
         return base_rows is None or not self.regressed(base_rows, tau)
 
 
@@ -141,20 +157,42 @@ def verify_engines(graph_path: Path, cq_dir: Path = QUERIES_CQ) -> list[dict]:
 
 
 def suite_pass_rates(results: list[CQResult], base_rows: dict[str, int] | None = None,
-                     tau: float = CQ_TAU) -> dict[str, dict]:
+                     tau: float = CQ_TAU, exempt_regress: bool = False) -> dict[str, dict]:
     """스위트별 {n_pass, n_total, rate} — T3 의 입력. 결정론적 집계이며 검정이 아니다.
 
     `base_rows`(CQ명 → 기준 세대 결과행)를 주면 **판정 v2**(존재검사 ∧ ¬분포회귀)로 센다.
     주지 않으면 v1 이다 — 기존 호출부·세대 아티팩트가 그대로 동작한다.
+    `exempt_regress` 는 검증된 중복제거 델타의 분포검사 면제(PLAN-022 §2).
     """
     out: dict[str, dict] = {}
     for r in results:
         rec = out.setdefault(r.suite, {"n_pass": 0, "n_total": 0})
         rec["n_total"] += 1
         base = None if base_rows is None else base_rows.get(r.name)
-        rec["n_pass"] += int(r.judge(base, tau))
+        rec["n_pass"] += int(r.judge(base, tau, exempt_regress))
     for rec in out.values():
         rec["rate"] = rec["n_pass"] / rec["n_total"] if rec["n_total"] else 0.0
+    return out
+
+
+def layer_pass_counts(results: list[CQResult], base_rows: dict[str, int] | None = None,
+                      tau: float = CQ_TAU, exempt_regress: bool = False) -> dict[str, dict]:
+    """**층 귀속** — 같은 28개 CQ 를 L3(주 태스크)와 T3(교차 태스크)로 나눠 센다 (PLAN-022 §1).
+
+    W4b 실측: L3 가 전 스위트를 세고 T3 가 그 부분집합을 보아 **L3 ⊇ T3 가 정의상 성립**했고,
+    그래서 "T3 단독검출"은 원리적으로 0 이었다(원고 §6.5.2). 두 표면을 서로소로 가른다.
+
+    **검출력은 불변이다** — `L3_SUITES ∪ T3_SUITES = CQ_SUITES` 이고 승인식은 곱이므로 어느
+    층에 귀속되든 하나라도 떨어지면 거부다. 바뀌는 것은 귀속뿐이며, 이 성질은
+    `tests/test_layer_separation.py` 가 불변량으로 강제한다.
+    """
+    per = suite_pass_rates(results, base_rows, tau, exempt_regress)
+    out = {}
+    for layer, suites in (("L3", L3_SUITES), ("T3", T3_SUITES)):
+        n_pass = sum(per.get(s, {}).get("n_pass", 0) for s in suites)
+        n_total = sum(per.get(s, {}).get("n_total", 0) for s in suites)
+        out[layer] = {"suites": tuple(suites), "n_pass": n_pass, "n_total": n_total,
+                      "rate": n_pass / n_total if n_total else 0.0}
     return out
 
 
@@ -220,6 +258,12 @@ def main() -> None:
     print(f"\n[cq_runner] pass rate = {rate:.0%} ({n_pass}/{len(results)})")
     for suite, rec in sorted(suite_pass_rates(results).items()):
         print(f"  · {suite:<5} {rec['rate']:.0%} ({rec['n_pass']}/{rec['n_total']})")
+    # 층 귀속 표시 (PLAN-022 §1). **종료코드는 여전히 28개 전량의 곱이다** — 귀속을 나누는 것이
+    # 게이트를 완화하는 것이 되어서는 안 된다(§0.1 검출력 불변). 여기서 pa 만 보고 종료했다면
+    # mini_graph 의 em·tf·core CQ 실패가 통과가 되어 개정 전 거부가 개정 후 승인이 됐을 것이다.
+    for layer, rec in layer_pass_counts(results).items():
+        print(f"  [{layer}] {'·'.join(rec['suites']):<14} {rec['rate']:.0%} "
+              f"({rec['n_pass']}/{rec['n_total']})")
 
     if args.report:
         out = args.out or report_path(args.graph)

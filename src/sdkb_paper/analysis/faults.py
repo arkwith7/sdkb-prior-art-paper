@@ -392,8 +392,9 @@ def summarize(results: list[dict]) -> dict:
             "undetected": sum(1 for f in firsts if f is None),
         }
 
-    ok = [r for r in ok if not r["fault"].startswith("N")]
-    normals = [r for r in results if r["fault"].startswith("N") and not r.get("error")]
+    # 분류는 접두어가 아니라 **등록부**로 한다 — N03A 는 'N' 으로 시작하지만 결함이다.
+    ok = [r for r in ok if r["fault"] not in NORMAL_KEYS]
+    normals = [r for r in results if r["fault"] in NORMAL_KEYS and not r.get("error")]
     fp = [r for r in normals if r["first_layer"]]
     pairs = [(any(r["detected"].get(L) for L in ("L0", "L1", "L2", "L3")),
               any(r["detected"].get(L) for L in ("T1", "T2", "T3")))
@@ -483,40 +484,96 @@ def t3_prime(run_id: str = "w4_r3") -> dict:
 
 # --- W4b 재판정 (PLAN-021) — 결함을 다시 넣지 않는다 ---------------------------
 REPORT_V2 = config.PROCESSED / "fault_matrix_v2.json"
+REPORT_V3 = config.PROCESSED / "fault_matrix_v3.json"
 REJUDGE_RUNS = ("w4_r3", "w4b_n03")
+# PLAN-022 재판정 대상 — W4·W4b 격리본에 면제 악용 결함(N03A) 신규 run 을 더한다.
+REJUDGE_RUNS_V3 = ("w4_r3", "w4b_n03", "w5_n03adv")
+# 정상 델타 키(위양성 분모). **N03A 는 여기 없다** — 'N' 으로 시작하지만 결함이다(거짓 dedup
+# 선언으로 서명이 다른 개체를 합쳐 정보를 파괴한다). 접두어로 분류하면 결함이 위양성 분모에
+# 섞여 위양성률을 부풀리고 검출률을 떨어뜨린다.
+NORMAL_KEYS = frozenset(f.key for f in FI.NORMALS)
 
 
 def _rejudge_one(args: tuple) -> dict:
-    """격리 인스턴스 하나를 **읽기만 해서** CQ 를 다시 세고 τ 격자 전체로 판정한다."""
-    from ..validate.cq_runner import regressions, run_cqs, suite_pass_rates
+    """격리 인스턴스 하나를 **읽기만 해서** CQ 를 다시 세고 τ 격자 전체로 판정한다.
 
-    d, taus = Path(args[0]), args[1]
+    PLAN-022 부터 L3 를 두 벌로 센다 — `L3_all`(구 귀속 · 전 스위트)과 `L3_pa`(신 귀속 · 주
+    태스크). 둘을 같은 인스턴스에서 같이 남기는 이유는 §0.1 의 **검출력 불변**
+    (`L3_all ⟺ L3_pa ∨ T3`)을 주장이 아니라 실측으로 보이기 위해서다.
+    """
+    from ..validate.cq_runner import layer_pass_counts, regressions, run_cqs, suite_pass_rates
+
+    d, taus, exempt = Path(args[0]), args[1], bool(args[2])
     base = load_baseline()
     inst = json.loads((d / "result.json").read_text(encoding="utf-8"))
     res = run_cqs(d / "graph_faulted.ttl")
     base_rows = base["cq_rows"]
     gen_suites = json.loads((config.CQ_GEN_DIR / "cq_g0.json").read_text(encoding="utf-8"))["suites"]
+    base_pa = base["suites"].get("pa", {}).get("n_pass", 0)
 
     from ..validate.t3_cross_task_cq import t3_gate
     per_tau = {}
     for tau in taus:
-        n_pass = sum(1 for r in res if r.judge(base_rows.get(r.name), tau))
-        rates = suite_pass_rates(res, base_rows, tau)
+        n_pass = sum(1 for r in res if r.judge(base_rows.get(r.name), tau, exempt))
+        rates = suite_pass_rates(res, base_rows, tau, exempt)
+        layers = layer_pass_counts(res, base_rows, tau, exempt)
         t3 = t3_gate(rates, gen_suites)
         regs = regressions(res, base_rows, tau)
         per_tau[f"{tau:.2f}"] = {
-            "L3": n_pass < base["n_cq_pass"], "T3": not t3["pass"],
-            "n_cq_pass": n_pass, "regressed_suites": t3["regressed"],
+            "L3_all": n_pass < base["n_cq_pass"],          # 구 귀속 (전 스위트)
+            "L3_pa": layers["L3"]["n_pass"] < base_pa,     # 신 귀속 (주 태스크 · PLAN-022 §1)
+            "T3": not t3["pass"],
+            "n_cq_pass": n_pass, "n_pa_pass": layers["L3"]["n_pass"], "base_pa_pass": base_pa,
+            "regressed_suites": t3["regressed"],
             "regressed_cqs": [r["cq"] for r in regs],
+            "pa_regressed_cqs": [r["cq"] for r in regs if r["suite"] in config.L3_SUITES],
             "cross_regressed_cqs": [r["cq"] for r in regs if r["suite"] in config.T3_SUITES],
         }
     return {"fault": inst["fault"], "label": inst["label"], "expected": inst["expected"],
             "cross_task": inst["cross_task"], "strength": inst["strength"], "rep": inst["rep"],
-            "v1": inst["detected"], "v2_by_tau": per_tau}
+            "exempt": exempt, "v1": inst["detected"], "v2_by_tau": per_tau}
+
+
+def dedup_exemptions(dirs: list[Path]) -> dict[str, bool]:
+    """중복제거 면제 승인 여부를 인스턴스별로 판정한다 (PLAN-022 §2).
+
+    격리본에는 병합쌍이 기록돼 있지 않으므로 `FI.dedup_selection` 으로 **결정적으로 복원**한다
+    (정본 G₀ 는 읽기만 한다). 선언이 "dedup" 이어도 자동 검증이 서명 불일치를 찾으면 면제는
+    **불승인**이고 일반 델타로 판정된다 — 선언은 주장일 뿐이고 근거는 데이터다.
+
+    면제 승인은 로그에 남는다. 조용한 면제는 게이트를 장식으로 만든다.
+    """
+    from pyoxigraph import RdfFormat, Store
+
+    from ..validate.dedup_exempt import log_exemption, verify_groups
+
+    pending = []
+    for d in dirs:
+        inst = json.loads((d / "result.json").read_text(encoding="utf-8"))
+        spec = FI.BY_KEY.get(inst["fault"])
+        if spec is not None and spec.delta_type == "dedup":
+            pending.append((d, inst))
+    if not pending:
+        return {}
+
+    store = Store()                      # 정본 G₀ — 읽기 전용으로 한 번만 적재
+    with open(config.GRAPH_V0, "rb") as fh:
+        store.bulk_load(fh, format=RdfFormat.TURTLE)
+
+    out: dict[str, bool] = {}
+    for d, inst in pending:
+        groups = FI.dedup_selection(store, inst["fault"], inst["strength"], inst["seed"])
+        v = verify_groups(store, groups)
+        out[str(d)] = v["ok"]
+        log_exemption({"instance": d.name, "fault": inst["fault"],
+                       "strength": inst["strength"], "seed": inst["seed"],
+                       "delta_type": "dedup", "exempt": v["ok"],
+                       "n_groups": v["n_groups"], "n_mismatch": v["n_mismatch"]})
+    return out
 
 
 def rejudge(runs: tuple = REJUDGE_RUNS, taus: tuple = config.CQ_TAU_GRID,
-            workers: int = 10) -> dict:
+            workers: int = 10, report: Path | None = None) -> dict:
     """**W4b — 판정 규칙만 바꿔 W4 격리본을 다시 읽는다** (PLAN-021 §4).
 
     결함을 다시 주입하지 않는다: 바뀐 것은 CQ 판정 규칙(v1 존재검사 → v2 존재∧분포)뿐이고,
@@ -534,42 +591,80 @@ def rejudge(runs: tuple = REJUDGE_RUNS, taus: tuple = config.CQ_TAU_GRID,
     if not dirs:
         raise FileNotFoundError(f"재판정할 격리 인스턴스가 없다: {runs}")
 
+    exempt_by_dir = dedup_exemptions(dirs)
+
     t0 = time.time()
     out = []
     with ProcessPoolExecutor(max_workers=workers) as ex:
-        futs = [ex.submit(_rejudge_one, (str(d), taus)) for d in dirs]
+        futs = [ex.submit(_rejudge_one, (str(d), taus, exempt_by_dir.get(str(d), False)))
+                for d in dirs]
         for i, fut in enumerate(as_completed(futs), 1):
             r = fut.result()
             out.append(r)
             print(f"  [{i}/{len(dirs)}] {r['fault']} s={r['strength']} r={r['rep']} "
-                  f"→ v2(τ={config.CQ_TAU}) L3={r['v2_by_tau'][f'{config.CQ_TAU:.2f}']['L3']} "
+                  f"→ v2(τ={config.CQ_TAU}) "
+                  f"L3(전)={r['v2_by_tau'][f'{config.CQ_TAU:.2f}']['L3_all']} "
+                  f"L3(pa)={r['v2_by_tau'][f'{config.CQ_TAU:.2f}']['L3_pa']} "
                   f"T3={r['v2_by_tau'][f'{config.CQ_TAU:.2f}']['T3']}", flush=True)
     out.sort(key=lambda r: (r["fault"], r["strength"], r["rep"]))
     res = {"runs": list(runs), "taus": list(taus), "rule_version": config.CQ_RULE_VERSION,
            "tau_main": config.CQ_TAU, "elapsed_s": round(time.time() - t0, 1),
-           "summary": {f"{t:.2f}": summarize_v2(out, t) for t in taus},
+           "l3_suites": list(config.L3_SUITES), "t3_suites": list(config.T3_SUITES),
+           "n_exempt": sum(1 for r in out if r.get("exempt")),
+           # 두 귀속을 **같은 인스턴스에서** 요약한다 — 비교가 곧 §0.1 검출력 불변의 증거다.
+           "summary": {f"{t:.2f}": summarize_v2(out, t, "all") for t in taus},
+           "summary_split": {f"{t:.2f}": summarize_v2(out, t, "split") for t in taus},
+           "invariant": union_invariance(out, taus),
            "instances": out}
-    REPORT_V2.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+    (report or REPORT_V2).write_text(json.dumps(res, ensure_ascii=False, indent=2),
+                                     encoding="utf-8")
     Q.verify_pristine(strict=True)
     return res
 
 
-def _merged_layers(inst: dict, tau: float) -> dict:
-    """v1 의 층 판정에 v2 의 L3·T3 를 얹은 최종 검출 벡터."""
+def union_invariance(instances: list[dict], taus: tuple) -> dict:
+    """**검출력 불변 검사** (PLAN-022 §0.1) — `L3_all ⟺ L3_pa ∨ T3` 가 모든 인스턴스에서 성립하는가.
+
+    성립하면 층 재정의는 게이트를 완화한 것이 아니라 **귀속만 바꾼 것**이다. 위반이 하나라도
+    나오면 재정의가 검출력을 건드린 것이므로 즉시 보고 대상이다 — 주장으로 덮지 않는다.
+    """
+    out = {}
+    for tau in taus:
+        k = f"{tau:.2f}"
+        viol = []
+        for r in instances:
+            v = r["v2_by_tau"][k]
+            l3_all = v.get("L3_all", v.get("L3"))
+            if bool(l3_all) != bool(v["L3_pa"] or v["T3"]):
+                viol.append({"fault": r["fault"], "strength": r["strength"], "rep": r["rep"],
+                             "L3_all": l3_all, "L3_pa": v["L3_pa"], "T3": v["T3"]})
+        out[k] = {"n_checked": len(instances), "n_violation": len(viol),
+                  "holds": not viol, "violations": viol[:10]}
+    return out
+
+
+def _merged_layers(inst: dict, tau: float, attribution: str = "all") -> dict:
+    """v1 의 층 판정에 v2 의 L3·T3 를 얹은 최종 검출 벡터.
+
+    `attribution="all"` = 구 귀속(L3 가 전 스위트를 센다 · W4b 까지) ·
+    `"split"` = 신 귀속(L3 = 주 태스크 pa · PLAN-022). **T3 는 어느 쪽에서도 같다.**
+    """
     v2 = inst["v2_by_tau"][f"{tau:.2f}"]
     d = dict(inst["v1"])
-    d["L3"], d["T3"] = v2["L3"], v2["T3"]
+    l3_all = v2.get("L3_all", v2.get("L3"))          # 구 산출(fault_matrix_v2.json) 호환
+    d["L3"] = v2["L3_pa"] if attribution == "split" else l3_all
+    d["T3"] = v2["T3"]
     return d
 
 
-def summarize_v2(instances: list[dict], tau: float) -> dict:
+def summarize_v2(instances: list[dict], tau: float, attribution: str = "all") -> dict:
     """τ 하나에서의 v1 vs v2 요약 — 검출률·McNemar·H1′·위양성."""
     by_fault: dict[str, dict] = {}
     for spec in FI.FAULTS + FI.NORMALS:
         rs = [r for r in instances if r["fault"] == spec.key]
         if not rs:
             continue
-        merged = [_merged_layers(r, tau) for r in rs]
+        merged = [_merged_layers(r, tau, attribution) for r in rs]
         firsts = [next((L for L in LAYERS if m.get(L)), None) for m in merged]
         by_fault[spec.key] = {
             "label": spec.label, "expected": spec.expected, "cross_task": spec.cross_task,
@@ -579,35 +674,39 @@ def summarize_v2(instances: list[dict], tau: float) -> dict:
             "v1_T3": sum(1 for r in rs if r["v1"].get("T3")),
             "v2_L3": sum(1 for m in merged if m["L3"]),
             "v2_T3": sum(1 for m in merged if m["T3"]),
+            "delta_type": spec.delta_type,
+            "n_exempt": sum(1 for r in rs if r.get("exempt")),
             "first_layer": max(set(firsts), key=firsts.count) if firsts else None,
             "undetected": sum(1 for f in firsts if f is None),
             "cross_cqs": sorted({c for r in rs
                                  for c in r["v2_by_tau"][f"{tau:.2f}"]["cross_regressed_cqs"]}),
         }
-    faults = [r for r in instances if not r["fault"].startswith("N")]
-    normals = [r for r in instances if r["fault"].startswith("N")]
+    faults = [r for r in instances if r["fault"] not in NORMAL_KEYS]
+    normals = [r for r in instances if r["fault"] in NORMAL_KEYS]
     fp = [r for r in normals
-          if any(_merged_layers(r, tau).get(L) for L in LAYERS)]
-    pairs = [(any(_merged_layers(r, tau).get(L) for L in ("L0", "L1", "L2", "L3")),
-              any(_merged_layers(r, tau).get(L) for L in ("T1", "T2", "T3")))
+          if any(_merged_layers(r, tau, attribution).get(L) for L in LAYERS)]
+    pairs = [(any(_merged_layers(r, tau, attribution).get(L) for L in ("L0", "L1", "L2", "L3")),
+              any(_merged_layers(r, tau, attribution).get(L) for L in ("T1", "T2", "T3")))
              for r in faults]
     cross = [r for r in faults if r["cross_task"]]
     t3_only = [r for r in cross
-               if _merged_layers(r, tau)["T3"]
-               and not any(_merged_layers(r, tau).get(L)
+               if _merged_layers(r, tau, attribution)["T3"]
+               and not any(_merged_layers(r, tau, attribution).get(L)
                            for L in ("L0", "L1", "L2", "L3", "T1", "T2"))]
-    return {"tau": tau, "n_instances": len(faults), "by_fault": by_fault,
+    return {"tau": tau, "attribution": attribution,
+            "n_instances": len(faults), "by_fault": by_fault,
             "n_t3_v1": sum(1 for r in faults if r["v1"].get("T3")),
-            "n_t3_v2": sum(1 for r in faults if _merged_layers(r, tau)["T3"]),
+            "n_t3_v2": sum(1 for r in faults if _merged_layers(r, tau, attribution)["T3"]),
             "n_l3_v1": sum(1 for r in faults if r["v1"].get("L3")),
-            "n_l3_v2": sum(1 for r in faults if _merged_layers(r, tau)["L3"]),
+            "n_l3_v2": sum(1 for r in faults if _merged_layers(r, tau, attribution)["L3"]),
             "false_positive": {"n_normal": len(normals), "n_rejected": len(fp),
                                "rate": (len(fp) / len(normals)) if normals else None,
                                "rejected": [{"fault": r["fault"], "strength": r["strength"]}
                                             for r in fp]},
             "mcnemar": mcnemar(pairs),
             "h1p": {"n_cross_instances": len(cross), "n_t3_only": len(t3_only),
-                    "n_t3_detected": sum(1 for r in cross if _merged_layers(r, tau)["T3"]),
+                    "n_t3_detected": sum(1 for r in cross
+                                         if _merged_layers(r, tau, attribution)["T3"]),
                     "rate_t3_only": (len(t3_only) / len(cross)) if cross else 0.0}}
 
 
@@ -665,6 +764,89 @@ def render_table_v2(res: dict) -> str:
                   "| 결함 | 하락한 교차 태스크 CQ |", "|---|---|"]
         for k, r in cross_rows:
             lines.append(f"| {r['label']} | {', '.join(c.split('_')[0] for c in r['cross_cqs']) or '—'} |")
+    return "\n".join(lines) + "\n"
+
+
+def render_table_v3(res: dict) -> str:
+    """원고 표 6.5c — **L3–T3 검출 표면 분리 후** 재판정 (PLAN-022 · H1″). 수기 기입 없음."""
+    from ..validate.dedup_exempt import exemption_count
+
+    tau = res["tau_main"]
+    s_all = res["summary"][f"{tau:.2f}"]
+    s = res["summary_split"][f"{tau:.2f}"]
+    inv = res["invariant"][f"{tau:.2f}"]
+    lines = [
+        "# 표 6.5c 결함 주입 재판정 — L3·T3 검출 표면 분리 (PLAN-022 · H1″)",
+        "",
+        f"L3 = {'·'.join(res['l3_suites'])} 스위트(주 태스크) · T3 = {'·'.join(res['t3_suites'])} "
+        f"(교차 태스크) · 두 집합은 **서로소**이며 합집합은 CQ 전량 · 판정 규칙 "
+        f"{res['rule_version']} · 주 τ={tau} · 격자 {res['taus']} · 결함 재주입 없음(격리본 재판정)",
+        "",
+        "**H1·H1′ 은 사전등록대로 기각된 채다.** 아래 H1″ 는 **같은 결함 데이터의 3회차 재판정**"
+        "이며, 층 재정의를 떠올리게 만든 것이 W4b 의 결과이므로 **탐색적**이다. 확증은 차기 세대 "
+        "델타의 몫이다.",
+        "",
+        "## 검출력 불변 검사 (§0.1 — 이 표를 읽기 전에 확인해야 하는 것)",
+        "",
+        f"`L3_all ⟺ L3_pa ∨ T3` 위반 **{inv['n_violation']}/{inv['n_checked']}** — "
+        + ("성립. 층 재정의는 검출력이 아니라 **귀속**만 바꿨다(개정 전 거부가 개정 후 승인이 "
+           "되는 인스턴스는 없다)."
+           if inv["holds"] else
+           "**위반이 있다.** 재정의가 검출력을 건드렸다는 뜻이므로 아래 결과를 그대로 쓸 수 없다."),
+        "",
+        "| 결함 | 예상층 | " + " | ".join(LAYERS) + " | L3 구→신 | T3 | 최초 검출층 | 미탐지 |",
+        "|---|---|" + "---:|" * len(LAYERS) + "---:|---:|---|---:|",
+    ]
+    for key, r in s["by_fault"].items():
+        if key in NORMAL_KEYS:
+            continue
+        name = f"**{r['label']}**" if r["cross_task"] else r["label"]
+        cells = " | ".join(f"{r['rates'][L]:.2f}" for L in LAYERS)
+        r_all = s_all["by_fault"].get(key, {})
+        lines.append(f"| {name} | {r['expected']} | {cells} | "
+                     f"{r_all.get('v2_L3', '—')}→{r['v2_L3']} | {r['v2_T3']} | "
+                     f"{r['first_layer'] or '—'} | {r['undetected']}/{r['n']} |")
+    m, h, fp = s["mcnemar"], s["h1p"], s["false_positive"]
+    lines += [
+        "",
+        f"- **L3 검출** 구 귀속 {s_all['n_l3_v2']}/{s_all['n_instances']} → "
+        f"신 귀속(pa) **{s['n_l3_v2']}/{s['n_instances']}** · T3 검출 "
+        f"{s['n_t3_v2']}/{s['n_instances']}(불변 — 조작 변인은 L3 하나다)",
+        f"- **H1″ 교차결함 T3 단독검출**: {h['n_t3_only']}/{h['n_cross_instances']} "
+        f"(T3 가 잡은 교차결함은 {h['n_t3_detected']}/{h['n_cross_instances']}) · "
+        f"구 귀속에서는 {s_all['h1p']['n_t3_only']}/{s_all['h1p']['n_cross_instances']} "
+        "(L3 ⊇ T3 라 **원리적으로 0**이었다)",
+        f"- **McNemar**(L0–L3 vs T-gate · 결함 단위 대응): b={m['b']} · c={m['c']} · "
+        f"p={m['p']:.4f} ({m['test']})",
+        f"- **위양성**(정상 델타 거부): {fp['n_rejected']}/{fp['n_normal']}"
+        + (f" = {fp['rate']:.1%}" if fp["rate"] is not None else "")
+        + f" · 중복제거 면제 승인 {res['n_exempt']}건 "
+        + f"(누적 승인 {exemption_count()[0]}건 · 판정 로그 {exemption_count()[1]}행)",
+    ]
+    for key in sorted(NORMAL_KEYS):
+        r = s["by_fault"].get(key)
+        if r:
+            lines.append(f"  - {key} {r['label']}: 거부 {r['n'] - r['undetected']}/{r['n']}"
+                         + (f" · 면제 승인 {r['n_exempt']}/{r['n']}"
+                            if r["delta_type"] == "dedup" else ""))
+    adv = s["by_fault"].get("N03A")
+    if adv:
+        lines += ["", "## 면제 규칙이 여는 구멍 (N03A · 거짓 dedup 선언 · PLAN-022 §2.1)", "",
+                  f"- 검출 {adv['n'] - adv['undetected']}/{adv['n']} · 면제 승인 "
+                  f"{adv['n_exempt']}/{adv['n']} (승인되면 자동 검증이 뚫린 것이다)",
+                  f"- 최초 검출층 {adv['first_layer'] or '—'} · 미탐지 {adv['undetected']}/{adv['n']}"]
+    lines += ["", "## τ 민감도 (사전 동결 격자 · 결과를 보고 고르지 않는다)", "",
+              "| τ | T3 검출 | L3 검출(신) | L3 검출(구) | 위양성 | H1″ T3 단독 | 불변량 |",
+              "|---:|---:|---:|---:|---:|---:|:--:|"]
+    for t in res["taus"]:
+        st, sa = res["summary_split"][f"{t:.2f}"], res["summary"][f"{t:.2f}"]
+        iv = res["invariant"][f"{t:.2f}"]
+        lines.append(f"| {t:.2f} | {st['n_t3_v2']}/{st['n_instances']} | "
+                     f"{st['n_l3_v2']}/{st['n_instances']} | "
+                     f"{sa['n_l3_v2']}/{sa['n_instances']} | "
+                     f"{st['false_positive']['n_rejected']}/{st['false_positive']['n_normal']} | "
+                     f"{st['h1p']['n_t3_only']}/{st['h1p']['n_cross_instances']} | "
+                     f"{'✅' if iv['holds'] else '❌ ' + str(iv['n_violation'])} |")
     return "\n".join(lines) + "\n"
 
 
@@ -740,6 +922,10 @@ def main() -> None:
                     help="W4b 정상 델타 N03(완전중복 병합)만 주입 → run_id w4b_n03")
     ap.add_argument("--rejudge", action="store_true",
                     help="W4b 재판정 — 격리본을 읽어 CQ 판정 v1 vs v2 × τ 격자 (재주입 없음)")
+    ap.add_argument("--n03adv", action="store_true",
+                    help="PLAN-022 N03A(거짓 dedup 선언) 주입 → run_id w5_n03adv")
+    ap.add_argument("--rejudge-v3", action="store_true",
+                    help="PLAN-022 재판정 — L3·T3 표면 분리 + 중복제거 면제 (재주입 없음)")
     args = ap.parse_args()
 
     if args.baseline:
@@ -795,6 +981,40 @@ def main() -> None:
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(render_table_v2(res), encoding="utf-8")
         print(f"  표 → {out}\n  → {REPORT_V2}")
+        return
+
+    if args.n03adv:
+        Q.verify_pristine(strict=True)
+        res = run_matrix(args.reps, workers=min(args.workers, 9), split=args.split,
+                         faults=("N03A",), run_id="w5_n03adv",
+                         report=config.PROCESSED / "fault_matrix_n03adv.json")
+        s = res["summary"]
+        r = s["by_fault"].get("N03A", {})
+        print(f"\n[N03A 면제 악용] {s['n_instances']}인스턴스 · 오류 {s['n_errors']} · "
+              f"{res['elapsed_s']}초 · 미탐지 {r.get('undetected')}/{r.get('n')} · "
+              f"최초 검출층 {r.get('first_layer') or '—'}")
+        return
+
+    if args.rejudge_v3:
+        res = rejudge(runs=REJUDGE_RUNS_V3, workers=args.workers, report=REPORT_V3)
+        tau = res["tau_main"]
+        s, sa = res["summary_split"][f"{tau:.2f}"], res["summary"][f"{tau:.2f}"]
+        inv = res["invariant"][f"{tau:.2f}"]
+        print(f"\n[PLAN-022 재판정] L3={res['l3_suites']} ⊥ T3={res['t3_suites']} · "
+              f"주 τ={tau} · {res['elapsed_s']}초")
+        print(f"  검출력 불변량 L3_all ⟺ L3_pa ∨ T3 : 위반 {inv['n_violation']}/{inv['n_checked']}"
+              f" → {'성립' if inv['holds'] else '❌ 위반 — 결과를 그대로 쓸 수 없다'}")
+        print(f"  L3 검출 구 {sa['n_l3_v2']}/{sa['n_instances']} → 신(pa) "
+              f"{s['n_l3_v2']}/{s['n_instances']}  ·  T3 {s['n_t3_v2']}/{s['n_instances']}")
+        print(f"  H1″ 교차결함 T3 단독검출 {s['h1p']['n_t3_only']}/{s['h1p']['n_cross_instances']} "
+              f"(구 귀속 {sa['h1p']['n_t3_only']}/{sa['h1p']['n_cross_instances']})")
+        print(f"  McNemar b={s['mcnemar']['b']} c={s['mcnemar']['c']} p={s['mcnemar']['p']:.4f}")
+        print(f"  위양성 {s['false_positive']['n_rejected']}/{s['false_positive']['n_normal']} · "
+              f"면제 승인 {res['n_exempt']}건")
+        out = config.ROOT / "paper" / "tables" / "fault_matrix_v3.md"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(render_table_v3(res), encoding="utf-8")
+        print(f"  표 → {out}\n  → {REPORT_V3}")
         return
 
     if args.from_report:
