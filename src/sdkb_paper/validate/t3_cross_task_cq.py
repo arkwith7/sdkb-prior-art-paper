@@ -85,22 +85,44 @@ def generation_path(label: str) -> Path:
     return config.CQ_GEN_DIR / f"cq_{label}.json"
 
 
-def freeze_generation(graph_path: Path, label: str) -> dict:
-    """현재 그래프의 스위트별 통과율을 세대 아티팩트로 얼린다(표 6.6 축적)."""
+def freeze_generation(graph_path: Path, label: str, against: str | None = None,
+                      rule: str = config.CQ_RULE_VERSION,
+                      tau: float = config.CQ_TAU) -> dict:
+    """현재 그래프의 스위트별 통과율을 세대 아티팩트로 얼린다(표 6.6 축적).
+
+    `against` 를 주면 **그 세대 대비 T3 판정까지 계산해 아티팩트에 넣는다**(N5e). 판정을
+    동결 시점에 붙이지 않으면 표 6.6 의 T3 열이 사람 손을 타고, 그것이 정확히 CLAUDE.md
+    §1-7 이 금지하는 수기 기입이다 — 원고 표 6.6 의 `graph_v1` 행이 그렇게 생겼다.
+
+    `against` 가 없으면 **기준 세대**다. 기준 세대는 판정하지 않는다 — 자기 자신 대비 회귀는
+    정의상 0 이므로 v1 과 v2 가 일치한다(그래서 규칙 열도 "기준"으로 렌더한다).
+    """
     from .leakage_check import sha256_file
 
     results = run_cqs(graph_path)
+    prev = load_generation(against) if against else None
+    base = baseline_rows(prev) if (prev is not None and rule == "v2") else None
+    suites = suite_pass_rates(results, base, tau)
     gpath = Path(graph_path).resolve()
     rel = gpath.relative_to(config.ROOT) if gpath.is_relative_to(config.ROOT) else gpath
     rec = {"generation": label, "graph": str(rel),
            "graph_sha256": sha256_file(graph_path),
-           # 기준 세대 자신은 v1 로 센다 — 자기 자신 대비 회귀는 정의상 0 이다.
            # 판정 규칙과 τ 는 표 6.6 의 **스위트 버전 이력**으로 함께 실린다(PLAN-021 §1).
-           "rule_version": config.CQ_RULE_VERSION, "tau": config.CQ_TAU,
-           "n_cq": len(results), "suites": suite_pass_rates(results),
+           "rule_version": rule, "tau": tau, "against": against,
+           "n_cq": len(results), "suites": suites,
            "per_cq": {r.name: {"suite": r.suite, "rows": r.rows, "monotone": r.monotone,
                                "expect_min": r.expect_min, "passed": r.passed}
                       for r in results}}
+    if prev is not None:
+        waiver = commit_waiver()
+        v = t3_gate(suites, prev["suites"], waiver=waiver)
+        rec["verdict"] = {"baseline": prev["generation"], "pass": v["pass"],
+                          "regressed": v["regressed"], "waived": v["waived"],
+                          "waiver_reason": v["waiver_reason"], "rows": v["rows"]}
+        if v["waived"]:
+            log_waiver({"generation_old": prev["generation"], "generation_new": label,
+                        "graph": str(rel), "regressed": v["regressed"],
+                        "reason": v["waiver_reason"]})
     config.CQ_GEN_DIR.mkdir(parents=True, exist_ok=True)
     generation_path(label).write_text(json.dumps(rec, ensure_ascii=False, indent=2),
                                       encoding="utf-8")
@@ -139,6 +161,10 @@ def render_generations() -> str:
 
     세대 아티팩트가 있는 만큼만 싣는다. 없는 세대를 만들어 채우지 않는다 — 표를 채우려고
     세대를 지어내면 그 순간 게이트 이력이 허구가 된다(CLAUDE.md §1-1).
+
+    **판정 열은 아티팩트에서만 온다.** 판정 없는 비-기준 세대는 `[기입]` 자리표시자를 찍지
+    않고 **에러로 떨어뜨린다** — 자리표시자를 남기면 사람이 채우게 되고, 그것이 §1-7 위반의
+    발생 경로였다(N5e). 고치는 법은 `--freeze <세대> --against <이전세대>` 재동결이다.
     """
     gens = sorted(config.CQ_GEN_DIR.glob("cq_*.json"), key=lambda p: p.stat().st_mtime)
     lines = ["# 표 6.6 세대별 CQ 통과율 추이 (T3 이력 · 게이트 표류 감시)", "",
@@ -147,14 +173,28 @@ def render_generations() -> str:
     for p in gens:
         g = json.loads(p.read_text(encoding="utf-8"))
         s = g.get("suites", {})
-        rule = g.get("rule_version", "v1")
-        tau = g.get("tau")
-        rule_s = rule + (f" (τ={tau})" if rule != "v1" and tau is not None else "")
         cells = " | ".join(
             f"{s[k]['rate']:.3f} ({s[k]['n_pass']}/{s[k]['n_total']})" if k in s else "—"
             for k in ("pa", "em", "tf", "core"))
-        verdict = "— (기준)" if g["generation"] == "g0" else "[기입]"
-        lines.append(f"| {g['generation']} | {rule_s} | {cells} | {verdict} | — |")
+        v = g.get("verdict")
+        if v is None:
+            if g.get("against"):
+                raise ValueError(
+                    f"세대 '{g['generation']}' 에 T3 판정이 없다: {p.name} — "
+                    "`--freeze <세대> --against <이전세대>` 로 재동결하라 (수기 기입 금지)")
+            # 기준 세대: 판정하지 않는다(자기 대비 회귀는 정의상 0 → v1≡v2).
+            rule_s, verdict, waiver_s = "— (기준 세대)", "— (기준)", "—"
+        else:
+            tau = g.get("tau")
+            rule = g.get("rule_version", "v1")
+            rule_s = rule + (f" (τ={tau})" if rule != "v1" and tau is not None else "")
+            drops = ", ".join(v["regressed"])
+            verdict = ("**승인** (하락 0)" if v["pass"] and not v["regressed"]
+                       else f"**승인**(waiver · {drops} 하락)" if v["pass"]
+                       else f"**거부** ({drops} 하락)")
+            verdict += f" vs {v['baseline']}"
+            waiver_s = "1" if v["waived"] else "0"
+        lines.append(f"| {g['generation']} | {rule_s} | {cells} | {verdict} | {waiver_s} |")
     from .dedup_exempt import exemption_count
 
     lines += ["", f"- 누적 waiver {waiver_count()}회 (T3 예외 승인 이력 · 0 이 아니면 사유를 함께 읽어야 한다)",
@@ -191,6 +231,9 @@ def main() -> None:
     ap.add_argument("graph", type=Path, nargs="?", help="판정 대상 그래프 TTL")
     ap.add_argument("--freeze", metavar="LABEL", default=None,
                     help="현재 통과율을 세대 아티팩트로 동결(판정하지 않는다)")
+    ap.add_argument("--against", metavar="LABEL", default=None,
+                    help="--freeze 와 함께: 이 세대 대비 T3 판정을 계산해 아티팩트에 넣는다"
+                         " (없으면 기준 세대로 동결 — 판정 없음)")
     ap.add_argument("--baseline", metavar="LABEL", default=None,
                     help="비교 기준 세대 라벨(기본 g0)")
     ap.add_argument("--rule", choices=("v1", "v2"), default=config.CQ_RULE_VERSION,
@@ -210,10 +253,17 @@ def main() -> None:
         return
 
     if args.freeze:
-        rec = freeze_generation(args.graph, args.freeze)
-        print(f"[T3] 세대 '{args.freeze}' 동결 → {generation_path(args.freeze)}")
+        rec = freeze_generation(args.graph, args.freeze, against=args.against,
+                                rule=args.rule, tau=args.tau)
+        kind = f"vs 세대 '{args.against}' 판정 포함" if args.against else "기준 세대(판정 없음)"
+        print(f"[T3] 세대 '{args.freeze}' 동결 ({kind}) → {generation_path(args.freeze)}")
         for f, s in sorted(rec["suites"].items()):
             print(f"  · {f:<5} {s['rate']:.3f} ({s['n_pass']}/{s['n_total']})")
+        if "verdict" in rec:
+            print(format_report(t3_gate(rec["suites"],
+                                        load_generation(args.against)["suites"],
+                                        waiver=rec["verdict"]["waiver_reason"])))
+            sys.exit(0 if rec["verdict"]["pass"] else 1)
         return
 
     old = load_generation(args.baseline or "g0")

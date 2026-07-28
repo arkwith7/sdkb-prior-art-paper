@@ -180,10 +180,14 @@ vocab: baseline
 leakage:
 	uv run python -m sdkb_paper.validate.leakage_check --split $(or $(SPLIT),dev)
 
-# T3 기준 세대 동결 (표 6.6 축적). make cq-freeze GEN=g0 GRAPH=data/processed/graph_v0.ttl
+# T3 세대 동결 (표 6.6 축적). make cq-freeze GEN=g0 GRAPH=data/processed/graph_v0.ttl
+# 기준 세대 이후의 세대는 AGAINST 로 이전 세대를 지정한다 — 그래야 T3 판정이 아티팩트에
+# 들어가고 표 6.6 의 판정 열이 수기 기입을 타지 않는다(N5e · CLAUDE.md §1-7).
+#   make cq-freeze GEN=graph_v1 GRAPH=data/processed/graph_v1.ttl AGAINST=g0
 cq-freeze:
 	uv run python -m sdkb_paper.validate.t3_cross_task_cq \
-		$(or $(GRAPH),data/processed/graph_v0.ttl) --freeze $(or $(GEN),g0)
+		$(or $(GRAPH),data/processed/graph_v0.ttl) --freeze $(or $(GEN),g0) \
+		$(if $(AGAINST),--against $(AGAINST),)
 
 # T1·T2·T3 종합 판정 (+ 누출 감사). 실패 시 비영 종료 — 우회 경로 없음.
 tgate:

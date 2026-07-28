@@ -124,6 +124,58 @@ def test_t3_waiver_requires_regression_and_is_logged(tmp_path, monkeypatch):
     assert rec["regressed"] == ["em"]
 
 
+def _write_gen(d, label, *, against=None, verdict=None, pa=1.0, em=1.0):
+    rec = {"generation": label, "against": against,
+           "suites": {"pa": {"n_pass": 5, "n_total": 5, "rate": pa},
+                      "em": {"n_pass": 6, "n_total": 6, "rate": em},
+                      "tf": {"n_pass": 5, "n_total": 5, "rate": 1.0},
+                      "core": {"n_pass": 12, "n_total": 12, "rate": 1.0}}}
+    if verdict is not None:
+        rec["verdict"] = verdict
+        rec["rule_version"], rec["tau"] = "v2", 0.05
+    (d / f"cq_{label}.json").write_text(json.dumps(rec, ensure_ascii=False), encoding="utf-8")
+
+
+def test_table_refuses_placeholder_verdict(tmp_path, monkeypatch):
+    """표 6.6 의 T3 열은 아티팩트에서만 온다 — 판정 없는 세대는 에러다 (N5e).
+
+    자리표시자(`[기입]`)를 찍으면 사람이 채우게 되고, 원고의 `graph_v1` 행이 정확히 그렇게
+    수기 기입됐다(CLAUDE.md §1-7 위반). 자리표시자를 되살리면 이 테스트가 막는다.
+    """
+    monkeypatch.setattr(config, "CQ_GEN_DIR", tmp_path)
+    monkeypatch.setattr(config, "T3_WAIVER_LOG", tmp_path / "waiver_log.jsonl")
+    monkeypatch.setattr(config, "DEDUP_EXEMPTION_LOG", tmp_path / "dedup.jsonl")
+    _write_gen(tmp_path, "g0")
+    table = T3.render_generations()
+    assert "[기입]" not in table and "— (기준 세대)" in table
+
+    _write_gen(tmp_path, "gN", against="g0")          # 판정 없는 비-기준 세대
+    with pytest.raises(ValueError, match="T3 판정이 없다"):
+        T3.render_generations()
+
+    _write_gen(tmp_path, "gN", against="g0",
+               verdict={"baseline": "g0", "pass": True, "regressed": [], "waived": False,
+                        "waiver_reason": None, "rows": []})
+    assert "**승인** (하락 0) vs g0" in T3.render_generations()
+
+
+def test_table_reports_rejection_and_waiver(tmp_path, monkeypatch):
+    """거부·waiver 도 표에 그대로 나온다 — 조용한 면제는 게이트를 장식으로 만든다."""
+    monkeypatch.setattr(config, "CQ_GEN_DIR", tmp_path)
+    monkeypatch.setattr(config, "T3_WAIVER_LOG", tmp_path / "waiver_log.jsonl")
+    monkeypatch.setattr(config, "DEDUP_EXEMPTION_LOG", tmp_path / "dedup.jsonl")
+    _write_gen(tmp_path, "g0")
+    _write_gen(tmp_path, "gN", against="g0", em=0.5,
+               verdict={"baseline": "g0", "pass": False, "regressed": ["em"], "waived": False,
+                        "waiver_reason": None, "rows": []})
+    assert "**거부** (em 하락)" in T3.render_generations()
+    _write_gen(tmp_path, "gN", against="g0", em=0.5,
+               verdict={"baseline": "g0", "pass": True, "regressed": ["em"], "waived": True,
+                        "waiver_reason": "상류 재설계", "rows": []})
+    t = T3.render_generations()
+    assert "waiver" in t and "| 1 |" in t
+
+
 def test_t3_waiver_token_parsed_from_commit_message():
     assert T3.commit_waiver("feat: x\n\nT3-WAIVER: em 스위트 재설계 중") == "em 스위트 재설계 중"
     assert T3.commit_waiver("feat: x") is None
