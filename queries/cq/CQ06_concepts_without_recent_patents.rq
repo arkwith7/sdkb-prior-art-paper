@@ -1,5 +1,6 @@
 # desc: 최근 5년(2021-) 출원이 하나도 없는 개념은 무엇인가? — 전 공정 균형 커버리지의 공백
 # suite: tf
+# monotone: down
 # expect-min: 0
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>

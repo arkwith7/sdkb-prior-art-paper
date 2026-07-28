@@ -1,5 +1,6 @@
 # desc: 같은 특허 집합을 IPC 코드 단위로도 연도별 집계할 수 있는가? — H2 의 대조군(코드 단위 시계열)
 # suite: tf
+# monotone: up
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>

@@ -128,6 +128,20 @@ T2_DIMS = ("pos_lang", "proc_group", "rejection")   # 사전 지정 하위집단
 # pa 의 회귀는 T1 이 통계적으로 담당하기 때문이다.
 CQ_SUITES = ("pa", "em", "tf", "core")
 T3_SUITES = ("em", "tf", "core")
+# --- CQ 판정 규칙 v2 (PLAN-021 · 2026-07-28 동결 · W4b) --------------------
+# v1 은 존재검사(rows ≥ expect-min)뿐이라 결함이 CQ 를 **0행으로 만들어야만** 발화했다 —
+# W4 에서 T3 가 0/108 을 낸 원인이다(PLAN-020 §8.2). v2 는 존재검사에 **기준선 대비 분포
+# 검사**를 더한다:
+#     pass_v2 = (rows ≥ expect_min) ∧ ¬regress,
+#     regress = rows < (1−τ)·base           (monotone: up   — 행이 곧 능력)
+#             = rows > (1+τ)·base           (monotone: down — 공백 탐색 질의는 증가가 회귀)
+#             = |rows − base| > τ·base      (monotone: flat — 구조 불변량)
+# 극성은 `.rq` 헤더 `# monotone:` 이 정본이다. 극성 선언 없이 "행수 하락=회귀"로 두면
+# CQ03·CQ06 같은 **공백 탐색 질의**에서 정당한 보강이 회귀로 오판된다(실측 근거 PLAN-021 §3).
+CQ_MONOTONE = ("up", "down", "flat")
+CQ_RULE_VERSION = "v2"
+CQ_TAU = 0.05                       # 주값 — 결과를 보기 전 동결
+CQ_TAU_GRID = (0.0, 0.05, 0.10)     # 사전 동결 민감도 격자 (CLAUDE.md §1-2)
 # 세대별 CQ 통과율 아티팩트(표 6.6 의 원천)와 waiver 로그. **집계·해시만** 담으므로 커밋 가능
 # (data/processed 와 달리 gitignore 되지 않는다 · CLAUDE.md §1-5).
 CQ_GEN_DIR = DATA / "cq_generations"

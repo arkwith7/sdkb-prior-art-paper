@@ -1,5 +1,6 @@
 # desc: 각 기술 개념(공정·소자·장비·계측·재료)은 어떤 수출통제를 받으며, 통제수준·관할은 무엇인가? — RQ3 수출통제 심사의 출발점
 # suite: core
+# monotone: up
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX gov:  <https://w3id.org/sdkb/gov/>

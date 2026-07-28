@@ -1,5 +1,6 @@
 # desc: 특정 디바이스의 특허가 어떤 공정을 실현하는가? — 제품(시장) 축과 공정(기술) 축의 교차
 # suite: core
+# monotone: up
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>

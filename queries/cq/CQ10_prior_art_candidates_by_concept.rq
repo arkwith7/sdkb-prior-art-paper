@@ -1,5 +1,6 @@
 # desc: 아이디어를 온톨로지 개념(여기서는 plasma_etch)으로 표현했을 때, 같은 개념을 실현하면서 출원일이 앞선 선행기술 후보는? — IP-R&D 선행기술조사의 핵심 질의
 # suite: pa
+# monotone: up
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>

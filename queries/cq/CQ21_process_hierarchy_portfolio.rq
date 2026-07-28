@@ -1,5 +1,6 @@
 # desc: 상위 공정 그룹별로 하위 공정은 무엇이고 각 하위 공정에 특허가 몇 건인가? — 계층을 따라 본 포트폴리오 공백
 # suite: core
+# monotone: up
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>

@@ -1,5 +1,6 @@
 # desc: 출원인별 공정 포트폴리오는 어떻게 분포하는가? — "전 공정 포트폴리오 보유"(§1.1) 주장의 전제
 # suite: core
+# monotone: up
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>

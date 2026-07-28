@@ -1,5 +1,6 @@
 # desc: 이 장비(또는 장비 클래스)를 실제로 다뤄본 전문가는 누구인가? — 장비 축 인력 매칭 (스킬이 아니라 장비 경험으로 찾는다)
 # suite: em
+# monotone: up
 # expect-min: 1
 PREFIX ont:  <https://w3id.org/sdkb/ont/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
