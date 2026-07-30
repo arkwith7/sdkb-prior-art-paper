@@ -1,8 +1,8 @@
 # PLAN-025 — W9 · H1‴ 확증 재사전등록 (홀드아웃 결함 · 원고 §6.5.4·§7.2·표 7.1)
 
 > **상태: 🔒 동결 (2026-07-28 · v2).** 상위 원장 = [PLAN-019 §5](PLAN-019-v09-completeness-crosslingual.md).
-> 선행 = [PLAN-020](PLAN-020-w4-fault-injection.md)(H1 기각) · [PLAN-021](PLAN-021-w4b-cq-refinement.md)(H1′ 기각·원인 규명) ·
-> [PLAN-022](PLAN-022-n5c-layer-separation.md)(H1″ 탐색적 지지 · 동결 `44f8022`).
+> 선행 = [PLAN-020](../archive/PLAN-020-w4-fault-injection.md)(H1 기각) · [PLAN-021](../archive/PLAN-021-w4b-cq-refinement.md)(H1′ 기각·원인 규명) ·
+> [PLAN-022](../archive/PLAN-022-n5c-layer-separation.md)(H1″ 탐색적 지지 · 동결 `44f8022`).
 > **이 문서는 실행 전에 동결한다.** 여기 적힌 홀드아웃 정의·신규 결함군 명세·판정식·성공/기각 기준은
 > **결과를 본 뒤 바꾸지 않는다.** 동결 커밋은 결과 커밋과 분리한다(전례 `45ec85c`→`02d792a`, `44f8022`→실행).
 >

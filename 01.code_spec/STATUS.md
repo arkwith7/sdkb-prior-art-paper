@@ -95,7 +95,7 @@
 > 진보성·신규성 입증을 위한 작업 W1–W8 과 **진행 경과 원장**은 그 문서 §5에서만 갱신한다. 아래 N 표는
 > 유지하되, W 와 겹치는 항목은 매핑을 병기한다: N4=W3 · N5=W4 · N6=W5 · N11=W2.
 > **W1(교차언어 진단·§6.2f) · W3(T-gate) · W4(결함주입) 완료 — 2026-07-28.**
-> W4 설계·결과 정본 = [PLAN-020](plans/PLAN-020-w4-fault-injection.md) · W4b = [PLAN-021](plans/PLAN-021-w4b-cq-refinement.md).
+> W4 설계·결과 정본 = [PLAN-020](archive/PLAN-020-w4-fault-injection.md) · W4b = [PLAN-021](archive/PLAN-021-w4b-cq-refinement.md).
 > **W4b 완료 — H1·H1′ 모두 기각이나 원인이 규명됐다**: 판정 세분화로 T3 는 0/108 → 34/108 로 살아났지만,
 > **L3 ⊇ T3 가 층 정의상 성립**해 "T3 단독검출"은 원리적으로 불가능하다(§6.5.2). 층 분리는 차기 사전등록.
 
