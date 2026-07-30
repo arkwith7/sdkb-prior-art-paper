@@ -9,14 +9,55 @@
 
 | 순서 | CR | 결함 | 하류 단계 | 상류 상태 | 비고 |
 |---|---|---|---|---|---|
-| 1 | [CR-004R](CR-004-rejection-basis-structure.md) | D-06 | 1·2·3 완료·승인 | **4단계 착수 가능** | [이관브리프](HANDOFF-CR-004.md) · 입력 데이터 수집 완료 |
+| 1 | [CR-004R](CR-004-rejection-basis-structure.md) | D-06 | 1·2·3 완료·승인 | **4단계 착수 가능** | 이관 내용 §1.1 · 입력 데이터 수집 완료 |
 | 2 | [CR-007](CR-007-concept-linking-rules.md) | D-14·D-15·**D-16** | 1·2 완료 · **3단계 결정 4건 대기 🛑** | 대기 | **임계경로 선두** — CR-001의 선행 조건 |
 | 3 | [CR-005](CR-005-tbox-logical-axioms.md) | D-03·D-09 | 1 완료 | **송부 가능(대기열)** | 아래 §2 |
 | 4 | [CR-006](CR-006-tbox-module-boundaries.md) | D-13 | 1 완료 | **송부 가능(대기열)** | 아래 §2 |
 | 5 | [CR-001](CR-001-concept-resolution.md) | D-01·D-04 | 1·2 완료 · 3단계 결정 2건 대기 🛑 | **보류** | CR-007 확정 후 개봉 |
 | 6 | CR-002 · CR-003 | D-02·D-05 | 1 완료 | 보류 | CR-001과 함께 |
 
-## 1. 왜 CR-007이 CR-001보다 앞인가 (2026-07-30 결정)
+## 1.1 CR-004R 이관 내용 (1·2·3단계 완료·승인 — 상류는 4단계부터)
+
+의견제출통지서 998건을 새로 수집해 거절근거 무라벨이 **600 → 1**이 됐다. 이 라벨을
+`ont:RejectionReason`·`ont:PriorArtJudgment` 인스턴스로 실체화한다. **두 클래스는 T-Box에 이미
+선언돼 있고 A-Box 인스턴스가 0건**이므로, 새 구조를 만드는 것이 아니라 **선언된 빈 구조를
+채우는 것**이다. 새 어휘는 조항 개체 7개와 술어 5개뿐.
+
+**하류에서 확정된 결정 — 뒤집지 말 것.** ⓐ 조항 개체는 **항(項) 단위**로 발행, 호(號)는 문자열
+속성에 보존(가역성 — 뭉쳤다 쪼개면 기존 IRI 의미가 바뀐다) · ⓑ **기존 개체 5개의 IRI·의미·notation
+불변**(`Rejection_ClarityScope` 포함) · ⓒ **회차를 PriorArtJudgment IRI에 넣지 않는다**(넣으면 기존
+635 IRI가 전부 바뀜 — 회차는 RejectionReason 층에만) · ⓓ 표 파싱 우선, LLM은 62문서 폴백으로 강등.
+
+**작업 목록.** ① `sdkb-patent.ttl` 조항 개체 7개 · ② 같은 파일 술어 5개
+(`reasonGround`·`groundClause`·`noticeRound`·`noticeType`·`noticeDate` · 전부 domain =
+`ont:RejectionReason`) · ③ `reextract_claim_judgments.py` — 통지서 txt union · 표 헤더
+`거절이유가 있는 부분과 관련 법조항` 추가 · `_G29` → 전 조항 파서 · **시행령/시행규칙 배제 필터** ·
+④ `build_abox_claim_features.py` — RejectionReason 인스턴스 발행(현행 0건)·ground 매핑 확장·
+회차/문서출처 속성 · ⑤ SHACL(RejectionReason: `reasonGround` 1 · `groundClause` 1 ·
+`noticeRound` ≥1 · `noticeType` ∈ {의견제출통지서, 거절결정서}) · ⑥ 손실 리포트(파싱 실패 55·
+표 없음 7을 **건별로**) · ⑦ CHANGELOG 마이너 bump·하류 통보.
+
+**목표 수치(2단계 실측 위 · 이하면 회귀).** 청구항×조항 연결 **≥95 %**(실측 95.5 % · 분모 999) ·
+PriorArtJudgment 조립 **≥70 %**(실측 71.7 % · 분모는 **제29조 근거 보유 921건**, 999 아님) ·
+RejectionReason 커버 출원 **≥950/999** · 조항 2종 이상 출원의 인스턴스 **≥2**(접힘 해소의 직접 증거) ·
+**기존 PriorArtJudgment IRI 635개 전부 존속** · 교차태스크 CQ(em·tf·core) 통과율 하락 **0**(T3).
+
+**입력 데이터 (이미 수집됨 · 재수집 불필요).**
+`~/Dev/paper_data/data/processed/opinion_notices/` — `_index.json`(출원 1,000키 · 문서 999 ·
+`docs[].sendNumber` = 회차 판별 키) · `txt/` 1,155건(텍스트층 존재 · 본문 평균 7,000자) · `pdf/` 1,155건.
+기존 `rejection_decisions/structured/` 979건.
+
+**함정 셋.** ① `sdkb-abox-claim-features.ttl`은 **하류 스냅샷에 없다** — 상류가 채워도 하류가
+vendor 하지 않으면 G0는 계속 0건(§4 하류 작업 · 상류는 기다리지 않아도 된다) · ② **조항을 본문
+어디서든 잡으면 안 된다** — 제63조·제47조 안내문구·제2조가 오검출된다. `[심사결과]` 표의
+`관련 법조항` 칸에서만 읽는다(본문 전체 기준 제47조 645건 → 표 칸 기준 3건) · ③ `특허법 시행령
+제6조제2호`는 항상 제45조에 부수한다 — 법령명 필터가 없으면 "제6조 50건" 유령 조항이 생긴다.
+
+**수집 API 함정(재수집 시).** `IntermediateDocumentOPService`(의견제출통지) ·
+`IntermediateDocumentREService`(거절결정) 모두 **검색 `advancedSearchInfo`는 0건**을 반환한다.
+출원번호 직접 조회 **`pdfInfoV2`만 작동**한다. 2026-05에 475건이 0으로 나온 원인이 이것이었다.
+
+## 1.2 왜 CR-007이 CR-001보다 앞인가 (2026-07-30 결정)
 
 CR-007 §2단계 실측: 특허 전문 재추출로 커버리지를 2.33배 늘리면 **Skill 축 오링크가 3.2 % →
 18.1 %로 5.7배** 커진다. 태스크축 링크의 98.9 %가 Tier-2 별칭 경유이고, Skill 축의 80.3 %를
@@ -45,11 +86,11 @@ CR-007 §2단계 실측: 특허 전문 재추출로 커버리지를 2.33배 늘�
 
 ```
 하류(sdkb-prior-art-paper)에서 CR-004R 이 승인돼 넘어왔다.
-이관 브리프: /home/arkwith/Dev/SKKU/sdkb-prior-art-paper/upstream/HANDOFF-CR-004.md
+이관 브리프: /home/arkwith/Dev/SKKU/sdkb-prior-art-paper/upstream/HANDOFF-QUEUE.md §1.1
 정본 CR:    /home/arkwith/Dev/SKKU/sdkb-prior-art-paper/upstream/CR-004-rejection-basis-structure.md
 
 두 파일을 읽고, 우리 CLAUDE.md §2 절차에 따라 4단계(구현) 착수 전
-TBox·IRI 변경에 대한 승인을 나에게 요청하라. 하류에서 확정된 결정 A~D 는 뒤집지 않는다.
+TBox·IRI 변경에 대한 승인을 나에게 요청하라. 하류에서 확정된 결정 ⓐ~ⓓ 는 뒤집지 않는다.
 ```
 
 **CR-005 · CR-006 (대기열 · CR-004 이후 또는 병행):**
