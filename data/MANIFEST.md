@@ -292,3 +292,25 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - **가설에 불리한 실측 3건**: ① nDCG@20 미개선(P1 −0.0176 p=0.227 · P0★ −0.0395 p=0.029 유의 악화)
   ② low-overlap 집단 Δ−0.0586 < high +0.0711 (§7.3 반증) ③ 교차언어 집단 이득 유의 미달(+0.0140 p=0.518)
 - 반영: 원고 §5.1·§5.3·§6.2·§6.3·§6.4·§7.3·§7.5·§7.6·§7.7·§8.5·§9.1
+
+## 2026-07-31 · B2′ 강한 밀집 기준선 모델 동결 (PLAN-031 §5 · 개봉 전)
+- 명령: `huggingface_hub.snapshot_download("BAAI/bge-m3", revision="5617a9f6…")` + 로컬 sha256 산출
+- **모델: `BAAI/bge-m3`** · **revision(commit): `5617a9f61b028005a4858fdac845db406aefb181`**
+  (HF lastModified 2024-07-03) — 이후 **변경하지 않는다. 바꾸면 재선택이다**(PLAN-031 §5·§8)
+- 사양(config 실측): xlm-roberta · hidden 1024 · **max_seq_length 8192** · vocab 250,002 · float32
+  → 질의 중앙값 527자·문서 2,255자를 **절단 없이** 수용(선정 기준 "한국어·장문 대응 공개 인코더")
+- 풀링: CLS(`1_Pooling/config.json` · mean 아님) — 임베딩 차원 1024
+- 가중치 sha256(로컬 재계산 = HF LFS 메타와 일치):
+  - `pytorch_model.bin` 2,271,145,830 B · `b5e0ce3470abf5ef3831aa1bd5553b486803e83251590ab7ff35a117cf6aad38`
+  - `tokenizer.json` 17,098,108 B · `21106b6d7dab2952c1d496fb21d5dc9db75c28ed361a05f5020bbba27810dd08`
+  - `sentencepiece.bpe.model` 5,069,051 B · `cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865`
+  - `colbert_linear.pt` 2,100,674 B · `19bfbae397c2b7524158c919d0e9b19393c5639d098f0a66932c91ed8f5f9abb`
+  - `sparse_linear.pt` 3,516 B · `45c93804d2142b8f6d7ec6914ae23a1eee9c6a1d27d83d908a20d2afb3595ad9`
+  - `config.json` 687 B · `26159e7ad065073448460117eb24b7a4572f6f4e78eadff65dc0a11c052449fa`
+  - `sentence_bert_config.json` 54 B · `eb9b44b13c0f52a3b3685c3b1cbdea1ba8b04bea123b98f61610048940776eb1`
+  - `1_Pooling/config.json` 191 B · `e54c164a07274f2eb45bb724f54a79d1efcc90c41573887cd9a29aeee0597352`
+- 실행 환경: 로컬 GPU · torch 2.13.0+cu130 · `torch.cuda.is_available()=True`
+- 가중치는 **커밋하지 않는다**(HF 캐시 · 위 revision+sha256 이 재현 좌표)
+- **아직 하지 않은 것:** 추론 실행·임베딩 산출. `sentence-transformers` 미설치이며
+  의존성 추가는 별도 승인 대상(CLAUDE §1-10). 이 항목은 **모델 동결 기록일 뿐 B2′ 실행이 아니다**
+- 반영: PLAN-031 §5 `[동결 시 기입: revision · sha256]` 해소 (C2 재확증 기준선)
