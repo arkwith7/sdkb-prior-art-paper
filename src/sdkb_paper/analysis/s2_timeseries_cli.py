@@ -32,7 +32,11 @@ from sdkb_paper.analysis.s2_timeseries import (
     vintage_lead_times,
 )
 from sdkb_paper.analysis.census import census, scopes_summary
-from sdkb_paper.config import FIGURES, NAME_BASELINE, PROCESSED, TABLES
+# S-시리즈(구 패러다임) 산출물이다 — 출력은 paper/archive/regenerated/ 로 격리된다.
+# v0.9 정본 표·그림(paper/{tables,figures})과 섞지 않는다 (config.ARCHIVE_* 주석 참조).
+from sdkb_paper.config import ARCHIVE_FIGURES as FIGURES
+from sdkb_paper.config import ARCHIVE_TABLES as TABLES
+from sdkb_paper.config import NAME_BASELINE, PROCESSED
 from sdkb_paper.preprocess.profile import DELTA as DELTA_PARQUET
 from sdkb_paper.viz.figures import fig_h2_name_arm, fig_h2_timeseries
 

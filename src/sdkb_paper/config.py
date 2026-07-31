@@ -52,8 +52,22 @@ LEGACY_SCOPE = MAPPINGS / "process_scope_legacy20.csv"
 # applicantName 정확일치 필터의 키다(clean.normalize_company_name 로 생성). 94사 전량이 기존
 # G₀ 노드에 매핑되므로 신규 organization 노드는 만들지 않는다 — 정체성 재분열이 없다.
 KSIA_CROSSWALK = MAPPINGS / "ksia_applicant_crosswalk.csv"
+# v0.9 정본 산출물(C2 검색결과·C3 결함매트릭스)만 여기 쓴다.
 FIGURES = ROOT / "paper" / "figures"
 TABLES = ROOT / "paper" / "tables"
+
+# S-시리즈(구 커버리지 S1·시계열 S2·이식성 S3) 산출물의 출력 경로.
+# **왜 분리하는가.** 이 CLI 들(s1_coverage·s2_timeseries·ksia_strata·applicant·robustness)은
+# 구 패러다임 표·그림을 만든다. 예전에는 v0.9 정본과 같은 `paper/{tables,figures}` 에 썼고,
+# 그래서 `make s1` 한 번이면 구 패러다임 산출물이 v0.9 표 옆에 되살아났다(2026-07-31 실측:
+# 표 10건·그림 4건 재오염). CLAUDE.md §0 S-시리즈 규약상 두 패러다임의 산출물은 섞이면 안 된다.
+#
+# **왜 `paper/archive/{tables,figures}` 가 아니라 `regenerated/` 인가.** 그쪽은 v0.5/v0.7 원고가
+# 인용하는 **동결 기록**이다. 재계산 값으로 덮으면 "교정 전 상태"의 인용 가능성이 사라진다 —
+# 실제로 `robustness_family_dedup.md`·`h2_census.md`·fig7/8/8b/8c 는 현행 코드 출력과 값이 다르다.
+# 동결본은 보존하고, 재생성물은 여기로 격리해 **차이를 눈에 보이게** 둔다.
+ARCHIVE_FIGURES = ROOT / "paper" / "archive" / "regenerated" / "figures"
+ARCHIVE_TABLES = ROOT / "paper" / "archive" / "regenerated" / "tables"
 
 # vendoring 원본. 스냅샷을 갱신할 때만 쓰인다 — 분석/게이트는 EXTERNAL_SDKB 만 본다.
 SDKB_HOME = Path(os.environ.get("SDKB_HOME", Path.home() / "Dev" / "sdkb"))

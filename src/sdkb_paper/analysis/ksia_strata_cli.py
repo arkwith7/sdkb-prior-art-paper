@@ -19,7 +19,10 @@ import pandas as pd
 
 from sdkb_paper.analysis.s1_coverage import compare_coverage, wilcoxon_h1
 from sdkb_paper.analysis.robustness_cli import SCOPES, _scopes
-from sdkb_paper.config import GRAPH_V0, PROCESSED, TABLES
+# S-시리즈(구 패러다임) 산출물이다 — 출력은 paper/archive/regenerated/ 로 격리된다.
+# v0.9 정본 표·그림(paper/{tables,figures})과 섞지 않는다 (config.ARCHIVE_* 주석 참조).
+from sdkb_paper.config import ARCHIVE_TABLES as TABLES
+from sdkb_paper.config import GRAPH_V0, PROCESSED
 from sdkb_paper.ontology.delta import ACTIVITY_KSIA, _org_ksia, build_delta
 from sdkb_paper.ontology.merge import merge_with_gate
 from sdkb_paper.preprocess.clean import load_ksia_crosswalk

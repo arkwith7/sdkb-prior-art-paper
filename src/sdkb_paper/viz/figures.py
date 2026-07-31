@@ -34,9 +34,9 @@ import pandas as pd
 from matplotlib import font_manager as fm
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
-from sdkb_paper.config import FIGURES
+from sdkb_paper.config import ARCHIVE_FIGURES, FIGURES, ROOT
 
-PROCESSED = FIGURES.parents[1] / "data" / "processed"
+PROCESSED = ROOT / "data" / "processed"
 
 # ── 한글 폰트 (없으면 두부(□)가 된다) ──────────────────────────────────────────
 # **순서가 중요하다 — Noto 가 먼저다.** NanumGothic 은 U+2192(→)를 cmap 에 갖고 있으면서
@@ -161,7 +161,7 @@ def _stack(w: float, h: float, ratios: list[float]):
 
 
 def _save(fig, out: Path) -> Path:
-    FIGURES.mkdir(parents=True, exist_ok=True)
+    out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, bbox_inches="tight")
     plt.close(fig)
     return out
@@ -278,7 +278,7 @@ def fig_gap_and_model(out: Path | None = None) -> Path:
     한 번에 읽힌다. 구 `fig3_research_model.svg`(모형+파이프라인)는 생성하지 않는다 —
     모형은 여기로, 파이프라인은 그림 2(`fig4_pipeline.svg`)로 갈라졌다.
     """
-    out = out or FIGURES / "fig1_gap_map.svg"
+    out = out or ARCHIVE_FIGURES / "fig1_gap_map.svg"
     fig, axes = _stack(11.8, 11.2, [1.25, 1.0])
     _draw_gap_map(axes[0])
     _draw_research_model(axes[1])
@@ -288,7 +288,7 @@ def fig_gap_and_model(out: Path | None = None) -> Path:
 
 def fig_pipeline(out: Path | None = None) -> Path:
     """**그림 2** — 검증 게이트 내장 보강 파이프라인 (§4)."""
-    out = out or FIGURES / "fig4_pipeline.svg"
+    out = out or ARCHIVE_FIGURES / "fig4_pipeline.svg"
     fig, ax = _canvas(11.8, 5.2)
     _draw_pipeline(ax)
     return _save(fig, out)
@@ -299,7 +299,7 @@ def fig_vacuous_gate(out: Path | None = None) -> Path:
 
     수치는 §6.2 표(`make vocab` · 2026-07-23 재측정 · 실사용 술어 83 · 클래스 27) 확정값이다.
     """
-    out = out or FIGURES / "fig6_vacuous_gate.svg"
+    out = out or ARCHIVE_FIGURES / "fig6_vacuous_gate.svg"
     fig, ax = plt.subplots(figsize=(9.5, 5.4))
     groups = ["CQ 응답률", "술어 커버리지", "클래스 커버리지"]
     sets = [
@@ -367,7 +367,7 @@ def fig_rq3_portability(out: Path | None = None) -> Path:
 
     수치는 §4.6·표 15 확정값(G₁ 236 vs G₂ 573; 커버 26=26).
     """
-    out = out or FIGURES / "fig10_rq3_portability.svg"
+    out = out or ARCHIVE_FIGURES / "fig10_rq3_portability.svg"
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.8))
     ax = axes[0]
     ax.bar(["G₁ (종합 IDM)", "G₂ (소부장)"], [26, 26],
@@ -447,7 +447,7 @@ def fig_summary_matrix(out: Path | None = None) -> Path:
     본문 페이지를 쓰지 않으면서 결과 요약을 유지하는 자리다. 파일명은 선행 파일명
     (`fig11_summary.svg`)을 유지한다.
     """
-    out = out or FIGURES / "fig11_summary.svg"
+    out = out or ARCHIVE_FIGURES / "fig11_summary.svg"
     fig, ax = _canvas(12.0, 5.4)
     _draw_summary_matrix(ax)
     return _save(fig, out)
@@ -464,7 +464,7 @@ def fig_h1_coverage(df: pd.DataFrame, out: Path | None = None) -> Path:
     구 fig5(G₀ 편중 단독)는 생성하지 않는다 — before 막대가 같은 사실을 말한다
     (감축 재편 2026-07-19).
     """
-    out = out or FIGURES / "fig7_h1_coverage.svg"
+    out = out or ARCHIVE_FIGURES / "fig7_h1_coverage.svg"
     plot = df.sort_values(["level", "delta"], ascending=[True, True]).copy()
     marker = plot["in_legacy20"].map({True: "", False: " *"}) if "in_legacy20" in plot else ""
     plot.index = plot["label"] + marker
@@ -494,7 +494,7 @@ def fig_h2_name_arm(ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = No
     감축 재편(2026-07-19)에서 세 함정 도식(구 fig9)이 (b) 패널로 들어왔다 — (a) 의
     대조군·정의·관측창 선택이 전부 (b) 의 회피 설계이므로 한 장에서 읽혀야 한다.
     """
-    out = out or FIGURES / "fig8_h2_timeseries.svg"
+    out = out or ARCHIVE_FIGURES / "fig8_h2_timeseries.svg"
     order = ["concept_first", "tie", "name_first"]
     leads = leads.copy()
     leads["_rank"] = leads["outcome"].map({k: i for i, k in enumerate(order)}).fillna(9)
@@ -560,7 +560,7 @@ def fig_h2_timeseries(ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = 
     개념 실선 · 코드 점선 · 탐지연도 마커. 관측창 밖(2024–2025)은 18개월 비공개
     절단이라 제외했다. 코드가 CPC 전용이라 IPC 말뭉치에 없는 사례는 제목에 명시한다.
     """
-    out = out or FIGURES / "fig8c_h2_code_arm_d1.svg"
+    out = out or ARCHIVE_FIGURES / "fig8c_h2_code_arm_d1.svg"
     # ts·leads 는 scheme(ipc/cpc)별로 중복된다 — 한 스킴만 그린다(개념 vs 코드 IPC).
     cases = list(dict.fromkeys(leads["case_id"]))
     ncol = 4
@@ -789,8 +789,8 @@ def main() -> None:
         except FileNotFoundError as e:
             print(f"  ⚠ {fn.__name__} 건너뜀 — 입력 CSV 없음: {e.filename}")
     for p in made:
-        print(f"  ✓ {p.relative_to(FIGURES.parents[1])}")
-    print(f"{len(made)} figures → {FIGURES}")
+        print(f"  ✓ {p.relative_to(ROOT)}")
+    print(f"{len(made)} figures — v0.9 → {FIGURES} · S-시리즈 → {ARCHIVE_FIGURES}")
 
 
 if __name__ == "__main__":
