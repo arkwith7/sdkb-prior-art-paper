@@ -65,6 +65,15 @@ def _setup_fonts() -> None:
     matplotlib.rcParams["svg.fonttype"] = "path"  # 글리프를 벡터로 구워 이식성 확보
 
 
+# ── SVG 결정성 (재현성 주장의 전제) ───────────────────────────────────────────
+# matplotlib 은 clipPath id 를 **실행마다 새로 뽑는 난수 salt** 로 만든다(기본 uuid4).
+# 그래서 좌표가 한 픽셀도 안 바뀐 재실행에서도 SVG 가 dirty 해지고, `git status` 가
+# "그림이 바뀌었다"고 거짓말한다 — 재현성 주장과 정면으로 부딪힌다. salt 를 고정하면
+# 같은 입력 → 같은 바이트가 된다. 값은 임의의 상수이나 **바꾸면 전 그림이 한 번 dirty
+# 해지므로** 예고 없이 바꾸지 않는다.
+_HASHSALT = "sdkb-paper-figures"
+matplotlib.rcParams["svg.hashsalt"] = _HASHSALT
+
 _setup_fonts()
 
 # ── 스타일 시스템 (그림 전체가 한 벌로 읽히도록) ──────────────────────────────
@@ -161,8 +170,14 @@ def _stack(w: float, h: float, ratios: list[float]):
 
 
 def _save(fig, out: Path) -> Path:
+    """그림 하나를 저장한다. **SVG 는 바이트 단위로 결정적이어야 한다.**
+
+    `metadata={"Date": None}` 이 없으면 matplotlib 이 `<dc:date>` 에 저장 시각을 박아
+    재실행마다 파일이 달라진다(salt 고정만으로는 부족하다 — 위 `_HASHSALT` 주석 참조).
+    """
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, bbox_inches="tight")
+    kwargs = {"metadata": {"Date": None}} if out.suffix.lower() == ".svg" else {}
+    fig.savefig(out, bbox_inches="tight", **kwargs)
     plt.close(fig)
     return out
 
