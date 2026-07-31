@@ -615,6 +615,6 @@ classDiagram
 ## 부록 · 참조
 
 - 어휘 용어집: [GLOSSARY-ONTOLOGY.md](../GLOSSARY-ONTOLOGY.md)
-- CQ 계약: [SPEC-003](SPEC-003-competency-questions.md) · 도출 프로토콜 [SPEC-004](SPEC-004-cq-derivation-protocol.md)
+- CQ 계약: 현행 28개는 [SPEC-004](SPEC-004-cq-derivation-protocol.md) · 초기 K=8 설계 근거는 [archive/SPEC-003](../archive/SPEC-003-competency-questions.md)(아카이브)
 - G₀ baseline: [SPEC-002](SPEC-002-baseline-g0.md) · 게이트: [SPEC-001](SPEC-001-validation-gate.md)
 - 서명 수치 정본: [CANONICAL-INDEX.md](../CANONICAL-INDEX.md) §1

@@ -64,7 +64,7 @@ L1–L3 는 내내 통과했는데, 공정 어휘 복원 **이전에** 빌드된
 → `make reason` · `test_baseline_is_logically_consistent`
 
 **L3 기능 검증 (CQ).** 현행 배터리는 **28개**(`queries/cq/CQ01~CQ28.rq`) — 도출 프로토콜 P1–P5 는
-[SPEC-004](SPEC-004-cq-derivation-protocol.md), 초기 K=8 설계 근거는 [SPEC-003](SPEC-003-competency-questions.md).
+[SPEC-004](SPEC-004-cq-derivation-protocol.md), 초기 K=8 설계 근거는 [archive/SPEC-003](../archive/SPEC-003-competency-questions.md)(아카이브 · 인용 금지).
 실측 응답률 (2026-07-23 재측정): **G₀ 27/28 · G₁ 28/28 · G₂ 28/28 · mini_graph 28/28**. 지는 것은
 **G₀ 의 CQ27(FTO 청구항)** 하나뿐 — 청구항 전문은 특허 보강 코퍼스(G₁·G₂)에 실체화돼 있고 baseline
 에는 없다(2026-07-22 G₁ 청구항 축 적재로 G₁ 도 통과) — **결함이 아니라 배터리가 코퍼스를 판별한다는 증거**다.
@@ -78,7 +78,7 @@ TBox range 위반, 출원일 누락, 개념 매핑 누락 — 각각이 실제�
 
 ---
 
-## T-gate (v0.9 확장 · C3 진화 안전성) — 미구현 🛑
+## T-gate (v0.9 확장 · C3 진화 안전성) — **LIVE** ✅
 
 L0–L3는 그래프의 **구조·논리·기능** 정합을 본다. v0.9는 그 위에 **태스크 회귀**를 잡는 세 층을 얹는다.
 델타는 L0–L3와 T1–T3를 **모두** 통과해야 병합된다(CLAUDE.md §5 승인 규칙).
@@ -93,8 +93,21 @@ L0–L3는 그래프의 **구조·논리·기능** 정합을 본다. v0.9는 그
 - ε·δ는 **테스트 qrel 개봉 전 동결**(CLAUDE.md §1.3). T3 하락 시 즉시 실패, 예외는 waiver 토큰만(횟수 보고).
 - **T3는 통계가 아니라 명세 비교다** — em(전문가매칭)·tf(기술예측)·core 스위트가 선행기술 검색 보강으로
   훼손되지 않음을 보증(= 다중 태스크 작동성). 이 세 스위트가 **S1/S2의 T3 회귀 감시 대상**이다.
-- **상태: 미구현.** 구현부는 `src/sdkb_paper/validate/{t1_noninferiority,t2_subgroup,t3_cross_task_cq}.py`
-  (PLAN-017 후속) · `make gate` 확장 예정. 이 절은 계약 명세이며 코드는 아직 없다.
+- **상태: 구현·실행 완료 (2026-07-28 · W3/N4).** 구현부 =
+  `src/sdkb_paper/validate/{leakage_check,t1_noninferiority,t2_subgroup,t3_cross_task_cq,t_gate}.py` ·
+  진입점 `make leakage`·`make cq-freeze`·`make tgate` 이고 `make gate` 에 편입됐다.
+  **실측(dev):** 누출 0 · T1 LB₉₅ **+0.0129** · T2 max drop **−0.0222** · T3 하락 0 → **Accept=1**.
+  **확증분할(주 델타 P1 vs B3):** T1 LB₉₅ **+0.0145** · T2 max drop **−0.0140** · T3 하락 0 → Accept=1.
+  산출 = `data/processed/tgate_report{,_test,_test_p0star}.json`.
+- **게이트의 판별력은 별도로 검정됐다.** "Accept=1"은 게이트가 *통과시켰다*는 사실일 뿐 게이트가
+  *결함을 잡는다*는 증거가 아니다. 판별력은 결함주입으로 검정했고(H1 기각 → H1′ 기각 → 층 분리 후
+  H1″ 탐색적 지지 → **H1‴ 홀드아웃 72 확증**: T3 단독검출 12/45 · p=.0001 · 위양성 0/27),
+  잔여 한계는 τ=0.10 기각·특이성 미검정이다. 매트릭스 = `data/processed/fault_matrix*.json`.
+- **⚠ 이 절의 T-gate 실행을 H2(갱신 승인 안전성)의 증거로 인용하지 않는다.** 위 판정은 **P1 대 B3
+  = 시스템 델타** 비교이고, H2는 **동일 파이프라인에 O와 O′를 넣은 버전 델타** 비교를 요구한다.
+  실측 D-12에 따르면 G0·G1·G2의 T-Box가 완전히 동일해 **자격 있는 델타가 존재한 적이 없다** —
+  H2는 미검정이며, 그 해소는 상류 릴리스 정책 변경에 달려 있다(CLAUDE.md §0 경계표 ·
+  [upstream/DEFECT-LEDGER.md](../../upstream/DEFECT-LEDGER.md) D-10·D-12).
 
 ---
 

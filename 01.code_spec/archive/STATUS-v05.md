@@ -8,7 +8,7 @@
 
 *최종 갱신: 2026-07-16 · 근거: `pytest` · `make gate` · `make h1 CORPUS=ksia-equipment` · `make ksia-strata` · G₂ 3층 게이트(L1·L2 consistent·L3 CQ 27/27) · SDKB 커밋 `edb8ae4`*
 
-> ⚠ **서명 수치의 정본은 [CANONICAL-INDEX.md](CANONICAL-INDEX.md) §1 이다.** 현재값: **G₀ 105,588 ·
+> ⚠ **서명 수치의 정본은 [CANONICAL-INDEX.md](../CANONICAL-INDEX.md) §1 이다.** 현재값: **G₀ 105,588 ·
 > G₁ 924,814 · G₂ 490,529 트리플** (2026-07-23 **미반영 SDKB 온톨로지 전량 반영** · 커밋 `3429d66` ·
 > 사용자 결정으로 동결 해제: 선행기술 ABox(`ont:CitedPatent` 3,034)·상용화·RBV 편입 → 49,307→105,588 ·
 > 868,669→924,814 · 434,342→490,529. **C₀ 20/49·H1 네 표본집합 p 전부 불변**[CitedPatent 는 명시 타입이
@@ -35,7 +35,7 @@
 > 하류 graph SHACL `expert_shape.ttl` 신설로 신규 어휘 29종이 게이트에 보인다(§5.2). 뷰어 속성창은
 > `detail()` 이 노드 전 속성을 반환하므로 전문가 노드가 이제 전체 프로필(학력·자격증·장비 경험·사례)을 띄운다.
 
-> **2026-07-16 · RQ2(H2) 재설계 완료 — A(음성 인구조사) + C(조합 능력) · [PLAN-016](plans/PLAN-016-rq2-population-leadtime.md).**
+> **2026-07-16 · RQ2(H2) 재설계 완료 — A(음성 인구조사) + C(조합 능력) · [PLAN-016](PLAN-016-rq2-population-leadtime.md).**
 > H2 를 4~7사례 부호검정(최소 p=0.0625, 검정력 봉쇄)에서 **조합 능력 존재 증명 + 전수 인구조사**로 재설계했다.
 > **핵심 진화**: A 단독 모집단 검정은 유의 불가(유효쌍 ~5). "소자 34 한정이 인공물 아니냐"는 사용자 지적이
 > 맞아 전 개념(155)으로 넓히니 소자+공정 26-10 p=0.006 **유의하나 무효**(개념우선 26 중 20 성숙개념
@@ -117,12 +117,12 @@
 >
 > **FTO 자기완결성.** `getBibliographyDetailInfoSearch` 로 매핑 특허 **12,337건 전량**의 초록+전체청구항
 > 수집(청구항 보유 100%) → 청구항 그래프 **161,184 트리플**. 3층 게이트 G₂: L1 ✓ · **L2 consistent=True**
-> · L3 CQ **27/27**. **G₀ 는 불변**(재동결 안 함 — 신규 어휘 없음). 상세는 [PLAN-014](plans/PLAN-014-ipr-d-framework-and-portability.md).
+> · L3 CQ **27/27**. **G₀ 는 불변**(재동결 안 함 — 신규 어휘 없음). 상세는 [PLAN-014](PLAN-014-ipr-d-framework-and-portability.md).
 
-새 세션은 이 문서부터 읽는다. 온톨로지 용어가 낯설면 [GLOSSARY-ONTOLOGY.md](GLOSSARY-ONTOLOGY.md) 를,
-**반도체 도메인(공정·소자·특허) 용어가 낯설면 [GLOSSARY-SEMICONDUCTOR.md](GLOSSARY-SEMICONDUCTOR.md) 를,
-논문의 통계(Wilcoxon·부호검정·사전등록)가 낯설면 [GLOSSARY-STATISTICS.md](GLOSSARY-STATISTICS.md) 를**,
-소부장 IP-R&D 실무(RQ3 의 태스크가 무엇인가)가 낯설면 [REF-001](REF-001-ip-rnd-domain-framework.md) 을 먼저 본다.
+새 세션은 이 문서부터 읽는다. 온톨로지 용어가 낯설면 [GLOSSARY-ONTOLOGY.md](../GLOSSARY-ONTOLOGY.md) 를,
+**반도체 도메인(공정·소자·특허) 용어가 낯설면 [GLOSSARY-SEMICONDUCTOR.md](../GLOSSARY-SEMICONDUCTOR.md) 를,
+논문의 통계(Wilcoxon·부호검정·사전등록)가 낯설면 [GLOSSARY-STATISTICS.md](../GLOSSARY-STATISTICS.md) 를**,
+소부장 IP-R&D 실무(RQ3 의 태스크가 무엇인가)가 낯설면 [REF-001](../REF-001-ip-rnd-domain-framework.md) 을 먼저 본다.
 
 ---
 
@@ -168,7 +168,7 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 우리 측정의 좌측절단**이었다. 상대성장 규칙(θ × 직전 3년 평균)은 창이 열리는 순간 이미 정점인
 기술의 부상을 **원리적으로** 볼 수 없다 — 후행창이 창 밖이라 기저가 정의되지 않는다.
 
-### H2′ — 시점 유효한 대조군(명칭)으로 다시 세운 검정 ([PLAN-010](plans/PLAN-010-h2prime-name-baseline.md))
+### H2′ — 시점 유효한 대조군(명칭)으로 다시 세운 검정 ([PLAN-010](PLAN-010-h2prime-name-baseline.md))
 
 코드 대조군이 무효라 **명세 텍스트의 명칭**을 대조군으로 세웠다(텍스트는 소급 재작성되지 않는다).
 신호 규칙은 불변 · 대조군만 교체. 교정 창 · 구조 전용 개념(대조군과 **서로소**):
@@ -241,7 +241,7 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 > 받는** 비일관 측정이었다. 고친 정의(관측자 T 는 S(T) 에 보이는 특허만 세고 **성숙한 출원연도
 > t ≤ T−2** 에만 규칙을 적용 · 탐지 연도는 **T**)를 PLAN-007 §2 에 동결하고 회귀 테스트로 고정했다.
 
-### H1 검정 결과 (`make h1` · [PLAN-005](plans/PLAN-005-h1-coverage-test.md) · 논문 표 5)
+### H1 검정 결과 (`make h1` · [PLAN-005](PLAN-005-h1-coverage-test.md) · 논문 표 5)
 
 | 표본 집합 | n | Δ>0 | Δ<0 | Δ=0 | 증가 단계 중앙값 Δ | p | 판정 |
 |---|---:|---:|---:|---:|---:|---:|---|
@@ -392,7 +392,7 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 
 | 항목 | 결과 (근거) | 커밋 |
 |---|---|---|
-| 작업 규약 정의 | [CLAUDE.md](../CLAUDE.md) (논문 repo) + SDKB repo | `b25ec9a` |
+| 작업 규약 정의 | [CLAUDE.md](../../CLAUDE.md) (논문 repo) + SDKB repo | `b25ec9a` |
 | CI 3층 게이트 실배선 | 스냅샷 sha256 → baseline → L1 → L2 → L3. `make gate` exit 0 | `993bb96` |
 | L2 리즈너 복구 | 동작한 적 없었음(owlready2 는 TTL 미지원, HermiT 는 xsd:date 미지원) → 추론 전용 뷰 | `993bb96` |
 | **상류 SDKB 정비** | 출원일 정정 · 어휘 정렬 · provenance. shapes 위반 3,000 → 0 | SDKB `4fca29c` |
@@ -418,10 +418,10 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 | **PLAN-015 · 규제·수출통제 축 (RQ3)** | **규제 어휘를 TBox→ABox→살아있는 게이트로 완성**. gov: 인스턴스 0 → **US EAR/CCL 8 + KR-ITPA NCT 12건** · 개념 연결 0 → **37건(15/20 통제)**. 미연결 5건은 규칙 2 + 음성/LOW 3(정직 보고). 신규 어휘 `gov:controlLevel`·`gov:subjectToControl`(상류) + 사전동결 크로스워크. CQ23–26 도출(**CQ26: 수출통제 대상 특허 1,249건**) + `compliance_shape` 살아있는 게이트. **G₀ 재동결 43,814 → 44,192 · H1 네 표본집합 p 전부 불변 · C₀ 20/49 불변 · CQ 26/26 · 게이트 커버리지 100%** | (2026-07-15) |
 
 ### 확정된 스펙
-- [SPEC-001 · 검증 게이트](specs/SPEC-001-validation-gate.md) — 3층 게이트와 두 겹 L1
-- [SPEC-002 · baseline G₀](specs/SPEC-002-baseline-g0.md) — G₀ 의 정의·조립·서명
-- [SPEC-003 · 역량질문(CQ)](specs/SPEC-003-competency-questions.md) — CQ 8개와 측정 지표
-- [SPEC-004 · CQ 도출 프로토콜](specs/SPEC-004-cq-derivation-protocol.md) — 어휘 검증 커버리지 · P1–P5
+- [SPEC-001 · 검증 게이트](../specs/SPEC-001-validation-gate.md) — 3층 게이트와 두 겹 L1
+- [SPEC-002 · baseline G₀](../specs/SPEC-002-baseline-g0.md) — G₀ 의 정의·조립·서명
+- [SPEC-003 · 역량질문(CQ)](SPEC-003-competency-questions.md) — CQ 8개와 측정 지표
+- [SPEC-004 · CQ 도출 프로토콜](../specs/SPEC-004-cq-derivation-protocol.md) — 어휘 검증 커버리지 · P1–P5
 
 ---
 
@@ -435,7 +435,7 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 > 게이트 L1 ✅ L2 ✅ L3 8/8 ✅ · 논문 테스트 122 passed. SDKB `cc1b5c1`·`581360a`.
 >
 > ✅ **2026-07-14 · PLAN-014 §4 단계 2·3 완료 — CQ 도출 프로토콜 + 어휘 커버리지 + CQ09–14.**
-> [SPEC-004](specs/SPEC-004-cq-derivation-protocol.md) 확정 · `make vocab` 신설 · 논문 **§3.4.5 신설**
+> [SPEC-004](../specs/SPEC-004-cq-derivation-protocol.md) 확정 · `make vocab` 신설 · 논문 **§3.4.5 신설**
 > (P1–P5) · §4.2 표 채움. **그래프 불변** (G₀ 트리플·C₀ 20/49 그대로).
 >
 > **vacuous gate 를 측정하고, 태스크로 고쳤다** (`make cq` · `make vocab`):
@@ -530,7 +530,7 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 >
 > ## 🎯 다음 세션 작업 순서 (사용자 확정 · 2026-07-15)
 >
-> ✅ **[1] [PLAN-015](plans/PLAN-015-compliance-regulatory-layer.md) 완료 (2026-07-15) — 규제·수출통제 축 최소 실증.**
+> ✅ **[1] [PLAN-015](PLAN-015-compliance-regulatory-layer.md) 완료 (2026-07-15) — 규제·수출통제 축 최소 실증.**
 > 규제 어휘가 **TBox 에만 있고 ABox 0** 이던 것을 **US EAR/CCL 8 + KR-ITPA NCT 12건 · 개념 연결
 > 37건(15/20 통제)**로 채웠다. 사용자 결정대로 **상류 SDKB 확장(`gov:controlLevel`·`gov:subjectToControl`)
 > 후 재vendor + G₀ 재동결**. 근거 데이터는 kukkukpool 마스터(US·KR 둘 다)와 **바이트 동일**한 SDKB
@@ -540,7 +540,7 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 > **미대응 4개 중 control_level 은 `gov:controlLevel` 로 신설, 나머지 3개(country_group·deemed_export·
 > entity_list)는 문자열 속성으로 최소 표현** — 국가군 노드화·전문가 국적축은 §6 비목표/후속.
 >
-> ✅ **[2] [PLAN-014](plans/PLAN-014-ipr-d-framework-and-portability.md) §4 단계 5 완료 (2026-07-16) — C-2 (소부장 G₂ · RQ3).**
+> ✅ **[2] [PLAN-014](PLAN-014-ipr-d-framework-and-portability.md) §4 단계 5 완료 (2026-07-16) — C-2 (소부장 G₂ · RQ3).**
 > 소부장 **전체 188사** 수집 → G₂(**434,342** 트리플[완료 시점 429,334; 전문가 A-Box +4,906 후 정본]·특허 13,339) → **H1 재적용 → 소부장 전체·세 층 각각
 > 모두 지지**(표 5-소부장·표 5b). 커버 20→26/49(폭 포화)·증가폭 573(깊이). 위 "PLAN-014 §4 단계 5" 블록 참조.
 >
@@ -596,10 +596,10 @@ G₀ 는 동결됐다 — 상류 SDKB 를 더 건드리지 않는다. before 가
 | 순서 | 계획 | 왜 지금인가 |
 |---|---|---|
 | **0** | **논문 §2 · §3 · §4 재작성 — 이제 착수 가능.** G₀ 재동결·H1·H2 재실행이 끝났고 수치가 확정됐다. 지침 [paper/NOTE-001](../paper/NOTE-001-RQ2-H2-논문반영지침.md) 을 **지금 적용한다** | 남은 것은 **쓰는 일**이다. 실을 것: (1) **§4.2·§4.3 의 커버리지 수치 갱신 — C₀ 16 → 20 · C₁ 24 → 26** (표 3 · 표 5 · 그림 3), (2) **구 G₀ / 신 G₀ 병기**(PLAN-013 §0.2 사전등록 — 은폐 방지이자 "온톨로지 품질이 결론을 어떻게 바꾸는가"라는 그 자체의 결과), (3) **얼린 스냅샷이 낡아 H1 의 before 가 낮게 잡혀 있었다**는 사실과 그것을 sha256 이 못 잡았다는 방법론적 발견 → **§5.3 한계 + §5.4**, (4) H2 부호검정 미지지 + 코드 팔의 양방향 무효, (5) DART 준거 대비 개념 4/4 선행(서술 · p 주장 없음), (6) 좌측절단 실증, (7) **인력·소부장·선행기술 축이 이제 그래프에 있다** → §4.2 의 CQ 확장 여지 |
-| 1 | ~~[PLAN-008](plans/PLAN-008-scheme-independent-concepts.md)~~ — **PLAN-009 가 대체·완료** | **H2 실패의 원인을 찾았다: 우리가 개념을 코드 위에 정의했다.** `HBM = (H10B80 ∨ H10W90) ∧ H10W20/2xx` 는 전부 **2021년 이후 신설된 H10 코드**다 — 개념이 코드에 기생하면 코드보다 앞설 수 없다. 실측: 하이닉스 2010–15 출원 6,020건 중 **적층+관통전극을 함께 말한 특허 54건**이 있었는데 우리 HBM 개념은 **0건** 잡았다. 특허는 HBM 을 이름으로 부르지 않고(전 기간 4건) **구조로 말한다**. JEDEC 이 HBM 을 "TSV 로 연결된 적층 DRAM"으로 정의하듯, 개념도 **분류체계와 무관한 어휘**로 써야 한다. 외부 준거는 **DART 공시**(소급 수정되지 않는 당대 기록) |
+| 1 | ~~[PLAN-008](PLAN-008-scheme-independent-concepts.md)~~ — **PLAN-009 가 대체·완료** | **H2 실패의 원인을 찾았다: 우리가 개념을 코드 위에 정의했다.** `HBM = (H10B80 ∨ H10W90) ∧ H10W20/2xx` 는 전부 **2021년 이후 신설된 H10 코드**다 — 개념이 코드에 기생하면 코드보다 앞설 수 없다. 실측: 하이닉스 2010–15 출원 6,020건 중 **적층+관통전극을 함께 말한 특허 54건**이 있었는데 우리 HBM 개념은 **0건** 잡았다. 특허는 HBM 을 이름으로 부르지 않고(전 기간 4건) **구조로 말한다**. JEDEC 이 HBM 을 "TSV 로 연결된 적층 DRAM"으로 정의하듯, 개념도 **분류체계와 무관한 어휘**로 써야 한다. 외부 준거는 **DART 공시**(소급 수정되지 않는 당대 기록) |
 | 2 | **논문 §3.4.4 · §4.4 · §5.3 재작성** | H2 미지지 · **소급 재분류** · **개념의 코드 기생**을 그대로 쓴다. "코드 단위는 늦다"는 전제는 관측으로 반증됐다 — 가장 큰 수정 |
 | 3 | ~~**§4.5 강건성**~~ **완료 (2026-07-16)** — 패밀리 dedup(PLAN-011 · 표 9) · 출원인별 분리(PLAN-012 · 표 10) · **잔여 공백 23단계 성격(§4.5.3 · 표 11)** · **H1 증가폭 임계 민감도(§4.5.4 · 표 12)** · H2 신호 임계 27셀(기존). 원고 "25단계"→**23단계** 오류 교정 | §4.5 전 소절 채워짐 |
-| 4 | [PLAN-003 · Device→Process 브리지 · Product 레이어](plans/PLAN-003-device-market-layer.md) | PLAN-008 의 DART 준거와 별개로, 제품↔개념 브리지는 여전히 유효하다. **단 DART 매출은 준거가 못 된다**(실측: 삼성 "메모리" 한 줄 · 하이닉스 "DRAM, NAND Flash 등" 한 줄 — HBM 매출 항목 없음) |
+| 4 | [PLAN-003 · Device→Process 브리지 · Product 레이어](PLAN-003-device-market-layer.md) | PLAN-008 의 DART 준거와 별개로, 제품↔개념 브리지는 여전히 유효하다. **단 DART 매출은 준거가 못 된다**(실측: 삼성 "메모리" 한 줄 · 하이닉스 "DRAM, NAND Flash 등" 한 줄 — HBM 매출 항목 없음) |
 
 ### PLAN-004 · 신기술 인식 레이어 (H2 를 검정 가능하게 만든 작업)
 

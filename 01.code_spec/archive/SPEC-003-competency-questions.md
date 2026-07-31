@@ -1,20 +1,27 @@
 # SPEC-003 · 역량질문(CQ)과 §4.2 의 측정 지표
 
+> **⚠️ 아카이브 (2026-07-31 이동) — 역사 참조 · 인용 금지.** 이 문서는 CQ 배터리 **K=8** 시점의
+> 설계 근거이며, 수치는 두 세대 낡았다(현행 **28개**). 아래 표의 "RQ2(태스크 지원)"은 **구 패러다임
+> 라벨**로 v0.9 확증가설 H1–H5와 무관하다 — 재라벨 기준은 [../RECONCILIATION-v09.md](../RECONCILIATION-v09.md) §1.
+> **현행 CQ 계약의 정본은 [SPEC-004](../specs/SPEC-004-cq-derivation-protocol.md)**(도출 프로토콜)와
+> [CANONICAL-INDEX §1](../CANONICAL-INDEX.md)(서명 수치)이다. 이 문서는 "왜 처음에 8개였는가"의
+> 기록으로만 보존한다.
+
 | | |
 |---|---|
-| 지지하는 것 | RQ2 (태스크 지원) / 논문 §3.4.2 · §4.2 · 부록 A |
+| 지지하는 것 | **S1/S2(구 RQ2 "태스크 지원")** / 구 논문 §3.4.2 · §4.2 · 부록 A |
 | 구현 | `queries/cq/CQ01~CQ08.rq`, `src/sdkb_paper/validate/cq_runner.py` |
 | 검증 | `make cq` · `tests/test_baseline_integration.py::test_baseline_cq_signature` |
 
 > ⚠ **이 문서의 수치는 작성 시점(K=8) 값이며 두 세대 낡았다. 정본은 [CANONICAL-INDEX.md](../CANONICAL-INDEX.md) §1.**
-> ① CQ 배터리는 8 → 14 → 22 → **28**개로 확장됐다 — 현행 계약은 [SPEC-004](SPEC-004-cq-derivation-protocol.md).
+> ① CQ 배터리는 8 → 14 → 22 → **28**개로 확장됐다 — 현행 계약은 [SPEC-004](../specs/SPEC-004-cq-derivation-protocol.md).
 > ② 아래 before 값은 낡은 스냅샷 교정(C₀ 16→20) **이전** 값이다. 현재: **CQ01=20**(공백 CQ03=**29**),
 > **CQ06=58**. 이 문서의 16·33·61·29/51 은 역사 기록으로 남긴다(교정 경위는 STATUS "낡은 스냅샷" 블록).
 
 > **v0.9 프레임 (2026-07-26).** 현행 배터리는 **28개**이며 **네 스위트**로 나뉜다 — **pa**(선행기술조사·
 > RQ2 검색 유용성) · **em**(전문가매칭) · **tf**(기술예측) · **core**(공용 중심축). v0.9에서 em·tf·core는
 > **T-gate T3(교차 태스크 CQ 비회귀)의 감시 대상**이다(선행기술 검색 보강이 타 태스크를 훼손하지
-> 않음을 보증 · CLAUDE.md §5 · [SPEC-001](SPEC-001-validation-gate.md)). 아래 K=8 표의 "H1(커버리지)"·
+> 않음을 보증 · CLAUDE.md §5 · [SPEC-001](../specs/SPEC-001-validation-gate.md)). 아래 K=8 표의 "H1(커버리지)"·
 > "H2(시계열)"는 구 라벨 **S1·S2**로 읽는다([../RECONCILIATION-v09.md](../RECONCILIATION-v09.md) §1) —
 > v0.9 확증 가설 H1–H5와 다르다. 이 문서는 초기 K=8 설계 근거의 역사 기록이다.
 
@@ -60,7 +67,7 @@ CQ 는 **기술예측 태스크가 온톨로지에 요구하는 질문**에서 �
 - **CQ 집합의 완전성.** 8개가 기술예측 태스크를 남김없이 덮는다는 보장은 없다.
 - 🛑 **어휘의 검증.** 이 8개는 G₀ 어휘의 **9.4%**(술어 5/53) 만 심문한다 — "CQ 8/8 · 100%" 는
   **특허 축 하나**의 100% 다. 이 공백을 측정하는 지표와 CQ 도출 프로토콜은
-  [SPEC-004](SPEC-004-cq-derivation-protocol.md) 에 있다. **8개는 손으로 고른 것이고, 그것이
+  [SPEC-004](../specs/SPEC-004-cq-derivation-protocol.md) 에 있다. **8개는 손으로 고른 것이고, 그것이
   9.4% 를 낳았다.**
 
 ---

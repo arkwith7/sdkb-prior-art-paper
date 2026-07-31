@@ -109,5 +109,5 @@ SEL 42 · TSMC 29 · Toshiba 28 · AMAT 26 · LAM 19 — Organization 351개).
   → `data/profiles/kipris_samsung.md` (코드가 생성). 논문 **표 3** 의 원천.
 - `make gate` 통과. `graph_v1.ttl` 스냅샷 + MANIFEST 를 **한 커밋으로**.
 - G₁ 의 CQ 리포트(`cq_report_graph_v1.md`)로 §4.2 의 after 열을 만든다.
-  → 비교 대상은 [SPEC-003](../specs/SPEC-003-competency-questions.md) 의 G₀ before 값:
+  → 비교 대상은 [SPEC-003](SPEC-003-competency-questions.md) 의 G₀ before 값:
   CQ01=16 · CQ03=4 · CQ06=29 · CQ07=46 · CQ08=317
