@@ -103,9 +103,10 @@
 | 1 | **CR-007 상류 이관** — 텍스트→개념 매핑 규칙·사전(D-14·D-15·D-16) | 1·2·**3단계 완료(결정 4건 확정 2026-07-31)** → **상류 4단계 착수 가능** · 임계경로 선두 | [upstream/CR-007](../upstream/CR-007-concept-linking-rules.md) · [HANDOFF-QUEUE §1.3](../upstream/HANDOFF-QUEUE.md) |
 | 2 | **CR-004R 상류 이관** — 거절근거 조항 단위 구조화(D-06) | 하류 1·2·3단계 완료·승인 → **상류 4단계 착수 가능** | [upstream/CR-004](../upstream/CR-004-rejection-basis-structure.md) · [HANDOFF-QUEUE §1.1](../upstream/HANDOFF-QUEUE.md) |
 | 3 | **CR-005·CR-006 송부** — T-Box 논리 공리·SHACL 방향성(D-03·D-09) · 모듈 경계(D-13) | 1단계 완료 · 송부 가능 | CR-005 · CR-006 |
-| 4 | **CR-001·002·003** — 개념 해상도(P0)·계층(P0)·다국어(P0) | **보류** — CR-007 확정 후 개봉 | CR-001~003 |
-| 5 | **PLAN-031 동결 승인** — 제2 확증분할 200건 신규 수집 사전등록 | 초안 · **동결 승인대기 🛑** | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
-| 6 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) |
+| 4 | **CR-001A** — 개념 해상도 즉시분(P0 · 어휘 확장 0 · 전문 재추출) | 1·2·**3단계 완료(결정 4건 확정 2026-07-31)** → **CR-007 구현 후 실행** | [upstream/CR-001](../upstream/CR-001-concept-resolution.md) · [HANDOFF-QUEUE §1.4](../upstream/HANDOFF-QUEUE.md) |
+| 5 | **CR-002·003 · CR-001B** — 계층(P0)·다국어(P0)·어휘 수확 | **보류** — CR-001A 재검정 후 (단 `skos:broader`는 CR-007이 선착수) | CR-002·003 |
+| 6 | **PLAN-031 동결 승인** — 제2 확증분할 200건 신규 수집 사전등록 | 초안 · **동결 승인대기 🛑** | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
+| 7 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) |
 
 **왜 실험이 아니라 자원을 고치는가.** 개념 어휘 143개·문서당 1.55개라는 해상도에서 온톨로지 팔은
 40,552 문서를 3,292개 동치류로만 구분한다(동점블록 문서가중 중앙값 **670**). 이 해상도로는 깊은
