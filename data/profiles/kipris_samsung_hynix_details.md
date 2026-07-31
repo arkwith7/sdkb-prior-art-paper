@@ -55,4 +55,4 @@
 | `claim_count` | `ont:claimCount` — FTO 자기완결성 지표 (신고 대비 적재율) |
 | `application_number` | 특허 IRI 키 (`data:patent/kr_…`) — G₀→G₁ 주 대비축 |
 
-> **엣지 중립**: 이 데이터는 datatype 속성만 더한다 — `realizesProcess`·`concernsDevice` 엣지와 병합 특허 집합을 건드리지 않으므로 **H1 커버리지는 원리적으로 불변**이다 (회귀 테스트 `test_delta_details_are_edge_neutral`).
+> **엣지 중립**: 이 데이터는 datatype 속성만 더한다 — `realizesProcess`·`concernsDevice` 엣지와 병합 특허 집합을 건드리지 않으므로 **S1(구 H1) 커버리지는 원리적으로 불변**이다 (회귀 테스트 `test_delta_details_are_edge_neutral`).

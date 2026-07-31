@@ -2,11 +2,18 @@
 
 raw 데이터는 git 에 커밋하지 않는다. 모든 수집은 아래 표에 기록해 재현 가능하게 유지한다.
 
+> **⚠ 라벨 규약 (2026-07-31).** 이 문서는 **수집·조립 이력의 기록**이므로 각 행은 그 시점의 표현을
+> 그대로 보존한다. §1–§2 본문에 나오는 **"H1"·"H2"·"RQ3"는 전부 구 패러다임 라벨**이며 각각
+> **S1(커버리지)·S2(시계열)·S3(이식성)**으로 읽는다 — v0.9 확증가설 H1–H5(검증게이트·검색유용성·
+> 계층기여)와 **무관**하다(재라벨 기준 = [RECONCILIATION-v09 §1](../01.code_spec/RECONCILIATION-v09.md)).
+> 문서 후반의 2026-07-25 이후 이력(IR 코퍼스·family 지도·시점분할·기준선·표/그림 산출)이 v0.9
+> 기조의 기록이다. 서명 수치의 최종 판정은 [CANONICAL-INDEX §1](../01.code_spec/CANONICAL-INDEX.md).
+
 ## 1. 근간 온톨로지 스냅샷 (baseline)
 
 이 논문의 baseline 은 SDKB(semiconductor-knowledge-base)를 **특정 커밋에 얼려서** 가져온
 `data/external/sdkb/` 스냅샷이다. 살아있는 워킹트리를 참조하지 않는다 — baseline 이 움직이면
-H1(보강 전/후 커버리지 비교)이 재현되지 않기 때문이다.
+S1(구 H1 · 보강 전/후 커버리지 비교)이 재현되지 않기 때문이다. v0.9 에서도 같은 이유가 적용된다 — baseline 이 움직이면 게이트 기준선과 검색 결과가 함께 움직인다.
 
 주의: SDKB 의 `sdkb-core.ttl` / `sdkb-core-data.ttl` 은 SDKB repo 의 **.gitignore 대상(빌드 산출물)**
 이다. git 에 없으므로 submodule/pip 로는 가져올 수 없고, SDKB 쪽에서 `make owl convert` 로 생성한
@@ -109,7 +116,7 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 > 상대성장 규칙(θ × 직전 3년 평균)은 **두 팔에 대칭으로** 걸리므로 개념 vs 코드 **비교**는
 > 공정하지만, 절대 탐지 시점은 말뭉치 밀도에 영향을 받는다. §5.3 에 교란으로 적는다.
 
-### 2-1. CPC 분류 (BigQuery `patents-public-data`) — H2 의 대조군 (PLAN-007)
+### 2-1. CPC 분류 (BigQuery `patents-public-data`) — S2(구 H2) 의 대조군 (PLAN-007)
 
 | 일시 | 소스 | 쿼리 | 건수 | 저장 파일 | 쓰이는 곳 |
 |---|---|---|---:|---|---|

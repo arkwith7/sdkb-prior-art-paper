@@ -7,7 +7,7 @@
 |---|---|---|---|
 | application_number | 출원번호 (하이픈 제거, 키) | str | KIPRIS applicationNumber |
 | applicant_name | 출원인 명칭 | str | KIPRIS applicantName |
-| application_date | 출원일 — H2 시계열의 시간축 | datetime64[us] | KIPRIS applicationDate |
+| application_date | 출원일 — S2(구 H2) 시계열의 시간축 · v0.9 에서는 시점유효 컷(F10)의 기준 | datetime64[us] | KIPRIS applicationDate |
 | invention_title | 발명의 명칭 — 텍스트 매칭(HBM·EUV) 입력 | str | KIPRIS inventionTitle |
 | ipc_number | IPC 코드 원문 ('|' 구분) | str | KIPRIS ipcNumber |
 | abstract | 요약 — 텍스트 매칭 입력 | str | KIPRIS astrtCont |
@@ -30,7 +30,7 @@
 | 정규화 후 | 50,514 | 출원번호·출원일 결측 제거 |
 | 출원인 정확일치 후 | 47,500 | 계열사·타사 제외 (부분일치 부작용 제거) |
 | 출원번호 중복 제거 후 | 34,608 | 한 특허가 여러 IPC 클래스에 잡힌다 |
-| G₀ 겹침 제외 | −87 | SIRP 거절특허로 이미 G₀ 에 있음 (H1 오염 방지) |
+| G₀ 겹침 제외 | −87 | SIRP 거절특허로 이미 G₀ 에 있음 (S1 오염 방지) |
 | **정제 후 특허** | **34,521** | G₁ 병합 대상 |
 | └ 룰 매핑됨 | 24,065 (69.7%) | 개념 ≥1 — L1(델타) 통과 조건 |
 | └ 미매핑 | 10,456 | 룰의 한계로 탈락. 정직하게 보고한다 |
@@ -75,7 +75,7 @@
 | 2024 | 3,884 |  |
 | 2025 | 423 | ⚠ 미공개분 절단 추정 |
 
-> **최근 연도는 절단(truncation)되어 있다.** 특허는 출원 후 18개월이 지나야 공개되므로, 최근 2년의 출원 건수는 아직 다 드러나지 않았다. **감소가 아니라 미공개다.** H2 의 시계열은 이 구간을 추세 판단에서 제외하거나 절단을 명시해야 한다 (§4.4·§4.5).
+> **최근 연도는 절단(truncation)되어 있다.** 특허는 출원 후 18개월이 지나야 공개되므로, 최근 2년의 출원 건수는 아직 다 드러나지 않았다. **감소가 아니라 미공개다.** S2 의 시계열은 이 구간을 추세 판단에서 제외하거나 절단을 명시해야 한다 (§4.4·§4.5).
 
 ### IPC 클래스 상위 (질의 클래스 기준, 중복 계수)
 
@@ -104,10 +104,10 @@
 
 | 컬럼 | 논문에서 쓰이는 곳 |
 |---|---|
-| `application_date` | H2 시계열의 시간축 (§4.4). 공개일이 아니라 **출원일**이다 |
+| `application_date` | S2 시계열의 시간축(구 §4.4) · v0.9 에서는 시점유효 컷(F10)의 기준. 공개일이 아니라 **출원일**이다 |
 | `ipc_codes` | 룰 매핑 → `realizesProcess`/`concernsDevice` 트리플 (§3.3) |
 | `invention_title`·`abstract` | 텍스트 매칭 경로 — **HBM·EUV/DUV 는 IPC 로 안 갈린다** (§3.3) |
 | `applicant_name` | §4.5 출원인별 강건성 재검정 |
 | `application_number` | G₀ 중복 제거의 키. 특허 IRI 생성 |
-| `register_date`·`register_status` | **이번 검정에는 쓰지 않는다.** 등록 여부는 H1·H2 의 관측 단위가 아니다. 후속 연구(등록/거절 대비)를 위해 남긴다 |
+| `register_date`·`register_status` | **이번 검정에는 쓰지 않는다.** 등록 여부는 S1·S2 의 관측 단위가 아니다. 후속 연구(등록/거절 대비)를 위해 남긴다 |
 | `query_applicant`·`query_ipc` | 출처 추적 — 어느 질의가 이 행을 가져왔는가 |
