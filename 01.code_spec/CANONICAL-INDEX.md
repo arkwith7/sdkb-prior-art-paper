@@ -159,7 +159,7 @@
 | **CANONICAL (계약)** | `specs/SPEC-001·002·004~008` (§0.2) |
 | **REFERENCE** | `README.md` · `GLOSSARY-{ONTOLOGY,SEMICONDUCTOR,STATISTICS}.md` · `REF-001`(IP-R&D) · `TOOLING.md` |
 | **REPORT (실험 기록)** | `reports/M4-{실험결과-1차,실험파이프라인-설명,검색유용성-서술전략,확증결과-원고반영}.md` — **v0.9 §6 산출의 근거 기록**. "원고 반영"은 v0.9 §6 반영을 뜻한다 |
-| **PLAN — 살아 있는 계획 (7건)** | `plans/PLAN-017`(IR 벤치마크 데이터셋) · `PLAN-018`(검색·T-gate 하네스 사전등록 🟢) · `PLAN-019`(v0.9 완성도 원장) · `PLAN-025`(H1‴ 확증 사전등록 🔒 — C층이 문면 재사용) · `PLAN-027`(강한 밀집 기준선 — PLAN-029 B층에 흡수) · `PLAN-029`(재실험 로드맵 🛑) · `PLAN-031`(B층 수집 사전등록 🛑) |
+| **PLAN — 살아 있는 계획 (7건)** | `plans/PLAN-017`(IR 벤치마크 데이터셋) · `PLAN-018`(검색·T-gate 하네스 사전등록 🟢) · `PLAN-019`(v0.9 완성도 원장) · `PLAN-025`(H1‴ 확증 사전등록 🔒 — C층이 문면 재사용) · `PLAN-027`(강한 밀집 기준선 — PLAN-029 B층에 흡수) · `PLAN-029`(재실험 로드맵 🛑) · `PLAN-031`(B층 수집 사전등록 **🔒 동결**) |
 | **ARCHIVED (인용 금지)** | `archive/CANONICAL-INDEX-v05.md` · `archive/STATUS-v05.md` · `archive/AUDIT-2026-07-18.md`(구 v0.5 원고 감사 · 2026-07-31 이동) · `archive/SPEC-003-competency-questions.md`(2026-07-31 이동) · `archive/CR-004-full-analysis-2026-07-30.md` · **종결 PLAN 22건 → 아래 §3.1** |
 
 #### 3.1 종결 PLAN — 한 줄 요약 (2026-07-30 `plans/` → `archive/` 이동)
@@ -250,7 +250,7 @@
       ③ CR-005 ④ CR-006 ⑤ **CR-001A**(3단계 결정 4건 확정 2026-07-31 · 어휘 확장 0 ·
       CR-007 구현 후 실행 · IPC 승격 기각) ⑥ CR-002·CR-003 · CR-001B(어휘 수확 · 보류).
 - [ ] **재실험 (PLAN-029).** 상류 P0 3건(CR-001·002·003) 교정 → `make vendor` 새 스냅샷 →
-      **새 사전등록 아래 H3·H4·H5 재확증**. 제2 확증분할 200건 신규 수집 = [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md)(동결 승인대기 🛑).
+      **새 사전등록 아래 H3·H4·H5 재확증**. 제2 확증분할 200건 신규 수집 = [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md)(**🔒 동결 2026-07-31** · IPC 21종·B2′=bge-m3·파일럿 500콜).
 - [ ] **H2 최초 검정의 전제.** D-12가 해소되어 **문서집합 불변·링크만 바뀐 델타 릴리스**가 나오기
       전까지 H2는 원리적으로 검정 불가다. 자격 없는 델타로 "지지"를 만들지 않는다(CLAUDE.md §1-2).
 - [ ] **B7 후속(잔여).** 산출 파일명·figures 출력 경로의 S-시리즈 재라벨 (`h1_*.md` → `s1_*.md` 등) —

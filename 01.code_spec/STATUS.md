@@ -105,7 +105,7 @@
 | 3 | **CR-005·CR-006 송부** — T-Box 논리 공리·SHACL 방향성(D-03·D-09) · 모듈 경계(D-13) | 1단계 완료 · 송부 가능 | CR-005 · CR-006 |
 | 4 | **CR-001A** — 개념 해상도 즉시분(P0 · 어휘 확장 0 · 전문 재추출) | 1·2·**3단계 완료(결정 4건 확정 2026-07-31)** → **CR-007 구현 후 실행** | [upstream/CR-001](../upstream/CR-001-concept-resolution.md) · [HANDOFF-QUEUE §1.4](../upstream/HANDOFF-QUEUE.md) |
 | 5 | **CR-002·003 · CR-001B** — 계층(P0)·다국어(P0)·어휘 수확 | **보류** — CR-001A 재검정 후 (단 `skos:broader`는 CR-007이 선착수) | CR-002·003 |
-| 6 | **PLAN-031 동결 승인** — 제2 확증분할 200건 신규 수집 사전등록 | 초안 · **동결 승인대기 🛑** | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
+| 6 | **PLAN-031 B층 수집 착수** — 제2 확증분할 200건 | **🔒 사전등록 동결(2026-07-31 승인)** → 파일럿 500콜부터. CR-007과 독립 | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
 | 7 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) |
 
 **왜 실험이 아니라 자원을 고치는가.** 개념 어휘 143개·문서당 1.55개라는 해상도에서 온톨로지 팔은
