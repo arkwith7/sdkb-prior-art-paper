@@ -17,6 +17,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 
 import pytest
 from rdflib import RDF, URIRef
@@ -489,8 +490,10 @@ def test_verify_freshness_rejects_stale_derived_graph(tmp_path):
 
 def test_vendor_verify_cli_exits_zero():
     """`make snapshot` 이 부르는 CLI. SDKB 원본 없이 동작해야 CI 에서 돈다."""
+    # `python` 이 PATH 에 없는 환경(venv 활성화 없이 pytest 실행 등)이 실제로 있다.
+    # 인터프리터는 지금 이 테스트를 돌리는 것과 같은 것을 쓴다.
     r = subprocess.run(
-        ["python", "-m", "sdkb_paper.ontology.vendor", "--verify"],
+        [sys.executable, "-m", "sdkb_paper.ontology.vendor", "--verify"],
         capture_output=True, text=True,
     )
     assert r.returncode == 0, r.stderr

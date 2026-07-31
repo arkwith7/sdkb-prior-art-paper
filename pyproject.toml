@@ -18,11 +18,16 @@ dependencies = [
 
 [project.optional-dependencies]
 bq = ["google-cloud-bigquery>=3.19", "db-dtypes"]
-dev = ["pytest>=8.0", "ruff>=0.4", "jupyter"]
 # IR 검색 하네스 (PLAN-017 §8.4 · PLAN-018): BM25 nori + FAISS flat Dense + RRF.
 # boto3 = Bedrock (Titan Embed v2 임베딩 · Haiku 4.5 질의 번역). faiss-cpu = flat 정확검색
 # (40k×1024 밀리초 · ablation 오염 없음). GPU faiss는 40k 규모에 이득 미미 → CPU 정본.
 ir = ["pyserini>=0.22", "faiss-cpu>=1.8", "boto3>=1.34", "kiwipiepy>=0.20"]
+
+# 개발 도구는 PEP 735 dependency-group 이다 — `uv run`/`uv sync` 가 **자동으로** 넣는다.
+# optional-dependencies("extra")에 두면 `uv run pytest` 가 pytest 를 못 찾는다(extra 는 명시
+# 요청해야 설치됨). 실제로 `make test` 가 "Failed to spawn: pytest" 로 죽어 있었다(2026-07-31).
+[dependency-groups]
+dev = ["pytest>=8.0", "ruff>=0.4", "jupyter"]
 
 [build-system]
 requires = ["hatchling"]
