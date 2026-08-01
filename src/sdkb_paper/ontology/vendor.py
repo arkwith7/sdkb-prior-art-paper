@@ -56,6 +56,18 @@ VENDOR_FILES: list[tuple[str, str]] = [
 SOURCE_JSON = "data/semiconductor_v0_3.json"
 SCHEMA_REPORT = "data/schema_report.json"
 
+# 특허 전문을 담아 gitignore 되는 스냅샷 (CLAUDE.md §1-5). verify_snapshot 은 이 파일들의
+# **부재만** 관용한다 — 신선한 클론·CI 에는 정당하게 없기 때문이다(논문 §7.2 재현성 주장).
+#
+# **왜 상수인가.** 이 플래그는 2026-07-30(04ab68b)에 PROVENANCE.json 에 **손으로** 들어갔고,
+# vendor() 는 그것을 쓸 줄 몰랐다. 그래서 다음 `make vendor`(fa16f2f)가 플래그를 조용히
+# 지웠고, 신선한 클론의 L0 는 다시 깨졌다 — 통합 테스트가 2026-08-01 에 그것을 잡았다.
+# 사람이 넣은 메타데이터는 다음 재생성에서 사라진다. 코드가 박아야 남는다.
+LICENSE_RESTRICTED: frozenset[str] = frozenset({
+    "sdkb-abox-patents.ttl",      # SIRP 거절특허 1,000건 (청구항·초록 원문)
+    "sdkb-abox-prior-art.ttl",    # 심사관 인용 선행기술 3,034 노드
+})
+
 # --- 파생 스냅샷: 거절근거 법조 (원고 §5.2·§6.4 하위집단 라벨 전용) --------------------
 #
 # 왜 파생인가: 상류 `data/patents/rejected_patents_meta.parquet` 은 title/abstract/claim1 원문을
@@ -376,7 +388,10 @@ def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
     for rel, role in VENDOR_FILES:
         out = dest / Path(rel).name
         shutil.copy2(sdkb_home / rel, out)
-        files.append({"file": out.name, "source_path": rel, "role": role, "sha256": sha256(out)})
+        entry = {"file": out.name, "source_path": rel, "role": role, "sha256": sha256(out)}
+        if out.name in LICENSE_RESTRICTED:
+            entry["license_restricted"] = True
+        files.append(entry)
 
     derived = _derive_rejection_basis(sdkb_home, dest)
     if derived is not None:

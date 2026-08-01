@@ -26,10 +26,14 @@ def test_domain_map_is_small_enough_to_render() -> None:
 
 
 def test_domain_map_covers_every_step() -> None:
-    """H1 의 관측 단위 49개가 하나도 빠지지 않아야 한다 — 빠지면 지도가 거짓말을 한다."""
+    """관측 단위가 하나도 빠지지 않아야 한다 — 빠지면 지도가 거짓말을 한다.
+
+    구 스냅샷에서 49, 상류 2839afb 에서 50(신규 plasma_processing). 세대 기록은
+    tests/test_baseline_integration.py 의 SNAPSHOT_OBSERVATIONS 가 정본이다.
+    """
     d = viewer.domain_map("v0")
     steps = [n for n in d["nodes"] if n["cls"] in ("Process", "SubProcess")]
-    assert len(steps) == 49
+    assert len(steps) == 50
     assert len([n for n in d["nodes"] if n["cls"] == "Device"]) == 34
 
 

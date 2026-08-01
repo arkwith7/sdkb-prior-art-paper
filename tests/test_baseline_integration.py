@@ -36,7 +36,33 @@ from sdkb_paper.validate.vocab_coverage import measure
 # 얼린 스냅샷이 만들어내는 G₀ 의 서명.
 # 스냅샷을 의도적으로 갱신하면 이 숫자들이 바뀐다 — 그때는 data/MANIFEST.md 의 표와
 # 논문 §2.4 표 2 를 함께 고쳐야 한다. 그 강제가 이 상수의 존재 이유다.
-EXPECTED_TRIPLES = 105588   # 2026-07-23 미반영 SDKB 온톨로지 전량 반영(사용자 결정): 선행기술 ABox
+#
+# --- 스냅샷 세대별 관측 (2026-08-01 · CLAUDE.md §1-3 · §2.1) ------------------
+# **구 값을 덮어쓰지 않고 세대별로 남긴다.** 새 스냅샷 위의 측정은 새 실험이고(§2.1),
+# 구 판정은 소급 수정하지 않는다(§1-3) — v0.9 §6 과 v1.0/v1.1 이 인용하는 것은 "교정 전
+# 자원에서의 관측"이므로 그 값이 인용 가능한 채로 남아야 한다.
+#
+# 상류 2839afb 스냅샷(CR-007 반영)에서 움직인 것:
+#   트리플 105,588 → 105,713 (+125 · skos:broader T-Box 선언 등)
+#   Process 11 → 12 — 신규 `data:process/plasma_processing`. **특허가 0건**이라
+#   공정 단계 49 → 50 이고 공백도 29 → 30 이다. **커버 20 은 불변** — S1 의 분자는
+#   움직이지 않았고 분모만 늘었다. IPC/CPC 매핑 규칙도 83 → 84 로 함께 늘었다.
+#
+# 이 성장이 D-19 의 반증이 아니라 **확증**이다: 개념층은 실제로 자랐는데
+# `ir_corpus_v09.parquet` 의 sha256 은 바이트 단위로 동일했다(ec5ea51b626d3ff9).
+# 자원은 움직였고 검색 파이프라인만 그것을 읽지 않았다.
+SNAPSHOT_OBSERVATIONS = {
+    # 구 스냅샷(≤ 83fd494) — 보존용. 테스트가 검사하지 않는다.
+    "pre_remediation": {"triples": 105588, "process": 11, "subprocess": 38, "device": 34,
+                        "steps": 49, "covered": 20, "uncovered": 29, "mapping_rules": 83},
+    # 현행 스냅샷(상류 2839afb · 스냅샷 서명 b98ad787d1fe) — 아래 EXPECTED_* 의 원천.
+    "current": {"triples": 105713, "process": 12, "subprocess": 38, "device": 34,
+                "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
+}
+_CURRENT = SNAPSHOT_OBSERVATIONS["current"]
+
+EXPECTED_TRIPLES = _CURRENT["triples"]
+                            # 2026-07-23 미반영 SDKB 온톨로지 전량 반영(사용자 결정): 선행기술 ABox
                             # (CitedPatent 3,034 + 개념링크 realizesProcess/concernsDevice/involvesMaterial)
                             # · 상용화(TRL) · 자원기반관점(RBV)을 G₀ 에 편입. 49,307 → 105,588.
                             # **선행기술조사 정답지 도달성 0%→95.3%(노드)**. 개념링크는 정의별 곡선 —
@@ -71,9 +97,10 @@ EXPECTED_TRIPLES_LEGACY = 49307  # 2026-07-23 청구항-feature·거절판단 �
                             # −33: 역할별로 갈라져 있던 회사 노드 11쌍이 organization/ 하나로
                             # 접혔다 (data:org/samsung_electronics 등은 assignedTo in-edge 가
                             # 0 이었으므로 **특허 엣지는 한 건도 움직이지 않았다** — C₀ 불변).
-EXPECTED_PROCESS = 11       # SemiKong Table 7 의 L1 그룹 10개 (Patterning 이 리소/식각 둘로 갈림)
-EXPECTED_SUBPROCESS = 38    # Table 7 의 L2 모듈 + SDKB 고유 유닛
-EXPECTED_DEVICE = 34        # H2 의 개념 축은 Process ∪ Device (HBM·GAA 는 Device 다)
+EXPECTED_PROCESS = _CURRENT["process"]      # 구 11 (SemiKong Table 7 의 L1 그룹 10개 · Patterning
+                            # 이 리소/식각 둘로 갈림) + plasma_processing 1 = 12
+EXPECTED_SUBPROCESS = _CURRENT["subprocess"]  # Table 7 의 L2 모듈 + SDKB 고유 유닛
+EXPECTED_DEVICE = _CURRENT["device"]        # H2 의 개념 축은 Process ∪ Device (HBM·GAA 는 Device 다)
 EXPECTED_PATENTS = 1000     # SIRP 거절특허 — G₀ 는 "현행 SDKB" 다 (특허 0건이 아니다)
                             # 인용문헌 3,763건은 ont:Patent 로 타입하지 않는다 (서지가 없다)
 
@@ -95,8 +122,8 @@ EXPECTED_PATENTS = 1000     # SIRP 거절특허 — G₀ 는 "현행 SDKB" 다 (
 # 복원된 단계가 G₀ 에서 비어 있다는 구조적 편향은 여전하다 — 그래서 논문은 H1 을 **두 집합으로
 # 보고한다**: 확장 집합(49)과 기존 집합(20). 독자가 "새로 추가한 단계 덕분에 산 결과인가"를
 # 직접 판별할 수 있어야 한다 (§4.5).
-EXPECTED_COVERED_STEPS = 20
-EXPECTED_UNCOVERED_STEPS = 29
+EXPECTED_COVERED_STEPS = _CURRENT["covered"]      # 20 — 새 스냅샷에서도 불변
+EXPECTED_UNCOVERED_STEPS = _CURRENT["uncovered"]  # 구 29 → 30 (plasma_processing 은 특허 0건)
 
 # G₀ 의 CQ 서명 — 논문 §4.2 의 before 열.
 #
@@ -118,7 +145,9 @@ CQ_MUST_ANSWER = {
 # 응답하지 못하면 온톨로지 결함이지 "G₁ 이 고칠 CQ" 가 아니다 (SPEC-004 §6).
 
 # 완전성 지표의 before 값. G₁ 과 비교되는 수치이므로 여기서 고정한다.
-EXPECTED_CONCEPTS_WITHOUT_RECENT = 58   # CQ06 — 개념 83개 중 2021년 이후 출원 전무 (구 61)
+EXPECTED_CONCEPTS_WITHOUT_RECENT = 59   # CQ06 — 개념 84개 중 2021년 이후 출원 전무.
+                            # 구 58(개념 83 · 그 전 61). +1 은 신규 plasma_processing 이며
+                            # 특허가 0건이라 "최근 출원 없음"에 그대로 들어온다.
 EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴리오 분석에 쓸 수 없다
 
 # G₀ 의 **어휘 검증 커버리지** 서명 (논문 §3.4.2 지표 ii · §4.2 · SPEC-004).
@@ -425,6 +454,25 @@ def test_verify_snapshot_tolerates_absent_license_restricted(tmp_path):
     assert not any("sdkb-abox-prior-art.ttl" in p for p in problems), problems
     # 부재는 실패가 아니지만 조용하지도 않다 — 별도 창구로 표면화된다.
     assert "sdkb-abox-prior-art.ttl" in license_restricted_absences(fake)
+
+
+def test_license_restricted_flag_comes_from_code_not_from_hand():
+    """플래그는 **코드가** 박아야 한다 — 손으로 넣은 메타데이터는 다음 vendor 에서 사라진다.
+
+    2026-08-01 실측: 04ab68b 가 PROVENANCE.json 에 손으로 넣은 license_restricted 2건이
+    다음 `make vendor`(fa16f2f)에서 조용히 지워졌고, 신선한 클론/CI 의 L0 가 다시 깨졌다.
+    """
+    from pathlib import Path
+
+    from sdkb_paper.ontology.vendor import LICENSE_RESTRICTED, VENDOR_FILES
+
+    vendored = {Path(rel).name for rel, _role in VENDOR_FILES}
+    assert LICENSE_RESTRICTED <= vendored, "vendor 대상이 아닌 파일에 플래그를 걸 수 없다"
+
+    prov = json.loads((EXTERNAL_SDKB / "PROVENANCE.json").read_text(encoding="utf-8"))
+    flagged = {e["file"] for e in prov["files"] if e.get("license_restricted")}
+    assert flagged == set(LICENSE_RESTRICTED), (
+        f"스냅샷의 플래그가 코드 상수와 다르다: {flagged} vs {set(LICENSE_RESTRICTED)}")
 
 
 def test_verify_snapshot_still_catches_tampered_license_restricted(tmp_path):

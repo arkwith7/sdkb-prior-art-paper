@@ -104,7 +104,9 @@ def code_signature() -> dict:
         except (OSError, subprocess.CalledProcessError):
             return None
 
-    status = _git("status", "--porcelain")
+    # 추적되지 않는 파일(데이터 산출물·매니페스트 자신)은 코드 변경이 아니다 — 세면 모든
+    # 동결이 dirty 가 되어 E4 가 영구히 실격을 낸다.
+    status = _git("status", "--porcelain", "--untracked-files=no")
     return {"commit": _git("rev-parse", "HEAD"), "dirty": bool(status) if status is not None else None}
 
 

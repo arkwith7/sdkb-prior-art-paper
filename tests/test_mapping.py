@@ -138,7 +138,9 @@ def test_rule_coverage_spans_both_axes(baseline: Graph):
     """커버리지 리포트는 개념 축 전체(Process ∪ Device)를 봐야 한다 — 한 축만 보면 사각지대가 숨는다."""
     df = rule_coverage(baseline)
     assert set(df.index.get_level_values("level")) == {"process", "subprocess", "device"}
-    assert len(df) == 83  # Process 11 + SubProcess 38 + Device 34
+    # 상류 2839afb 스냅샷: Process 12(구 11 + plasma_processing) + SubProcess 38 + Device 34.
+    # 구 값 83 은 교정 전 자원에서의 관측이다(tests/test_baseline_integration.py 세대 기록).
+    assert len(df) == 84
 
 
 def test_rule_coverage_flags_euv_duv_gap(baseline: Graph):

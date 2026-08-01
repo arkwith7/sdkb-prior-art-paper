@@ -419,3 +419,24 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
 - 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성)
 - 반영: C2 입력 · 논문 §5–6
+
+## 2026-08-01 · PROVENANCE 메타데이터 복원 (license_restricted 2건) — **파일 해시 무변경**
+- 조작: `data/external/sdkb/PROVENANCE.json` 의 `sdkb-abox-patents.ttl`·`sdkb-abox-prior-art.ttl`
+  항목에 `license_restricted: true` 를 되돌림. **TTL 은 한 바이트도 건드리지 않았다** —
+  파일별 sha256 17종 전량 불변 · 스냅샷 서명 `b98ad787d1fe` 불변 · `--verify` 17/17 통과
+- 사유: 이 플래그는 04ab68b 에서 **손으로** 들어갔고 `vendor()` 는 그것을 쓸 줄 몰랐다.
+  그래서 다음 `make vendor`(fa16f2f)가 조용히 지웠고, 특허 전문 TTL 2종이 gitignore 되는
+  신선한 클론·CI 에서 L0 가 다시 깨졌다(논문 §7.2 "상류 없이 재현 가능" 주장이 걸린 지점)
+- 재발 방지: `vendor.LICENSE_RESTRICTED` 상수를 신설해 **코드가** 플래그를 박는다 +
+  회귀 테스트 `test_license_restricted_flag_comes_from_code_not_from_hand`
+- 사용자 승인: 2026-08-01 (선택지 "메타데이터만 직접 복원")
+
+## 2026-08-01 · G₀ 관측 서명 세대 갱신 (상류 2839afb 스냅샷)
+- 트리플 105,588 → **105,713**(+125) · Process 11 → **12**(신규 `data:process/plasma_processing`)
+- 공정 단계 49 → **50** · 커버 **20 불변** · 공백 29 → **30** · 매핑 규칙 83 → **84** ·
+  CQ06 58 → **59**
+- 처리: 구 값을 덮어쓰지 않고 `tests/test_baseline_integration.py::SNAPSHOT_OBSERVATIONS` 에
+  `pre_remediation` / `current` 두 세대로 분리 기록(CLAUDE.md §1-3 소급 수정 금지 · §2.1)
+- **D-19 확증**: 개념층은 이만큼 자랐는데 `ir_corpus_v09.parquet` sha256 은 `ec5ea51b626d3ff9`
+  로 바이트 단위 동일했다 — 자원은 움직였고 검색 파이프라인만 읽지 않았다
+- 미처리(다음 결정 대상): CANONICAL-INDEX §1 정본 서명 체인은 아직 G₀=105,588 이다
