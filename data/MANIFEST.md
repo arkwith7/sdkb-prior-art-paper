@@ -456,3 +456,10 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
     델타유형표의 **유형 ① = H2 자격 있음**. 단 D-19 로 하류가 읽지 않아 **여전히 미검정**
   - **세대 불일치**: `graph_v1/v2.ttl` 은 2026-07-23 산출물이라 구 G₀(105,588) 위에 있다.
     `make merge` 재실행은 IR 후보 코퍼스 서명을 바꾸므로 **§2.1 사전등록 동결이 선행한다**
+
+## 2026-08-01T12:29:15.456393+00:00 · IR 코퍼스 조립 (PLAN-017 M1)
+- 명령: `make corpus` (`python -m sdkb_paper.corpus.assemble`)
+- ir_corpus_v09.parquet: 40,552 행 · sha256 `ec5ea51b626d3ff9`
+- qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
+- 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성) + 개념 사전 없음(적용기 무작동)
+- 반영: C2 입력 · 논문 §5–6

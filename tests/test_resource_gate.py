@@ -114,6 +114,47 @@ def test_code_change_is_ineligible(mut):
     assert r["verdict"] == RS.VERDICT_INELIGIBLE
 
 
+# --- E4 dirty 범위 (2026-08-01 · 사용자 승인 · 사전등록 동결 전 변경) ---------
+
+def test_dirty_scope_is_code_paths_only():
+    """dirty 판정의 범위는 **코드 경로**다. `data/` 는 자원이지 코드가 아니다.
+
+    O 팔은 정의상 `data/external/sdkb/` 를 구 스냅샷으로 되돌린 상태로 동결된다. 범위가
+    트리 전체면 O 팔은 영구히 dirty 이고 E4 가 자원 델타 측정 자체를 불가능하게 만든다.
+    """
+    assert RS.CODE_PATHS == ("src", "tests", "Makefile", "pyproject.toml", "uv.lock")
+    assert not any(p.startswith("data") for p in RS.CODE_PATHS)
+
+
+def test_code_signature_passes_scope_to_git(monkeypatch):
+    """`git status` 호출이 실제로 코드 경로로 한정되는가 — 주석이 아니라 인자를 검사한다."""
+    seen: list[list[str]] = []
+
+    class _R:
+        stdout = ""
+
+    def _fake_run(cmd, **kw):
+        seen.append(list(cmd))
+        return _R()
+
+    monkeypatch.setattr(RS.subprocess, "run", _fake_run)
+    sig = RS.code_signature()
+    status_cmd = next(c for c in seen if "status" in c)
+    assert status_cmd[-len(RS.CODE_PATHS):] == list(RS.CODE_PATHS)
+    assert "--" in status_cmd
+    assert sig["dirty"] is False
+    assert sig["dirty_scope"] == list(RS.CODE_PATHS)
+
+
+def test_code_dirty_still_disqualifies(monkeypatch):
+    """범위를 좁혔다고 안전장치가 사라지지 않는다 — src/ 가 더러우면 여전히 미검정이다."""
+    class _R:
+        stdout = " M src/sdkb_paper/retrieval/hybrid.py"
+
+    monkeypatch.setattr(RS.subprocess, "run", lambda cmd, **kw: _R())
+    assert RS.code_signature()["dirty"] is True
+
+
 def test_split_mismatch_is_ineligible():
     old = _mf("O", snap_sig="aaa", pipe_sig="ppp", split="dev")
     new = _mf("O2", snap_sig="bbb", pipe_sig="qqq", split="test")

@@ -95,8 +95,20 @@ def qrel_signature() -> dict:
     return out
 
 
+# E4(동일 코드)가 보는 경로. **자원·산출물은 코드가 아니다.**
+# 왜 좁히는가(2026-08-01 · 사용자 승인): O 팔의 정의 자체가 git 추적 파일인
+# `data/external/sdkb/` 를 구 스냅샷으로 되돌린 상태다. 트리 전체를 보면 O 팔은 동결 시점에
+# 반드시 dirty 이고 E4 가 영구히 실격을 내, 자원 델타를 재는 일이 원리적으로 불가능해진다.
+# E4 가 묻는 것은 "두 팔이 같은 코드로 돌았는가"이고, 자원 교체는 팔의 정의 그 자체다.
+CODE_PATHS: tuple[str, ...] = ("src", "tests", "Makefile", "pyproject.toml", "uv.lock")
+
+
 def code_signature() -> dict:
-    """코드 상태 — 코드가 바뀌면 그것은 재측정이 아니라 새 방법이다(CLAUDE.md §2.1 안전장치)."""
+    """코드 상태 — 코드가 바뀌면 그것은 재측정이 아니라 새 방법이다(CLAUDE.md §2.1 안전장치).
+
+    dirty 는 **`CODE_PATHS` 안의 tracked 변경**만 센다. 추적되지 않는 파일(데이터 산출물·
+    프로파일)과 `data/` 아래의 자원·산출물 변경은 코드 변경이 아니다.
+    """
     def _git(*args: str) -> str | None:
         try:
             return subprocess.run(["git", *args], cwd=config.ROOT, capture_output=True,
@@ -104,10 +116,10 @@ def code_signature() -> dict:
         except (OSError, subprocess.CalledProcessError):
             return None
 
-    # 추적되지 않는 파일(데이터 산출물·매니페스트 자신)은 코드 변경이 아니다 — 세면 모든
-    # 동결이 dirty 가 되어 E4 가 영구히 실격을 낸다.
-    status = _git("status", "--porcelain", "--untracked-files=no")
-    return {"commit": _git("rev-parse", "HEAD"), "dirty": bool(status) if status is not None else None}
+    status = _git("status", "--porcelain", "--untracked-files=no", "--", *CODE_PATHS)
+    return {"commit": _git("rev-parse", "HEAD"),
+            "dirty": bool(status) if status is not None else None,
+            "dirty_scope": list(CODE_PATHS)}
 
 
 def tbox_counts(prov: Path | None = None) -> dict:
