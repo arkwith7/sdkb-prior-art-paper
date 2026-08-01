@@ -162,6 +162,10 @@ B_BUDGET_REPORT = B_LAYER_DIR / "call_budget.json"
 # 봉인 qrel. 파일럿 단계에서 **어떤 코드도 읽지 않는다**(PLAN-032 §1 성공기준 ⑤).
 B_QREL_SEALED = IR_DIR / "qrel_b_sealed.parquet"
 B_LAYER_PROFILE = DATA / "profiles" / "ir_split_b_pilot.md"   # §4 데이터 프로파일(커밋)
+# KR 출원번호 → DOCDB family 지도. BigQuery 스캔은 **쿼리당 5.22 GB 고정**이고 파라미터
+# 개수와 무관하다(2026-08-01 dry-run 실측) — 후보 1건마다 조회하면 같은 5.22 GB 를 수백 번
+# 다시 낸다. 1회 적재해 재사용한다. §5.1 ③ "배치 조회"의 집행이며 판정 규칙은 불변이다.
+B_LAYER_KR_FAMILY_MAP = INTERIM / "kr_family_map.parquet"
 
 # --- T-gate 승인 규칙 (v0.9 · PLAN-019 W3 · 원고 §4.9) ---------------------
 # Accept(ΔG) = 1[L0=L1=L2=L3=pass] · 1[LB95(ΔR100) > −ε]_T1 · 1[max_s Drop_s < δ]_T2

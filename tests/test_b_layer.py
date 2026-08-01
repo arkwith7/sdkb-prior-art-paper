@@ -177,6 +177,30 @@ def test_t5_family_undecidable_is_excluded():
     assert screen_family("FAM_NEW", CTX).passed
 
 
+def test_t5b_map_lookup_matches_resolve_semantics(tmp_path, monkeypatch):
+    """지도 조회는 `resolve_families` 와 **같은 규약**이어야 한다 — 미조인은 `None`.
+
+    BigQuery 는 호출하지 않는다. 캐시 parquet 가 있으면 무조회로 재생되는 것도 함께 잰다
+    (조회 1회 원칙 · 파일럿 도중 지도가 바뀌면 배제 1의 판정이 흔들린다).
+    """
+    import pandas as pd
+
+    from sdkb_paper.collect.b_layer import family as family_mod
+
+    cache = tmp_path / "kr_family_map.parquet"
+    pd.DataFrame({"bq_app": ["20050000001"], "family_id": ["FAM_1"]}).to_parquet(cache)
+
+    def _no_bq(*_a, **_k):
+        raise AssertionError("캐시가 있는데 BigQuery 를 호출했다")
+
+    monkeypatch.setattr("sdkb_paper.collect.bq_family_ir._client", _no_bq)
+    kr_map = family_mod.load_kr_family_map(cache)
+
+    assert family_mod.resolve_from_map("1020050000001", kr_map) == "FAM_1"
+    assert family_mod.resolve_from_map("1020050000002", kr_map) is None   # 미조인 = 판정 불능
+    assert family_mod.resolve_from_map("US20190348292", kr_map) is None   # 비-KR 형식
+
+
 # --- 드라이버 픽스처 ------------------------------------------------------
 
 @pytest.fixture

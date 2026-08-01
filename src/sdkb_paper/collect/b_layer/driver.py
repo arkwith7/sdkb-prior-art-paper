@@ -348,14 +348,17 @@ def main() -> int:
 
     ctx = build_context()
     if args.dry_run:
-        family_mod.resolve_families(["1020200000000"], dry_run=True)
+        family_mod.load_kr_family_map(dry_run=True)
         print(f"A층 배제: 출원번호 {len(ctx.a_layer_apps):,} · 패밀리 {len(ctx.a_layer_families):,}")
         return 0
 
     client = KiprisClient(cache_db=B_LAYER_CACHE)
     budget = Budget(max_search=args.max_search, max_detail=args.max_detail,
                     max_audit=args.max_audit)
-    fam_cache: dict[str, str | None] = {}
+    # 패밀리 지도는 **수집 시작 전 1회** 적재한다 — 후보별 조회는 파라미터와 무관한 5.22 GB 를
+    # 매번 다시 스캔하고(dry-run 실측), 조회 횟수에 예산 계정이 없어 상한이 없다.
+    kr_map = family_mod.load_kr_family_map()
+    print(f"KR 패밀리 지도 {len(kr_map):,}건 적재")
 
     page_of: dict[str, int] = {}
 
@@ -378,9 +381,7 @@ def main() -> int:
             raise
 
     def resolve_family(app: str) -> str | None:
-        if app not in fam_cache:
-            fam_cache.update(family_mod.resolve_families([app]))
-        return fam_cache.get(app)
+        return family_mod.resolve_from_map(app, kr_map)
 
     report, accepted = run(
         fetch_page=fetch_page, fetch_detail=fetch_detail, resolve_family=resolve_family,

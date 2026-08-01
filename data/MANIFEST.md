@@ -329,3 +329,41 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - **원문 데이터 미저장**: 응답은 메모리 내 집계만 하고 raw 를 저장·커밋하지 않았다(CLAUDE §1-5).
   scratchpad 산출물은 집계 JSON뿐
 - 반영: PLAN-032 §2.5·§2.6 (2단계 분석 · C2 재확증 전제)
+
+## 2026-08-01 · PLAN-032 5단계 — B층 파일럿 수집 실행 (**목표 200건 도달 · 개봉 안 함**)
+- 명령: `python -m sdkb_paper.collect.b_layer` (기본 캡 target=200 · detail 500 · search 300 · audit 50)
+- 오퍼레이션: `getAdvancedSearch` · `getBibliographyDetailInfoSearch`
+  (`plus.kipris.or.kr/kipo-api/kipi/patUtiModInfoSearchSevice`)
+- 검색식: `ipcNumber={21종 각각}` · `applicationDate=20050101~20251231` · `sortSpec=AD` ·
+  `descSort=false` · `numOfRows=500` · `patent=true&utility=false`
+- **호출 회계(4계정 분리 · §1 동결)**: search **25** · detail **335** · audit **50** · notice **0** ·
+  `quota_hit=false` (전 호출 `resultCode=00` — 할당초과 실물은 이번에도 관측되지 않음)
+- 정지 사유: `target_reached` (detail 캡 500 중 335 소비 · search 캡 300 중 25 소비)
+- 건수: 스크리닝 원장 **4,331행**(free 3,946 · detail 335 · audit 50) · 고유 출원번호 **4,281** ·
+  **채택 200건**(전건 `register_status=거절` · claim1 결측 0) · 봉인 qrel **390행 / 질의 200**
+- 비율(Wilson 95 % CI · 결정 B): `r_free` 0.0783 [0.0706, 0.0867] (335/4,281) ·
+  `r_family` 1.0000 [0.9887, 1.0000] (335/335) · **`r` 0.5970 [0.5437, 0.6482] (200/335)**
+- 감사(결정 E · `r` 분모 제외): `status_not_rejected` 배제분 앞에서부터 50건 전건 확인 →
+  **위음성 0/50 · 0.0000 [0.0000, 0.0713]** — "검색 `registerStatus` = 포함 1" 가정이 지지됨
+- 배제 1·2 확인: 채택 200건 ∩ A층 출원번호 1,000 = **0** · ∩ A층 패밀리 959 = **0**
+- 채택분 출원일 범위 **20050103 ~ 20050228**(전건 2005년 1–2월).
+  PLAN-031 §3의 "출원일 오름차순 앞에서부터"의 직접 귀결이다 — A층(1997–2025)과 시기 분포가
+  다르므로 **A층 test 결과와 직접 비교하지 않는다**(프로파일 §3.3 경고와 동일)
+- 파일 sha256:
+  - `data/processed/ir/b_layer/screening_ledger.jsonl` · `62a564c5504ec05bdaa318259979b9bb701c3232c5879215f26d848656fc8238`
+  - `data/processed/ir/b_layer/accepted.parquet` · `7b355b9b13716f8a05dac4e43549227966493bbf7b84fd0d93621da69a5ff5e1`
+  - `data/processed/ir/qrel_b_sealed.parquet` **🔒봉인** · `f0d423268b4f3554ccd05d1bf511daab70d5f5f4c4c5c00e77a79e3e4a69206a`
+  - `data/raw/kipris/b_layer_cache.sqlite` (410 응답 · A층 캐시와 분리) · `2953ecbf14e55272f9da6fdac024f3c095ff24e3042b1950c8f2a87ebc8603f7`
+- 봉인 규율: 파일럿은 `qrel_b_sealed.parquet` 을 **쓰기만** 했다. 위 행수·질의수는 파일 형태
+  (shape)에서 읽은 집계이고 **인용 식별자는 열지 않았다**
+- 반영: PLAN-032 §1 성공기준 ①②③④⑤ · §5.7 (C2 재확증 전제 · B층 질의 200건 확보)
+
+## 2026-08-01 · KR DOCDB 패밀리 지도 1회 적재 (BigQuery · PLAN-032 결정 D의 집행 정정)
+- 명령: `sdkb_paper.collect.b_layer.family.load_kr_family_map()` (`KR_MAP_SQL`)
+- dry-run 실측: **스캔 5.22 GB · $0.0326** — 스캔량은 `IN UNNEST(@apps)` 파라미터 개수와 **무관**
+  (1·100·1,000·10,000건 전부 5.22 GB). 후보 1건마다 조회하면 같은 5.22 GB 를 수백 번 다시 낸다
+- 산출: `data/interim/kr_family_map.parquet` · **4,878,954행**(KR 출원번호 11자리 → family_id) ·
+  76.6 MB · sha256 `4b660c5eac2b303ad300aa3844ba09be7c7007430f8ef84e2246ddee081185af`
+- 규칙 불변 검증: A층 1,000건을 이 지도로 다시 풀어 `split.parquet` 과 대조 →
+  **일치 998 · 불일치 0 · 미조인 2**(= §5.0 이 기록한 fallback-self 2건과 동일 건)
+- 반영: PLAN-032 §5.1 ③ "배치 조회" 의 집행. `resolve_families()`·`build_family_map()` 은 불변
