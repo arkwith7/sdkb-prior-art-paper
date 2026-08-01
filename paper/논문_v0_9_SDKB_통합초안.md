@@ -2,49 +2,36 @@
 
 **SDKB: Validation-Gated Evolution of a Task-Extensible Semiconductor Domain Ontology Dataset with Prior-Art Retrieval as the Primary Validation Task and Cross-Task Non-Regression as a Safety Condition**
 
-> **원고 상태: v0.9 통합 초안 (2026-07-25).**
-> 본 원고는 두 v0.8 계열 초안을 병합한 것이다. 「신규기조 초안 v0.8.1」의 원고 골격(태스크 확장형 프레이밍, 과제 의미 회귀 정의, L0–L3+T-gate 구조, 도달성 사다리, 다중 분모 규율, 완전한 참고문헌·사전등록 장치)을 기반으로 하고, 「검증게이트 개정2판」의 핵심 방법론 자산(단일 태스크 게이트의 과적합 위험 논증, cross-task CQ 비회귀 조건, 음성 대조군 절제, 과적합 표적 결함군, 게이트 유발 표류 위협, AEI 심사 리스크·CI 배선·의사결정 임계치 부록)을 이식했다.
-> **병합 후 T-gate는 3조건(T1 비열등성 · T2 하위집단 안전성 · T3 교차 태스크 CQ 비회귀)으로 확장된다.** 저장소에서 재현된 사실은 "관측 결과", 미수행 실험은 "예상 발견" 또는 `[실험 후 기입]`으로 구분한다.
+> **원고 상태: v2.0 재구성 1단계 (2026-08-01) · 작업 언어 = 한글.**
+> 확증 가설을 **H3(하이브리드 효과)·H5(계층 특이성)** 둘로 좁히고, H1(게이트 판별력)·H2(승인
+> 안전성)·H4(계층 기여)는 **판정을 바꾸지 않은 채 지위만 강등**했다(각각 §4.9·§6.5 · §8.1 ·
+> §6.4). 가설 라벨은 사전등록의 이름을 그대로 쓴다 — 개수만 줄이고 번호는 다시 매기지 않았다.
+> 재구성 계획과 이동 대장은 `01.code_spec/plans/PLAN-033`, 잘라낸 절의 전문은 `paper/supplementary/`.
+> **영문 Abstract는 없다** — 영문화는 실험 결과로 논리 기조가 확정된 뒤 원고 전체를 한 번에 한다.
+> 저장소에서 재현된 사실은 "관측 결과", 미수행 실험은 `[실험 후 기입]`으로 구분한다.
+> **§6.2–6.4는 B층 제2 확증분할 재실험 후 재작성 예정이다**(PLAN-033 §6 · 현재 시점유효 마스크
+> 문제로 대기).
 
 ---
 
 ## 국문 초록
 
-반도체 도메인의 지식집약 공학 태스크는 공정·소자·재료·장비 지식만으로 완결되지 않는다. 기술문제와 전문가 역량의 연결, 청구항과 선행기술의 대응, 시간에 따른 기술신호와 사업화 선택을 서로 다른 관점에서 표현해야 한다. 본 논문은 이러한 요구를 하나의 공유 의미 백본으로 통합한 **태스크 확장형 반도체 도메인 온톨로지 데이터셋 SDKB(Semiconductor Domain Knowledge Base)**를 제시한다. SDKB의 실재 T-Box는 `Process`, `SubProcess`, `Device`, `Material`, `Equipment`, `FailureMode`, `Skill`, `Organization`을 공유 코어로 삼아 (1) Problem–RootCause–Skill–Expert 중심의 전문가 매칭, (2) Patent–Claim–ClaimFeature–PriorArtJudgment 중심의 선행기술조사, (3) TechnologyNode–Scenario–STEEPVEFactor–RealOption–TRL 중심의 기술예측이라는 세 태스크 뷰를 지원한다. 세 뷰의 표현 가능성은 SHACL(Shapes Constraint Language)과 31개 역량질문(competency question, CQ)으로 검증하되(그중 28개가 게이트 판정 분모이고 청구항 층 3개는 측정으로 운용한다, §9.7), 세 태스크의 성능이 동일한 수준으로 검증되었다고 주장하지 않는다.
+반도체 도메인의 지식집약 공학 태스크는 공정·소자·재료·장비 분류만으로 완결되지 않는다. 기술문제와 전문가 역량의 연결, 청구항과 선행기술의 대응, 시간에 따른 기술신호와 사업화 선택을 서로 다른 관점에서 표현해야 한다. 본 논문은 이 요구를 하나의 공유 의미 백본으로 통합한 **태스크 확장형 반도체 도메인 온톨로지 데이터셋 SDKB(Semiconductor Domain Knowledge Base)**를 제시한다. 실재 T-Box는 `Process`·`SubProcess`·`Device`·`Material`·`Equipment`·`FailureMode`·`Skill`·`Organization`을 공유 코어로 삼아 전문가 매칭·선행기술조사·기술예측의 세 뷰를 지탱하며, 표현 가능성은 SHACL과 31개 역량질문(competency question, CQ)으로 검증한다(28개가 게이트 판정 분모, 청구항 층 3개는 측정으로 운용). **세 태스크의 성능이 같은 수준으로 검증되었다고 주장하지 않는다.**
 
-본 연구는 심사관 인용 약한 정답을 확보한 **선행기술 검색을 주 경험적 검증 태스크**로 선택한다. 그러나 온톨로지가 세 태스크를 공유 어휘로 지탱하는 구조에서는, 단일 태스크 성능만으로 보강을 게이트하면 온톨로지가 그 태스크에 과적합되어 다른 태스크의 질의 경로를 조용히 훼손할 수 있다 — 예컨대 검색 재현율을 높이기 위한 개념 병합은 전문가 매칭의 `Skill` 변별력을 떨어뜨릴 수 있다. 이에 본 연구는 SDKB의 신선도·무결성(L0), SHACL 구조 제약(L1), 논리 일관성(L2), CQ 기능 검증(L3)을 보존하면서, 병합 전에 (T1) 검색 성능 비열등성, (T2) 거절근거·공정군 하위집단 안전성, (T3) **타 태스크 CQ 통과율 비회귀**를 함께 검사하는 3조건 과제 게이트(T-gate)를 제안한다.
+본 연구는 심사관 인용 약한 정답을 확보한 **선행기술 검색을 주 경험적 검증 태스크**로 선택하고, 확증 가설을 두 개로 한정한다 — **H3(하이브리드 효과)**와 **H5(계층 특이성 · 음성 대조군)**. 가설 라벨은 사전등록의 이름을 그대로 유지한다. 거절 특허 1,000건과 심사관 인용 2,534건은 완전한 정답이 아니라 **심사관 검토에 정박된 양성 전용 약한 판단**으로 쓰며, 질의 인용 간선을 제거하고 시간·특허 패밀리를 분리한 조건에서 BM25·특허 임베딩·텍스트 하이브리드·분류코드·도메인 온톨로지·청구항 한정요소 재순위화를 비교한다. 아울러 온톨로지가 세 태스크를 공유 어휘로 지탱하는 구조에서는 단일 태스크 성능만으로 보강을 승인하면 다른 태스크의 질의 경로가 조용히 훼손될 수 있으므로, 형식 검증 4층(L0–L3) 위에 검색 비열등성(T1)·하위집단 안전성(T2)·**타 태스크 CQ 비회귀(T3)**의 3조건 과제 게이트를 둔다.
 
-거절 특허 1,000건과 심사관 인용 2,534건은 완전한 정답이 아닌 **심사관 검토에 정박된 양성 전용 약한 적합성 판단**으로 사용한다. 질의 인용 간선을 제거하고 시간·특허 패밀리를 분리한 평가에서 BM25, 특허 임베딩, 텍스트 하이브리드, 분류코드, 도메인 온톨로지 및 청구항 한정요소 재순위화를 Recall@100, Success@K, MRR@K와 nDCG@20으로 비교한다. 결함주입 실험은 형식 검증(L0–L3)만 통과하는 의미 결함과 함께 **게이트 태스크와 무관한 교차 태스크 결함**(동의어 오병합, 계층 역전)을 주입해 T3의 독립적 필요성을 검정하고, 절제 실험은 전문가 매칭 전용 계층을 **음성 대조군**으로 사용해 청구항 한정요소·거절근거 계층 효과의 특이성을 검정한다.
+봉인 해제 후 1회 수행한 확증 평가(198질의)에서 온톨로지·한정요소 재순위화는 최강 텍스트 하이브리드 대비 family-level Recall@100을 **+0.0534**(95% CI [+0.0145, +0.0926], *p* = .008) 개선했다. 그러나 개선에는 세 방향의 경계가 있다. 첫째, 사전 지정한 주 순위 함수는 유의 수준에 이르지 못했고(*p* = .181), 위 수치는 부차 구성의 관측이다 — 결과를 본 뒤 주 시스템을 교체하지 않고 사전 지정 판정을 그대로 보고한다. 둘째, **nDCG@20은 개선되지 않았다** — 이득은 검토 깊이 안의 회수에 있고 최상위 정렬 품질에는 없다. 셋째, 이득은 예상한 저어휘중첩 질의가 아니라 **고중첩 질의에 집중**되어 재순위화라는 결합 방식의 구조적 천장을 드러낸다.
 
-봉인 해제 후 1회 수행한 확증 평가(198질의)에서 온톨로지·청구항 한정요소 재순위화는 최강 텍스트 하이브리드 기준선 대비 family-level Recall@100을 **+0.0534**(95% CI [+0.0145, +0.0926], *p* = .008) 개선했다. 그러나 이 개선에는 세 방향의 경계가 있다. 첫째, 사전 지정한 주 순위 함수는 유의 수준에 이르지 못했고(*p* = .181), 위 수치는 부차 구성의 관측이다 — 결과를 본 뒤 주 시스템을 교체하지 않고 사전 지정 판정을 그대로 보고한다. 둘째, **nDCG@20은 개선되지 않았다** — 이득은 검토 깊이 안의 회수에 있고 최상위 정렬 품질에는 없다. 셋째, 이득은 사전에 예상한 저어휘중첩 질의가 아니라 **고중첩 질의에 집중**되어, 재순위화라는 결합 방식의 구조적 천장을 드러낸다.
+경계와 별개로, 검색과 이론적으로 무관하도록 설계해 음성 대조군으로 삼은 전문가 매칭 전용 계층을 제거하자 검색이 **유의하게 악화되었다**(+0.0316, *p* = .002; 8개 절제 중 Holm 보정 후 유일한 유의 결과). 하나의 T-Box를 공유하는 태스크는 통계적으로 분리되지 않으며, 한 태스크를 겨냥한 델타가 다른 태스크의 질의 경로를 훼손할 수 있다는 **경험적 교차 태스크 의존성**이다. 이는 절제 설계의 실패가 아니라 교차 태스크 비회귀 조건이 형식 검증·단일 태스크 성능과 **독립적으로** 필요한 이유이며, 게이트의 판별력은 규칙을 동결한 채 아직 판정한 적 없는 결함 45개에서 확증했다(T3 단독 검출 12/45 · 단측 *p* = .0001 · 위양성 0/27). 다만 분포 검사 임계 τ = 0.10에서는 성립하지 않고, T3의 특이성은 미검정으로 남는다.
 
-경계와 별개로 본 평가는 다태스크 온톨로지에 관한 두 가지 발견을 낳았으며, 이것이 검색 성능 수치보다 본 연구의 더 일반적인 산출이다. 첫째는 **태스크 결합(task entanglement)**이다. 검색과 이론적으로 무관하도록 설계해 음성 대조군으로 삼은 전문가 매칭 전용 계층을 제거하자 검색이 오히려 유의하게 악화되었다(+0.0316, *p* = .002; 8개 절제 중 Holm 보정 후 유일한 유의 결과). 하나의 T-Box를 공유하는 태스크는 통계적으로 분리되지 않으며, 한 태스크를 겨냥한 델타가 다른 태스크의 질의 경로를 조용히 훼손할 수 있다 — 절제 설계의 실패가 아니라 교차 태스크 비회귀 조건(T3)이 왜 형식 검증이나 단일 태스크 성능 검사와 **독립적으로** 필요한지에 대한 직접적 경험 근거다. 게이트 자체의 실측에서는 승인 안전성(T-gate가 승인한 델타는 동결 테스트셋에서 비열등하고 하위집단 하락이 허용한계 안)은 지지되었으나, 교차 태스크 결함이 T3에서만 검출된다는 **판별력 가설은 기각되었다** — L3와 T3의 검출 표면이 겹쳐 단독 검출이 층 정의상 성립하지 않았기 때문이며, 두 층을 서로소로 분리한 사후 재판정에서 비로소 검출 방향이 역전되었다(탐색적). 그 결론은 규칙을 동결한 채 아직 판정한 적 없는 결함 45개(신규 교차 결함군 3종 포함)에 복제해 확증했다(T3 단독 검출 12/45, 단측 *p* = .0001, 위양성 0/27) — 다만 분포 검사 임계 τ = 0.10에서는 성립하지 않는다.
-
-둘째는 **교차언어 축**이다. 개봉 후 진단에서 정답을 언어별로 분해하면 시스템 순위가 뒤집힌다. 한국어 질의의 어휘 검색은 두 분할 334건의 영어 정답을 **한 건도** 회수하지 못하는 반면, 개념 IRI만 사용하는 온톨로지 단독 팔은 영어 정답에서 텍스트 하이브리드의 2.3배를 회수해 전 시스템 중 가장 높다. 그러나 이 비교우위는 최종 시스템에 전달되지 않는다 — 재순위화가 텍스트 후보 풀 밖을 보지 못하기 때문이다. 명시적 온톨로지의 가치가 가장 큰 영역을 융합 아키텍처가 구조적으로 소거할 수 있다는 이 관측은 사전등록 가설이 아닌 사후 관측이며, 후속 사전등록 실험의 표적으로 남긴다.
-
-저장소 감사는 데이터셋의 표현 범위와 검색 준비도 사이의 차이를 드러낸다. 인용 선행기술의 노드 도달성은 95.3%인 반면 도메인 의미 관계 도달성은 54.6–70.5%이며, CQ10의 후보 수 증가는 후보 생성 능력이지 적합성 순위의 증거가 아니다. 본 연구는 데이터셋의 **넓은 태스크 표현 범위**와 하나의 운영 태스크에 대한 **집중된 정량 검증**, 그리고 나머지 태스크에 대한 **회귀 감시**를 분리·결합함으로써, 온톨로지 품질을 "그래프가 유효한가"에서 "과제 성능을 보존하며, 다른 태스크를 훼손하지 않고 진화하는가"로 확장한다.
+저장소 감사는 표현 범위와 검색 준비도의 차이를 드러낸다 — 인용 선행기술의 노드 도달성은 95.3%인 반면 도메인 의미 관계 도달성은 54.6–70.5%이며, CQ 후보 수의 증가는 후보 생성 능력이지 적합성 순위의 증거가 아니다. 본 연구는 데이터셋의 **넓은 태스크 표현 범위**와 하나의 운영 태스크에 대한 **집중된 정량 검증**, 나머지 태스크에 대한 **회귀 감시**를 분리·결합함으로써, 온톨로지 품질을 "그래프가 유효한가"에서 "과제 성능을 보존하며 다른 태스크를 훼손하지 않고 진화하는가"로 확장한다.
 
 **주제어:** 반도체 도메인 온톨로지 데이터셋, 태스크 확장형 온톨로지, 온톨로지 진화, 검증 게이트, 교차 태스크 비회귀, 선행기술 검색, 심사관 인용, 청구항 한정요소, SHACL, 누출 통제 평가
 
 ---
 
-## Abstract
-
-Knowledge-intensive engineering tasks in the semiconductor domain require more than process, device, material, and equipment taxonomies. They must connect technical problems to expert capabilities, patent claims to prior art, and time-indexed technology signals to strategic options. This paper presents the Semiconductor Domain Knowledge Base (SDKB), a **task-extensible semiconductor domain ontology dataset** whose shared T-Box supports three application views: expert matching through Problem–RootCause–Skill–Expert concepts; prior-art retrieval through Patent–Claim–ClaimFeature–PriorArtJudgment concepts; and technology foresight through TechnologyNode–Scenario–STEEPVEFactor–RealOption–TRL concepts. SHACL constraints and 31 competency questions (CQs) examine representational adequacy across these views — 28 of which form the denominator of gate verdicts, while the three claim-level CQs are operated as measurement rather than as a gate (§9.7); we do not claim that all three tasks have been performance-validated to the same degree.
-
-Prior-art retrieval is selected as the primary empirical task because examiner-grounded weak relevance judgments are available. However, when a single T-Box sustains three tasks through shared vocabulary, gating enrichment on one task's performance risks overfitting the ontology to that task and silently degrading the query paths of the others — concept merging that raises retrieval recall, for example, can erode the discriminative power of expert-matching `Skill` concepts. We therefore retain SDKB's four validation layers — freshness and integrity (L0), SHACL constraints (L1), logical consistency (L2), and CQ functionality (L3) — and introduce a three-condition task gate (T-gate) that checks, before any ontology delta is merged: (T1) non-inferiority of retrieval performance, (T2) subgroup safety across rejection grounds and process groups, and (T3) **cross-task non-regression of CQ pass rates for the remaining tasks**.
-
-The benchmark uses 1,000 rejected patent applications and 2,534 examiner-cited references as examiner-validated, positive-only weak relevance judgments rather than exhaustive ground truth. Evaluation is citation-edge-masked, temporally valid, and patent-family-disjoint. BM25, patent encoders, text-hybrid retrieval, classification-based retrieval, domain-ontology retrieval, and claim-feature reranking are compared using Recall@100 as the primary metric. Fault-injection experiments include not only semantically corrupted deltas that pass formal validation, but also **cross-task faults** (synonym over-merging, hierarchy inversion) that only T3 is expected to detect, establishing the independent necessity of the cross-task condition. Ablation employs the expert-matching-only layer as a **negative control** to test the specificity of claim-feature and rejection-ground effects.
-
-In a single confirmatory evaluation on the sealed test split (198 queries), ontology- and claim-feature-based reranking improved family-level Recall@100 by **+0.0534** (95% CI [+0.0145, +0.0926], *p* = .008) over the strongest text-hybrid baseline. The improvement is bounded in three ways. First, the pre-specified primary ranking function did not reach significance (*p* = .181); the figure above belongs to a secondary configuration, and we report the pre-specified verdict rather than substituting a primary system after seeing the results. Second, **nDCG@20 did not improve**: the gain lies in recall within the review depth, not in top-of-ranking ordering quality. Third, the gain concentrates in **high**-lexical-overlap queries rather than the low-overlap queries predicted in advance, exposing a structural ceiling of reranking as a fusion strategy.
-
-Beyond these bounds, the evaluation yielded two findings about multi-task ontologies that generalize further than the retrieval numbers themselves. The first is **task entanglement**: removing the expert-matching-only layer — designed to be theoretically irrelevant to retrieval and used as a negative control — *significantly degraded* retrieval (+0.0316, *p* = .002; the only ablation surviving Holm correction). Tasks sharing one T-Box are therefore not statistically separable, and a delta aimed at one task can silently damage the query paths of another. This is not a failed ablation design but direct empirical evidence that the cross-task non-regression condition (T3) is needed **independently** of formal validation and of single-task performance checks. On the gate itself, approval safety was supported — deltas approved by the T-gate were non-inferior on the sealed test split with subgroup drops within tolerance — but the **discriminative-power hypothesis was rejected**: L3 and T3 share a detection surface, so detection by T3 alone is definitionally impossible; only after separating the two layers into disjoint suites did the detection direction reverse (exploratory).
-
-The second finding is a **cross-lingual axis**. Decomposing the relevance judgments by language reverses system rankings: Korean-query lexical retrieval recovers **zero** of the 334 English-language positives across both splits, whereas the ontology-only arm — which matches on concept IRIs rather than surface terms — recovers 2.3× as many English positives as the text hybrid and ranks highest among all systems. That comparative advantage never reaches the deployed system, because reranking cannot see outside the text candidate pool. This observation, that a fusion architecture can structurally erase the very region where an explicit ontology is most valuable, is post-hoc rather than pre-registered and is left as a target for a separately pre-registered follow-up.
-
-A repository audit distinguishes ontology scope from task readiness: node-level reachability of examiner-cited prior art is 95.3%, whereas domain-semantic reachability ranges from 54.6% to 70.5%, and CQ10 candidate growth demonstrates candidate-generation capacity, not ranked relevance. The paper thus combines broad multi-task representational scope, focused quantitative validation of one operational task, and regression surveillance of the remaining tasks, extending ontology quality from "is the graph valid" to "does the graph evolve while preserving task performance without harming its sibling tasks."
-
-**Keywords:** semiconductor domain ontology dataset, task-extensible ontology, ontology evolution, validation gate, cross-task non-regression, prior-art retrieval, examiner citations, claim features, SHACL, leakage-controlled evaluation
+> **영문 Abstract는 이 원고에 없다.** 영문화는 실험 결과로 신규성·진보성의 논리 기조가
+> 확정된 뒤 **원고 전체를 한 번에** 수행한다(PLAN-033 §2). 그때 이 초록을 영문으로 새로 쓴다.
 
 ---
 
@@ -54,7 +41,6 @@ A repository audit distinguishes ontology scope from task readiness: node-level 
 
 | 약어 | 전체 명칭 |
 |---|---|
-| AEI | Advanced Engineering Informatics (대상 저널) |
 | BM25 | Okapi Best Matching 25 (어휘 기반 순위 함수) |
 | bpref | binary preference (불완전 qrel 강건 지표) |
 | CI | confidence interval (신뢰구간; 통계 문맥) / continuous integration (지속적 통합; 공학 문맥) |
@@ -63,21 +49,16 @@ A repository audit distinguishes ontology scope from task readiness: node-level 
 | CQ | competency question (역량질문) |
 | DOCDB | EPO Master Documentation Database (특허 패밀리 식별 기준) |
 | EPO | European Patent Office (유럽특허청) |
-| FTerm | 일본 특허청 F-term 기술분류 |
 | GT | ground truth (정답) |
 | IPC | International Patent Classification (국제특허분류) |
 | KG | knowledge graph (지식그래프) |
 | KIPRIS | Korea Intellectual Property Rights Information Service (특허정보넷) |
-| KSIA | Korea Semiconductor Industry Association (한국반도체산업협회) |
-| MAP | mean average precision (평균 정밀도의 평균) |
 | MRR | mean reciprocal rank (평균 역순위) |
 | nDCG | normalized discounted cumulative gain (정규화 할인 누적 이득) |
 | qrel | relevance judgment (적합성 판단; 정보검색 관행 표기) |
 | RBV | resource-based view (자원기반관점) |
-| RDF | Resource Description Framework |
 | SDKB | Semiconductor Domain Knowledge Base (반도체 도메인 지식 베이스) |
 | SHACL | Shapes Constraint Language (W3C 구조 제약 언어) |
-| SPARQL | SPARQL Protocol and RDF Query Language |
 | TDD | test-driven development (테스트 주도 개발) |
 | TRL | technology readiness level (기술성숙도) |
 | TTL | Turtle (RDF 텍스트 직렬화 형식) |
@@ -88,14 +69,14 @@ A repository audit distinguishes ontology scope from task readiness: node-level 
 
 | 기호 | 의미 (정의 위치) |
 |---|---|
-| T-Box / ABox | 스키마 어휘 / 인스턴스 단언 (§3.1.5) |
+| T-Box / ABox | 스키마 어휘 / 인스턴스 단언 (§3.1) |
 | G0 / G1 / G2 | SDKB 그래프 계보 — 코어 / 확장 / 외부 코퍼스 적용 (§3.2) |
 | L0–L3 | 형식 검증 4층 — 신선도·무결성, SHACL, 논리 일관성, CQ 기능 (§4.1) |
 | T-gate, T1–T3 | 3조건 과제 게이트 — 비열등성, 하위집단 안전성, 교차 태스크 CQ 비회귀 (§4.1, §4.9) |
-| RQ1–RQ3, H1–H5 | 연구 질문과 확증 가설 (§1.4) |
+| RQ2·RQ3, H3·H5 | 연구 질문과 확증 가설 — 사전등록 라벨 유지 (§1.4) |
 | B0–B5, P0–P2 | 비교 시스템 — 기준선과 제안 시스템 (§4.6) |
 | A1–A8 | 절제(ablation) 실험 조건; A8은 음성 대조군 (§5.4) |
-| CQ-PA / CQ-EM / CQ-TF / CQ-CORE | 태스크별 CQ 스위트 — 선행기술조사 / 전문가 매칭 / 기술예측 / 공유 코어 (§3.1.6) |
+| CQ-PA / CQ-EM / CQ-TF / CQ-CORE | 태스크별 CQ 스위트 — 선행기술조사 / 전문가 매칭 / 기술예측 / 공유 코어 (§3.1) |
 | \(\epsilon\), \(\delta\) | 비열등성 허용한계(0.02), 하위집단 하락 한계(0.05) (§4.9) |
 
 ---
@@ -142,37 +123,62 @@ SDKB는 이 함정을 벗어난다. SDKB의 T-Box는 전문가 매칭·선행기
 
 ## 1.4 연구 질문과 가설
 
-연구 질문은 세 개이며, 각 질문에 확증 가설을 최소한으로 배정한다. 확증 가설은 다섯 개(H1–H5)로 한정하고, 나머지 분석은 탐색적 분석으로 강등하여 방법론과 실험 계획의 복잡도를 낮춘다.
+연구 질문은 두 개이고, 각 질문에 **확증 가설을 하나씩만** 배정한다. 나머지 분석은 탐색적으로
+강등해 방법론과 판정의 복잡도를 낮춘다.
 
-**RQ1. 검증 게이트.** 3조건 T-gate(T1 비열등성 · T2 하위집단 안전성 · T3 교차 태스크 비회귀)는 L0–L3가 놓치는 의미 결함을 탐지하면서, 승인된 그래프 변경의 태스크 성능을 보존하는가?
+> **가설 라벨은 사전등록의 이름을 그대로 쓴다.** 확증 가설은 **H3·H5** 두 개이며, 개수를 줄이면서
+> 번호를 다시 매기지 않았다 — 이 이름은 사전등록 문서가 쓴 이름이고, 재번호는 사전등록 기록과의
+> 추적성을 끊는다. 강등된 H1(게이트 판별력)·H2(승인 안전성)·H4(계층 기여)의 **판정은 바뀌지
+> 않았고**, 싣는 자리만 바뀌었다 — 각각 §4.9·§6.5, §8, §6.4의 절제 표다.
 
-- **H1(게이트 판별력).** T-gate는 L0–L3를 통과하는 의미 결함 주입을 추가로 탐지하며, 특히 게이트 태스크와 무관한 교차 태스크 결함군 — 동의어 오병합, 공유 계층 역전 — 은 **T3에서만 검출된다.** 판정 기준: 결함 단위 대응 McNemar \(p<.05\), 정상 델타 위양성률 5% 이하, 층별(L0–L3·T1·T2·T3) 검출 매트릭스.
-- **H2(승인 안전성).** T-gate가 승인한 델타는 동결 테스트셋 Recall@100에서 비열등하고(허용한계 \(\epsilon=0.02\)), 거절근거·공정군 하위집단의 절대 하락이 \(\delta=0.05\)를 넘지 않는다.
+**RQ2. 검색 유용성.** 누출을 차단한 시간·패밀리 분리 평가에서, 온톨로지 보강 하이브리드 검색은
+강한 텍스트 기준선을 개선하는가?
 
-**RQ2. 검색 유용성.** 누출을 차단한 시간·패밀리 분리 평가에서, 온톨로지 보강 하이브리드 검색은 강한 텍스트 기준선을 개선하는가?
+- **H3(하이브리드 효과).** 하이브리드는 가장 강한 텍스트 전용 기준선보다 Recall@100과 nDCG@20이
+  높고, 그 개선폭은 질의–정답 문헌의 어휘 중첩이 낮은 집단에서 더 크다.
 
-- **H3(하이브리드 효과).** 하이브리드는 가장 강한 텍스트 전용 기준선보다 Recall@100과 nDCG@20이 높고, 그 개선폭은 질의–정답 문헌의 어휘 중첩이 낮은 집단에서 더 크다.
+**RQ3. 계층 특이성.** 검색 이득은 그것을 만든다고 상정한 계층에 특이적인가?
 
-**RQ3. 계층 기여와 특이성.** 어떤 지식 계층이 검색 이득을 만들며, 그 효과는 해당 계층에 특이적인가?
+- **H5(특이성 — 음성 대조군).** 게이트 태스크와 무관한 전문가 매칭 전용 계층
+  (`Skill`·`ExpertCase`·`Mitigation`)의 제거는 검색 성능을 유의하게 바꾸지 않는다. 이 예측이
+  깨지면 **교차 태스크 의존성의 발견**으로 보고하며, 이는 교차 태스크 비회귀 조건(T3)의 필요성을
+  오히려 강화한다(§7.3). 어느 쪽 결과든 해석 가능하다.
 
-- **H4(계층 기여).** ClaimFeature·거절판단 계층의 제거 손실이 CPC/IPC 또는 서지 계층의 제거 손실보다 크다.
-- **H5(특이성 — 음성 대조군).** 게이트 태스크와 무관한 전문가 매칭 전용 계층(`Skill`·`ExpertCase`·`Mitigation`)의 제거는 검색 성능을 유의하게 바꾸지 않는다. 이 예측이 깨지면 태스크 결합(task entanglement)의 발견으로 보고하며, 이는 교차 태스크 게이트 T3의 필요성을 오히려 강화한다(§7.6). 어느 쪽 결과든 해석 가능하다.
-
-운용 효율(동일 재현율에서의 검토 후보 절감), 신규성·진보성 거절 유형별 신호 차이, 노드–의미 도달성과 성능의 관계는 확증 가설에서 제외하고 **탐색적 분석**으로만 보고한다(§4.8, §5.3, §6.4).
+RQ 번호도 사전등록의 것을 유지한다(RQ1은 검증 게이트였고, 그 축은 §4·§8로 강등됐다). 운용 효율,
+신규성·진보성 거절 유형별 신호 차이, 노드–의미 도달성과 성능의 관계, 교차언어 회수는 확증 가설에서
+제외하고 **탐색적 분석**으로만 보고한다(§4.8·§5.3·§6.2f·§6.4).
 
 ## 1.5 연구 기여
 
-본 연구의 기여는 세 가지이며, 결론의 주장 순서와 일치한다.
+본 연구의 기여는 두 가지이며, 결론의 주장 순서와 일치한다.
 
-1. **정합성·완전성이 검증된 반도체 도메인 온톨로지 데이터셋.** 공정·소자·재료·장비·역량·특허를 하나의 공유 T-Box로 통합하고, 최종 정리된 T-Box와 A-Box(G0–G2)를 SHACL 제약, CQ 응답, 도달성 사다리로 계량 보고하는 재현 가능한 SDKB 릴리스를 제공한다.
-2. **다중 태스크 작동성의 검증 장치와, 태스크 결합의 실측.** 전문가 매칭(소부장 문제 대응)·선행기술조사·기술예측의 세 태스크 뷰가 동일 T-Box 위에서 상호 간섭 없이 작동하는지를, L0–L3에 3조건 T-gate(T1·T2·T3)를 더한 검증 게이트와 교차 태스크 결함 주입으로 판정한다. 이 축의 실측 산출은 두 갈래다. 게이트가 승인한 델타의 **안전성은 동결 테스트셋에서 지지**되었고(H2), 게이트의 **판별력 가설은 기각**되었으며 그 원인이 L3와 T3의 검출 표면 중첩임을 규명해 층 분리라는 처방과 함께 보고한다(H1·§6.5.3). 층을 분리한 뒤의 판별력은 **홀드아웃 결함으로 확증했다** — 규칙을 동결한 채 신규 교차 결함군 3종을 포함한 45개 새 인스턴스에서 T3 단독 검출 12/45·단측 *p* = .0001·위양성 0/27이며(H1‴·§6.5.4), 함께 남는 한계(τ 민감성·특이성 미검정)도 같은 절에 싣는다. 그리고 절제 실험의 음성 대조군이 무너지면서 얻은 **태스크 결합(task entanglement)의 정량 증거** — 검색과 무관하도록 설계한 전문가 매칭 계층을 제거하면 검색이 유의하게 악화된다 — 는 교차 태스크 조건이 형식 검증·단일 태스크 성능과 독립적으로 필요함을 보이는, 본 논문에서 가장 일반화 가능한 결과다(§7.6·신규 주장 F).
-3. **선행기술조사 태스크의 성능·유용성 실증 — 경계를 명시한 형태로.** 거절 특허와 심사관 인용을 정박점으로 삼은 누출 차단 벤치마크에서, 선행기술조사 뷰의 온톨로지 보강 검색이 최강 텍스트 기준선 대비 주 지표(family-level Recall@100)를 유의하게 개선함을 계층별 기여 분해와 함께 보인다. 동시에 그 개선이 **어디까지인지**를 같은 정밀도로 보고한다 — 사전 지정 주 순위 함수의 유의 미달, 최상위 정렬 품질(nDCG@20)의 미개선, 저중첩 예측의 반증, 그리고 이득의 본체가 계층 심화가 아니라 개념 겹침 하나라는 절제 결과다. 이 경계 분석은 온톨로지의 비교우위가 **교차언어 축**에 있으며 재순위화라는 융합 방식이 그것을 소거한다는 사후 관측으로 이어져, 하이브리드 설계에 대한 반증 가능한 후속 표적을 특정한다(§7.8·신규 주장 H).
+1. **세 태스크를 표현하는 반도체 도메인 온톨로지 데이터셋과 그 진화 장치.** 공정·소자·재료·장비·
+   역량·특허를 하나의 공유 T-Box로 통합하고, T-Box와 A-Box를 SHACL 제약·CQ 응답·도달성 사다리로
+   계량 보고하는 재현 가능한 SDKB 릴리스를 제공한다. 여기에 L0–L3 형식 검증 위에 3조건 과제
+   게이트(T1 비열등성 · T2 하위집단 안전성 · T3 교차 태스크 비회귀)를 얹어, 온톨로지 품질을
+   "그래프가 유효한가"에서 **"과제 성능을 보존하며 다른 태스크를 훼손하지 않고 진화하는가"** 로
+   확장한다. 게이트의 판별력은 홀드아웃 결함으로 확증했고(§6.5), 확증하지 못한 것 — 특이성과
+   τ 민감성 — 도 같은 절에 적는다.
+2. **선행기술조사 태스크의 검색 유용성 실증 — 경계를 명시한 형태로.** 거절 특허와 심사관 인용을
+   정박점으로 삼은 누출 차단 벤치마크에서 온톨로지 보강 검색이 최강 텍스트 기준선 대비 주 지표
+   (family-level Recall@100)를 개선함을 계층별 기여 분해와 함께 보이고, 동시에 그 개선이
+   **어디까지인지**를 같은 정밀도로 보고한다 — 사전 지정 주 순위 함수의 유의 미달, 최상위 정렬
+   품질(nDCG@20)의 미개선, 저중첩 예측의 반증, 이득의 본체가 계층 심화가 아니라 개념 겹침
+   하나라는 절제 결과(§7.2). 그리고 검색과 무관하도록 설계한 음성 대조군 계층을 제거하자 검색이
+   유의하게 악화된 관측(H5)은 **하나의 T-Box를 공유하는 태스크가 통계적으로 분리되지 않는다**는
+   직접 증거이며, 교차 태스크 조건이 형식 검증·단일 태스크 성능과 독립적으로 필요한 이유다(§7.3).
 
-전문가 매칭의 방법론과 성능 평가는 본 논문의 범위 밖이며(§8.3), 기술예측과 소부장 코퍼스는 동일 T-Box의 재사용 가능성을 보이는 2차 증거로만 배치한다.
+전문가 매칭의 방법론과 성능 평가는 본 논문의 범위 밖이며(§7.4), 기술예측과 소부장 코퍼스는 동일
+T-Box의 재사용 가능성을 보이는 2차 증거로만 배치한다.
 
 ## 1.6 논문의 구성
 
-2장은 특허 검색, 온톨로지 품질과 진화 검증, 태스크 확장형 데이터셋과 지식그래프 하이브리드를 검토한다. 3장은 SDKB의 공유 코어, 세 태스크 뷰, 그래프 계보와 검색 근거 구조를 기술한다. 4장은 누출 방지 벤치마크와 3조건 T-gate를 제시한다. 5장은 실험 설계와 통계 분석 계획을 제시한다. 6장은 T-Box·CQ에서 확인된 표현 범위와 검색 자원 관측을 먼저 보고하고, 이어 확증 분할 개봉 후 1회 수행한 검색 성능·가설 판정·하위집단·절제·결함주입·교차 태스크 CQ 결과를 제시한다. 7장은 사전에 명시한 예상 발견과 신규 주장에 실측 판정을 대응시키고, 사전등록 밖의 사후 관측을 구분해 반증 조건과 함께 남긴다. 8장은 비대칭 태스크 검증의 시사점을, 9장은 한계를, 10장과 11장은 가용성과 결론을 제시한다.
+2장은 특허 검색, 온톨로지 품질과 진화 검증, 지식그래프 하이브리드를 검토한다. 3장은 SDKB의 공유
+코어와 세 태스크 뷰, 그래프 계보와 검색 근거 구조를 기술한다. 4장은 누출 방지 벤치마크와 3조건
+게이트를 제시하고, 5장은 실험 설계와 통계 분석 계획을 제시한다. 6장은 자원 감사에서 확인된 표현
+범위를 먼저 보고한 뒤, 확증 분할을 1회 개봉해 수행한 검색 성능·가설 판정·하위집단·절제 결과와
+게이트 판별력의 홀드아웃 확증을 제시한다. 7장은 결과의 해석과 사전 동결한 결론 규칙을, 7장은
+한계를, 8장과 9장은 가용성과 결론을 제시한다.
 
 ---
 # 2. 이론적 배경과 관련연구
@@ -187,7 +193,7 @@ SDKB는 이 함정을 벗어난다. SDKB의 T-Box는 전문가 매칭·선행기
 
 **교차언어 축은 이 세 방향과 직교한다.** 선행기술의 공개는 언어와 무관하게 유효하므로, 완전한 선행기술 검색은 본질적으로 교차언어적이다. CLEF–IP가 처음부터 영어·독일어·프랑스어 세 언어 컬렉션으로 설계되고 교차언어 검색을 명시적 목표로 삼은 것도 이 요구를 반영하며(Piroi & Hanbury, 2019), 일본어 축에서는 NTCIR 특허 검색 태스크가 무효자료 조사 형태의 비영어 시험 컬렉션을 구축했다(Fujii et al., 2004). 이 흐름의 주된 통로는 번역이었다. 특허 질의는 청구항이나 명세서 전체처럼 길어 기계번역 비용이 일반 CLIR보다 크므로, 검색 전처리를 번역 학습 코퍼스에 미리 적용해 비용을 줄이는 기법(Magdy & Jones, 2011)과 번역 기술 선택이 대규모 선행기술 검색의 회수에 미치는 영향을 다룬 사례연구(Magdy & Jones, 2014)가 보고됐다. 언어별 형태론도 회수에 직접 작용해, 복합어 분해(decompounding)는 교차언어 특허 검색의 전처리 쟁점으로 별도로 다뤄졌고(Leveling et al., 2011), 다국어 컬렉션에서의 질의 생성 기법 비교도 수행됐다(Zhou et al., 2013). 한국어–영어 축에서는 KIPRIS가 K2E-PAT 자동번역을 기반으로 교차언어 검색을 제공해 왔으며(Choi, 2009), 특허 도메인의 한–영 번역 품질은 엔진에 따라 여전히 균질하지 않다(Lee & Choi, 2023). 최근에는 번역 대신 다국어 밀집 표현으로 언어 장벽을 넘는 접근이 확산되었고, 18개 언어 규모의 다국어 검색 벤치마크가 그 비교 기반을 제공한다(Zhang et al., 2023).
 
-**이 흐름이 남기는 공백.** 위 문헌에서 교차언어 통로는 사실상 둘 — 번역과 다국어 임베딩 — 이다. **명시적 온톨로지의 언어중립 식별자**를 세 번째 통로로 놓고 그 회수 기여를 정답 언어별로 분해해 측정한 평가는 확인되지 않는다. 나아가 온톨로지·KG 기반 특허 검색 연구(§2.5)는 대체로 단일 언어 컬렉션에서 평가되므로, 개념 링크가 T-Box 수준에서는 언어중립이면서 A-Box 수준에서는 언어에 따라 비대칭적으로 부착돼 있을 가능성 자체가 측정 대상이 되지 않는다. 본 연구의 벤치마크는 질의가 전량 한국어이고 후보 코퍼스가 다국어인 조건에서 번역 계층 없이 동결되어 있어, 이 공백을 정면으로 관측할 수 있는 조건에 해당한다. 실제로 회수를 정답 언어별 마이크로 단위로 분해하면 세 통로의 기여가 갈리며(§6.2f), 개념 단독 검색팔이 영어 정답에서 텍스트 하이브리드를 앞서면서도 그 우위가 재순위화 단계에서 소거되는 관측(§7.8)은 어느 통로를 보강해야 하는지를 특정한다. 다만 이 관측은 사후적이며 본 논문의 사전등록 가설이 아니고, 번역 계층을 요인으로 하는 비교는 동결 설계 밖의 별도 실험으로 남는다(§9.1).
+**이 흐름이 남기는 공백.** 위 문헌에서 교차언어 통로는 사실상 둘 — 번역과 다국어 임베딩 — 이다. **명시적 온톨로지의 언어중립 식별자**를 세 번째 통로로 놓고 그 회수 기여를 정답 언어별로 분해해 측정한 평가는 확인되지 않는다. 나아가 온톨로지·KG 기반 특허 검색 연구(§2.5)는 대체로 단일 언어 컬렉션에서 평가되므로, 개념 링크가 T-Box 수준에서는 언어중립이면서 A-Box 수준에서는 언어에 따라 비대칭적으로 부착돼 있을 가능성 자체가 측정 대상이 되지 않는다. 본 연구의 벤치마크는 질의가 전량 한국어이고 후보 코퍼스가 다국어인 조건에서 번역 계층 없이 동결되어 있어, 이 공백을 정면으로 관측할 수 있는 조건에 해당한다. 실제로 회수를 정답 언어별 마이크로 단위로 분해하면 세 통로의 기여가 갈리며(§6.2f), 개념 단독 검색팔이 영어 정답에서 텍스트 하이브리드를 앞서면서도 그 우위가 재순위화 단계에서 소거되는 관측(§7.2)은 어느 통로를 보강해야 하는지를 특정한다. 다만 이 관측은 사후적이며 본 논문의 사전등록 가설이 아니고, 번역 계층을 요인으로 하는 비교는 동결 설계 밖의 별도 실험으로 남는다(§8.1).
 
 그러나 "검색 단위"는 여전히 쟁점이다. 문서 수준 검색은 확장성과 벤치마크 구성이 쉽지만, 심사 판단은 청구항과 그 한정요소에 관여한다. 본 연구는 전체 거절 특허에 대해서는 문헌 수준 평가를 1차 분석으로 유지하고, 명시적 `PriorArtJudgment–aboutClaim–overPriorArt` 연결이 있는 부분집합에서 청구항 수준 분석을 2차로 수행한다. 이렇게 해야 풍부한 부분집합을 전체 데이터의 속성으로 일반화하는 오류를 피할 수 있다.
 
@@ -254,7 +260,7 @@ SDKB는 세 태스크의 표현 범위를 데이터셋 수준에서 제시하고
 |---|---|---|---|---|
 | 특허 텍스트 검색 | Recall, MAP, MRR, nDCG | 과제 성능 직접 측정 | 명시적 도메인 의미와 그래프 진화 검증 부족 | 반도체 온톨로지 계층을 후보·재순위화에 결합 |
 | 인용·KG 검색 | 인용 qrel 기반 순위 성능 | 관계 신호 활용 | 질의 인용 누출 및 변화 게이트 문제 | 질의 간선 마스킹, 시간·패밀리 분리 |
-| 교차언어 특허검색(CLIR) | 번역 기반 회수·다국어 컬렉션 평가 | 언어 장벽을 직접 통제 | 통로가 번역·다국어 임베딩에 한정되고, 개념 자원의 언어 비대칭은 측정되지 않음 | 언어중립 개념 IRI를 제3 통로로 두고 정답 언어별 회수를 분해 측정(§6.2f·§7.8) |
+| 교차언어 특허검색(CLIR) | 번역 기반 회수·다국어 컬렉션 평가 | 언어 장벽을 직접 통제 | 통로가 번역·다국어 임베딩에 한정되고, 개념 자원의 언어 비대칭은 측정되지 않음 | 언어중립 개념 IRI를 제3 통로로 두고 정답 언어별 회수를 분해 측정(§6.2f·§7.2) |
 | 온톨로지 검증 | SHACL, 추론, CQ | 형식 오류와 기능 단절 탐지 | 순위 품질·교차 태스크 회귀를 보장하지 않음 | 3조건 T-gate와 비열등 병합 규칙 |
 | KG 다운스트림 평가 | 분류·클러스터링·추천 과제 성능 | 과제 관점 품질 추정 | 사후 비교에 머물고 승인 게이트가 아님 | 릴리스 전 사전 승인 게이트로 전환 |
 | 도메인 온톨로지 데이터셋 | FAIR, 스키마·인스턴스·CQ·provenance | 재사용 가능한 의미 백본 | 다중 태스크 표현과 단일 태스크 성능의 혼동 | 세 태스크 뷰·비대칭 검증·T3 감시 명시 |
@@ -267,65 +273,45 @@ SDKB는 세 태스크의 표현 범위를 데이터셋 수준에서 제시하고
 
 ## 3.1 공유 T-Box와 세 태스크 뷰
 
-SDKB의 T-Box는 선행기술 검색을 위해 새로 만든 단일목적 스키마가 아니다. 실제 TTL(Turtle) 파일에는 반도체 공정·소자·재료·장비·고장·역량·특허·기업·기술전략 어휘가 함께 존재하며, 전문가 매칭, 선행기술조사와 기술예측이라는 세 태스크가 이를 서로 다른 경로로 사용한다. 이를 다음과 같이 표현한다.
+SDKB의 T-Box는 선행기술 검색을 위해 만든 단일목적 스키마가 아니다. 실제 TTL(Turtle)에는 반도체
+공정·소자·재료·장비·고장·역량·특허·기업·기술전략 어휘가 함께 존재하며, 세 태스크가 이를 서로
+다른 경로로 사용한다.
 
 \[
 T_{\mathrm{SDKB}}
 =T_{\mathrm{core}}\cup V_{\mathrm{match}}\cup V_{\mathrm{priorart}}\cup V_{\mathrm{foresight}}
 \]
 
-각 \(V_t=(C_t,R_t,Q_t)\)는 태스크별 클래스, 관계와 CQ의 논리적 뷰다. 집합은 배타적 모듈이 아니며 `Process`, `SubProcess`, `Material`, `Equipment`, `Organization`과 같은 공유 개념을 중첩 사용한다. 물리적 TTL 파일 경계보다 실제 클래스·속성과 CQ의 의존관계를 우선해 기술한다.
+각 \(V_t=(C_t,R_t,Q_t)\)는 태스크별 클래스·관계·CQ의 논리적 뷰이며, 배타적 모듈이 아니라
+`Process`·`SubProcess`·`Material`·`Equipment`·`Organization` 같은 공유 개념을 중첩 사용한다.
 
-```mermaid
-flowchart TD
-    A["Shared Semiconductor Core: Process · Device · Material · Equipment · Organization"]
-    A --> B["Expert Matching View: Problem · FailureMode · Skill · Expert"]
-    A --> C["Prior-Art View: Patent · Claim · Feature · Judgment"]
-    A --> D["Foresight View: TechnologyNode · Scenario · TRL · RealOption"]
-    B --> E["CQ11–12 · 15–18 · 20 · 28"]
-    C --> F["CQ09–10 · 22 · 27"]
-    D --> G["CQ01–08 · 23–26"]
-```
+| 뷰 | 주요 클래스 | 대표 CQ | ABox 근거 | 본 논문의 지위 |
+|---|---|---|---|---|
+| 전문가 매칭 | `Problem`·`RootCause`·`FailureMode`·`Mitigation`·`Skill`·`Expert`·`ExpertCase` | 11·12·15–18·20·28 | 비식별·생성 인스턴스 | 표현 타당성 + **음성 대조군**(§5.4) · 성능 미평가 |
+| 선행기술조사 | `Patent`·`Claim`·`ClaimFeature`·`PriorArtJudgment`·`Rejection`·`ClassificationSymbol` | 09·10·22·27 (+29–31 측정) | 거절특허 1,000 · 심사관 인용 2,534 · claim sidecar | **주 정량 검증** (Recall@K·nDCG·게이트) |
+| 기술예측 | `TechnologyNode`·`Scenario`·`STEEPVEFactor`·`RealOption`·`TRL` | 01–08·23–26 | G1·G2 시계열 | 2차 재사용 증거 (§7.4) |
 
-**그림 1. SDKB 공유 반도체 코어와 세 태스크 뷰.** CQ 번호는 각 뷰의 대표 질문이며, 공급망·규제·조인 성격의 나머지 CQ(13·14·19·21)는 둘 이상의 뷰를 연결한다(§3.1.6).
+나머지 CQ13·14·19·21은 공급망·규제처럼 둘 이상의 뷰를 잇는 성격이어서 **공유 코어(CQ-CORE)** 로
+귀속한다. 세 뷰 가운데 선행기술조사만 제도적으로 정박된 약한 qrel을 가지므로 정량 검증이
+가능하며, 이 비대칭은 결함이 아니라 **주장 범위를 통제하는 설계**다 — 세 태스크를 덮는 것은
+T-Box와 CQ의 관측 사실이고, **세 태스크의 성능이 모두 검증되었다는 주장은 하지 않는다.**
+`NoveltyScore`는 정답 유래 파생 지표이므로 검색 피처에서 배제한다(정답 신호 차단).
 
-**공유 어휘가 교차 태스크 회귀의 통로다.** `Process`/`SubProcess`는 전문가 매칭과 기술예측이 공유하고, `Material`·`Equipment`·`Organization`은 전문가 매칭과 선행기술조사가 공유하며, `ClassificationSymbol`(IPC/CPC)은 선행기술조사와 기술예측의 공정 매핑을 잇는다. 즉 세 태스크는 독립적 서브그래프가 아니라 **공유 코어 위의 세 관점**이며, 이 결합이 §1.3에서 기술한 교차 태스크 회귀를 실재하게 만들고 T3의 필요성을 정당화한다.
+**공유 어휘가 교차 태스크 의존의 통로다.** `Process`/`SubProcess`는 전문가 매칭과 기술예측이,
+`Material`·`Equipment`·`Organization`은 전문가 매칭과 선행기술조사가 공유하고,
+`ClassificationSymbol`(IPC/CPC)은 선행기술조사와 기술예측의 공정 매핑을 잇는다. 즉 세 태스크는
+독립적 서브그래프가 아니라 **공유 코어 위의 세 관점**이며, 이 결합이 §1.3의 교차 태스크 회귀를
+실재하게 만든다 — 그리고 §7.3의 음성 대조군 결과가 그 결합을 실측으로 확인한다.
 
-### 3.1.1 전문가 매칭 뷰
+T-Box에 클래스와 관계가 있다는 것이 모든 뷰의 인스턴스가 같은 완전도로 채워졌다는 뜻은 아니다.
+클래스·object property·datatype property의 고유 개수는 **고정(pin)한 릴리스 커밋**에서 자동
+산출하고, ABox는
+G0·G1·G2와 claim-feature sidecar별로 분리해 provenance와 함께 보고한다.
 
-전문가 매칭 뷰는 현장 기술문제를 해결 역량과 연결한다. 주요 클래스는 `Problem`, `RootCause`, `FailureMode`, `Mitigation`, `Skill`, `Expert`, `ExpertCase`, `EquipmentClass`, `EquipmentModel`, `Material`, `Organization`/`Vendor`, `Process`, `SubProcess`다. `exhibitsFailureMode`, `concernsSkill`, `involvesMaterial` 등의 관계는 문제–고장–원인–완화–역량–전문가의 설명 경로를 구성한다. 대표 CQ11·12·15·16·17·18·20·28은 문제와 전문가, 고장 인과, 재료·장비·역량, 사례 경험을 질의한다.
-
-이 뷰의 인력·문제 ABox에는 실 원천을 그대로 공개할 수 없어 비식별 변조한 파생 인스턴스와 결정적으로 생성한 인스턴스가 혼재한다. 따라서 이 논문은 실인물에 대한 사실성이나 전문가 랭킹 성능을 주장하지 않는다. 평가 범위는 T-Box 표현, SHACL 제약, CQ 실행과 provenance의 적절성이며, 본 논문에서 이 뷰는 두 가지 방법론적 역할만 수행한다: (1) T3 회귀 감시의 CQ-EM 스위트 입력, (2) 절제 실험의 음성 대조군(§5.4). 전문가 매칭 태스크 자체의 방법론과 평가는 본 논문의 범위 밖이다(§8.3).
-
-### 3.1.2 선행기술조사 뷰
-
-선행기술조사 뷰는 특허 문헌과 심사 판단을 반도체 도메인 개념에 정렬한다. 주요 클래스·속성 어휘는 `Patent`, `RejectedPatent`, `GrantedPatent`, `PendingPatent`, `CitedPatent`, `Claim`, `ClaimFeature`, `PriorArtJudgment`, `Rejection`, `ClassificationSymbol`(IPC/CPC/FTerm), `NoveltyScore`다. 주요 관계는 `hasPriorArt`, `hasPriorArtExaminer`, `hasPriorArtApplicant`, `cites`, `hasClaim`, `hasFeature`, `featureConcept`, `overlappingFeature`, `rejectedFor`, `aboutClaim`, `overPriorArt`, `onGround`다. 대표 CQ09·10·22·27은 거절·인용 근거, 개념 공유 후보, 분류·신규성 축과 청구항 준비도를 다룬다.
-
-세 뷰 가운데 이 뷰만 거절 특허 1,000건과 심사관 인용 2,534건이라는 제도적으로 정박된 약한 qrel을 가진다. 따라서 본 연구의 T-gate, 하이브리드 검색 비교와 ablation은 이 뷰에 집중한다. `NoveltyScore`는 정답 유래 파생 지표이므로 게이트 평가의 검색 피처에서 배제한다(정답 신호 차단).
-
-### 3.1.3 기술예측 뷰
-
-기술예측 뷰는 `Process`, `SubProcess`, `Device`, `TechnologyNode`를 공유 코어와 연결하고, foresight 어휘인 `Scenario`, `STEEPVEFactor`, `RealOption`, 상용화 성숙도의 `TRL`, RBV 개념과 `filingDate` 시간축을 사용한다. 대표 CQ01–08·23–26은 공정·소자별 특허 분포, 시간 변화, 기술 공백, 규제·상용화 및 전략 시나리오를 질의한다.
-
-기존 v0.7의 조합 개념 기반 조기탐지와 G1·G2 시계열 결과는 이 뷰의 재사용 가능성을 보여준다. 그러나 기술예측 결과는 선행기술 검색 정확도의 증거가 아니며, 새 논문의 확증 가설(H1–H5) 판정에는 사용하지 않는다. 본 논문에서 이 뷰는 T3 회귀 감시의 CQ-TF 스위트 입력이자 2차 재사용 사례(§8.4)다.
-
-### 3.1.4 태스크별 검증 수준
-
-| 태스크 뷰 | T-Box·SHACL | CQ 기능 | ABox/재사용 증거 | 정량 과제 성능 | 본 논문의 지위 |
-|---|---|---|---|---|---|
-| 전문가 매칭 | 평가 | 대표 CQ 실행 (T3 감시) | 비식별·생성 ABox 존재 | 미평가 (범위 밖) | 표현 타당성 + 음성 대조군 |
-| 선행기술조사 | 평가 | 대표 CQ 실행 | 거절특허·심사관 인용·claim sidecar | **Recall@K·MRR·nDCG 및 T-gate 평가** | 주 검증 |
-| 기술예측 | 평가 | 대표 CQ 실행 (T3 감시) | G1·G2 및 시간 백테스트 | 기존 조기탐지 결과 | 2차 재사용 |
-
-이 비대칭은 결함이 아니라 주장 범위를 통제하는 설계다. **세 태스크를 덮는 것은 T-Box와 CQ의 관측 사실이고, 세 태스크의 성능이 모두 검증되었다는 주장은 하지 않는다.** 동시에 감시(T3)를 통해 표현 범위 주장 자체가 진화 과정에서 침식되지 않도록 보호한다.
-
-### 3.1.5 T-Box와 ABox의 경계
-
-T-Box에 클래스와 관계가 존재한다고 해서 모든 뷰의 인스턴스가 같은 완전도로 채워졌다는 뜻은 아니다. 최종 원고는 저장소의 동결 커밋에서 전체 및 뷰별 클래스, object property, datatype property의 고유 개수를 자동 산출해 `[TTL 자동계수 후 기입]`한다. ABox는 G0·G1·G2와 claim-feature sidecar별로 분리해 보고하며, 데이터 생성·변조·추출·매핑 경로와 라이선스를 provenance로 연결한다.
-
-### 3.1.6 CQ 태스크 귀속과 세분화 (선결 과제)
-
-세 뷰의 대표 CQ 합계는 8+4+12 = 24개이며, 나머지 CQ13·14·19·21은 공급망·규제 등 둘 이상의 뷰를 연결하는 성격이다. 최종 원고 확정 전에 이 4개를 "공유 코어(CQ-CORE)" 범주로 명시적으로 귀속시키고, T3의 스위트 구성(CQ-EM, CQ-TF, CQ-CORE)을 확정해야 한다. 또한 정량 평가 대상인 선행기술 CQ가 4개(14%)로 가장 적다는 비대칭은 "온톨로지의 가장 작은 조각만 평가한다"는 심사 지적을 부를 수 있으므로, 청구항 수준으로 분해해 8–10개로 세분화하는 것을 선결 과제로 둔다(부록 D의 A-0). **세분화는 2026-07-28에 수행됐다** — CQ29·30·31(청구항 수준 거절 판단·독립항 한정요소·종속항 계층)을 신설해 선행기술 CQ는 5개에서 8개가 됐다. 다만 이 세 CQ는 G0가 아니라 **사이드카**(청구항 층)를 조회하므로 게이트 판정 분모가 아니라 **측정**으로 운용한다 — 그 이유와 남는 한계는 §9.7에 적는다. 세분화가 어려울 경우 "CQ 개수는 태스크 중요도가 아니라 질의 입도의 함수"임을 본 절에 명시하는 대안이 있었으나, 세분화가 더 낫다. **2026-07-28 결함 주입 실측이 이 판단을 뒷받침한다** — 현행 CQ의 이진 통과 판정으로는 T3가 주입된 교차 태스크 결함을 하나도 잡지 못했고, 같은 CQ를 결과 행 수로 읽으면 절반 이상이 잡혔다(§6.5.1). 같은 날 판정 규칙을 존재 검사에서 분포 검사로 세분화해 재판정했고(§6.5.2), T3 검출은 34/108로 회복됐다. **다만 세분화가 닫지 못한 것이 남는다** — 층 정의의 포함 관계(L3 ⊇ T3)는 세분화로 닫히는 종류의 결손이 아니어서 별도 사전등록으로 층을 분리했고(§6.5.3), 그 결과 **청구항 수준 분해의 필요는 오히려 커졌다**. L3의 분모가 선행기술 CQ 5개로 좁아졌으므로 그 5개의 해상도가 곧 주 태스크 기능 검증의 해상도이며, 실제로 T3가 추가로 잡는 것의 다수가 비교차 결함이라는 사실이 pa 스위트의 둔감함을 가리킨다.
+**선행기술 CQ의 해상도는 남은 제약이다.** 정량 평가 대상인 선행기술 CQ가 가장 적어(4개) 청구항
+수준으로 분해할 필요가 있었고, CQ29–31(청구항 수준 거절 판단·독립항 한정요소·종속항 계층)을
+신설해 8개로 늘렸다. 다만 이 셋은 G0가 아니라 **사이드카**를 조회하므로 게이트 판정 분모가 아니라
+**측정**으로 운용한다(§8.4).
 
 ## 3.2 그래프 계보
 
@@ -340,7 +326,7 @@ SDKB는 단일 파일이 아니라 목적과 코퍼스가 다른 버전 계보�
 
 이 표에서 가장 중요한 범위 구분은 다음과 같다. **G0에는 청구항–한정요소–거절판단을 표현하는 TBox가 반영되어 있으나, 대규모 ClaimFeature ABox 전체가 G0 내부에 있다는 뜻은 아니다.** 청구항 한정요소와 판단 연결을 이용한 실험은 sidecar와의 조인 범위, 버전, 생성 규칙을 명시해야 한다. 따라서 본 연구는 모든 거절 특허를 포함하는 특허 수준 실험과, 명시적 판단 연결이 있는 부분집합의 청구항 수준 실험을 분리한다.
 
-모든 트리플에는 출처 서명이 부여되어 있으며(105,588 세대 검증), 서명 정합 검사(`check_signatures.py`)는 CI(continuous integration) 게이트 파이프라인에 배선되어 있다(부록 E). SDKB의 큐레이션 소스와 라이선스(SemiKong, SemicONTO, MatKG, USPTO/EPO/KIPO, BIS CCL/EAR, NIST, ECHA SCIP, 산업기술보호법, Wikidata, SEMI Link-Only)는 데이터 가용성 절(§10)과 provenance 매니페스트에 명시한다. 특허 데이터는 KIPRIS(Korea Intellectual Property Rights Information Service, 특허정보넷) 학술정보 활용 자격으로 수집하며, 공개 배포는 메타데이터 전용 경로를 따른다(§3.7).
+모든 트리플에는 출처 서명이 부여되어 있으며(105,588 세대 검증), 서명 정합 검사(`check_signatures.py`)는 CI(continuous integration) 게이트 파이프라인에 배선되어 있다(supplementary [S1](supplementary/S1-appendices-v09.md)). SDKB의 큐레이션 소스와 라이선스(SemiKong, SemicONTO, MatKG, USPTO/EPO/KIPO, BIS CCL/EAR, NIST, ECHA SCIP, 산업기술보호법, Wikidata, SEMI Link-Only)는 데이터 가용성 절(§9)과 provenance 매니페스트에 명시한다. 특허 데이터는 KIPRIS(Korea Intellectual Property Rights Information Service, 특허정보넷) 학술정보 활용 자격으로 수집하며, 공개 배포는 메타데이터 전용 경로를 따른다(§3.7).
 
 ## 3.3 거절 특허와 선행기술 관계
 
@@ -398,6 +384,11 @@ G0의 거절 특허 축은 다음 관계를 중심으로 구성된다.
 - `g:derived-features`: qrel과 독립적으로 생성한 ClaimFeature 및 개념 링크
 - `g:provenance`: 생성 버전, 규칙, 날짜, 출처, 라이선스
 
+**용어를 구분한다.** 데이터셋 릴리스는 커밋 SHA·sha256 으로 **고정(pin)** 되고, 평가 프로토콜과
+임계는 개봉 전에 **동결(freeze)** 된다. 고정은 "이 논문이 어느 스냅샷을 썼는가"의 좌표이고,
+동결은 "개봉 전에 무엇을 못 바꾸게 묶었는가"의 규율이다 — **고정은 데이터셋이 이후 버전을
+올려 개선되는 것을 막지 않는다**(§9.1).
+
 공개 릴리스에서 원문 청구항·초록은 KIPRIS 재배포 조건을 따른다. 재배포가 허용되지 않는 원문은 식별자, 해시, 생성 코드와 재구축 절차를 제공하고 원문 자체는 포함하지 않는다(메타데이터 전용 경로).
 
 ---
@@ -421,7 +412,7 @@ flowchart TD
 
 L0–L3 가운데 하나라도 실패하면 T-gate를 실행하지 않고 델타를 거부한다. L0–L3를 통과한 델타만 검색 인덱스를 재생성하고, 동결 개발·테스트 프로토콜로 성능 회귀(T1·T2)를 검사한 뒤, 마지막으로 타 태스크 CQ 스위트의 통과율 비회귀(T3)를 검사한다. T3를 마지막에 두는 이유는 계산 비용이 아니라 해석 순서다: T1·T2가 "게이트 태스크가 좋아졌는가/유지되는가"를 판정하고, T3가 "그 대가로 다른 태스크를 희생하지 않았는가"를 판정한다. 테스트 qrel은 최종 비교 시점까지 모델·가중치·규칙 선택에 사용하지 않는다.
 
-T3의 비회귀 조건은 통계 검정이 아니라 **결정론적 통과율 비교**로 둔다. CQ는 표본이 아니라 명세이므로, 통과율 하락 시 게이트는 즉시 실패한다. 예외는 명시적 waiver 커밋 토큰으로만 허용하고, 그 발생 횟수와 사유를 논문에 보고한다(부록 E).
+T3의 비회귀 조건은 통계 검정이 아니라 **결정론적 통과율 비교**로 둔다. CQ는 표본이 아니라 명세이므로, 통과율 하락 시 게이트는 즉시 실패한다. 예외는 명시적 waiver 커밋 토큰으로만 허용하고, 그 발생 횟수와 사유를 보고한다(§6.6).
 
 ## 4.2 평가 질의 단위
 
@@ -558,7 +549,7 @@ Accept(\Delta G)=
 - 성능이 비열등하더라도 L0–L3 실패는 승인할 수 없다.
 - T-gate 거부는 변경 전체가 무가치하다는 뜻이 아니라 원인 분석과 조건부 병합이 필요하다는 뜻이다.
 
-T3가 없는 게이트는 다세대 누적 과정에서 온톨로지를 검색 편향으로 표류시킬 수 있다(§9.6). T3는 이 표류의 1차 제동 장치다.
+T3가 없는 게이트는 다세대 누적 과정에서 온톨로지를 검색 편향으로 표류시킬 수 있다(§8.4). T3는 이 표류의 1차 제동 장치다.
 
 ## 4.10 결함 주입
 
@@ -639,7 +630,7 @@ P2에서 한 계층씩 제거해 기여를 측정한다.
 | A7 | 모든 온톨로지 특징 | 텍스트 전용 기준선 회귀 |
 | **A8** | **전문가 매칭 전용 계층(`Skill`·`ExpertCase`·`Mitigation`)** | **음성 대조군 — 절제 효과의 특이성(H5)** |
 
-H4는 A4와 A5의 성능 저하가 A1 및 서지 특징 제거보다 큰지를 검정한다. A8은 게이트 태스크와 이론적으로 무관한 계층을 제거하며, 검색 성능에 유의한 변화가 없어야 한다(H5). 모든 계층이 개선을 보일 것이라고 가정하지 않는다. A4 또는 A5가 개선하지 못하면 한정요소 생성 오류, 부분집합 선택편향, 또는 특징의 중복 가능성을 분석한다. A8이 유의한 악화를 보이면 음성 대조군 프레임을 버리고 "태스크 간 결합(task entanglement) 발견"으로 전환한다(§7.6, 부록 F).
+H4는 A4와 A5의 성능 저하가 A1 및 서지 특징 제거보다 큰지를 검정한다. A8은 게이트 태스크와 이론적으로 무관한 계층을 제거하며, 검색 성능에 유의한 변화가 없어야 한다(H5). 모든 계층이 개선을 보일 것이라고 가정하지 않는다. A4 또는 A5가 개선하지 못하면 한정요소 생성 오류, 부분집합 선택편향, 또는 특징의 중복 가능성을 분석한다. A8이 유의한 악화를 보이면 음성 대조군 프레임을 버리고 "태스크 간 결합(task entanglement) 발견"으로 전환한다(§7.3).
 
 ## 5.5 전문가 판정
 
@@ -737,7 +728,7 @@ v0.7의 CQ10은 `plasma_etch`와 2015년 이전 조건에서 후보가 8건에�
 
 **독립 검색팔은 약하다.** B4(분류 단독)와 B5(개념 단독)는 B3 대비 R@100이 약 0.25 낮다. 온톨로지의 가치는 독립 검색이 아니라 **텍스트 순위와의 융합(재랭크)**에 있다.
 
-**그림 3. 시스템 × 지표 — 깊은 회수는 오르고 상위 정밀도는 오르지 않는다.** (a) 주 지표 family Recall@100, (b) 보조 지표의 B3 대비 차이와 95% 신뢰구간. 파일 `paper/figures/ir_metrics.svg`.
+**그림 2. 시스템 × 지표 — 깊은 회수는 오르고 상위 정밀도는 오르지 않는다.** (a) 주 지표 family Recall@100, (b) 보조 지표의 B3 대비 차이와 95% 신뢰구간. 파일 `paper/figures/ir_metrics.svg`.
 
 **표 6.2d. 3단 증분 — 같은 조건에서 한 단계씩 얹을 때 (family Recall@100).**
 
@@ -752,7 +743,7 @@ v0.7의 CQ10은 `plasma_etch`와 2015년 이전 조건에서 후보가 8건에�
 
 확증 분할에서 **의미검색을 더한 이득은 유의하지 않았고(+0.0189, p=0.279) 그 위에 온톨로지를 더한 이득은 유의했다(+0.0534, p=0.008)**. 두 분할 모두 ②가 ①보다 커 부호와 순서가 일치한다. 다만 ①은 사전등록된 확증 비교가 아니라 **동결 산출물의 기술통계 증분**이며(시스템·설정·분할 모두 동결본, 재선택 없음), 확증 비교는 표 6.2b의 P0★·P1 대 B3뿐이다.
 
-**그림 2. 검색 유용성의 증분.** dev·test 두 분할에서 BM25에 의미검색을 더할 때와 그 위에 온톨로지를 더할 때의 family Recall@100 변화. 파일 `paper/figures/ir_increment.svg`.
+**그림 1. 검색 유용성의 증분.** dev·test 두 분할에서 BM25에 의미검색을 더할 때와 그 위에 온톨로지를 더할 때의 family Recall@100 변화. 파일 `paper/figures/ir_increment.svg`.
 
 **표 6.2e. 질의당 지연 — 단계 비용이며 엔드투엔드 서비스 지연이 아니다.**
 
@@ -783,36 +774,47 @@ v0.7의 CQ10은 `plasma_etch`와 2015년 이전 조건에서 후보가 8건에�
 
 **관측 1 — 어휘 검색은 외국어 선행기술에 구조적으로 실명(失明)이다.** 한국어 질의의 BM25는 영어 정답을 **한 건도 회수하지 못한다**(확증 분할 0/128, 개발 분할 0/206 — 두 분할 합쳐 334건 중 0건). 이는 성능 저하가 아니라 설계의 귀결이다. 문서는 언어별 분석기로 색인되지만(§4.6) 질의는 한국어 형태소 토큰이므로, 영어 문서 토큰과의 교집합이 원리적으로 비어 있다. 패밀리 해상도로 올려도 0.023에 그쳐, 같은 발명의 한국어 형제 공개를 통한 우회 회수도 거의 일어나지 않는다. 다국어 임베딩(B2)만이 실질적 통로이지만 그 회수율도 0.062다.
 
-**관측 2 — 온톨로지 단독 검색팔의 비교우위는 정확히 교차언어에 있다.** B5(개념 단독)는 한국어에서 가장 약한 팔 중 하나이면서(0.203, B3의 0.526 대비 낮음) 영어 정답에서는 **모든 시스템 중 가장 높다**(0.109 = 14/128, B3의 0.047 = 6/128의 2.3배). 같은 순서가 개발 분할에서도 재현된다(B5 0.092 = 19/206 > B3 0.053 = 11/206). 언어중립 개념 IRI가 어휘 장벽을 넘는다는 주장은 **이 팔에서는 데이터로 확인된다.** 그러나 이 우위는 최종 시스템에 전달되지 않는다 — P0★·P1의 영어 회수는 B3와 사실상 같다(0.047·0.055). 제안 시스템은 B3의 상위 1,000을 재정렬할 뿐이므로, **B5가 찾아낸 외국어 문서는 애초에 재정렬 대상 풀에 들어오지 않는다.** §7.3에서 재랭크 천장으로 진단한 구조가 교차언어 축에서 가장 극명하게 드러난 셈이다.
+**관측 2 — 온톨로지 단독 검색팔의 비교우위는 정확히 교차언어에 있다.** B5(개념 단독)는 한국어에서 가장 약한 팔 중 하나이면서(0.203, B3의 0.526 대비 낮음) 영어 정답에서는 **모든 시스템 중 가장 높다**(0.109 = 14/128, B3의 0.047 = 6/128의 2.3배). 같은 순서가 개발 분할에서도 재현된다(B5 0.092 = 19/206 > B3 0.053 = 11/206). 언어중립 개념 IRI가 어휘 장벽을 넘는다는 주장은 **이 팔에서는 데이터로 확인된다.** 그러나 이 우위는 최종 시스템에 전달되지 않는다 — P0★·P1의 영어 회수는 B3와 사실상 같다(0.047·0.055). 제안 시스템은 B3의 상위 1,000을 재정렬할 뿐이므로, **B5가 찾아낸 외국어 문서는 애초에 재정렬 대상 풀에 들어오지 않는다.** §7.2에서 재랭크 천장으로 진단한 구조가 교차언어 축에서 가장 극명하게 드러난 셈이다.
 
 **관측 3 — 자원 결손이 두 번째 병목이다.** §6.1.3에서 보고한 대로 개념링크 보유율은 영어 69.6%·일본어 0%이며, 일본어 정답의 본문 중앙 길이는 117자다. 따라서 온톨로지팔조차 일본어에서는 회수 0인데, 이는 방법의 한계가 아니라 **입력이 비어 있기 때문**이다.
 
-**관측 4 — 외국어 후보 풀은 편향되어 있다(정직 보고).** 후보 코퍼스의 영어 문서 1,189건 가운데 862건(72.5%)이 심사관 인용 정답이고, 일본어는 117건 중 83건(70.9%)이다. 한국어는 3.3%다. 외국어 하위풀에는 방해 문서가 희소하므로, 향후 번역·교차언어 팔이 얻는 이득은 **구조적으로 과대평가**된다. 본 진단표의 관측 1–3은 회수가 0에 가깝다는 방향의 결과이므로 이 편향에 영향받지 않지만, 개선 실험에서는 이 편향을 사전 보고하고 감도분석으로 통제해야 한다(§9.1).
+**관측 4 — 외국어 후보 풀은 편향되어 있다(정직 보고).** 후보 코퍼스의 영어 문서 1,189건 가운데 862건(72.5%)이 심사관 인용 정답이고, 일본어는 117건 중 83건(70.9%)이다. 한국어는 3.3%다. 외국어 하위풀에는 방해 문서가 희소하므로, 향후 번역·교차언어 팔이 얻는 이득은 **구조적으로 과대평가**된다. 본 진단표의 관측 1–3은 회수가 0에 가깝다는 방향의 결과이므로 이 편향에 영향받지 않지만, 개선 실험에서는 이 편향을 사전 보고하고 감도분석으로 통제해야 한다(§8.1).
 
-**종합.** 확증 분할 정답의 29%(139/479)가 비한국어인데 최종 시스템은 그중 7건(5%)만 회수한다. §6.4의 "교차언어 이득 유의 미달"은 이제 미설명 약점이 아니라 **번역 부재(어휘)·개념링크 결손(의미)·재랭크 천장(구조)의 합성으로 분해된 진단**이며, 세 원인은 각각 다른 처방을 가리킨다(§8.5·§9.1).
+**종합.** 확증 분할 정답의 29%(139/479)가 비한국어인데 최종 시스템은 그중 7건(5%)만 회수한다. §6.4의 "교차언어 이득 유의 미달"은 이제 미설명 약점이 아니라 **번역 부재(어휘)·개념링크 결손(의미)·재랭크 천장(구조)의 합성으로 분해된 진단**이며, 세 원인은 각각 다른 처방을 가리킨다(§7.5·§8.1).
 
 ## 6.3 가설 판정표
 
+확증 가설은 **H3·H5** 둘이다. 강등된 H1·H2·H4의 판정은 **바뀌지 않았고** 아래에 함께 싣되,
+근거의 상세는 각각 §6.5·§8.1·§6.4에 있다. 잘라내기 전 전문은 supplementary
+[S2](supplementary/S2-fault-injection-v09.md) §S2.1에 보존한다.
+
 | 가설 | 사전 지지 기준 | 관측 | 판정 |
 |---|---|---|---|
-| **H1** (게이트 판별력) | 대응 결함 탐지율이 L0–L3보다 높고 McNemar \(p<.05\), 정상 델타 위양성률 ≤5%; 교차 태스크 결함군(동의어 오병합·계층 역전)은 L0–L3·T1·T2를 통과하고 T3에서만 검출 | 교차 결함 T3 단독검출 **0/18** · McNemar b=19 · c=0 · p<.0001 (**방향이 가설의 반대**) · 위양성률 **0/18 = 0%** | **기각**(§6.5·§6.5.1) |
-| **H1′** (세분화 후 재판정 · **사후 재설계 · 확증 아님**) | 동일 기준을 CQ 판정 v2(존재∧분포검사, τ=0.05 사전동결)에서 재판정 | T3 검출 0/108 → **34/108**로 회복(교차 결함 6/18)했으나 **T3 단독검출 0/18** · McNemar b=14 · c=0 · p=.0001(방향 불변) · 위양성 **1/27 = 3.7%** | **기각 — 단, 원인이 다르다.** L3 ⊇ T3가 층 정의상 성립해 단독검출이 정의상 불가능(§6.5.2). 기각된 것은 T3의 유용성이 아니라 판정 기준 설계 |
-| **H1″** (층 분리 후 재판정 · **사후 재설계 · 확증 아님**) | L3를 주 태스크 스위트(pa)로 좁혀 T3와 **서로소**로 만든 뒤 동일 기준을 재판정. 검출력 불변(`L3_all ⟺ L3_pa ∨ T3`)이 전제 | 검출력 불변량 위반 **0/144** · 교차 결함 **T3 단독검출 5/18** · McNemar b=14 · **c=27** · p=.0609(**방향이 T-gate 우위로 역전**) · 위양성 **0/27 = 0%**(중복 제거 면제 도입) | **지지 — 단, 탐색적이며 제한이 크다.** 같은 데이터의 3회차 재판정(§6.5.3). 5/18은 전부 동의어 오병합이고 계층 역전은 0/9 · τ=0.10에서 단독검출 0/18 · T3 단독검출의 다수는 비교차 결함(특이성 낮음) |
-| **H1‴** (홀드아웃 확증 · **판정 규칙 불변 · 데이터만 새것**) | 층 분리 정의를 동결한 채 **아직 판정한 적 없는** 교차 결함 45개(복제 F11·F12 × rep{3,4,5} 18 + 신규 교차 결함군 F13·F14·F15 27)에서 ① T3 단독검출 ≥1 ② 단측 McNemar(방향 사전지정 T3 우위) \(p<.05\) ③ 위양성률 ≤5%. 전부 사전등록(PLAN-025 v2 · `a474126`) | 정지 규칙 위반 0 · 교차 결함 **T3 단독검출 12/45** · 단측 McNemar b=0 · **c=14** · **p=.0001** · 위양성 **0/27 = 0%** · 축 A 복제 2/18(p=.0625) · 축 B 일반화 **10/27**(p=.0010) | **지지 — 확증.** 사전등록 세 조건 충족(§6.5.4). 단 **τ=0.10에서는 기각**(단독 4/45·p=.3438) · F12는 이번에도 0/9 · 분모에 비교차 결함이 없어 **특이성은 검정되지 않음** |
-| **H2** (승인 안전성) | \(\Delta Recall@100\) 95% CI 하한 > \(-0.02\) **이고** 사전 지정 주요 하위집단의 최대 하락 < 0.05 | 확증 분할(198q·동결 델타 P1 vs B3 · `make tgate SPLIT=test`): **T1** family R@100 0.4315 → 0.4849, Δ+0.0534, 95%CI[+0.0145,+0.0926] → LB95 **+0.0145 > −0.02**. **T2** 세 축 전부 하락 없음(최대 하락 −0.0140 pos_lang · −0.0584 proc_group · −0.0310 rejection · 전부 δ=0.05 미만). **T3** em·tf·core 하락 0. **Accept(ΔG)=1** | **지지** — 단, 검정된 것은 **동결 델타 하나의 승인 안전성**이지 게이트의 판별력이 아니다(그것은 H1·§6.5). 공정군 축은 n≥20 신뢰집단이 **1개뿐**이라 근거가 얇다 |
 | **H3** (하이브리드 효과) | P0 또는 P1이 B3보다 R@100·nDCG@20 개선(보정 후 유의)이고, low-overlap 집단의 개선폭이 high-overlap보다 큼 | test(198q·family R@100): P1 Δ+0.0534, 95%CI[+0.0145,+0.0926], p=0.008 (유의); 개념단독 Δ+0.0584, p=0.002. 주 사전지정 P0★(concept+ipc)는 Δ+0.0319, p=0.181 (유의 미달 — IPC 가중 dev 과적합). **nDCG@20은 개선되지 않음**: P1 Δ−0.0176(p=0.227), P0★ Δ−0.0395(p=0.029, 유의 악화). **low-overlap 조건 반증**: F11 동결 임계(dev Q1=0.0079) 적용 시 low Δ−0.0586(n=27, p=0.448) < high Δ+0.0711(n=171, p=0.000) | **부분 지지 — 주 지표에 한정** (R@100은 P1에서 유의 개선 · **nDCG 조항 미충족** · 주 P0★ 유의 미달 · low-overlap 조건 반증) |
-| **H4** (계층 기여) | A4/A5의 제거 손실이 A1/서지 제거 손실보다 큼 | test: A4(−ClaimFeature) 제거손실 +0.0070·A5(−거절근거) 0.0 이 A1(−CPC/IPC) +0.0025 를 유의하게 넘지 못함(전부 Holm m=8 n.s.). ClaimFeature 계층 독립 기여 없음 | **기각** |
-| **H5** (특이성 — 음성 대조군) | A8(전문가 매칭 계층 제거)의 \(\Delta R@100\)이 유의하지 않음 | test: A8 제거손실 ΔR@100 +0.0316, 95%CI[+0.0105,+0.0560], p=0.002 (유일 Holm 유의) — **유의하게 검색 악화** | **기각 → 태스크 결합(entanglement) 발견** (음성대조군 폐기·T3 필요성 강화·§7.6·신규주장 F) |
+| **H5** (특이성 — 음성 대조군) | A8(전문가 매칭 계층 제거)의 \(\Delta R@100\)이 유의하지 않음 | test: A8 제거손실 ΔR@100 +0.0316, 95%CI[+0.0105,+0.0560], p=0.002 (유일 Holm 유의) — **유의하게 검색 악화** | **기각 → 교차 태스크 의존성 관측** (음성대조군 폐기 · 교차 태스크 조건의 필요성 강화 · §7.3) |
+| **H1** (게이트 판별력) *강등 — 설계 근거* | 교차 결함이 L0–L3·T1·T2를 통과하고 T3에서만 검출 · McNemar \(p<.05\) · 위양성 ≤5% | 개발 분할 **기각**(T3 단독 0/18 · McNemar 방향이 가설의 반대) → 원인은 층 정의의 포개짐(L3 ⊇ T3) → 층 분리 후 **홀드아웃 45개에서 확증**(T3 단독 **12/45** · 단측 p=**.0001** · 위양성 **0/27**) | **기각 후 재정의·확증** — 사전등록된 형태는 기각으로 남는다. τ=0.10에서는 기각 · 특이성 미검정(§6.5) |
+| **H2** (승인 안전성) *강등 — 미검정* | 동일 파이프라인에 O와 O′를 넣어 \(\Delta R@100\)의 LB95 > \(-\epsilon\) 이고 하위집단 최대 하락 < \(\delta\) | **자격 있는 델타가 존재하지 않는다** — G0·G1·G2의 T-Box가 완전히 동일해(클래스 103 · 술어 97/81 · 델타 0) 버전 델타를 만들 수 없었다 | **미검정**(§8.1). 아래 보고한 게이트 실행은 **서로 다른 두 시스템**의 비교이므로 H2의 증거가 아니다 |
+| **H4** (계층 기여) *강등 — 절제 표로 흡수* | A4/A5의 제거 손실이 A1/서지 제거 손실보다 큼 | test: A4(−ClaimFeature) +0.0070 · A5(−거절근거) 0.0 이 A1(−CPC/IPC) +0.0025 를 유의하게 넘지 못함(전부 Holm m=8 n.s.) | **기각**(§6.4 표의 A4·A5 행) |
 
-**H2에 관한 두 가지 정직 보고.** 첫째, 판정에 쓴 델타는 T-gate 도입 시점에 동결한 ΔG(P1 vs B3) 하나다. **주 사전지정 검색 시스템 P0★도 같은 게이트에 걸었고**(`tgate_report_test_p0star.json`), 결과는 역시 승인이나 **여유가 얇다** — T1 LB95 **−0.0139**로 마진 −0.02를 근소하게 웃돌 뿐이고, T2에서는 외국어 정답 포함 집단에 **실제 하락(+0.0118)** 이 나타난다(δ=0.05 미만이라 통과). 비열등성은 우월성이 아니므로 P0★의 우월성 미달(§6.2, p=0.181)과 이 통과는 모순되지 않는다. 유리한 델타만 게이트에 걸지 않기 위해 두 판정을 결과를 보기 전에 함께 보고하기로 동결했다(PLAN-024 §1). 둘째, **T2의 신뢰집단은 얇다.** 확증 분할 198질의에서 `n≥20`을 넘는 집단은 언어축 2개·거절근거축 2개·공정군축 **1개**뿐이다. 공정군의 안전성은 사실상 한 집단의 관측이며, 이를 근거로 공정군 전반의 안전을 주장하지 않는다.
+**게이트 실행 사례에 관한 두 가지 정직 보고.** 위 표의 H2 행이 밝힌 대로 이 실행은 승인 안전성의
+검정이 아니라 **게이트가 실제로 돌아간 사례**다. 그럼에도 두 가지는 그대로 보고한다. 첫째, 게이트에
+건 델타는 동결한 ΔG(P1 vs B3) 하나가 아니다 — **주 사전지정 시스템 P0★도 같은 게이트에 걸었고**
+(`tgate_report_test_p0star.json`) 결과는 역시 승인이나 **여유가 얇다**. T1 LB95 **−0.0139**로 마진
+−0.02를 근소하게 웃돌 뿐이고, T2에서는 외국어 정답 포함 집단에 **실제 하락(+0.0118)** 이 나타난다
+(δ=0.05 미만이라 통과). 비열등성은 우월성이 아니므로 P0★의 우월성 미달(§6.2 · p=0.181)과 이 통과는
+모순되지 않는다. 유리한 델타만 걸지 않기 위해 두 판정을 결과를 보기 전에 함께 보고하기로 동결했다.
+둘째, **T2의 신뢰집단은 얇다** — 확증 분할 198질의에서 `n≥20`을 넘는 집단은 언어축 2개·거절근거축
+2개·공정군축 **1개**뿐이다. 공정군의 안전성은 사실상 한 집단의 관측이며, 이를 근거로 공정군 전반의
+안전을 주장하지 않는다.
 
 확증 가설과 별개로 다음 세 항목은 탐색적 분석으로 보고하며, 결론의 주장에는 포함하지 않는다.
 
 | 탐색적 분석 | 관측 내용 | 값 |
 |---|---|---|
 | 운용 효율 | 동일 R@100에서 검토 후보 수 또는 검토 비용 감소 | **미수행** — Candidate Reduction 을 산출하지 않았다. 단계 비용은 측정됐다(재랭크 p95 ≈ 30 ms · 표 6.2e) |
-| 거절 유형별 신호 | 신규성은 single-reference, 진보성은 set coverage 포괄의 설명력 | **검정 불가** — 자원에 신규성 단독 거절 0건(1,000건 중 신규성 14건 전부 진보성과 병존, 확증 분할 n=3). §6.4·§7.7 |
+| 거절 유형별 신호 | 신규성은 single-reference, 진보성은 set coverage 포괄의 설명력 | **검정 불가** — 자원에 신규성 단독 거절 0건(1,000건 중 신규성 14건 전부 진보성과 병존, 확증 분할 n=3). §6.4·§8.1 |
 | 의미 도달성 | 의미 도달성 집단과 하이브리드 효과 크기의 관계 | **미수행** — 도달성 해상도별 층화를 하지 않았다. 대리 지표인 어휘 중첩 축에서는 **고중첩 집단에 이득이 집중**된다(§6.4) |
+| 교차언어 회수 | 정답 언어별 회수 분해 | **탐색적 진단** — 개념 단독 팔이 영어 정답에서 최고, 최종 시스템에는 전달되지 않음(§6.2f·§7.2) |
 
 ## 6.4 하위집단 및 ablation 결과표
 
@@ -844,7 +846,7 @@ v0.7의 CQ10은 `plasma_etch`와 2015년 이전 조건에서 후보가 8건에�
 >
 > **거절근거 축의 자원 한계(중요).** 상류 원본 1,000건 중 진보성(제29조 제2항) 400건·신규성(제1항)
 > 14건이며 **신규성 단독 거절은 0건**(14건 전부 진보성과 병존)·600건은 구조화 라벨이 없다. 따라서
-> §7.7이 예상한 "신규성 대 진보성" 대비는 **본 자원에서 검정 불가**이며, 표의 신규성 병존 행은 n=3의
+> 사전 예상이었던 "신규성 대 진보성" 대비는 **본 자원에서 검정 불가**이며, 표의 신규성 병존 행은 n=3의
 > 기술통계다. 또한 벤더 TTL 스냅샷은 `§1×n|§2×m` 문자열을 단일 `Rejection_Inventiveness`로 접어
 > 신규성 축을 잃으므로, 라벨은 상류 원본에서 파생한 스냅샷(`data/external/sdkb/rejection_basis.csv`)에서
 > 가져왔다. 이 라벨은 **하위집단 분해에만** 쓰이며 순위 함수 입력이 아니다.
@@ -856,453 +858,234 @@ v0.7의 CQ10은 `plasma_etch`와 2015년 이전 조건에서 후보가 8건에�
 >
 **ablation 표를 읽을 때의 두 주의점.** 첫째, A2·A3의 제거 손실이 **음수**다 — 공정·소자 축이나 재료·장비·고장 축을 빼면 주 지표가 오히려 조금 오른다(둘 다 n.s.). 개별 개념 축이 독립적으로 기여한다는 그림은 자료가 지지하지 않으며, 이득은 축의 합이 아니라 개념 겹침이라는 **하나의 결합 신호**에서 나온다. 둘째, A7(전체 온톨로지 제거)의 +0.0534는 표 6.2b의 P1 대 B3 차이와 **같은 수치**다 — 같은 두 순위의 비교이기 때문이다. 표 6.2b에서는 사전등록된 주 비교이므로 보정 없이 p=0.008로 보고하고, 여기서는 8개 절제 가족의 일원이므로 Holm 보정(m=8) 후 n.s.로 보고한다. 같은 수치의 두 판정은 모순이 아니라 **비교 가족이 다르기 때문**이며, 어느 쪽도 결과를 본 뒤 선택하지 않았다.
 
-**그림 4. 계층별 기여(A1–A8)와 Holm 보정.** 양수는 그 계층을 제거했을 때 성능이 떨어짐, 즉 기여를 뜻한다. 보정 후 유의한 것은 음성 대조군 A8뿐이다. 파일 `paper/figures/ir_ablation.svg`.
+**그림 3. 계층별 기여(A1–A8)와 Holm 보정.** 양수는 그 계층을 제거했을 때 성능이 떨어짐, 즉 기여를 뜻한다. 보정 후 유의한 것은 음성 대조군 A8뿐이다. 파일 `paper/figures/ir_ablation.svg`.
 
-**그림 5. 하위집단별 P1 − B3.** 점은 차이, 막대는 95% 신뢰구간이며 n<20 집단은 회색으로 낮춰 그렸다. 파일 `paper/figures/ir_subgroup.svg`.
+**그림 4. 하위집단별 P1 − B3.** 점은 차이, 막대는 95% 신뢰구간이며 n<20 집단은 회색으로 낮춰 그렸다. 파일 `paper/figures/ir_subgroup.svg`.
 
 > **어휘 중첩(F11)의 동결 절차.** 질의 독립항과 그 질의의 알려진 양성 문헌(초록+청구항) 사이의 문자
 > 3-gram Jaccard 평균을 질의 점수로 하고, **dev 분포의 Q1(=0.0079)을 low-overlap 경계로 동결한 뒤
 > test에 그대로 적용**했다(`data/processed/ir/overlap_threshold.json`). 임계는 test 분포를 보고 정하지
 > 않았다.
 
-## 6.5 결함 주입 결과표
+## 6.5 게이트 판별력 — 홀드아웃 확증 (H1 · 요약)
 
-결함 12종 × 강도 1/5/10% × 반복 3 = **108 인스턴스**를 개발 분할에서 실행하고, 정상 델타 18건을 위양성 분모로 함께 돌렸다(전량 코드 생성 · `make faults` · 표 정본 `paper/tables/fault_matrix.md`). 셀은 해당 층의 검출률이다.
+게이트의 판별력은 이 논문의 확증 가설이 아니라 **설계의 근거**다(§4.9). 판정에 이른 경위는
+supplementary [S2](supplementary/S2-fault-injection-v09.md)에 전문을 두고, 여기서는 최종 판정과
+그 경계만 싣는다.
 
-| 결함 | 예상층 | L0 | L1 | L2 | L3 | 누출 | T1 | T2 | T3 | 최초 검출층 | 미탐지 |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|
-| 신선도·무결성 | L0 | **1.00** | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | L0 | 0/9 |
-| 구조(필수 속성 누락) | L1 | 0.00 | **1.00** | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | L1 | 0/9 |
-| 논리(순환·타입 모순) | L2 | 0.00 | 0.11 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | — | 8/9 |
-| 기능(CQ 경로 삭제) | L3 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | — | 9/9 |
-| 의미 정렬 오류 | T1 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | — | 9/9 |
-| 계층 평탄화 | T1(+L3) | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | — | 9/9 |
-| 판단 문맥 치환 | T1·T2 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | — | 9/9 |
-| 메타데이터 삭제 | T1(약) | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | — | 9/9 |
-| 시간 누출 | L0/누출감사 | 0.00 | 0.00 | 0.00 | 0.00 | **1.00** | 0.00 | 0.00 | 0.00 | 누출 | 0/9 |
-| qrel 간선 누출 | 누출감사 | 0.00 | 0.00 | 0.00 | 0.00 | **1.00** | 0.00 | 0.00 | 0.00 | 누출 | 0/9 |
-| **동의어 오병합 (교차)** | T3 | 0.00 | 0.00 | 0.00 | 0.00 | 0.67 | 0.00 | 0.00 | **0.00** | 누출 | 3/9 |
-| **공유 계층 역전 (교차)** | T3 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | **0.00** | — | 9/9 |
+사전등록된 형태의 H1 — "교차 태스크 결함은 T3에서만 검출된다" — 는 개발 분할 108 인스턴스에서
+**기각됐다**(T3 단독 검출 0/18 · McNemar b=19, c=0, 방향이 가설의 반대 · 위양성 0/18). 원인은
+게이트 설계가 아니라 **층 정의의 포개짐**이었다. L3가 전 스위트의 CQ 통과 수를 세고 T3가 그
+부분집합을 세므로 L3 ⊇ T3 가 구조적으로 성립해, T3 단독 검출은 정의상 불가능했다(135 인스턴스
+전량에서 T3 발화 ∧ L3 미발화 = 0건). 처방은 두 층을 **서로소**로 가르는 것이다 — L3는 주 태스크
+스위트(pa), T3는 {em, tf, core}. 합집합은 CQ 28개 전량으로 불변이므로 검출력이 아니라 귀속만
+바뀌며, `L3_all ⟺ L3_pa ∨ T3`의 위반이 144 인스턴스 전량에서 0건임을 확인했다.
 
-**H1은 기각되었다.** 판정 기준 세 가지 중 통과한 것은 위양성률뿐이다.
+층 분리 후의 판별력은 **아직 판정한 적 없는 결함으로 확증했다.** 규칙을 하나도 바꾸지 않고 교차
+결함 45개(기존 2군의 신규 반복 18 + **신규 교차 결함군 3종** 27)와 정상 델타 27개를 주입한 결과,
+**T3 단독 검출 12/45 · 단측 McNemar p=.0001 · 위양성 0/27**로 사전 지정한 세 조건이 모두 충족됐다.
+신규 3종은 조작 술어가 주 태스크 CQ가 참조하는 술어 20개와 **교집합 공집합**이라는 검증 가능한
+성질로 교차성을 보증하며, 회귀한 CQ는 결함군마다 다른 태스크를 지목한다(F13→CQ11 · F11→CQ18 ·
+F14→CQ28 · F15→CQ13). 즉 T3는 "무언가 깨졌다"가 아니라 **어느 태스크의 어느 명세가 깨졌는지**를
+알려준다.
 
-- **교차 태스크 결함의 T3 단독 검출: 0/18.** T3는 두 교차 결함을 한 건도 검출하지 못했다.
-- **McNemar(결함 단위 대응, L0–L3 검출 vs T-gate 검출): b=19, c=0, p<.0001(정확 이항검정).** 유의하지만 **방향이 가설의 반대**다. T-gate가 형식 검증이 놓친 결함을 추가로 잡은 사례는 0건이고, 반대로 형식 검증만 잡은 사례가 19건이다.
-- **위양성률 0/18 = 0%** (≤5% 기준 충족). 정상 델타 두 종류 — 실제 병합 델타의 부분집합, 의미보존 보강 — 모두 어느 층에서도 거부되지 않았다.
+**확증하지 못하는 것을 함께 적는다.** ① 결론은 분포 검사 임계 τ=0.05라는 사전 선택에 의존한다 —
+τ=0.10에서는 단독 검출이 4/45로 떨어져 기각된다. ② 공유 계층 역전은 이번에도 0/9이며, 게이트의
+완전성은 확증되지 않았다. ③ **T3의 특이성은 미검정이다** — 홀드아웃 분모에 비교차 결함을 넣지
+않았으므로, T3의 추가 판별력이 교차 태스크 조건에서만 오는지는 아직 분리 검정되지 않았다.
+④ 형식층 L2에는 검출 표면이 사실상 없다 — SDKB T-Box에 `owl:disjointWith`·카디널리티 제약이
+하나도 없어 타입 모순을 주입해도 논리적 모순이 되지 않는다.
 
-세 층에서 원인이 확인되며, 셋 다 게이트 **설계**가 아니라 게이트가 딛고 선 **자원의 해상도** 문제다.
+## 6.6 교차 태스크 CQ 통과율
 
-1. **L2에는 검출 표면이 없다.** SDKB T-Box에 `owl:disjointWith`·카디널리티 제약이 **하나도 없다**(실측). 타입 모순을 주입해도 논리적으로 모순이 아니다. 유일한 검출 1건도 L2가 아니라 L1이 잡았다.
-2. **L3·T3는 존재 검사다.** CQ 28개 중 **26개가 `expect-min: 1`** 이라 "결과행이 하나라도 있는가"만 묻는다. 결함이 CQ를 **0행으로** 만들어야 발화하므로 1–10% 강도의 국소 결함은 원리적으로 통과한다.
-3. **T1의 마진이 넓다.** T1은 결함본 P1을 정상 B3와 비교하므로, 결함이 온톨로지 이득(+0.042)을 전부 소진하고 추가로 \(\varepsilon=0.02\)를 넘겨야 발화한다. 의미 정렬 10% 오류에서 실측 이득은 +0.042 → +0.032로 줄었을 뿐이다.
+게이트가 승인한 델타에서 타 태스크 CQ 통과율은 하락하지 않았고 **누적 waiver는 0회**다. 다만
+실제 그래프 세대가 기준 세대와 병합 세대 **둘뿐**이므로 **추이라 부를 만한 이력이 아직 없으며**,
+세대를 만들어 표를 채우지 않는다. 표와 세대별 아티팩트는 supplementary
+[S2](supplementary/S2-fault-injection-v09.md)에 둔다.
 
-### 6.5.1 진단 — CQ를 세분화했다면 무엇이 잡혔는가 (T3′ · 탐색적)
-
-위 원인 2가 게이트 구조의 한계인지 CQ 해상도의 한계인지를 가르기 위해, 통과/불통과 대신 **CQ 결과행 수의 하락**을 보는 대리지표 T3′를 계산했다. 이 진단은 **결함 결과를 보기 전에** 사전 등록했으며(PLAN-020 §5-1), 게이트 판정에는 넣지 않는다.
-
-| 결함 | T3 검출 | **T3′ 행수하락** | 하락한 교차 태스크 CQ |
-|---|---:|---:|---|
-| 구조(필수 속성 누락) | 0/9 | **9/9** | CQ02, CQ04, CQ05 |
-| 기능(CQ 경로 삭제) | 0/9 | **9/9** | CQ01–CQ07, CQ12, CQ15, CQ21 |
-| 의미 정렬 오류 | 0/9 | **9/9** | CQ02, CQ03, CQ06 |
-| 계층 평탄화 | 0/9 | **9/9** | CQ21 |
-| 메타데이터 삭제 | 0/9 | **9/9** | CQ05, CQ08, CQ13 |
-| 시간 누출 | 0/9 | **4/9** | CQ03, CQ06 |
-| **동의어 오병합 (교차)** | 0/9 | **6/9** | **CQ18(전문가매칭), CQ23** |
-| **공유 계층 역전 (교차)** | 0/9 | 0/9 | — |
-| 정상 델타 2종 (위양성 분모) | 0/18 | **0/18** | — |
-
-**결함 검출 55/108, 정상 델타 오탐 0/18.** 같은 CQ 스위트·같은 결함·같은 강도인데, 판정 해상도만 바꾸면 절반 이상이 검출된다. 특히 교차 결함인 동의어 오병합은 **전문가 매칭 CQ(CQ18)** 의 응답 행 수를 6/9에서 떨어뜨린다 — §7.2가 예상한 경로가 실재하되, 현행 CQ의 이진 통과 판정이 그것을 삼켰다는 뜻이다. 따라서 T3 실패의 원인은 교차 태스크 조건 자체가 아니라 **CQ가 존재만 묻고 분포를 묻지 않는다**는 데 있다. 처방은 부록 F의 CQ 세분화이며, 이 표가 그 처방의 기대효과에 대한 최초의 정량 근거다. 세분화 후 재실험은 W4b로 등재했다(§11).
-
-**공유 계층 역전은 T3′로도 잡히지 않는다.** `hasSubprocess` 방향을 뒤집어도 CQ21의 결과 행 수는 보존된다 — 계층 질의가 방향을 검사하지 않기 때문이다. 이는 CQ 세분화만으로 닫히지 않는 별도의 결손이며, 방향성 제약을 SHACL 또는 CQ에 명시해야 한다.
-
-**누출 감사의 특이도 문제(불리한 결과).** 동의어 오병합이 누출 층에서 0.67의 비율로 검출됐는데, 이는 진짜 누출이 아니다. 개념을 병합하면 질의의 개념 집합이 정답 문서의 개념 집합을 포함할 확률이 올라가 G-3 지표(정답 개념 복사 쌍)가 기준선을 넘는다. G-3은 시간·qrel 누출을 잡도록 설계됐지만 **누출에 특이적이지 않다**. 이 층의 판정은 G-1(문서를 개념 자리에 넣었는가, 특이도 확인됨)에 무게를 두고 읽어야 한다.
-
-### 6.5.2 처방의 수행 — CQ 판정을 세분화하고 다시 판정했다 (v2 · H1′)
-
-§6.5.1의 진단은 처방을 지목했고, 부록 F는 그 처방("CQ 세분화 후 재실행")을 결함 주입 **이전에** 예고해 두었다. 이 절은 그 처방을 실제로 수행한 결과다. 판정 규칙은 결과를 보기 전에 동결했으며(PLAN-021), 규칙 자체는 다음과 같다.
-
-\[
-\text{pass}_{v2}(i) = \underbrace{[\,\text{rows}_i \ge \text{expect-min}_i\,]}_{\text{v1 존재검사}} \wedge \neg\,\text{regress}_i,\qquad
-\text{regress}_i =
-\begin{cases}
-\text{rows}_i < (1-\tau)\,\text{base}_i & (\text{monotone: up})\\
-\text{rows}_i > (1+\tau)\,\text{base}_i & (\text{monotone: down})
-\end{cases}
-\]
-
-\(\tau=0.05\)를 주값으로 하고 사전 동결 격자 \(\tau \in \{0, 0.05, 0.10\}\)을 전량 보고한다. **CQ 스위트 배정(pa 5·em 6·tf 5·core 12)은 바뀌지 않았다** — 바뀐 것은 배정이 아니라 판정 규칙이며, T3의 분모는 그대로 {em, tf, core}다.
-
-**극성(`# monotone:`)을 28개 전량에 선언한 이유.** CQ03(미커버 공정 단계)·CQ06(최근 출원 없는 개념)은 **공백 탐색 질의**여서 결과 행이 줄어드는 것이 곧 커버리지 개선이다. 극성 없이 "행 수 하락 = 회귀"로 판정하면 정당한 보강이 게이트에 걸린다. 이 보정에는 대가가 있으며 실행 전에 명시했다 — §6.5.1에서 시간 누출이 얻은 검출 4/9는 전부 CQ03·CQ06 경유였으므로 v2에서는 사라진다.
-
-**결함을 다시 주입하지 않았다.** 바뀐 것이 판정 규칙뿐이므로 격리된 결함 그래프 126개를 읽어 다시 판정했고, L0·L1·L2·누출·T1·T2는 동일 인스턴스의 저장값을 승계했다. 같은 인스턴스에 대한 대응 비교가 되어 McNemar가 정당해진다. 새로 주입한 것은 위양성 분모를 보강하는 정상 델타 N03 9건뿐이다.
-
-| 판정 기준 | v1 (사전등록) | **v2 (τ=0.05)** |
-|---|---:|---:|
-| T3 검출 (결함 108 인스턴스) | 0/108 | **34/108** |
-| L3 검출 | 0/108 | **34/108** |
-| 미탐지 결함군 | 8/12 | **5/12** |
-| 교차 결함 T3 검출 | 0/18 | **6/18** |
-| **교차 결함 T3 단독 검출** | 0/18 | **0/18** |
-| McNemar (L0–L3 vs T-gate) | b=19, c=0, p<.0001 | **b=14, c=0, p=.0001** |
-| 위양성 (정상 델타 27) | 0/18 | **1/27 = 3.7%** |
-
-**판정 해상도가 원인이라는 진단은 확증됐다.** T3는 0에서 34/108로 살아났고, 새로 검출된 결함군은 구조·논리·기능·계층 평탄화·메타데이터·동의어 오병합 여섯이다. 특히 **논리 모순 결함이 9/9로 검출됐다** — L2(HermiT)는 여전히 0이지만(T-Box에 `owl:disjointWith`가 없다는 §6.5의 관측은 그대로다), 같은 결함이 CQ 분포에 흔적을 남긴다. 순환을 주입하면 공백 탐색 질의의 행 수가 늘고, `down` 극성이 그 증가를 회귀로 잡는다. 극성 선언이 양방향으로 작동함을 실측이 보인다. 교차 결함인 동의어 오병합도 예고대로 전문가 매칭 CQ(CQ18)를 경유해 6/9로 검출된다.
-
-**그럼에도 H1′은 기각이다. 그리고 기각의 이유가 v1과 다르다 — 이것이 이 절의 본론이다.**
-
-**T3가 발화하고 L3가 발화하지 않은 인스턴스는 \(\tau\) 세 값 어디에서도 0건이다**(135 인스턴스 전량 확인). 이는 우연이 아니라 층 정의의 귀결이다. L3는 **전 스위트(pa 포함) CQ 통과 수**의 하락을 보고, T3는 그 부분집합인 {em, tf, core}의 통과율 하락을 본다. 교차 태스크 CQ가 하나라도 회귀하면 전체 통과 수도 함께 줄어들므로 **L3 ⊇ T3가 구조적으로 성립한다.** 따라서 H1의 판정식 "교차 결함이 **T3에서만** 검출된다"는 CQ 스위트를 아무리 세분화해도 충족될 수 없다.
-
-**기각된 것은 T3의 유용성이 아니라 H1의 판정 기준 설계다.** 이 사실은 v1 실측(0/108)에서는 드러나지 않았다 — 두 층 모두 아무것도 잡지 못해 포함 관계가 보이지 않았기 때문이다. L3를 주 태스크 스위트로 좁히면 T3 단독 검출이 곧바로 나오겠지만, 그것은 결과를 본 뒤 판정층의 정의를 바꾸는 것이므로 하지 않는다. 차기 사전등록 항목으로 등재하고, 여기서는 관측과 그 함의만 남긴다. 실용적 함의는 분명하다 — **다층 방어에서 T3의 가치는 "혼자 잡는가"가 아니라 "무엇을 지목하는가"에 있다.** T3는 회귀한 CQ가 어느 태스크의 명세인지를 알려주지만 L3는 총량만 알려준다.
-
-**불리한 실측 — v2는 정당한 중복 병합을 차단한다.** 위양성 분모를 보강하기 위해 정상 델타 N03(완전 중복 개체 병합 — IRI를 제외한 트리플 집합이 나가는 간선·들어오는 간선 모두 동일한 개체들의 병합)을 추가했다. 이는 실제 큐레이션이 하는 정당한 변경이며 어느 층도 거부해서는 안 된다. 그런데 \(\tau=0.05\)에서 1/9, \(\tau=0\)에서 3/9가 거부됐다(재료–문제–전문가 질의 CQ17, 문제–공정–장비–전문가 질의 CQ12). 중복 개체를 병합하면 그 개체를 경유하던 조합 행이 사라지는데 — 중복이 만들던 허수 행이므로 정보 손실은 없다 — 행 수만 보는 판정은 그것을 회귀로 읽는다. **v2는 "행이 줄어든 이유"를 구분하지 못한다.** 이는 분포 검사의 원리적 한계이며, 처방은 \(\tau\)를 올리는 것이 아니라(검출력이 무너진다) 중복 제거를 델타 유형으로 선언해 면제하는 것이다.
-
-| \(\tau\) | T3 검출 | L3 검출 | 위양성 | T3 단독 검출 |
-|---:|---:|---:|---:|---:|
-| 0.00 | **55/108** | 64/108 | 3/27 (11.1%) | 0/18 |
-| **0.05 (주값)** | 34/108 | 34/108 | 1/27 (3.7%) | 0/18 |
-| 0.10 | 18/108 | 20/108 | 1/27 (3.7%) | 0/18 |
-
-**검출력과 위양성은 정면으로 상충한다.** \(\tau=0\)은 §6.5.1의 T3′와 정확히 같은 55/108을 재현하지만 위양성이 사전등록 기준 5%를 넘고, \(\tau=0.10\)은 위양성이 낮은 대신 검출이 18로 주저앉는다. 동결 주값 0.05가 그 사이에 있는 것은 사전 선택의 결과이지 사후 최적화가 아니며, 그 사실을 검증 가능하게 하려고 격자 세 값을 전량 싣는다.
-
-**공유 계층 역전은 v2로도 검출되지 않는다.** §6.5.1이 특정한 대로 방향성 제약의 부재는 판정 해상도와 무관한 별개의 결손이며, SHACL 방향성·비순환 제약으로 닫아야 한다(미실행).
-
-**이 절의 지위.** v2는 T3′ 진단(55/108)을 **본 뒤에** 설계됐다. 즉 기대효과를 먼저 측정하고 규칙을 그에 맞춰 바꿨으며, 같은 데이터를 다시 판정한 결과다. 따라서 이것은 확증 증거가 아니라 **사후 재설계 검정(H1′)**이고, 사전등록된 H1의 기각은 소급 변경되지 않는다(표 7.1). v2의 확증은 다음 세대 델타에서 새 데이터로 이루어져야 한다.
-
-### 6.5.3 층 정의를 분리하고 다시 판정했다 (L3 ⊥ T3 · H1″)
-
-§6.5.2가 특정한 결손은 판정 해상도가 아니라 **층 정의**였다. 이 절은 그 정의를 고쳐 H1을 비로소 검정 가능한 형태로 만든 결과다. 개정 규칙은 실행 전에 동결했다(PLAN-022 · 커밋 `44f8022`, 결과 커밋과 분리).
-
-**개정.** L3의 검출 표면을 **주 태스크 스위트(pa)** 로 좁힌다. T3는 한 글자도 바꾸지 않았다 — 조작 변인은 하나다.
-
-$$\text{구}: \ L3=\{pa,em,tf,core\}(28) \supseteq T3=\{em,tf,core\}(23) \qquad \text{신}: \ L3=\{pa\}(5) \perp T3=\{em,tf,core\}(23)$$
-
-**이 개정이 게이트를 약화시키지 않는다는 것이 먼저 확인되어야 한다.** 두 집합의 합집합은 개정 후에도 CQ 28개 전량이고 승인식은 곱이므로(§4.9), 어느 층에 귀속되든 하나라도 떨어지면 거부다. 즉 바뀌는 것은 검출력이 아니라 **귀속**이다. 이를 주장으로 두지 않고 인스턴스마다 검사했다 — `L3_all ⟺ L3_pa ∨ T3`의 **위반은 144 인스턴스 전량에서 0건**이며, τ 세 값 모두에서 성립한다(표 6.5c). 개정 전 거부되던 델타가 개정 후 승인되는 경우는 존재하지 않는다. 같은 이유로 CI의 `make cq`는 종료 코드를 28개 전량의 곱으로 유지하고 층 귀속만 표시한다 — 종료 코드까지 pa로 좁히면 `mini_graph`의 교차 태스크 CQ 실패가 통과가 되어 이 불변량이 깨진다.
-
-**의미도 개정 쪽이 맞다.** T3는 정의상 "**교차** 태스크 CQ 비회귀"이며 주 태스크의 회귀는 T1이 통계적으로 담당한다(§4.9). 같은 논리로 주 태스크의 **기능** 검증은 L3의 몫이다. 구 정의에서 L3가 전 스위트를 세던 것은 T-gate 도입 이전의 정의가 남은 것이다.
-
-**결과.** 결함을 다시 주입하지 않고 격리본 135개에 신규 9개(N03A · 아래)를 더해 144개를 재판정했다(57.5초).
-
-| 판정 기준 | 구 귀속 (§6.5.2) | **신 귀속 (L3 ⊥ T3)** |
-|---|---:|---:|
-| 검출력 불변량 위반 | — | **0/144** |
-| L3 검출 (결함 117 인스턴스) | 43/117 | **11/117** |
-| T3 검출 | 43/117 | **43/117** (불변) |
-| 교차 결함 T3 검출 | 6/18 | **6/18** |
-| **교차 결함 T3 단독 검출** | 0/18 (정의상 불가능) | **5/18** |
-| McNemar (L0–L3 vs T-gate) | b=14, c=0 | **b=14, c=27, p=.0609** |
-| 위양성 (정상 델타 27) | 1/27 = 3.7% | **0/27 = 0%** |
-
-**H1″의 세 조건이 모두 충족된다** — ① T3 단독 검출 5/18 > 0, ② McNemar 방향이 T-gate 우위(c=27 > b=14; H1 실측에서는 c=0으로 정반대였다), ③ 위양성 0/27 < 5%(τ 격자 전량). 즉 **층을 서로소로 가르면 T-gate는 형식층이 놓치는 회귀를 실제로 잡는다.** 다만 이 결과의 지위는 아래에서 다시 제한된다.
-
-**함께 넣은 처방 — 중복 제거 면제.** §6.5.2의 불리한 실측(정당한 중복 병합이 τ=0에서 11.1% 거부)에 대해, 델타가 유형을 선언하고 **데이터가 그 선언을 검증**하게 했다. `delta_type=dedup`이고 제거되는 모든 개체의 나가는·들어오는 간선 서명이 보존 개체와 완전히 같을 때에만 **분포 검사만** 면제한다(존재 검사는 면제하지 않는다 — 중복 병합은 CQ를 0행으로 만들 수 없다). 정당성을 사람이 판단하지 않는 것이 요점이다. 결과는 위양성 **0/27**이며 τ 격자 전량에서 0이다. 면제는 로그로 남고 표 6.6에 횟수를 보고한다.
-
-**면제가 여는 구멍은 스스로 측정했다(N03A).** 면제는 델타 단위이므로 `dedup`을 선언하고 그 안에 비동일 쌍을 숨기면 분포 검사를 빠져나갈 수 있다. 그 시나리오를 결함으로 주입했다(같은 클래스·서명 불일치 쌍 병합 · 9 인스턴스). 자동 검증이 **9/9에서 면제를 불승인**했고, 일반 델타로 되돌아간 결함은 **9/9 검출**됐다. 이 결함은 이름이 N으로 시작하지만 결함이며 위양성 분모에 넣지 않는다 — 서명이 다른 개체를 합치는 것은 실제로 정보를 파괴한다.
-
-**불리한 실측 넷.**
-
-1. **공유 계층 역전(F12)은 어느 층도 잡지 못한다 — 0/9, 회귀한 CQ가 하나도 없다.** 교차 결함 두 종 중 T3가 잡는 것은 동의어 오병합 하나뿐이며, H1″의 5/18은 전부 거기서 나왔다. 방향성 제약의 부재는 판정 해상도·층 정의와 무관한 별개의 결손이고, SHACL 방향성·비순환 제약으로 닫아야 한다(미실행).
-2. **τ=0.10에서 T3 단독 검출은 0/18로 무너진다.** 사전 동결 격자 세 값 중 둘(0, 0.05)에서만 결론이 성립한다. 주값이 0.05인 것은 사전 선택이지만, 결론이 τ에 민감하다는 사실을 함께 읽어야 한다.
-3. **T3의 추가 판별력은 교차 태스크 특이적이지 않다.** T3 단독 검출 인스턴스를 결함별로 분해하면 논리 모순 8/9 · 계층 평탄화 6/9 · CQ 경로 삭제 4/9 · 메타데이터 삭제 3/9로, **비교차 결함이 다수**다. 즉 T3가 추가로 잡는 것의 상당 부분은 "교차 태스크라서"가 아니라 **pa 스위트 5개가 둔감해서** 생긴다. 선행기술 CQ의 청구항 수준 분해(미실행)가 남아 있는 한 이 혼입은 해소되지 않는다.
-4. **주 태스크 표적 결함(F04)의 L3 검출이 6→2로 약화됐다.** 개정 전에 예고한 대로다. `skos:prefLabel` 삭제가 pa 스위트에서 건드리는 것은 CQ16(재료 비양립성) 하나뿐이며, 나머지는 교차 태스크 CQ를 경유했다. L3가 좁아진 만큼 pa CQ의 해상도가 그 좁은 표면을 감당해야 한다.
-
-**이 절의 지위 — 세 번째 재판정이다.** H1(v1) → H1′(v2) → H1″(층 분리)는 **같은 결함 데이터를 세 번 판정한 것**이고, 층을 분리하겠다는 발상을 떠올리게 만든 것은 §6.5.2의 결과다. 위 두 논거(합집합 불변은 산술, 역할 분담은 §4.9 인용)는 결과와 독립이지만 그 순서를 숨기면 p-해킹과 구분되지 않는다. 따라서 H1″는 **탐색적**이며, 사전등록된 H1·H1′의 기각은 소급 변경되지 않는다(표 7.1). 이 결과가 논문에서 하는 일은 확증이 아니라 **개정된 게이트의 설계 근거**이며, 확증은 차기 세대 델타에서 새 데이터로 이루어져야 한다.
-
-### 6.5.4 홀드아웃 결함으로 확증했다 (H1‴)
-
-§6.5.3의 결론은 **탐색적**이었다 — 같은 결함 데이터의 세 번째 판정이었기 때문이다. 이 절은 그 결론을 **판정 규칙을 한 글자도 바꾸지 않은 채**, 아직 판정한 적 없는 결함 인스턴스로 복제한 결과다. 조작 변인은 없다. 바뀐 것은 데이터뿐이다. 사전등록은 실행 전에 동결했다(PLAN-025 v2 · 커밋 `a474126`, 결과 커밋과 분리 · 판정식·정지 규칙·예상 결과·기각 시 서술 경로까지 그 커밋에 들어 있다).
-
-**홀드아웃의 구성 — 두 축.** ① **복제**: 기존 교차 결함군(F11 동의어 오병합 · F12 공유 계층 역전)을 새 반복 rep∈{3,4,5}로 신규 주입한다. 시드가 `sha256(결함, 강도, 반복)`이므로 rep이 다르면 다른 결함 그래프이며, 1차의 rep∈{0,1,2}와 겹치지 않음을 회귀 테스트가 강제한다. ② **일반화**: **신규 교차 결함군 3종**을 설계했다 — 전문가 역량 간선의 허브 집중(F13 · 4술어 풀링 N=1,283), 전문가 사례–결함모드 재배치(F14 · N=105), 밸류체인 공급관계 방향 역전(F15 · 2술어 풀링 N=46). 정상 델타 27개(N01–N03 × 강도 3 × rep{3,4,5})가 위양성 분모다. 합계 **72 인스턴스**(주입 1,241초 · 재판정 31초 · dev 전용, 확증 분할은 열지 않았다).
-
-**교차성을 결과가 아니라 구성으로 보증한다.** 1차의 교차 결함군은 "검색에 무해하고 타 태스크만 건드릴 것"이라는 **기대**로 라벨됐다. 신규 3종은 그 기대를 검증 가능한 성질로 대체한다 — 조작 술어가 주 태스크(pa) 스위트 CQ가 참조하는 술어 20개와 **교집합이 공집합**이며, 이 목록은 문서가 아니라 `queries/cq/*.rq`의 정적 추출로 뽑아 테스트가 강제한다. 셋 다 **간선 수를 보존**하고(객체만 같은 타입 서명 안에서 바꾸거나 방향만 뒤집는다) 조작 술어는 전량 상류 SDKB 실물이다. 또한 L0–L2의 검출 가능성을 실행 전에 선언했다 — 스냅샷 14파일에 `owl:disjointWith`가 **0건**이므로 L2는 방향 역전을 원리적으로 잡을 수 없고, `providedBy`·`madeBy`는 SHACL 제약 자체가 없다. 사후에 발견하면 그것은 발견이 아니라 변명이 된다.
-
-**결과.**
-
-| 판정 조건 (사전등록 §3.4) | 실측 | 판정 |
-|---|---:|:--:|
-| ① 교차 결함 T3 단독 검출 ≥ 1 | **12/45** (T3 검출 16/45 · L3 검출 2/45) | 충족 |
-| ② 단측 McNemar (L3 vs T3 · 방향 사전 지정) | b=0 · c=14 · **p=.0001** (정확검정) | 충족 |
-| ③ 위양성률 ≤ 5% | **0/27 = 0%** | 충족 |
-| **H1‴** | | **지지** |
-
-결함군별로는 F13이 6/9(전부 T3 단독 · 강도 1%에서 0/3, 5%·10%에서 3/3씩 — 단조), F11이 6/9(단독 2/9), F14 2/9, F15 2/9(둘 다 10%에서만·전부 단독), F12 0/9다. 회귀한 교차 태스크 CQ는 결함군마다 다른 곳을 가리킨다 — F13→CQ11(공정·스킬 전문가), F11→CQ18(스킬별 특허), F14→CQ28(특허–결함모드–전문가), F15→CQ13(밸류체인 벤더 포트폴리오). 즉 T3는 "무언가 깨졌다"가 아니라 **어느 태스크의 어느 명세가 깨졌는지**를 지목한다.
-
-**사전에 적어둔 예상과 대조한다**(빗나가도 고치지 않기로 했다). 다섯 중 다섯이 맞았다 — F13·F14가 T3(em)에서 걸린다 · F15가 F12보다 잘 걸린다 · 위양성 0–1건 · T3 단독 검출 비율이 1차 수준(1차 5/18=27.8% vs 홀드아웃 12/45=26.7%) · 저강도에서 F14는 1간선만 재배치돼 무증상일 수 있다(실측 0/3). 예상이 맞았다는 사실 자체가 증거는 아니지만, 판정 규칙이 특정 결함 두 개에 맞춰진 것이 아니라는 근거는 된다.
-
-**불리한 실측 넷 — 이 결과가 확증하지 못하는 것.**
-
-1. **τ=0.10에서는 기각된다.** 사전 동결 격자 세 값에서 T3 단독 검출은 17/45(τ=0) · 12/45(τ=0.05) · **4/45**(τ=0.10)이고, τ=0.10의 McNemar는 p=.3438이다. §6.5.3과 **같은 방향의 취약성**이 홀드아웃에서도 재현됐다 — 결론은 주 τ=0.05라는 사전 선택에 의존한다. 주값을 결과를 보고 고르지 않았다는 것이 이 실험이 방어할 수 있는 전부이며, 분포 검사의 임계가 게이트 결론을 좌우한다는 사실은 남는다.
-2. **공유 계층 역전(F12)은 이번에도 0/9다.** 새 반복에서도 회귀한 CQ가 하나도 없다. 다만 같은 축의 신규 결함(F15 방향 역전)은 2/9로 걸렸으므로, 결손은 "방향 역전이 원리적으로 무증상"이 아니라 **CQ21이 `hasSubprocess`를 방향 고정 없이 읽는다**는 질의 수준의 문제로 좁혀진다. SHACL 방향성 제약과 CQ21의 방향 고정이 처방이다(둘 다 미실행).
-3. **특이성 물음에는 답하지 않는다.** 이번 홀드아웃의 T3 단독 검출 12건은 전부 교차 결함이지만, 그것은 **분모에 비교차 결함(F01–F10)을 넣지 않았기 때문**이다(판정식에 들어가지 않아 재주입하지 않았다 · 계획서 §3.3에 사전 명시). §6.5.3의 불리한 실측 3 — T3의 추가 판별력에 비교차 결함이 다수 섞인다 — 은 이 실험으로 반박되지 않았고, 그대로 남는다.
-4. **F13은 설계상 조작량의 70%만 실제로 움직인다.** 간선 수 보존을 지키려면 재배선 결과가 기존 트리플과 겹칠 때 건너뛸 수밖에 없다(RDF는 집합이라 제거+추가가 간선을 지운다). 실측 충돌 건너뜀은 강도별 4/13 · 21/64 · 38/128이다. 대안(충돌 허용)은 결함의 성격을 "분포 왜곡"에서 "삭제"로 바꿔 표적 층을 옮기므로 택하지 않았다. F13의 검출률은 이 절단을 포함한 값이다.
-
-**이 절의 지위 — 확증이다, 단 사전등록의 범위 안에서.** H1‴가 확증하는 명제는 하나다: **층을 서로소로 정의한 T-gate에서, 주 태스크 감시(L0–L3·T1·T2·누출 감사)가 통과시킨 교차 태스크 회귀를 T3가 잡는다** — 아직 판정한 적 없는 결함 45개, 사전 지정한 단측 검정, 위양성 0에서. 이것이 확증하지 않는 것은 게이트의 **완전성**(F12는 여전히 아무도 못 잡는다)과 T3의 **특이성**(위 3)이며, 결론의 τ 민감성도 그대로다. H1·H1′의 기각과 H1″의 탐색적 지위는 소급 변경되지 않는다(표 7.1).
-
-## 6.6 교차 태스크 CQ 통과율 추이
-
-보강 세대별로 세 CQ 스위트의 통과율을 공개해 T3의 이력과 게이트 표류 여부를 검증 가능하게 한다.
-
-| 보강 세대 | 판정 규칙 | CQ-PA | CQ-EM | CQ-TF | CQ-CORE | 청구항층(측정) | T3 판정 | waiver |
-|---|---|---:|---:|---:|---:|---:|---|---:|
-| g0 | — (기준 세대) | 0.800 (4/5) | 1.000 (6/6) | 1.000 (5/5) | 1.000 (12/12) | — (미측정) | — (기준) | — |
-| graph_v1 | v2 (τ=0.05) | 1.000 (5/5) | 1.000 (6/6) | 1.000 (5/5) | 1.000 (12/12) | — (미측정) | **승인** (하락 0) vs g0 | 0 |
-| g0_cq31 | — (기준 세대) | 0.800 (4/5) | 1.000 (6/6) | 1.000 (5/5) | 1.000 (12/12) | 1.000 (3/3) | — (기준) | — |
-| graph_v1_cq31 | v2 (τ=0.05) | 1.000 (5/5) | 1.000 (6/6) | 1.000 (5/5) | 1.000 (12/12) | 1.000 (3/3) | **승인** (하락 0) vs g0_cq31 | 0 |
-
-**누적 waiver 0회.** 이 표는 `make cq-freeze`가 세대마다 남기는 아티팩트(`data/cq_generations/`)에서 **판정까지 포함해** 생성된다(`paper/tables/cq_generations.md`). 실제 그래프 세대는 기준 세대 g0과 병합 세대 graph_v1 **둘뿐**이므로 **추이라 부를 만한 이력이 아직 없다** — 세대를 만들어 표를 채우지 않는다. 아래 두 행(`*_cq31`)은 새 그래프가 아니라 **같은 두 그래프를 청구항 CQ 편입 후(31개 체제) 다시 동결한 것**이다(§9.7). 기존 두 행을 덮어쓰지 않은 이유는 CQ 집합이 바뀌면 통과율의 의미가 바뀌기 때문이며, 소급해 지우면 이 표의 존재 이유인 이력성이 사라진다.
-
-**표의 판정 열은 코드가 채운다(2026-07-28 시정).** 이전 판(v0.9 초안)에서 이 표의 둘째 행은 세대 아티팩트 없이 손으로 적혀 있었고, 생성기는 비-기준 세대의 T3 열에 자리표시자를 찍고 있었다 — **수기 기입이며 §11의 자체 규율 위반**이다. 시정은 두 단계다. 첫째, `graph_v1` 세대를 `--against g0`로 실제 동결해 판정을 아티팩트 안에 넣었다. 둘째, **판정 없는 비-기준 세대를 만나면 생성기가 자리표시자 대신 예외를 던진다** — 자리표시자를 남겨 두는 한 다음 세대에서 같은 위반이 되풀이되기 때문이며, 이 계약은 회귀 테스트로 고정했다(`tests/test_tgate.py::test_table_refuses_placeholder_verdict`). 재판정 결과 손으로 적혀 있던 "승인(하락 0)"은 실제와 일치했으나, **일치 여부와 무관하게 출처 없는 수치는 결함**이다.
-
-**세 가지를 함께 읽어야 한다.** 첫째, **CQ-PA가 기준 세대에서 0.800이었다가 graph_v1에서 1.000이 된다.** G0에서 응답하지 않던 FTO 청구항 준비도 질의(CQ27)가 G1의 claimText 축(371,267건, §3.2)으로 비로소 응답하기 때문이다. 이 열은 T3의 분모가 아니라 **L3의 분모**이며(§4.9 개정), 주 태스크 CQ가 5개뿐이라 한 질의의 응답 여부가 곧 0.2의 진폭이 된다 — 그 둔감함이 청구항 수준 분해를 선결 과제로 남겨 두는 이유다(§3.1.6·§9.7). 둘째, **판정 규칙이 세대 비교의 전제다.** v1(존재검사)과 v2(존재검사 ∧ 분포검사, §6.5.2)는 같은 그래프에 대해서도 다른 통과율을 낼 수 있으므로 세대 비교는 같은 규칙끼리만 유효하며, 그래서 규칙 버전을 표의 열로 둔다. **기준 세대에는 규칙이 없다** — 자기 자신 대비 회귀는 정의상 0이므로 두 규칙이 일치하며, 그래서 그 칸은 "기준 세대"로 표기한다. 반면 `graph_v1` 행은 **v1 규칙으로 병합됐던 세대를 v2로 소급 판정한 결과**다(더 엄격한 쪽으로의 소급이며, 그래서 승인 결론이 약화되지 않는다). 셋째, **청구항층 열은 게이트가 아니라 측정이다**(§9.7·PLAN-023 §1) — CQ29–31은 사이드카를 조회하며 시험 대상 그래프에 무반응인 상수항이라 L3·T3 분모에 넣지 않는다. 넣었다면 항상 통과하는 세 검사가 pa의 실패를 희석해(0.800 → 0.875) 게이트가 약해졌을 것이다. 넷째, **중복 제거 면제 이력도 이 표가 보고한다**(§6.5.3) — waiver와 같은 규율이며, 조용한 면제는 게이트를 장식으로 만든다. 현재까지 결함 주입 실험 밖에서 사용된 면제는 0회다.
+두 가지를 함께 읽어야 한다. 첫째, 주 태스크 CQ가 5개뿐이라 한 질의의 응답 여부가 곧 0.2의
+진폭이 된다 — 그 둔감함이 청구항 수준 분해를 선결 과제로 남기는 이유다(§8.4). 둘째, 판정 규칙이
+세대 비교의 전제다. 존재 검사와 분포 검사는 같은 그래프에 대해서도 다른 통과율을 내므로 세대
+비교는 같은 규칙끼리만 유효하며, 그래서 규칙 버전을 supplementary 표의 열로 둔다. 청구항층 CQ 3개는 시험 대상
+그래프에 무반응인 상수항이므로 **게이트가 아니라 측정으로 운용한다**(§8.4).
 
 ---
 
-# 7. 예상 가능한 발견과 신규 주장
+# 7. 논의
 
-이 절은 현재 자원 구조와 관련연구로부터 도출한 **반증 가능한 예상**과 결과별 해석 규칙을 제시한다. 예상 3·5·6은 확증 분할에서 이미 검정되었으므로 각 항에 **관측** 문단을 두어 예상과 실측을 나란히 남긴다 — 예상을 사후에 고쳐 맞히지 않는다. 예상 3과 5는 **반증되었고**, 예상 6은 두 갈래 중 결합 발견 쪽으로 확정되었다. 예상 1·2·4·7은 미검정이며 그 사실을 각 항에 명시한다. §7.8은 사전 예상이 아니라 **개봉 이후의 진단에서 나온 사후 관측**이므로 확증 주장과 구분해 별도 항으로 둔다.
+## 7.1 표현 범위와 검증 깊이는 다른 주장이다
 
-## 7.1 예상 발견 1: 형식적으로 유효한 의미 회귀가 존재한다
+첫째, 본 연구는 도메인 온톨로지 데이터셋의 **표현 범위와 검증 깊이**를 구분한다. SDKB가 전문가 매칭·선행기술조사·기술예측의 클래스와 관계를 T-Box에 포함한다는 것은 세 태스크를 의미적으로 표현할 수 있다는 자원 수준의 주장이고, 선행기술 검색에서 Recall@K와 nDCG를 검정하는 것은 그중 한 태스크의 운용 타당성을 깊게 평가하는 주장이다. 이 구분은 여러 응용을 표방하는 데이터셋이 일부 CQ 통과만으로 모든 과제의 효용을 주장하는 과잉 일반화를 막는다.
 
-잘못된 개념 정렬은 RDF 문법과 SHACL 카디널리티를 만족하고 추론 모순도 만들지 않을 수 있다. 관련 CQ가 단지 후보 존재 여부만 묻는다면 L3도 통과할 수 있다. 그러나 그 정렬이 빈번한 개념에 연결되면 무관 후보가 상위에 몰리고 Recall@100 또는 MRR이 낮아질 수 있다. 따라서 T-gate는 특히 개념 치환, 계층 평탄화, 거절근거 치환에서 추가 판별력을 보일 것으로 예상한다.
+둘째, CQ와 검색평가는 서로를 대체하지 않는다. CQ는 그래프가 필요한 관계를 표현하고 질의할 수 있는지를 검사하고, 검색평가는 그 관계가 미관측 후보를 포함한 큰 모집단에서 알려진 양성을 얼마나 높은 순위로 회수하는지를 검사한다. CQ10 후보 수의 증가는 후보 생성 능력이지 적합성 순위의 증거가 아니다. 동시에 CQ는 진화 감시에서 새 역할을 얻는다 — 정량 평가가 불가능한 태스크의 기능 보존을 검사하는 회귀 스위트다(§4.9의 T3).
 
-**신규 주장 A:** 온톨로지 진화의 "유효한 변경"은 형식·기능 통과만으로 정의할 수 없으며, 동결된 실제 과제에서 비열등성을 만족하는 변경으로 확장되어야 한다.
+셋째, 지식그래프 준비도는 다중 해상도로 보고해야 한다. 노드 존재, 분류 연결, 도메인 의미 연결, 청구항 한정요소 연결은 서로 다른 과제를 지원하며, "노드 도달성 95.3%"라는 하나의 수치는 의미 검색 준비도를 보장하지 않는다(의미 관계 도달성 54.6–70.5% · §6.1.3). 넷째, 약한 정답의 불완전성은 결함이 아니라 설계 전제다 — 인용되지 않은 문헌을 음성으로 취급하지 않으면 법적 정답을 과장하지 않으면서도 재현 가능한 비교가 가능하다.
 
-**관측 (2026-07-28 · 개발 분할 108 인스턴스).** 예상의 전반부는 확인됐고 후반부는 **반증됐다**. 형식적으로 유효한 의미 회귀는 실재한다 — 개념 치환·계층 평탄화·거절근거 치환은 SHACL·추론·CQ를 모두 통과했다(§6.5, 미탐지 9/9). 그러나 그것을 **T-gate가 추가로 잡을 것**이라는 예상은 빗나갔다. 개념 치환 10%에서 T1의 관측 이득은 +0.042에서 +0.032로 줄었을 뿐 비열등 마진 \(\varepsilon=0.02\)를 넘지 못했다. 신규 주장 A의 전제(형식 검증만으로는 부족하다)는 지지되지만, 그 대안으로 제시한 검색 비열등 조건이 **현재 마진 설정에서 실효 민감도를 갖지 못한다**는 것이 이번 실측의 결론이다.
+## 7.2 이득의 본체와 그 천장 (H3)
 
-**기각 조건:** L0–L3가 모든 의미 결함을 이미 탐지하거나, T-gate가 정상 델타를 과도하게 거부해 실용적 추가가치가 없으면 이 주장은 약화된다.
+주 지표의 개선은 실재하지만 그 형태가 사전 예상과 다르다. 이득의 본체는 계층 심화가 아니라 **개념 겹침 하나**이며, 그 신호는 텍스트가 이미 후보로 올린 문서를 검토 깊이 안으로 밀어 올릴 뿐 최상위 순서를 정교하게 만들지는 못한다(nDCG@20 미개선). 계층 경로(PathSim)는 선택 가중이 0으로 수렴해 사실상 죽었고 — T-Box가 평면적이기 때문이다 — 1,289,512개가 실체화된 청구항 한정요소의 정밀도는 문헌 단위 회수라는 목표에 흡수됐다.
 
-## 7.2 예상 발견 2: 교차 태스크 회귀는 실재하며 T3만이 검출한다
+사전에 세운 조건부 예상도 **반증됐다.** 이득은 어휘 중첩이 낮은 질의가 아니라 높은 질의에 몰렸다(low-overlap Δ −0.0586, n=27, p=0.448 대 high-overlap Δ +0.0711, n=171, p<0.001). 원인은 설계에 있다 — 제안 순위 함수는 텍스트 기준선의 상위 1,000 안에서만 재정렬하므로(§4.7), 텍스트가 애초에 후보로 올리지 못한 문서는 어떤 온톨로지 특징으로도 복구할 수 없다. 어휘가 겹치지 않는 질의가 바로 그 후보 집합이 빈약한 질의다(low-overlap 집단의 기준선 R@100 = 0.1975 대 high 집단 0.4685). 따라서 관측된 패턴은 온톨로지가 의미적으로 무력하다는 뜻이 아니라 **재순위화 아키텍처의 천장**을 드러낸 것이다.
 
-동의어 오병합과 공유 계층 역전은 검색 관점에서는 무해하거나 심지어 유리할 수 있다 — 개념 병합은 후보 확장을 통해 재현율을 높일 수 있다. 그러나 병합된 `Skill` 개념은 전문가 매칭 CQ의 변별 응답을 붕괴시키고, 역전된 `Process` 계층은 기술예측 CQ의 집계 경로를 왜곡한다. 이 결함들은 L0–L3의 형식 검증과 T1·T2의 검색 검증을 모두 통과할 것으로 예상된다.
+여기서 두 개의 수정된 주장이 나온다. **(C)** 재순위화 형태로 결합된 온톨로지의 검색 가치는 어휘 간극을 건너뛰는 데 있지 않고, 텍스트가 이미 올린 후보 가운데 같은 기술 개념을 공유하는 것을 검토 깊이 안으로 끌어올리는 데 있다. 어휘 간극 자체를 겨냥하려면 재순위화가 아니라 온톨로지 기반 **질의 확장 또는 후보 생성**이 필요하다. **(E)** 지식 계층의 정밀도는 자동으로 검색 이득이 되지 않는다 — 청구항 수준 의미가 순위에 기여하려면 **평가 목표와 같은 해상도의 매칭 함수**가 필요하며, 문헌 단위 회수를 목표로 하는 한 한정요소의 세밀함은 상위 개념 겹침 신호에 흡수된다.
 
-**신규 주장 B:** 다태스크 온톨로지의 진화 게이트는 게이트 태스크 성능 조건만으로 완결되지 않는다. 공유 어휘를 경유하는 교차 태스크 회귀가 실재하며, 이를 차단하는 비회귀 조건은 형식 검증으로도 게이트 태스크 검증으로도 대체되지 않는 독립 층이다.
+이 천장은 교차언어 축에서 가장 크게 드러난다. 확증 분할 정답의 29%가 비한국어인데 최종 시스템의 비한국어 회수는 5%이고, 한국어 질의의 어휘 검색은 두 분할 334건의 영어 정답을 **한 건도** 회수하지 못한다. 같은 표가 처방의 단서도 준다 — 개념 IRI만 사용하는 온톨로지 단독 팔(B5 0.109)이 영어 정답에서 텍스트 하이브리드(B3 0.047)의 2.3배를 회수해 전 시스템 중 가장 높은데, 그 우위가 최종 시스템에 전달되지 않는 이유는 재순위화가 텍스트 후보 풀 밖을 보지 못하기 때문이다. 즉 어휘 간극과 언어 간극은 별개의 과제가 아니라 **같은 구조적 제약의 두 얼굴**이다. 이 관측은 사전등록 가설이 아니라 개봉 이후의 **탐색적 진단**이며(§6.2f), 확증 주장으로 쓰지 않고 후속 사전등록 실험의 표적으로 남긴다. 반증 조건도 함께 남긴다 — 온톨로지 팔을 후보 생성기로 승격했을 때 교차언어 회수가 개선되지 않으면 이 진단은 회수 가능한 소수 문서에 국한된 것이다.
 
-**기각 조건:** 교차 태스크 결함이 T1·T2 또는 L3에서 이미 검출되면 T3의 독립성 주장은 약화된다(단, 다층 방어의 실용 가치는 남는다). T3가 교차 태스크 결함을 검출하지 못하면 CQ 스위트의 민감도 문제이므로 스위트를 세분화해 재실험하고 그 이력을 보고한다.
+## 7.3 태스크 결합 — 음성 대조군이 무너진 자리 (H5)
 
-**관측 (2026-07-28).** **T3는 두 교차 결함을 한 건도 검출하지 못했다(0/18).** 사전에 명시한 기각 조건의 두 번째 갈래에 정확히 해당하므로, 이 절의 예상은 **현재 CQ 스위트에서 기각**이며 신규 주장 B는 이번 실측으로 지지되지 않는다.
+검색과 이론적으로 무관하도록 설계해 음성 대조군으로 삼은 전문가 매칭 전용 계층(`Skill` 축)을 제거하자 검색이 **유의하게 악화됐다**(제거 손실 +0.0316, 95% CI [+0.0105, +0.0560], p=0.002; 8개 절제 중 Holm 보정 후 유일한 유의 결과). 사전에 명시한 대로 이 결과는 두 갈래 중 하나로 해석된다 — 특이성 확립이거나 결합 발견이며, 관측된 것은 후자다.
 
-다만 실패의 소재는 특정됐다. 판정 해상도를 이진 통과에서 결과 행 수로 바꾼 진단(T3′ · §6.5.1)에서 동의어 오병합은 **전문가 매칭 CQ(CQ18)의 응답을 9건 중 6건에서 감소시켰고, 정상 델타에서는 오탐이 0이었다.** 즉 "공유 어휘를 경유하는 교차 태스크 회귀가 실재한다"는 주장 B의 전반부는 데이터에 남아 있고, 무너진 것은 "현행 CQ 스위트가 그것을 검출한다"는 후반부다. 예상대로 스위트를 세분화해 재실험하며(W4b), 그 전까지 C3에 대해 게이트 판별력을 주장하지 않는다.
+이것은 절제 설계의 실패가 아니라 **하나의 T-Box를 공유하는 태스크가 통계적으로 분리되지 않는다는 직접 증거**다. 전문가 매칭 뷰를 겨냥한 델타가 선행기술 검색의 질의 경로를 조용히 훼손할 수 있고, 그 훼손은 형식 검증(L0–L3)에서도 게이트 태스크의 성능 검사(T1·T2)에서도 보이지 않는다. 따라서 다태스크 온톨로지의 절제 실험에는 게이트 태스크와 무관한 계층의 음성 대조군이 포함되어야 하며, 교차 태스크 비회귀 조건이 형식 검증·단일 태스크 성능과 **독립적으로** 필요하다는 본 논문의 근거는 여기서 나온다.
 
-공유 계층 역전은 T3′로도 검출되지 않았다. `hasSubprocess`의 방향을 뒤집어도 계층 질의의 결과 행 수가 보존되기 때문이며, 이는 CQ 세분화로 닫히지 않는 **방향성 제약의 부재**라는 별개의 결손이다.
+다만 주장의 형태를 넘기지 않는다. 관측된 것은 **경험적 교차 태스크 의존성**이고, 어느 경로를 통해 결합이 생기는지는 이 실험이 답하지 않는다. 인과 기제의 규명은 계층별 경로 추적을 요구하는 별도 실험이다.
 
-**관측 (2026-07-28 · 세분화 수행 후 · §6.5.2).** 예고한 재실험을 수행했다. 결과는 주장 B를 부분적으로만 되살린다. 판정을 존재검사에서 분포검사로 바꾸자 동의어 오병합은 전문가 매칭 CQ를 경유해 **T3에서 6/9로 검출**됐다 — "공유 어휘를 경유하는 교차 태스크 회귀가 실재하며 교차 태스크 CQ가 그것을 지목한다"는 전반부는 이제 실측으로 지지된다. 그러나 후반부, **"T3만이 검출한다"는 독립성 주장은 기각된 채로 남는다.** 이유가 바뀌었다: T3의 감도 부족이 아니라, L3가 전 스위트의 CQ 통과 수를 세므로 **L3 ⊇ T3가 구조적으로 성립해 T3 단독 검출이 정의상 불가능**하기 때문이다(135 인스턴스 전량에서 T3 발화 ∧ L3 미발화 = 0건). 따라서 이 절의 주장 B는 "독립 층"이라는 형태로는 성립하지 않으며, 성립하는 것은 약한 형태다 — **교차 태스크 CQ는 회귀를 잡는 유일한 층은 아니지만, 회귀가 어느 태스크의 명세를 깨뜨렸는지를 지목하는 유일한 층이다.** 강한 형태를 검정하려면 층 정의를 분리한 새 사전등록이 필요하며, 그 변경을 이번 결과를 본 뒤에 하지는 않는다.
+## 7.4 공학적 시사점과 범위 분리
 
-**관측 (2026-07-28 · 층 분리 후 · §6.5.3).** 예고한 대로 층 정의를 분리한 새 사전등록을 동결한 뒤 재판정했다. 결과는 주장 B의 **강한 형태를 조건부로 되살린다** — L3를 주 태스크 스위트로 좁혀 T3와 서로소로 만들면 교차 결함의 **T3 단독 검출이 5/18**로 나타나고, McNemar의 방향이 T-gate 우위로 역전된다(b=14, c=27). 검출력이 아니라 귀속만 바뀌었음은 144 인스턴스 전량에서 확인했다(위반 0건).
+게이트는 온톨로지 유지관리와 검색 서비스 운영을 연결한다. 개념 별칭 추가, 분류 매핑 변경, 계층 수정, 한정요소 추출기 교체가 발생할 때마다 전체 수작업 검토를 하는 대신 L0–L3와 동결 검색 회귀 세트, 세 CQ 스위트를 CI에서 실행할 수 있다. 전체 평균뿐 아니라 거절근거·공정군·언어별 하락을 따로 확인하고(T2) 타 태스크 CQ 통과율을 버전별로 추적하면(T3), 평균값 아래 숨는 실패와 태스크 간 침식을 함께 줄일 수 있다. 설명 가능한 항별 점수 — 일치한 공정·재료·장비, 연결 경로, 포괄된 한정요소 — 는 검토 우선순위를 지원하는 정보이며, 법적 판단을 자동화하거나 대체하지 않는다.
 
-그러나 이 지지는 세 가지 제한을 함께 읽어야 한다. 첫째, 5/18은 **전부 동의어 오병합**이며 공유 계층 역전은 여전히 0/9다 — 주장 B가 든 두 사례 중 하나만 살아남았다. 둘째, T3 단독 검출 인스턴스의 다수는 **비교차 결함**(논리 모순 8/9 · 계층 평탄화 6/9 등)이므로, T3의 추가 판별력은 교차 태스크 특이적이라기보다 pa 스위트 5개의 둔감함에서도 온다. 셋째, 이것은 **같은 데이터의 3회차 재판정**이다. 따라서 주장 B의 최종 형태는 여전히 조건부다 — **교차 태스크 CQ는 층을 서로소로 정의할 때 형식층이 놓치는 회귀를 실제로 잡지만, 그 판별력이 교차 태스크 조건에서 온다는 것은 아직 분리 검정되지 않았다.**
+세 태스크는 동일한 검증 사다리에 있지 않다. 전문가 매칭 어휘(`Problem`·`RootCause`·`FailureMode`·`Expert`·`ExpertCase` 등)는 동일 T-Box에 실재하지만 인력·문제 ABox의 비식별·생성 성격 때문에 실인물 매칭 정확도를 검정하지 않으며, 본 논문에서 이 뷰는 두 용도로만 쓰인다 — T3 회귀 감시의 CQ-EM 스위트 입력과 절제의 음성 대조군이다. 기술예측 뷰는 시간 속성과 전략 어휘를 갖지만 검색 성능의 직접 증거가 아니므로 **동일 T-Box의 재사용 증거**로만 배치한다. 이 비대칭은 숨길 것이 아니라 명시할 것이다 — 데이터셋의 표현 범위와 하나의 운영 태스크에 대한 집중 검증, 나머지 태스크에 대한 회귀 감시를 분리해야 과잉 일반화가 차단된다.
 
-**관측 (2026-07-28 · 홀드아웃 확증 후 · §6.5.4).** 위 셋째 제한(3회차 재판정)을 새 데이터로 닫았다. 판정 규칙을 하나도 바꾸지 않고 아직 판정한 적 없는 교차 결함 45개 — 기존 두 결함군의 신규 반복 18개와 **신규 교차 결함군 3종** 27개 — 를 주입한 결과, **T3 단독 검출 12/45 · 단측 McNemar p=.0001 · 위양성 0/27**로 H1‴가 지지됐다. 일반화 축(신규 3종)만으로도 10/27·p=.0010이므로, 판별력이 F11·F12 두 결함에 맞춰진 규칙의 산물이 아님이 확인된다. 첫째 제한도 부분적으로 완화된다 — 살아남은 사례는 이제 넷이다(동의어 오병합·역량 허브 집중·사례–결함모드 재배치·공급관계 방향 역전).
+## 7.5 결론 규칙 — 이 결과로 말할 수 있는 것과 없는 것
 
-그러나 **둘째 제한은 이 실험이 답하지 않는다.** 홀드아웃 분모에는 비교차 결함이 없으므로(판정식에 들어가지 않아 재주입하지 않았다) T3의 특이성은 여전히 미검정이다. 여기에 τ 민감성이 더해진다 — τ=0.10에서는 단독 검출이 4/45로 떨어져 H1‴도 기각된다. 따라서 주장 B의 최종 형태는 이렇다: **층을 서로소로 정의하고 분포 검사 임계를 τ≤0.05로 둘 때, 교차 태스크 CQ는 주 태스크 감시가 놓치는 회귀를 새 결함에서도 반복적으로 잡는다. 그 판별력이 교차 태스크 조건에서만 오는지는 아직 분리 검정되지 않았다.**
+부정적 결과는 실패가 아니라 다음 개선 방향을 특정하는 산출이다. 본 연구의 부정적 결과는 실측이며 셋이다 — 조건부 예상의 반증(이득이 고중첩에 몰림), 계층 기여의 부재, 상위 정밀도 미개선. 이 셋은 서로 무관한 실패가 아니라 §7.2가 기술한 하나의 구조를 가리키고, 그 구조가 다음 우선순위를 지정한다: **(a)** 재순위화 천장을 여는 온톨로지 기반 후보 생성·질의 확장, **(b)** 상위 정밀도를 겨냥한 별도 순위 목표, **(c)** 교차언어 회수. (a)와 (c)는 같은 제약의 두 얼굴이다.
 
-## 7.3 예상 발견 3: 하이브리드 이득은 평균보다 저중첩 질의에 집중된다
+결과를 넘겨 읽지 않기 위해, 개봉 전에 동결한 결론 규칙을 그대로 싣는다.
 
-텍스트 기준선은 동일 기술을 비슷한 용어로 서술한 경우 강하다. 온톨로지의 기대효과는 "etching"과 구체 하위공정, 재료–장비–고장 경로처럼 표현이 다르지만 개념적으로 연결된 경우다. 따라서 전체 평균의 작은 개선보다 low-overlap 집단의 큰 개선이 더 가능성 높은 패턴이다.
-
-**기각 조건:** low-overlap 집단에서도 Text Hybrid가 우세하거나 온톨로지 보강의 이득이 CPC/IPC만으로 동일하게 재현되면, 명시 도메인 의미의 독립 기여를 주장할 수 없다.
-
-**관측 (확증 test · 반증됨).** 사전 동결한 F11 임계(dev Q1 = 0.0079, 문자 3-gram Jaccard)로 나눈 결과는 예상과 **반대**였다. low-overlap 집단에서 제안법은 기준선보다 **낮았고**(Δ −0.0586, n=27, p=0.448), high-overlap 집단에서 유의하게 높았다(Δ +0.0711, n=171, p<0.001). 같은 방향이 정답 언어 축에서도 나타난다 — 정답이 전량 한국어인 질의에서 이득이 크고(Δ +0.0936, p=0.004), 정답에 외국어가 포함된 질의에서는 유의하지 않다(Δ +0.0140, p=0.518). 기각 조건의 전반부가 충족되었으므로 **예상 3을 기각한다**.
-
-**기각의 원인은 설계에 있다.** 제안 순위 함수는 텍스트 기준선의 상위 1,000 안에서만 재정렬하므로(§4.7), 텍스트가 애초에 후보로 올리지 못한 문서는 어떤 온톨로지 특징으로도 복구할 수 없다. 어휘가 겹치지 않는 질의는 바로 그 후보 집합이 비어 있는 질의다(low-overlap 집단의 기준선 R@100은 0.1975로 high 집단의 0.4685보다 크게 낮다). 따라서 관측된 패턴은 온톨로지가 의미적으로 무력하다는 뜻이 아니라 **재랭크 아키텍처의 천장**을 드러낸 것이다.
-
-**신규 주장 C (수정):** 재랭크 형태로 결합된 온톨로지의 검색 가치는 어휘 간극을 건너뛰는 데 있지 않고, 텍스트가 이미 후보로 올린 문서 가운데 **같은 기술 개념을 공유하는 것을 검토 깊이 안으로 끌어올리는** 데 있다. 어휘 간극 자체를 겨냥하려면 재랭크가 아니라 온톨로지 기반 **질의 확장 또는 후보 생성**이 필요하며, 이는 본 논문의 동결 설계 밖의 별도 실험이다(§8.5).
-
-## 7.4 예상 발견 4: 분류 도달성과 의미 도달성은 다른 성능을 설명한다
-
-현재 자원에서 CPC/IPC 포함 도달성은 95.3%지만 전체 의미 링크 도달성은 70.5%다. 분류는 넓은 후보를 빠르게 확보하는 데 기여할 수 있으나 청구항의 특정 한정요소와 거절 이유를 설명하는 데 부족할 수 있다. 반대로 의미 관계는 더 정밀하지만 현재 커버리지가 낮아 일부 질의에서 작동하지 않을 수 있다.
-
-**신규 주장 D:** 높은 분류 기반 도달성은 지식그래프의 검색 준비도를 과대평가할 수 있으며, 자원 평가는 노드–분류–도메인 의미–청구항 한정요소의 도달성 사다리로 보고해야 한다.
-
-**기각 조건:** 각 도달성 해상도가 검색 성능 또는 오류 유형과 무관하고 단일 노드 도달성만으로 동일한 예측이 가능하면 다중 해상도 보고의 경험적 중요성은 줄어든다.
-
-## 7.5 예상 발견 5: 청구항 한정요소와 거절근거가 가장 큰 이득을 만들지만 범위가 제한된다
-
-선행기술 판단의 직접 단위는 청구항과 그 한정요소이므로 ClaimFeature와 PriorArtJudgment가 가장 구체적인 설명 신호가 될 가능성이 있다. 그러나 현재 판단 인스턴스와 feature-level reachability는 전체 데이터보다 작은 부분집합에 국한된다. 이에 따라 풍부한 부분집합에서는 큰 효과가 나타나지만 전체 특허 수준에서는 커버리지 부족으로 평균 효과가 줄 수 있다.
-
-**신규 주장 E:** 지식 계층의 "정밀도–도달성 상충"이 검색 이득의 상한을 결정한다. 세밀한 청구항 의미는 강한 국소 효과를 내지만, 그 효과를 전체 코퍼스로 확장하려면 독립적인 한정요소 추출과 품질 게이트가 필요하다.
-
-**기각 조건:** ClaimFeature 제거가 성능을 거의 바꾸지 않거나 텍스트 특징으로 효과가 완전히 설명되면 H4를 기각하고, 한정요소 모델링의 역할을 설명 인터페이스 또는 오류 분석 도구로 축소한다.
-
-**관측 (확증 test · 반증됨).** ClaimFeature 계층을 제거해도 주 지표는 거의 변하지 않았고(A4 제거 손실 +0.0070, Holm 보정 후 n.s.), 거절근거 항은 oracle-free 주 모드에서 구조적으로 0이다(A5). 두 값 모두 분류 제거(A1 +0.0025)를 유의하게 넘지 못하므로 **H4를 기각한다**(§6.3). 청구항 한정요소는 1,289,512개가 실체화되어 있으나 그 정밀도가 **깊은 회수라는 목표에 전이되지 않았다** — 이득의 본체는 개념 겹침 하나이며, 계층 경로(PathSim)는 선택 가중이 0으로 수렴해 사실상 죽었다(평면적 계층). 기각 조건 그대로 한정요소 모델링의 역할을 설명 인터페이스·오류 분석 쪽으로 축소해 보고한다.
-
-**신규 주장 E (수정):** 지식 계층의 정밀도는 자동으로 검색 이득이 되지 않는다. 청구항 수준 의미가 순위에 기여하려면 **평가 목표와 같은 해상도의 매칭 함수**가 필요하며, 문헌 단위 회수를 목표로 하는 한 한정요소의 세밀함은 상위 개념 겹침 신호에 흡수된다.
-
-## 7.6 예상 발견 6: 음성 대조군은 특이성을 확립하거나 결합을 발견한다
-
-A8(전문가 매칭 전용 계층 제거)이 검색 성능을 바꾸지 않으면(H5 지지), A4·A5의 절제 손실이 "온톨로지에서 무언가를 뺐다"는 일반 효과가 아니라 청구항·거절 계층의 특이적 기여임이 확립된다. 반대로 A8이 검색을 유의하게 악화시키면, 그것은 절제 설계의 실패가 아니라 T-Box가 태스크 간에 예상보다 강하게 얽혀 있다는 **실질적 발견**이다. 후자의 경우 결과를 "태스크 결합(entanglement)"으로 보고하고, 교차 태스크 게이트(T3)의 필요성을 뒷받침하는 직접 증거로 승격한다.
-
-**관측 (확증 test · 결합 발견으로 확정).** A8(전문가 매칭 전용 `Skill` 축 제거)의 제거 손실은 +0.0316(95% CI [+0.0105, +0.0560], p=0.002)로 **8개 절제 중 유일하게 Holm 보정 후 유의**했다. 즉 검색과 이론적으로 무관하도록 설계한 계층을 빼면 검색이 유의하게 나빠진다. 이는 음성 대조군의 실패가 아니라 **T-Box가 태스크 간에 실제로 얽혀 있다는 직접 증거**이며, 전문가 매칭 뷰를 건드리는 델타가 선행기술 검색 성능을 조용히 훼손할 수 있음을 뜻한다. 교차 태스크 비회귀 조건(T3)이 왜 별도로 필요한지에 대한 본 논문의 가장 강한 경험적 근거다(§4.9·§6.6).
-
-**신규 주장 F:** 다태스크 온톨로지의 절제 실험에는 게이트 태스크와 무관한 계층의 음성 대조군이 포함되어야 하며, 그 결과는 어느 방향이든 해석 가능하다 — 특이성 확립이거나 결합 발견이다. 본 연구에서는 후자가 관측되었다.
-
-## 7.7 예상 발견 7: 신규성과 진보성은 같은 랭킹 목표가 아니다
-
-신규성은 강한 단일 문헌을 찾는 목표와 가까운 반면, 진보성은 여러 문헌의 결합을 포함할 수 있다. 문헌 단위 MRR만 사용하면 진보성 검색에서 관련 문헌 집합을 충분히 회수한 시스템을 과소평가할 수 있다.
-
-**신규 주장 G:** 거절근거를 무시한 단일 검색지표는 선행기술 검색의 법적·기술적 이질성을 가리며, 신규성에는 단일-reference coverage, 진보성에는 set-level feature coverage가 보완적으로 필요하다.
-
-**기각 조건:** 표본에서 신규성·진보성의 성능 패턴이 구분되지 않거나 판단 표지가 불완전하면 확정 주장이 아니라 후속 연구 질문으로 낮춘다.
-
-**관측 (자원 한계 · 검정 불가).** 거절근거 라벨을 상류 원본에서 파생해 붙인 결과, 1,000건 중 진보성 400건·신규성 14건이며 **신규성 단독 거절은 한 건도 없다**(§6.4). 확증 분할에 남는 신규성 병존 질의는 3건뿐이다. 두 목표의 성능 패턴을 구분할 표본이 존재하지 않으므로 기각 조건 그대로 **신규 주장 G를 확정 주장에서 후속 연구 질문으로 낮춘다.** 이는 방법의 실패가 아니라 심사 이력 자원의 구성이며, 신규성 거절이 충분히 포함된 코퍼스를 확보하는 것이 이 질문의 선결 조건이다.
-
-## 7.8 사후 관측: 온톨로지의 비교우위는 교차언어에 있고, 융합 방식이 그것을 소거한다
-
-이 항은 사전 예상이 아니라 **확증 분할 개봉 이후의 진단에서 나온 관측**이다. 사전등록된 가설이 아니므로 확증 주장으로 쓰지 않고, 반증 가능한 형태로 기술해 후속 사전등록 실험의 표적으로 남긴다(§9.1).
-
-**관측.** §6.2f에서 정답을 언어별로 분해하면 시스템 순위가 뒤집힌다. 한국어 정답에서는 텍스트 하이브리드(B3 0.526)가 개념 단독 팔(B5 0.203)을 크게 앞서지만, 영어 정답에서는 B5(0.109)가 B3(0.047)의 2.3배이며 전 시스템 중 가장 높다. 이 순서는 개발 분할에서도 재현된다(B5 0.092 대 B3 0.053). 그런데 두 팔을 결합한 최종 시스템의 영어 회수는 B3와 사실상 같다(P0★ 0.047·P1 0.055). 결합 방식이 재순위화이기 때문이다 — 제안 시스템은 B3의 상위 1,000을 재정렬할 뿐이므로 B5가 회수한 외국어 문서는 재정렬 대상에 포함되지 않는다.
-
-**신규 주장 H:** 명시적 도메인 온톨로지의 검색 가치는 언어 축에서 가장 뚜렷하게 나타난다 — 개념 IRI는 표층 어휘와 달리 언어 경계를 넘기 때문이다. 그러나 이 가치는 **결합 아키텍처의 선택에 의해 소거될 수 있다.** 텍스트 순위를 후보 집합으로 고정하는 재순위화는 온톨로지 팔의 비교우위가 가장 큰 영역(텍스트가 실패하는 영역)을 구조적으로 배제한다. 따라서 지식그래프–텍스트 하이브리드 연구에서 보고되어야 할 것은 융합 후 평균 성능만이 아니라 **각 팔의 비교우위 영역과 융합이 그것을 보존하는지 여부**다.
-
-**기각 조건:** 온톨로지 팔을 후보 생성기로 승격했을 때(B3 풀에 B5 상위 후보를 합집합한 뒤 재순위화) 교차언어 회수가 개선되지 않으면, 관측된 B5의 우위는 회수 가능한 소수 문서에 국한된 것이며 주장 H는 성립하지 않는다. 또한 외국어 후보 풀의 정답 비율이 72.5%로 편향되어 있으므로(§6.2f 관측 4), 검정은 방해 문서를 보강한 코퍼스에서 재현되어야 한다.
-
-## 7.9 결과 시나리오별 결론 규칙
-
-| 관측 시나리오 | 허용되는 결론 | 금지되는 결론 |
+| 관측 | 허용되는 결론 | 금지되는 결론 |
 |---|---|---|
-| P1이 B3보다 유의하게 우수 | 온톨로지·한정요소 보강이 본 벤치마크에서 알려진 양성 회수를 개선 | 법적으로 모든 관련 선행기술을 더 잘 찾음 |
-| 전체 평균 차이 없음, low-overlap만 개선 | 조건부 보완 가치가 있음 | 전체 검색을 일반적으로 개선 |
-| CPC만으로 P1 효과 재현 | 분류 기반 후보 확장이 주요 원인 | 세밀한 온톨로지 의미가 필수 |
-| ClaimFeature 효과가 부분집합에만 존재 | 정밀 의미의 국소 가치와 커버리지 제약 | 전체 1,000개 질의에 동일 효과 |
-| 전문가가 미인용 상위 후보를 관련으로 판정 | qrel 불완전성의 정황 증거 | 심사관이 누락했거나 법적 무효가 확정 |
-| T-gate가 의미 결함을 추가 탐지 | 과제 회귀 검증의 추가가치 | T-gate가 온톨로지 품질 전체를 대체 |
-| 교차 결함이 T3에서만 검출 | cross-task 조건의 독립적 필요성 | 모든 다태스크 KG에 동일 구성이 필수 |
-| A8이 검색을 악화 | 태스크 결합 발견, T3 필요성 강화 | 절제 실험 설계의 실패 |
-| 하이브리드가 열위 | 현 매핑·범위에서 검색 이득 없음; 실패 원인 분석 | 온톨로지는 특허 검색에 본질적으로 무용 |
-
----
-# 8. 논의
-
-## 8.1 이론적 시사점
-
-첫째, 본 연구는 도메인 온톨로지 데이터셋의 **표현 범위와 검증 깊이**를 구분한다. SDKB가 전문가 매칭·선행기술조사·기술예측의 클래스와 관계를 T-Box에 포함한다는 것은 세 태스크를 의미적으로 표현할 수 있다는 자원 수준의 주장이다. 선행기술 검색에서 Recall@K와 nDCG를 검정하는 것은 그중 한 태스크의 운용 타당성을 깊게 평가하는 주장이다. 이 구분은 여러 응용을 표방하는 데이터셋이 일부 CQ 통과만으로 모든 과제의 효용을 주장하는 과잉 일반화를 막는다.
-
-둘째, 본 연구는 온톨로지 품질을 속성 목록에서 **변경 승인 문제**로 이동시키되, 그 승인을 **다태스크 안전 문제**로 확장한다. 정확성, 일관성, 완전성은 여전히 중요하지만, 실제 운영에서는 "이 델타를 다음 버전에 병합해도 되는가"가 의사결정 단위다. 데이터셋 전체의 L0–L3와 3조건 T-gate는 그 판단을 형식 타당성, 검색 비열등성, 하위집단 안전성, 교차 태스크 비회귀의 결합으로 정의한다. 단일 태스크 게이트는 "평가하는 지표에 온톨로지를 맞춘다"는 순환 비판에 취약하지만, T3는 게이트가 최적화 압력이 아니라 안전 장치로 기능하도록 만든다.
-
-셋째, CQ와 검색평가의 관계를 명확히 한다. CQ는 그래프가 필요한 관계를 표현하고 질의할 수 있는지를 검사한다. 검색평가는 그 관계가 미관측 후보를 포함한 큰 모집단에서 알려진 양성을 얼마나 높은 순위로 회수하는지를 검사한다. CQ10 후보 수의 증가와 Recall@K는 서로 대체할 수 없는 증거다. 동시에 CQ는 T3에서 새로운 역할을 얻는다: 정량 평가가 불가능한 태스크의 기능 보존을 감시하는 회귀 테스트 스위트다. 이는 CQ의 용도를 "요구사항 검증"에서 "진화 감시"로 확장한다.
-
-넷째, 지식그래프 준비도를 다중 해상도로 본다. 노드 존재, 분류 연결, 도메인 의미 연결, 청구항 한정요소 연결은 서로 다른 과제를 지원한다. "95.3% 도달 가능"이라는 하나의 수치가 의미 검색 준비도까지 보장하지 않는다는 관측은 다른 도메인 지식그래프 자원 논문에도 적용 가능한 보고 원칙이다.
-
-다섯째, 약한 정답의 불완전성을 평가설계의 전제로 포함한다. 인용되지 않은 문헌을 음성으로 취급하지 않고, 알려진 양성 회수와 전문가 표본 판정을 결합하면 법적 정답을 과장하지 않으면서도 재현 가능한 비교가 가능하다.
-
-## 8.2 공학적·실무적 시사점
-
-T-gate는 온톨로지 유지관리와 검색 서비스 운영을 연결한다. 개념 별칭 추가, 분류 매핑 변경, hierarchy 수정, ClaimFeature 추출기 교체가 발생할 때마다 전체 수작업 검토를 수행하는 대신, L0–L3와 동결 검색 회귀 세트, 그리고 세 CQ 스위트를 CI에서 실행할 수 있다(부록 E). 전체 성능뿐 아니라 신규성·진보성, 공정군, 저중첩 질의의 하락을 따로 확인하고(T2), 타 태스크 CQ 통과율을 세대별로 추적하면(T3, 표 6.6) 평균값 아래 숨는 실패와 태스크 간 침식을 함께 줄일 수 있다.
-
-설명 가능한 항별 점수는 특허 실무자에게도 의미가 있다. 시스템은 "유사하다"는 단일 점수 대신 일치한 공정·재료·장비, 연결 경로, 포괄된 청구항 한정요소를 제시할 수 있다. 다만 이는 검토 우선순위를 지원하는 정보이며 법적 판단을 자동화하거나 대체하지 않는다.
-
-## 8.3 전문가 매칭의 범위 분리
-
-전문가 매칭 어휘(`Problem`·`RootCause`·`FailureMode`·`Expert`·`ExpertCase` 등)는 동일 T-Box에 실재하나, 본 논문은 이를 **기여로 재주장하지 않는다.** 해당 태스크의 방법론과 평가는 본 논문의 범위 밖이며, 본 논문에서 이 뷰는 두 가지 방법론적 용도로만 사용된다: (1) T3 회귀 감시의 CQ-EM 스위트 입력, (2) 절제 실험의 음성 대조군(A8). 이 범위 분리는 논문의 주장을 선행기술조사 검증에 집중시키는 동시에, 동일 T-Box가 성격이 다른 태스크의 CQ를 지탱한다는 사실 자체를 태스크 확장성의 근거로 남긴다.
-
-## 8.4 세 태스크의 비대칭 검증과 기술예측의 재배치
-
-세 태스크는 동일한 검증 사다리에 있지 않다. 전문가 매칭 뷰는 실제 클래스·관계와 CQ를 갖지만, 인력·문제 ABox의 비식별·생성 성격 때문에 본 논문에서 실인물 매칭 정확도를 검정하지 않는다. 선행기술조사 뷰는 심사관 인용 qrel이 있어 주 정량 검증이 가능하다. 기술예측 뷰는 시간 속성, 전략·상용화 어휘와 기존 백테스트가 있어 재사용 증거를 제공하지만 검색 성능의 직접 증거는 아니다.
-
-따라서 v0.7의 기술예측 결과는 삭제하지 않되 주 가설 판정에는 사용하지 않는다. G1의 공정 커버리지 확장과 조합 개념 기반 조기탐지는 공유 반도체 코어가 시간 분석에도 재사용될 수 있음을 보여주는 **2차 활용 사례**로 보고한다. 이는 게이트를 통과한 온톨로지가 특정 태스크 전용 자산으로 퇴화하지 않았음을 보이는 구성적 타당성 증거이기도 하다. G2의 KSIA(한국반도체산업협회) 188개사 적용 역시 검색 정확도의 외적 타당도가 아니라 파이프라인, 어휘와 공정 매핑의 코퍼스 이식성 증거다.
-
-이 재배치로 논문의 인과 사슬은 짧고 명확해진다.
-
-1. SDKB는 세 태스크를 표현하는 공유 반도체 T-Box를 가진다.
-2. 공유 어휘의 실재는 교차 태스크 회귀 위험을 실재하게 만든다.
-3. 세 뷰 가운데 선행기술조사는 실제 거절·인용 관계에 정박된 검색 자원을 가진다.
-4. 기존 L0–L3는 데이터셋의 구조·논리·CQ 기능을 보장하지만 순위 품질도 교차 태스크 안전도 직접 측정하지 않는다.
-5. 3조건 T-gate가 이 두 간극을 메우는지 누출 방지 검색 평가와 교차 표적 결함 주입으로 검정한다.
-6. 전문가 매칭과 기술예측은 동일 자원의 표현 범위와 재사용 가능성을 보여주되 과제 성능 주장을 구분한다.
-
-## 8.5 부정적 결과의 가치
-
-하이브리드가 텍스트 기준선을 이기지 못하더라도 연구는 실패가 아니다. 가능한 원인은 의미 링크 도달성 부족, ClaimFeature 추출 오류, 온톨로지 경로의 과도한 일반화, 한국어 특허 표현과 개념 별칭의 불일치, 또는 심사관 qrel의 불완전성이다. ablation과 도달성 집단 분석은 어느 병목이 우선 개선 대상인지 보여준다. 이 경우 논문의 중심 기여는 "온톨로지가 검색을 개선한다"가 아니라 "어떤 온톨로지 변경을 검색 준비 상태로 — 다른 태스크를 훼손하지 않으면서 — 승인할 수 있는지 측정하는 게이트"로 유지된다(부록 F의 방향 전환 규칙).
-
-**실제로 관측된 부정적 결과와 그 값어치.** 본 연구에서 부정적 결과는 가정이 아니라 실측이며 네 가지다. (i) **H4 기각** — 청구항 한정요소·거절근거 계층의 독립 기여가 없다. (ii) **H5 기각** — 무관하도록 설계한 전문가 계층이 검색에 유의하게 얽혀 있다. (iii) **H3의 조건부 절 반증** — 이득은 저중첩이 아니라 고중첩 질의에 몰린다. (iv) **상위 정밀도 미개선** — 주 지표가 오르는 동안 nDCG@20·MRR·bpref는 오르지 않았고 사전지정 주 시스템에서는 유의하게 나빠졌다.
-
-이 넷은 서로 무관한 실패가 아니라 하나의 구조를 가리킨다. 이득의 본체는 **개념 겹침 하나**이고, 그 신호는 텍스트가 이미 후보로 올린 문서를 검토 깊이 안으로 밀어 올릴 뿐 최상위 순서를 정교하게 하지는 못한다. 계층 경로는 T-Box가 평면적이어서 죽었고, 한정요소는 문헌 단위 목표에 흡수됐다. 따라서 다음 개선의 우선순위는 "계층을 더 쌓는 것"이 아니라 **(a) 재랭크 천장을 여는 온톨로지 기반 후보 생성·질의 확장**, **(b) 상위 정밀도를 겨냥한 별도 순위 목표**, **(c) 교차언어 회수**다. 부정적 결과가 이 세 방향을 특정해 준다는 점이 본 벤치마크의 실질적 산출이다.
-
-**(c)는 가장 크고 가장 구체적인 미개척 영역이다.** §6.2f의 분해는 이 방향을 추측이 아니라 측정으로 만든다. 확증 분할 정답의 29%가 비한국어인데 최종 시스템의 회수는 5%이고, 한국어 질의의 어휘 검색은 영어 정답을 두 분할 334건 중 **0건** 회수한다. 동시에 같은 표는 처방의 단서도 준다 — 온톨로지 단독 팔(B5)만이 영어 정답에서 텍스트 하이브리드의 2.3배를 회수하며, 그 우위가 최종 시스템에 전달되지 않는 이유는 재랭크가 텍스트 후보 풀 밖을 보지 못하기 때문이다. 즉 (a)와 (c)는 별개의 과제가 아니라 **같은 구조적 제약의 두 얼굴**이며, 온톨로지 기반 후보 생성은 어휘 간극과 언어 간극을 동시에 겨냥한다. 번역 계층(질의 번역·문서 번역)과 비한국어 개념링크 보강은 이 설계에서 서로 대체재인지 보완재인지가 검정 가능한 질문이 되며, 이는 본 논문의 동결 설계 밖의 별도 사전등록 실험으로 남긴다(§9.1).
+| 제안 시스템이 최강 텍스트 기준선보다 유의하게 우수 | 본 벤치마크에서 **알려진 양성**의 깊은 회수를 개선 | 법적으로 모든 관련 선행기술을 더 잘 찾음 |
+| 이득이 특정 하위집단에 국한 | 조건부 보완 가치 | 전체 검색을 일반적으로 개선 |
+| 한정요소 효과가 부분집합에만 존재 | 정밀 의미의 국소 가치와 커버리지 제약 | 전체 질의에 동일 효과 |
+| 음성 대조군 제거가 검색을 악화 | 교차 태스크 의존성의 관측, 교차 태스크 조건의 필요성 | 절제 설계의 실패 · 인과 기제의 규명 |
+| 하이브리드가 열위 | 현 매핑·범위에서 검색 이득 없음 | 온톨로지는 특허 검색에 본질적으로 무용 |
 
 ---
 
-# 9. 한계와 타당성 위협
+# 8. 한계와 타당성 위협
 
-## 9.1 구성 타당도
+## 8.1 검정되지 않은 것 — 승인 안전성(H2)
 
-심사관 인용은 법적 관련성의 완전한 정답이 아니다. 인용되지 않은 강한 선행기술이 존재할 수 있고, 인용 목적도 다를 수 있다. 본 연구는 양성 전용 해석, 거절근거 분리, 전문가 표본 판정으로 이 위험을 완화하지만 제거하지 못한다.
+**게이트가 승인한 델타의 안전성은 이 논문에서 검정되지 않았고, 그 이유는 구조적이다.** H2는
+**변경 없는 동일 파이프라인에 온톨로지 O와 O′를 넣은** 비교로만 잴 수 있다. 그런데 본 연구가
+가진 그래프 계보에는 그런 델타가 **존재한 적이 없다** — G0·G1·G2의 T-Box가 완전히 동일하고
+(클래스 103 · ObjectProperty 97 · DatatypeProperty 81 · 술어 추가 0 · 제거 0), 세 그래프가
+서로 더하는 것은 전부 특허 A-Box다. §6.3에 보고한 게이트 실행은 **서로 다른 두 시스템**(P1 대 B3)의
+비교이므로 H2의 증거가 아니며, 그것을 승인 안전성의 지지로 읽지 않는다.
 
-`PriorArtJudgment`의 세밀한 연결은 전체 거절 특허가 아닌 부분집합에 존재한다. 부분집합 결과를 전체 자원으로 일반화하지 않으며, 선택된 표본과 미선택 표본의 연도·출원인·공정·거절근거 분포를 비교한다.
+델타 유형을 뭉뚱그리지 않는 것이 이 한계의 처방이다. **T-Box 델타**(공리·클래스·술어)와
+**개념층 델타**(어휘·계층·라벨·링크)는 H2의 자격이 있고, **A-Box 코퍼스 델타**(문서 추가)는 없다.
+후속 연구는 자격 있는 델타를 실제로 만든 뒤 새 사전등록 아래 검정해야 한다.
 
-SDKB의 T-Box와 CQ가 세 태스크를 포괄하더라도 이 논문의 정량 성능평가는 선행기술 검색에 집중한다. 따라서 "태스크 확장형"은 표현·진화 구조에 관한 결론이며 전문가 매칭·기술예측까지 동일한 검색 지표로 검증한 "완전한 다목적 성능" 주장은 아니다. 후속 연구는 전문가 매칭의 합의 정답과 기술예측의 전향적 외부 준거를 구축해 검증 깊이를 확장해야 한다.
+## 8.2 구성 타당도
 
-**재랭크 아키텍처의 천장(구성 타당도의 핵심 제약).** 제안 순위 함수는 텍스트 기준선의 상위 1,000을 재정렬할 뿐 후보 집합을 넓히지 않는다. 따라서 본 논문이 측정한 것은 "온톨로지가 선행기술 검색을 얼마나 개선하는가"의 상한이 아니라 **재랭크라는 결합 방식에서의 개선분**이다. 텍스트가 후보로 올리지 못한 문서는 어떤 온톨로지 특징으로도 회수되지 않으며, §7.3의 저중첩 예상이 반증된 직접적 원인이 여기에 있다. 온톨로지 기반 질의 확장·후보 생성은 F8·F13 동결 설계를 변경하므로 본 논문의 결과와 같은 사전등록 아래에서는 검정할 수 없고, 별도 실험으로만 가능하다.
+심사관 인용은 법적 관련성의 완전한 정답이 아니다. 인용되지 않은 강한 선행기술이 존재할 수 있고
+인용 목적도 다를 수 있으므로, 양성 전용 해석과 거절근거 분리로 완화하되 제거하지는 못한다.
+`PriorArtJudgment`의 세밀한 연결은 전체 거절 특허가 아닌 부분집합에 존재하므로 부분집합 결과를
+전체로 일반화하지 않는다. 또한 SDKB의 T-Box와 CQ가 세 태스크를 포괄하더라도 정량 성능평가는
+선행기술 검색에 집중하므로, **"태스크 확장형"은 표현·진화 구조에 관한 결론이지 세 태스크의
+성능 주장이 아니다.**
 
-**단일 언어 검색 파이프라인 — 측정된 제약.** 본 벤치마크의 질의는 전량 한국어이고 후보 코퍼스는 다국어이며(한국어 38,246·영어 1,189·일본어 117), 알려진 양성의 41%가 비한국어다(**전체 qrel 2,321건 기준**; 확증 분할 479건으로 좁히면 29.0%다 — §6.2f. 두 수는 분모가 다르며 혼용하지 않는다). 본 연구의 검색 파이프라인은 **단일 언어 질의 처리**로 동결되어 있다 — 질의·문서 번역 계층을 두지 않으며, 교차언어 통로는 다국어 임베딩(B2)과 언어중립 개념 IRI(B5) 둘뿐이다. 이 제약의 결과는 추정이 아니라 측정됐다(§6.2f): 한국어 질의의 어휘 검색은 영어 정답을 두 분할 334건 중 0건 회수하고, 최종 시스템은 비한국어 정답의 5%만 회수한다. 따라서 **본 논문이 보고하는 Recall은 다국어 선행기술 전체가 아니라 사실상 한국어 하위풀에 대한 회수에 가깝고, 교차언어 하위집단의 이득 유의 미달(§6.4)은 성능이 아니라 이 아키텍처 제약의 반영이다.** 세 원인 — 번역 부재(어휘)·비한국어 개념링크 결손(의미, 영어 69.6%·일본어 0%)·재랭크 천장(구조) — 은 §6.2f에서 분리되어 각각 다른 처방을 가리키지만, **본 논문의 동결 설계(F8 질의 표현·F13 토큰화) 안에서는 어느 것도 검정할 수 없다.** 번역 계층 추가, 비한국어 개념 보강, 온톨로지 기반 후보 생성을 요인으로 하는 비교는 별도 사전등록 실험으로 수행해야 하며, 그 설계는 다음 두 위협을 사전에 통제해야 한다. 첫째, **후보 풀 편향** — 영어 문서의 72.5%, 일본어 문서의 70.9%가 심사관 인용 정답이므로 외국어 하위풀에는 방해 문서가 희소하고, 교차언어 팔의 이득은 과대평가된다. 둘째, **일본어 자원 결손** — 일본어 정답의 본문 중앙 길이가 117자여서 회수 실패가 방법이 아니라 입력의 부재에서 온다.
+**재랭크 아키텍처의 천장(핵심 제약).** 제안 순위 함수는 텍스트 기준선의 상위 1,000을 재정렬할 뿐
+후보 집합을 넓히지 않는다. 따라서 측정된 것은 "온톨로지가 선행기술 검색을 얼마나 개선하는가"의
+상한이 아니라 **재랭크라는 결합 방식에서의 개선분**이며, §7.2의 저중첩 예상이 반증된 직접적 원인이
+여기에 있다. 온톨로지 기반 질의 확장·후보 생성은 동결 설계를 바꾸므로 별도 실험으로만 가능하다.
 
-**교차언어 제약이 남기는 외적 타당도 경고.** 위 제약은 §9.3의 일반화 한계와 결합해 특히 강하게 작용한다. 선행기술 조사 실무에서 누락된 외국어 문헌 하나가 무효 사유가 될 수 있으므로, 본 결과를 "온톨로지 보강이 선행기술 검색을 개선한다"로 일반화할 때는 **개선이 관측된 범위가 한국어 정답임을 함께 진술해야 한다.**
+**단일 언어 검색 파이프라인 — 측정된 제약.** 질의는 전량 한국어이고 후보 코퍼스는 다국어이며
+(한국어 38,246 · 영어 1,189 · 일본어 117), 알려진 양성의 41%가 비한국어다(**전체 qrel 2,321건 기준**;
+확증 분할 479건으로 좁히면 29.0% — 두 수는 분모가 다르며 혼용하지 않는다). 파이프라인에는 번역
+계층이 없고 교차언어 통로는 다국어 임베딩과 언어중립 개념 IRI 둘뿐이다. 결과는 추정이 아니라
+측정됐다(§6.2f) — 어휘 검색은 영어 정답을 두 분할 334건 중 **0건** 회수하고, 최종 시스템은 비한국어
+정답의 5%만 회수한다. 따라서 **본 논문이 보고하는 Recall은 다국어 선행기술 전체가 아니라 사실상
+한국어 하위풀에 대한 회수에 가깝다.** 세 원인 — 번역 부재(어휘) · 비한국어 개념링크 결손(의미,
+영어 69.6% · 일본어 0%) · 재랭크 천장(구조) — 은 각각 다른 처방을 가리키지만 동결 설계 안에서는
+어느 것도 검정할 수 없다. 후속 설계는 두 위협을 사전 통제해야 한다: **후보 풀 편향**(영어 문서의
+72.5%, 일본어 문서의 70.9%가 정답이어서 외국어 하위풀에 방해 문서가 희소하다)과 **일본어 자원
+결손**(일본어 정답 본문 중앙 길이 117자). 실무에서 누락된 외국어 문헌 하나가 무효 사유가 될 수
+있으므로, 본 결과를 일반화할 때는 **개선이 관측된 범위가 한국어 정답임을 함께 진술해야 한다.**
 
-## 9.2 내부 타당도
+## 8.3 내부·외적·통계적 타당도
 
-질의 인용 간선, qrel에서 파생한 개념, 미래 CPC 정보가 남으면 성능 누출이 생길 수 있다. 자동 누출 검사와 시점 유효 특징만을 사용하는 주 분석으로 통제한다. 그래프 특징 생성기가 원문과 qrel을 동시에 사용했다면 재생성하거나 해당 특징을 GT-assisted 상한으로 격리한다.
+질의 인용 간선, qrel 파생 개념, 미래 CPC 정보가 남으면 누출이 생기므로 자동 누출 검사와 시점 유효
+특징만 쓰는 주 분석으로 통제한다. 주 데이터가 한국 반도체 특허와 특정 거절 표본에 집중되므로 다른
+관할·언어·기술 분야로의 일반화는 검증되지 않았고, G2는 파이프라인 이식성을 보일 뿐 qrel이 없어
+검색 성능의 외적 타당도를 증명하지 않는다. 하위집단은 작을 수 있으므로 신뢰구간·효과크기·Holm
+보정·최소 집단 크기를 사용하고, 표본 부족은 "효과 없음"이 아니라 **판단 유보**로 보고한다.
+KIPRIS 원문은 이용조건 때문에 그대로 재배포하지 못하므로 식별자·검색 조건·전처리 코드·체크섬·
+파생 통계로 재현 경로를 제공한다(§9).
 
-## 9.3 외적 타당도
+## 8.4 게이트 유발 표류와 CQ 스위트의 해상도
 
-주 데이터는 한국 반도체 특허와 특정 거절 표본에 집중하므로 다른 관할·언어·기술 분야로의 일반화는 검증되지 않는다. G2는 소부장 코퍼스로의 데이터 파이프라인 이식성을 보여주지만 qrel이 없으므로 검색 성능의 외적 타당도를 증명하지 않는다. 후속 연구는 USPTO·EPO의 공개 심사 인용과 글로벌 패밀리를 이용한 독립 복제를 수행해야 한다.
+검색 비열등 조건이 다세대 누적되면 온톨로지가 점진적으로 검색 편향으로 표류할 수 있다. 교차 태스크
+비회귀가 1차 제동 장치이나 CQ는 명세 기반 검사이므로 CQ가 포착하지 못하는 미세 표류는 남는다.
+세대별 CQ 통과율과 waiver 이력을 공개해 표류를 검증 가능하게 만들되, 전문가 매칭·기술예측의
+**정량 성능** 회귀 측정은 후속 연구로 남긴다.
 
-## 9.4 통계적 결론 타당도
-
-1,000개 거절 특허가 있어도 거절근거·공정·연도별 하위집단은 작을 수 있다. 다중 비교와 희소 qrel은 유의성 판단을 불안정하게 만든다. 신뢰구간, 효과크기, Holm 보정, 최소 집단 크기를 사용하고 표본 부족은 "효과 없음"이 아니라 "판단 유보"로 보고한다.
-
-## 9.5 재현성과 라이선스
-
-KIPRIS에서 수집한 원문은 이용조건 때문에 저장소에 그대로 재배포하지 못할 수 있다. 이 경우 완전한 원문 데이터 공개 대신 식별자, 검색 조건, 전처리 코드, 체크섬, 파생 통계와 공개 가능한 온톨로지 메타데이터를 제공한다. 모델 라이선스와 API 버전도 함께 기록한다.
-
-## 9.6 게이트 유발 표류 (task-overfitting drift)
-
-T1이 다세대 누적되면 온톨로지가 점진적으로 검색 편향으로 표류할 수 있다. T3(교차 태스크 CQ 비회귀)가 1차 제동 장치이나, CQ는 명세 기반 검사이므로 CQ가 포착하지 못하는 미세 표류는 남는다. 본 연구는 표 6.6으로 세대별 CQ 통과율 추이와 waiver 이력을 공개해 표류를 검증 가능하게 만들고, 전문가 매칭·기술예측의 **정량 성능** 회귀 측정은 후속 연구로 남긴다. 이 한계를 명시적으로 기술하는 것은 심사 대응상으로도 필수적이다.
-
-## 9.7 CQ 스위트 구성의 미확정
-
-§3.1.6에서 기술한 대로 CQ13·14·19·21의 귀속과 선행기술 CQ의 세분화는 원고 확정 전 선결 과제다. 귀속은 2026-07-28에 완료됐고(부록 E-1), **세분화의 필요성은 이제 추정이 아니라 실측**이다. 결함 주입 108 인스턴스에서 T3는 아무것도 검출하지 못했으나(0/108), 같은 결함·같은 스위트에서 판정 해상도만 결과 행 수로 바꾸면 55/108이 검출되고 정상 델타 오탐은 0이었다(§6.5.1). 즉 T3의 검출력 한계는 교차 태스크 조건이 아니라 **CQ가 존재만 묻고 분포를 묻지 않는다**는 데서 왔다. 그 처방을 수행해 재판정한 결과가 §6.5.2이며, 규칙 버전은 표 6.6에 이력으로 싣는다. 재판정은 진단을 확증하는 동시에 **두 번째 한계를 드러냈다** — 세분화로 T3는 살아났지만 L3와 검출 표면이 포개져 있어 "T3만이 검출한다"는 형태의 주장은 층 정의를 분리하지 않는 한 검정될 수 없다. 그 분리는 결과를 본 뒤 할 수 없으므로 **새 사전등록(PLAN-022)을 동결한 뒤 수행했고**(§6.5.3), 검출력 불변을 144 인스턴스에서 확인한 위에서 H1″가 지지됐다. **그 결과가 청구항 수준 분해를 더 급하게 만든다** — L3의 분모가 pa 5개로 좁아졌고, T3가 추가로 잡는 것의 다수가 비교차 결함이라는 실측이 그 5개의 둔감함을 가리키기 때문이다.
-
-**청구항 수준 분해를 수행했으나, 게이트가 아니라 측정으로 편입했다 (2026-07-28 · PLAN-023).** 착수 전 관측이 설계를 바꿨다. 청구항 층(Claim 586,567 · ClaimFeature 1,289,300 · dependsOnClaim 483,390)은 **G0에 없다** — CQ 러너가 읽는 `graph_v0.ttl`의 청구항 인스턴스는 0건이고, 그 층은 사이드카 `central_axis.oxstore`(11,606,318 트리플)에만 있다. 따라서 **본 연구의 게이트는 C2 검색 실험이 딛고 선 층을 한 번도 심문하지 않았다** — P1(FeatureCoverage, §6.3)은 `featureText` 임베딩 102만 건 위에서 돌지만 그 층의 회귀를 잡는 검사가 없었다. 사이드카를 CQ 조회 대상으로 편입하고 CQ29(청구항 수준 거절 판단)·CQ30(독립항 한정요소)·CQ31(종속항 계층)을 신설했으며, 셋 모두 비공허다(5,917 · 3,117 · 4,906행).
-
-**그러나 이 세 CQ를 L3 분모에 넣지 않았다.** 넣으면 게이트가 약해지기 때문이다 — 사이드카 CQ는 시험 대상 그래프에 **무반응인 상수항**이므로, pa 1개 실패가 5개 중에서는 0.800이던 것이 8개 중에서는 0.875가 된다. 항상 통과하는 검사가 실패를 희석하는 것이며, 이는 §6.5.3의 층 분리를 정당화한 유일한 근거(검출력 불변)를 정면으로 깬다. 그래서 판정 분모는 `target=graph`로 한정하고 청구항 CQ는 **측정**으로 운용한다(표 6.6 청구항층 열). 이 결정은 결과를 보기 전에 동결했고(PLAN-023 §1), 불변량은 회귀 테스트로 강제한다(`tests/test_cq_targets.py`).
-
-**남는 한계는 두 가지이며 둘 다 구조적이다.** 첫째, **청구항 CQ는 결함 주입에 무반응이다.** 결함 주입기는 격리본 TTL에만 주입하므로 사이드카는 변하지 않고, 따라서 이 확장은 *감시 공백*을 닫을 뿐 *L3의 결함 감도*를 올리지 않는다 — N5d의 원래 동기는 달성되지 않았다. 인스턴스마다 1.8GB 스토어를 격리 복제하는 설계는 오염 규율과 비용 양쪽에서 채택하지 않았다. 둘째, 그럼에도 이 층의 회귀가 완전히 방치되는 것은 아니다. 사이드카는 상류 SDKB 재벤더 시 바뀔 수 있으므로 세대 아티팩트에 출처(PROVENANCE: SDKB 커밋·소스 sha256)를 핀하고 **세대 간 비교**로 감시한다. 델타 단위 게이트가 아니라 세대 단위 감시라는 점을 표 6.6에 명시했다. 결함 주입 결과(표 6.5 계열)는 28-CQ 체제의 산출이며 **소급 재판정하지 않는다** — 같은 데이터의 네 번째 판정은 증거를 더하지 않는다.
+CQ 스위트의 해상도도 미확정이다. 결함 주입에서 T3의 검출력 한계는 교차 태스크 조건이 아니라
+**CQ가 존재만 묻고 분포를 묻지 않는다**는 데서 왔고, 판정을 분포 검사로 세분화한 뒤에야 회복됐다
+(§6.5). 청구항 수준 분해는 수행했으나 **게이트가 아니라 측정으로 편입**했다 — 청구항 층
+(Claim 586,567 · ClaimFeature 1,289,300 · dependsOnClaim 483,390)은 G0가 아니라 사이드카에만 있고,
+사이드카 CQ는 시험 대상 그래프에 **무반응인 상수항**이어서 판정 분모에 넣으면 실패를 희석해
+게이트를 약화시키기 때문이다(pa 1개 실패가 5개 중 0.800 → 8개 중 0.875). 이 결정은 결과를 보기
+전에 동결했고 회귀 테스트로 강제한다. 남는 한계는 둘 다 구조적이다 — 결함 주입기는 격리본 TTL에만
+주입하므로 **청구항 CQ는 결함 주입에 무반응**이며, 이 층의 회귀는 델타 단위 게이트가 아니라 출처를
+핀한 **세대 단위 감시**로만 다룬다.
 
 ---
 
-# 10. 데이터 및 코드 가용성
+# 9. 데이터 및 코드 가용성
 
-SDKB 저장소는 [https://github.com/arkwith7/sdkb-prior-art-paper](https://github.com/arkwith7/sdkb-prior-art-paper)에서 관리된다. 재현 패키지는 가능한 범위에서 다음을 포함한다.
+가용성은 세 층으로 나뉘며, 층마다 공개 범위와 사유가 다르다. 용어를 구분해 쓴다 — **자원은
+릴리스 버전을 고정(pin)** 하고, **평가는 사전등록을 동결(freeze)** 한다. 앞의 것은 "이 논문이 어느
+스냅샷을 썼는가"이고, 뒤의 것은 "개봉 전에 무엇을 못 바꾸게 묶었는가"다.
 
-- G0·G1·G2의 공개 가능 메타데이터와 provenance (큐레이션 소스·라이선스 매니페스트 포함)
-- SDKB 공유 코어와 전문가 매칭·선행기술조사·기술예측 뷰의 TBox
-- 태스크–클래스–관계–CQ 요구사항 매트릭스
-- SHACL shapes와 CQ 31개(태스크 스위트 분할본 · 게이트 28 + 청구항 층 측정 3) 및 실행 결과
-- TBox/ABox와 그래프별 자동 계수 보고서
-- qrel 생성·중복 제거·시간 및 패밀리 분할 코드
-- 질의 인용 간선 마스킹과 누출 검사 (`src/sdkb_paper/validate/leakage_check.py` · `make leakage`)
-- BM25·Dense·Hybrid·Ontology reranking 설정
-- 결함 주입 스크립트(교차 태스크 결함군 포함)와 T-gate 승인 보고서 (`validate/t_gate.py` · `make tgate` → 개발 분할 `data/processed/tgate_report.json` · 확증 분할 `tgate_report_test.json`(주 델타 P1)·`tgate_report_test_p0star.json`(부수 델타 P0★))
-- T1·T2 판정기 (`validate/t1_noninferiority.py`·`validate/t2_subgroup.py`)
-- 교차 태스크 CQ 회귀 검사기 (`validate/t3_cross_task_cq.py`)와 세대별 통과율 아티팩트 (`data/cq_generations/*.json`·waiver 로그)
-- 트리플 서명 정합 검사 (`check_signatures.py`)
-- 테스트 개봉 전 동결된 분석 프로토콜
-- 라이선스상 재배포 가능한 qrel 식별자와 파생 통계
+## 9.1 데이터셋 — 공개 · 지속 개선
 
-원문을 재배포할 수 없는 경우 재구축 절차를 제공하며, 저장소 버전과 논문 수치의 일치를 CI에서 검사한다. 최종 논문에는 사용한 커밋 해시와 데이터 릴리스 DOI를 `[최종 릴리스 후 기입]`한다.
+SDKB 데이터셋은 [https://github.com/arkwith7/semiconductor-knowledge-base](https://github.com/arkwith7/semiconductor-knowledge-base)
+에서 **CDLA-Permissive-2.0** 으로 공개되며, `CITATION.cff` 와 버전·CHANGELOG 를 함께 관리한다.
+공개 대상은 공유 T-Box(전문가 매칭·선행기술조사·기술예측 뷰), SHACL shapes, CQ 스위트와 실행 결과,
+그래프별 자동 계수 보고서, 태스크–클래스–관계–CQ 요구사항 매트릭스, 공개 가능한 A-Box 메타데이터와
+provenance 다.
+
+**본 논문이 사용한 것은 릴리스 vX 의 커밋 SHA 와 sha256 으로 고정(pin)된 스냅샷이며, 데이터셋
+자체는 이후에도 버전을 올려 개선된다.** 논문의 수치는 그 고정된 스냅샷에 대한 관측이므로, 최신
+릴리스에서 같은 수치가 재현되지 않는 것은 결함이 아니라 데이터셋이 나아간 결과다. 재현하려면
+논문이 명시한 릴리스 태그를 체크아웃해야 한다.
+
+## 9.2 논문 부속 supplementary — 공개 · 재배포 가능
+
+평가를 재구성하는 데 필요한 것 가운데 라이선스상 재배포할 수 있는 전량을 공개한다.
+
+- 질의 식별자(제1 분할 1,000 · 제2 확증분할 200)와 qrel 인용 식별자 · 시점/패밀리 **분할 경계**
+- **동결 임계 전량** — 비열등 마진 \(\epsilon=0.02\) · 하위집단 한계 \(\delta=0.05\) · 분포 검사
+  임계 \(\tau=0.05\)(격자 {0, 0.05, 0.10}) · low-overlap 임계(dev Q1 = 0.0079)
+- 게이트 규칙 명세(L0–L3 · T1 · T2 · T3와 승인식) · 누출 검사 규칙 · 결함 주입 유형과 강도
+- 결과 표의 원본 산출물과 그림 생성 코드 · 세대별 CQ 아티팩트와 waiver 로그
+- 잘라낸 절의 전문 — 부록 A·C–H([S1](supplementary/S1-appendices-v09.md))와 결함 주입 4회차
+  재판정 기록([S2](supplementary/S2-fault-injection-v09.md))
+- 원문을 재배포할 수 없는 자료의 **재구축 절차**
+
+## 9.3 비공개 — 사유를 밝힌다
+
+세 가지는 공개하지 않는다. **KIPRIS 원문**(특허 전문·서지)은 학술이용 조건상 재배포할 수 없고,
+**회사 기밀 계층**(전문가 매칭 뷰의 실 인력·문제 인스턴스)은 비식별 변조본만 존재하며,
+**평가 하네스 저장소**는 봉인 qrel 접근 경로를 포함해 공개 시 봉인 규율이 무의미해진다.
+다만 이 셋의 부재가 재현을 막지 않는다 — §9.2 의 식별자와 재구축 절차로 동일한 코퍼스를 다시
+만들 수 있으며, 저장소 버전과 논문 수치의 일치는 CI 에서 검사한다. 최종 논문에는 사용한 커밋
+해시와 데이터 릴리스 DOI 를 `[최종 릴리스 후 기입]` 한다.
 
 ---
 
-# 11. 결론
+# 10. 결론
 
-본 연구는 SDKB를 공정·소자·재료·장비·고장·역량·특허·기업·기술전략 지식을 통합하고, 전문가 매칭·선행기술조사·기술예측의 세 태스크 뷰를 지원하는 **태스크 확장형 반도체 도메인 온톨로지 데이터셋**으로 제시한다. 새 논리기조는 이 넓은 자원 정체성을 선행기술 검색용 그래프로 축소하지 않는다. 대신 세 태스크의 표현 범위는 T-Box·SHACL·CQ로 제시하고, 심사관 인용 약한 정답이 존재하는 선행기술 검색을 주 정량 검증으로 선택하며, 나머지 두 태스크는 교차 태스크 CQ 비회귀(T3)로 감시한다.
+본 연구는 SDKB를 공정·소자·재료·장비·고장·역량·특허·기업·기술전략 지식을 통합하고 전문가 매칭·선행기술조사·기술예측의 세 태스크 뷰를 지원하는 **태스크 확장형 반도체 도메인 온톨로지 데이터셋**으로 제시한다. 이 정체성을 선행기술 검색용 그래프로 축소하지 않는다 — 세 태스크의 표현 범위는 T-Box·SHACL·CQ로 제시하고, 약한 정답이 존재하는 선행기술 검색을 주 정량 검증으로 선택하며, 나머지 두 태스크는 교차 태스크 CQ 비회귀로 감시한다.
 
-자원 감사에서 네 가지가 확인된다. 세 태스크의 핵심 어휘와 관계는 실제 T-Box에 존재한다. 선행기술의 노드 도달성(95.3%)과 도메인 의미 관계 도달성(54.6–70.5%)은 같지 않다. CQ의 후보 수 증가는 후보 생성 능력이지 적합성 순위의 증거가 아니다. 청구항 한정요소 스키마의 존재와 인스턴스 완전성은 분리해 보고해야 한다.
+자원 감사에서 넷이 확인된다. 세 태스크의 핵심 어휘와 관계는 실제 T-Box에 존재한다. 선행기술의 노드 도달성(95.3%)과 도메인 의미 관계 도달성(54.6–70.5%)은 같지 않다. CQ의 후보 수 증가는 후보 생성 능력이지 적합성 순위의 증거가 아니다. 청구항 한정요소 스키마의 존재와 인스턴스 완전성은 분리해 보고해야 한다.
 
-봉인 분할을 1회 개봉해 수행한 확증 평가는 그 위에 세 층의 결과를 얹는다. **첫째, 검색 유용성은 주 지표에 한정해 지지된다.** 온톨로지·한정요소 재순위화는 최강 텍스트 하이브리드 대비 family-level Recall@100을 +0.0534(*p* = .008) 개선했으나, 사전 지정한 주 순위 함수는 유의 수준에 미달했고(*p* = .181) nDCG@20은 개선되지 않았으며, 이득은 예상과 반대로 고어휘중첩 질의에 몰렸다. 절제는 이득의 본체가 계층 심화가 아니라 개념 겹침 하나임을 가리킨다 — 청구항 한정요소 계층의 독립 기여 가설은 기각되었다. **둘째, 승인 안전성은 지지되고 게이트 판별력은 기각된다.** T-gate가 승인한 델타는 동결 테스트셋에서 비열등했고 하위집단 하락은 허용한계 안이었다. 그러나 교차 태스크 결함이 T3에서만 검출된다는 예측은 성립하지 않았고, 그 원인은 게이트의 무용함이 아니라 L3와 T3가 검출 표면을 공유해 단독 검출이 층 정의상 불가능했다는 데 있다. 두 층을 서로소로 분리하고 다시 판정했을 때 검출 방향은 역전되었으나, 이는 같은 데이터의 사후 재판정이므로 탐색적 근거로만 제시한다. **셋째, 음성 대조군이 무너졌다.** 검색과 무관하도록 설계한 전문가 매칭 전용 계층을 제거하자 검색이 유의하게 악화되어(+0.0316, *p* = .002), 특이성 대신 태스크 결합이 관측되었다.
+봉인 분할을 1회 개봉해 수행한 확증 평가는 두 가지를 남긴다. **첫째, 검색 유용성은 주 지표에 한정해 지지된다(H3).** 온톨로지·한정요소 재순위화는 최강 텍스트 하이브리드 대비 family-level Recall@100을 +0.0534(*p* = .008) 개선했으나, 사전 지정한 주 순위 함수는 유의 수준에 미달했고(*p* = .181) nDCG@20은 개선되지 않았으며, 이득은 예상과 반대로 고어휘중첩 질의에 몰렸다. 절제는 이득의 본체가 계층 심화가 아니라 개념 겹침 하나임을 가리킨다. **둘째, 음성 대조군이 무너졌다(H5).** 검색과 무관하도록 설계한 전문가 매칭 전용 계층을 제거하자 검색이 유의하게 악화되어(+0.0316, *p* = .002), 특이성 대신 **경험적 교차 태스크 의존성**이 관측되었다.
 
-이 셋 가운데 본 연구가 가장 일반화 가능한 결과로 내세우는 것은 **태스크 결합**이다. 공유 T-Box 위의 태스크들은 통계적으로 분리되지 않으며, 한 태스크의 성능만으로 온톨로지 델타를 승인하는 관행은 다른 태스크의 질의 경로를 조용히 훼손할 수 있다. 이 결합은 형식 검증(L0–L3)에서도, 게이트 태스크의 성능 검사(T1·T2)에서도 보이지 않고 교차 태스크 조건(T3)에서만 감시된다. 따라서 연구의 핵심 신규성은 특정 검색모델이 아니라, **넓은 도메인 표현 범위를 유지하면서 주 과제의 성능을 보존하고 나머지 태스크를 훼손하지 않는 온톨로지 데이터셋 진화**라는 검증 패러다임과, 그 필요성을 부정적 결과로 실증했다는 데 있다. 함께 얻은 두 번째 축은 명시적 온톨로지의 비교우위가 **언어 경계**에서 가장 뚜렷하다는 사후 관측이다 — 한국어 질의의 어휘 검색이 영어 정답을 한 건도 회수하지 못하는 구간에서 개념 팔만이 회수에 성공하지만, 재순위화라는 융합 방식이 그 우위를 최종 시스템에서 소거한다.
+이 둘 가운데 본 연구가 가장 일반화 가능한 결과로 내세우는 것은 후자다. 공유 T-Box 위의 태스크들은 통계적으로 분리되지 않으며, 한 태스크의 성능만으로 온톨로지 델타를 승인하는 관행은 다른 태스크의 질의 경로를 조용히 훼손할 수 있다. 이 의존성은 형식 검증(L0–L3)에서도 게이트 태스크의 성능 검사(T1·T2)에서도 보이지 않고 교차 태스크 조건(T3)에서만 감시된다. 따라서 핵심 신규성은 특정 검색모델이 아니라, **넓은 도메인 표현 범위를 유지하면서 주 과제의 성능을 보존하고 나머지 태스크를 훼손하지 않는 온톨로지 데이터셋 진화**라는 검증 패러다임과, 그 필요성을 부정적 결과로 실증했다는 데 있다.
 
-남은 것을 축소해 말하지 않는다. 세대별 CQ 통과율은 세대가 둘뿐이라 추이가 성립하지 않고, 전문가 표본 판정은 수행하지 않았으며(등급형 nDCG의 유일한 경로이므로 그 부재는 보조 지표 해석을 제약한다), 교차언어 처방과 온톨로지 기반 후보 생성은 본 논문의 동결 설계 밖이라 별도 사전등록 실험으로 남는다. "최초"를 주장하기보다, 검증 게이트·누출 통제·교차 태스크 비회귀·음성 대조군 절제를 결합한 설계와, 그 설계가 가설에 불리한 결과까지 판정 가능하게 만들었다는 점을 본 연구의 기여로 제시한다.
+남은 것을 축소해 말하지 않는다. **승인 안전성은 검정되지 않았고 그 이유는 구조적이다** — 그래프 계보의 T-Box가 한 번도 바뀐 적이 없어 자격 있는 델타가 존재할 수 없었다(§8.1). 게이트 판별력은 홀드아웃에서 확증됐으나 분포 검사 임계에 민감하고 특이성은 미검정이다. 세대별 CQ 통과율은 세대가 둘뿐이라 추이가 성립하지 않으며, 전문가 표본 판정은 수행하지 않았다(등급형 nDCG의 유일한 경로이므로 그 부재는 보조 지표 해석을 제약한다). 교차언어 처방과 온톨로지 기반 후보 생성은 동결 설계 밖이라 별도 사전등록 실험으로 남는다. "최초"를 주장하기보다, 검증 게이트·누출 통제·교차 태스크 비회귀·음성 대조군 절제를 결합한 설계와, 그 설계가 가설에 불리한 결과까지 판정 가능하게 만들었다는 점을 본 연구의 기여로 제시한다.
 
 ---
 
@@ -1389,228 +1172,21 @@ Zhou, D., Liu, J., & Zhang, S. (2013). Query generation techniques for patent pr
 `[미확정 서지: PatenTEB(2025, arXiv:2510.22264)·CLEF-IP 공식 overview 논문·IPRally Graph Transformer의 정확한 저자·서지 사항은 투고 전 원문 대조 필요. 본문 인용 표기와 함께 일괄 검증할 것.]`
 
 ---
-# 부록 A. 사전등록 체크리스트
+# 부록 B. 주장–증거 매트릭스 (축약)
 
-- [ ] 데이터 버전과 커밋 해시 동결
-- [ ] 특허·패밀리·NPL의 정확한 분모 검증 (2,534 / 2,321 / 2,211 / 584 구분)
-- [ ] 학습/개발/테스트 기간과 식별자 동결
-- [ ] 질의 인용·판단 간선 마스킹 테스트 통과
-- [ ] 미래정보 특징 0건 확인
-- [ ] 주 Dense 모델과 토큰화 규칙 동결
-- [ ] 주 지표 Recall@100과 보조지표 동결
-- [ ] \(\epsilon\), \(\delta\), 최소 하위집단 크기 동결
-- [ ] low-overlap 정의 동결
-- [ ] CQ 스위트 분할(CQ-PA / CQ-EM / CQ-TF / CQ-CORE) 및 버전 동결
-- [x] **L3·T3 검출 표면 배정 동결** (L3 = pa · T3 = em·tf·core · 서로소 ∧ 합집합 전량) — PLAN-022 · 커밋 `44f8022`
-- [x] **CQ 판정 규칙 버전과 \(\tau\) 동결** (v2 = 존재 ∧ 분포 · 극성 `# monotone:` 28개 · τ=0.05 · 격자 {0, 0.05, 0.10}) — PLAN-021
-- [x] **델타 유형과 면제 규칙 동결** (`generic` / `dedup` · 자동 검증 통과 시 분포 검사만 면제) — PLAN-022
-- [ ] 결함 주입 유형·강도·반복수 동결 (교차 태스크 결함군 포함)
-- [ ] 전문가 판정 표본설계와 평가척도 동결
-- [ ] 테스트 qrel 접근권한과 개봉일 기록
-- [ ] 트리플 서명 105,588 세대 정합 검증
-- [ ] 난수 시드 고정 (분할·부트스트랩·hard negative 샘플링)
+> 전문(부록 A·C–H 포함)은 supplementary [S1](supplementary/S1-appendices-v09.md)에 있다.
+> 아래는 **확증 가설 두 개(H3·H5)와 자원 주장(C1)** 에 직접 걸리는 행만 남긴 것이다.
+> 강등된 H1·H2·H4 는 판정을 **그대로** 적되 싣는 자리만 옮겼다(§4·§6.4·§8).
 
-# 부록 B. 논문 주장–증거 매트릭스
-
-| 주장 | 증거 유형 | 현재 상태 | 최종 원고에서 필요한 것 |
+| 주장 | 증거 유형 | 판정 | 위치 |
 |---|---|---|---|
-| 공유 T-Box가 전문가 매칭·선행기술조사·기술예측 어휘를 포함 | TTL 클래스·속성 및 CQ 매트릭스 | 확인 | 동결 커밋·자동 계수 |
-| 세 태스크의 표현 가능성이 검증됨 | SHACL·CQ 실행 | 부분 확인 | 뷰별 CQ·shape 결과와 분모 |
-| 세 태스크의 성능이 모두 검증됨 | 태스크별 외부 정답 평가 | 주장하지 않음 | 후속 독립 평가 |
-| G0에 거절특허 기반 검색 자원이 있다 | 그래프 계수·스키마 | 확인 | 릴리스 해시 |
-| 노드 도달성 95.3% | 고유 대상/존재 노드 계수 | 확인 | 재현 명령 |
-| 의미 도달성 54.6–70.5% | 관계 집합별 경로 계수 | 확인 | 분모·SPARQL |
-| CQ10 후보 8→90 | CQ 실행 결과 | v0.7에서 확인 | 쿼리·그래프 버전 |
-| T-gate가 의미 결함을 추가 탐지 (H1) | 결함 주입 | **기각** (dev 108 인스턴스) | 탐지율·위양성률·McNemar (§6.5) |
-| **교차 결함은 T3에서만 검출 (H1)** | 교차 표적 결함 주입 | **기각** — T3 단독검출 0/18 | 층별 검출 매트릭스·McNemar (§6.5) |
-| 승인 델타가 비열등·하위집단 안전 (H2) | paired 검색 평가 | **지지** — 확증 분할 Accept(ΔG)=1 (§6.3) | \(\Delta R@100\), 95% CI |
-| 하이브리드가 텍스트 기준선 개선 (H3) | 시스템 비교 | **부분 지지 — 주 지표에 한정** (확증 분할 · nDCG 조항 미충족) (§6.2·§6.3) | R@K·nDCG·보정 p |
-| 저중첩 질의에서 효과가 큼 (H3 조건부) | 사전 하위집단 분석 | **반증** — 이득이 고중첩에 집중된다 (§6.4·§7.3) | 상호작용·효과크기 |
-| ClaimFeature/거절근거 기여가 큼 (H4) | ablation | **기각** — 두 계층의 독립 기여 없음 (§6.3·§6.4) | 계층별 제거 손실 |
-| **음성 대조군 무영향 (H5)** | A8 ablation | **기각 → 태스크 결합(entanglement) 발견** (§6.3·§7.6) | \(\Delta R@100\)·CI (또는 entanglement 보고) |
-| 미인용 상위 후보 일부가 관련 | 전문가 표본 판정 | 미실험 | 판정분포·\(\kappa\) |
-| **세대별 CQ 통과율 비회귀 이력** | 표 6.6 | **2세대 축적** (g0·graph_v1 · 판정 코드 생성) | 세대·waiver 로그 (추이는 세대 누적 후) |
-
-# 부록 C. v0.7 및 두 v0.8 초안에서 v0.9로의 구조 이동
-
-| 원천 요소 | v0.9 위치 | 처리 원칙 |
-|---|---|---|
-| L0–L3 게이트 (v0.7) | §2.3, §4 | 그대로 보존하고 3조건 T-gate 추가 |
-| 전문가 매칭 TBox (v0.7) | §3.1.1, §6.1.1, §8.3 | 표현 범위로 복원, 랭킹 성능 미주장, 범위 분리 |
-| 선행기술조사 TBox (v0.7) | §3.1.2, §3.3–3.7 | 주 정량 검증 뷰로 승격 |
-| 기술예측 TBox·구 H2 (v0.7) | §3.1.3, §8.4 | 표현 범위·2차 활용 사례로 유지, 주 가설에서 제외 |
-| 공정 커버리지 구 H1 (v0.7) | §3.2 자원 계보 | 검색 주 가설에서 제외, 자원 형성 타당성으로 |
-| CQ10 8→90 (v0.7) | §6.1.4 | 후보 생성 증거로 한정 |
-| 심사관 인용 2,534 (v0.7) | §3.3–3.5 | 양성 전용 약한 qrel로 재정의 |
-| 태스크 확장형 프레이밍·과제 의미 회귀 (v0.8.1) | §1.1–1.2, §2.4 | 골격으로 채택 |
-| L0–L3+T-gate 구조·승인 규칙 (v0.8.1) | §4.1, §4.9 | 채택 후 T3 조건 추가로 확장 |
-| 도달성 사다리·다중 분모 (v0.8.1) | §3.4, §6.1.3 | 채택 |
-| Claim-feature sidecar 범위 분리 (v0.8.1) | §3.2, §6.1.5 | 채택 |
-| 예상 발견·기각 조건 체계 (v0.8.1) | §7 | 채택 후 교차 태스크·음성 대조군 주장(B·F) 추가 |
-| 단일 태스크 게이트 과적합 논증 (검증게이트판 §1.1) | §1.3 | 핵심 개념 2로 승격 |
-| cross-task CQ 비회귀 S5 (검증게이트판) | T3 (§4.1, §4.9, §6.6) | L0–L3+T 구조에 정합하게 재배치 |
-| 음성 대조군 H3c (검증게이트판) | H5, A8 (§5.4, §7.6) | 채택, 양방향 해석 규칙 포함 |
-| 과적합 표적 결함군 d·e (검증게이트판) | §4.10 결함표 하단 2행, H1 | 채택 |
-| 게이트 유발 표류 위협 (검증게이트판 §7.4) | §9.6 | 채택 |
-| 전문가 매칭 범위 분리 (검증게이트판 §8.1) | §8.3 | 채택 (외부 논문 언급 없이 범위 밖으로만 명시) |
-| CQ 산술 미해결·세분화 (검증게이트판 A-0) | §3.1.6, §9.7, 부록 D | 선결 과제로 명시 |
-| AEI 심사 리스크 표 (검증게이트판 부록 D) | 부록 G | 채택·갱신 |
-| SW 엔지니어링·CI 배선 (검증게이트판 부록 B) | 부록 E | 채택, T-gate 3조건 반영 |
-| 의사결정 임계치 (검증게이트판 부록 C) | 부록 F | 채택·확장 |
-| 'IP-R&D' 용어 (구판) | 전체 | '특허기반 R&D'로 치환 유지, "최초" 표현 배제 |
-
-# 부록 D. 실행 우선순위 로드맵
-
-## D-0. 선결 과제 (원고 확정 이전)
-
-1. **CQ 스위트 확정 및 판정 세분화 (2026-07-28 완료).** CQ 28개 전량을 파일 헤더 `# suite:`로 네 스위트에 배정하고 T-gate 실행 전에 동결했다(부록 E-1 · PLAN-019 §3.2). CQ13·14·19·21의 CQ-CORE 귀속도 이때 반영됐다. 세분화 방향은 둘이었다. (i) 선행기술 CQ의 청구항 수준 분해 — "가장 작은 조각만 평가한다"는 지적에 대한 대응(**미실행**). (ii) **존재 검사를 분포 검사로 강화** — T3′ 실측이 직접 지지한 쪽이며 **2026-07-28 수행했다**(판정 v2 · 극성 `# monotone:` 28개 선언 · τ=0.05 사전동결 · §6.5.2). 재실행 결과 T3 검출은 0/108 → 34/108로 회복됐으나 H1′은 여전히 기각이고, 그 원인이 **판정 해상도가 아니라 층 정의의 포함 관계(L3 ⊇ T3)** 임이 드러났다. 이후 셋 중 둘을 같은 날 닫았다 — **L3와 T3의 검출 표면 분리**(새 사전등록 PLAN-022 · §6.5.3 · 검출력 불변 확인 후 H1″ 지지)와 **중복 제거 델타 유형 면제**(자동 검증 · 위양성 1/27 → 0/27, 면제 악용 결함으로 구멍까지 측정). **남아 있던 (i) 선행기술 CQ의 청구항 수준 분해도 같은 날 수행했다**(PLAN-023 · CQ29·30·31 신설 · §9.7). 다만 청구항 층이 G0가 아니라 사이드카에 있어 **게이트가 아니라 측정으로** 편입했고, 그래서 L3의 결함 감도는 올라가지 않았다 — 그 한계를 §9.7에 명시한다.
-2. **판별력 결론의 확증 (2026-07-28 완료).** 위 (ii)의 귀결로 남은 문제는 **성립한 판정이 전부 사후적**이라는 것이었다 — H1 기각 → H1′ 기각 → H1″ 지지는 같은 결함 데이터의 3회차 재판정이다. 이를 새 데이터로 닫았다: 층 정의와 판정 규칙을 동결한 채(조작 변인 없음) **아직 판정한 적 없는 72 인스턴스**를 사전등록 후 주입했다(PLAN-025 v2 · `a474126` · 복제 축 18 + 신규 교차 결함군 3종 27 + 정상 델타 27). 결과는 **H1‴ 지지**이며 판정식·정지 규칙·예상 결과는 실행 전에 고정돼 있었다(§6.5.4). 남는 것은 τ=0.10 민감성과 **특이성 미검정**(홀드아웃 분모에 비교차 결함을 넣지 않았다)이다.
-3. **Dense 주 모델·토큰화 확정.** 한국어 특허 성능과 라이선스 검토 후 개발셋 개봉 전에 고정한다.
-
-## D-1. 데이터 인프라 (최우선)
-
-- G0-Core와 봉인된 `g:qrels-test`를 시간순·특허 패밀리 단위로 분리 → `split_by_family_time.py`
-- 누출 항목 자동 검사 → `leakage_check.py`
-- **진입 임계치:** 누출 없는 BM25 기준선에서 Recall@100 산출. **이 수치가 나오기 전에는 초록·기여문을 확정하지 말 것.**
-
-## D-2. 핵심 실험
-
-- 비교 시스템 9종(B0–B5, P0–P2) × 지표 산출, 3모드 분리 → `run_eval.py`
-- 결함주입 전체군 × 게이트 7층(L0–L3, T1–T3) 검출 매트릭스 (교차 결함군 포함)
-- 절제 실험 A1–A8 (음성 대조군 포함), 신규성·진보성 분리
-- 세대별 CQ 통과율 아티팩트 축적 (표 6.6)
-
-## D-3. 원고 확정·투고
-
-- 수치 확보 후 초록·RQ·기여문 확정
-- **표현 규율:** "그라운드트루스" → "examiner-validated weak ground truth" / "IP-R&D" → "특허기반 R&D" / "최초" 표현 배제
-- 미확정 서지(부록 참고문헌 말미) 원문 대조
-
-# 부록 E. 소프트웨어 엔지니어링 산출물
-
-*(대상 저널이 소프트웨어 공학 단독 주제를 범위 밖으로 두는 경우, 본 부록은 재현성 자료로 격리하고 본문은 지식표현·검증 방법론·평가설계에 집중한다.)*
-
-## E-1. 디렉터리 구조
-
-```
-/ontology
-  tbox.ttl                  # 공유 코어 + 3태스크 뷰
-  sdkb-patent.ttl           # 선행기술조사 모듈
-  shapes/                   # SHACL shapes
-/queries/cq  CQ01–CQ31.rq             # 스위트는 파일 헤더 `# suite:` · 조회 대상은 `# target:` (as-built)
-                                      #   pa   = CQ09·10·16·26·27      (선행기술조사 · 주 태스크 · target=graph)
-                                      #   pa   = CQ29·30·31            (청구항 층 · target=sidecar · 측정, 게이트 아님 §9.7)
-                                      #   em   = CQ11·12·17·18·20·28   (전문가 매칭)
-                                      #   tf   = CQ02·03·04·05·06      (기술예측)
-                                      #   core = CQ01·07·08·13·14·15·19·21·22·23·24·25 (공유)
-/data      G0-Core, G1, G2, claim-feature sidecar
-/data/cq_generations  cq_<세대>.json  # 세대별 스위트 통과율 아티팩트 + waiver 로그 (표 6.6)
-/qrels     dev/, test-sealed/        # test는 해시 고정 + 접근 로그
-/splits    family_time/
-/baselines bm25/, dense/, hybrid/, cpc_overlap/, ontology/
-/src/sdkb_paper/analysis   metrics.py, bootstrap.py, subgroup.py, ablation.py, lang_recall.py
-/src/sdkb_paper/validate   shacl_gate.py, reasoner_gate.py, cq_runner.py, vocab_coverage.py,
-                           leakage_check.py, t1_noninferiority.py, t2_subgroup.py,
-                           t3_cross_task_cq.py, t_gate.py
-/faults    inject_faults.py           # 교차 태스크 결함군 포함 (미구현 — 부록 D-2)
-/ci        quality-gate.yml
-/scripts   split_by_family_time.py, check_signatures.py
-```
-
-스위트 배정은 CQ 파일 헤더에 기록돼 있고(`# suite:`), 라벨이 없거나 허용값 밖이면 러너가 오류로 멈춘다 — 분모가 조용히 바뀌면 T3는 공허해지기 때문이다. 배정은 **T-gate 실행 이전에 동결**했다(PLAN-019 §4.1).
-
-## E-2. CI quality-gate 배선
-
-기존 `sig-check` 타깃 위에 게이트를 얹는다. 어느 단계든 실패하면 비영 종료로 머지를 차단한다. 다만 **공개 저장소 CI가 실제로 돌리는 범위는 L0–L3·린트·테스트·서명 정합까지**다 — 검색 산출물(코퍼스·색인·run)은 KIPRIS 비재배포 조건으로 커밋되지 않으므로 T1·T2는 원문 데이터를 보유한 환경에서 `make gate`로 실행하고 그 판정 보고서를 아티팩트로 남긴다. T3는 그래프만 있으면 되므로 데이터 없이도 재현된다.
-
-```make
-# Makefile (as-built) — make gate 하나가 L0→T3를 fail-fast로 관통한다
-gate: gate-graph leakage tgate
-gate-graph: l0 validate reason cq vocab      # L0 신선도·무결성 / L1 SHACL / L2 HermiT / L3 CQ
-leakage:  python -m sdkb_paper.validate.leakage_check --split dev
-tgate:    python -m sdkb_paper.validate.t_gate --split dev --baseline g0   # T1 + T2 + T3
-cq-freeze: python -m sdkb_paper.validate.t3_cross_task_cq <graph> --freeze <세대>
-sig-check: python scripts/check_signatures.py
-
-# 결함 주입 (§4.10·§6.5 · H1) — 게이트의 판별력을 재는 실험. CI 상시 대상이 아니다.
-faults-baseline: python -m sdkb_paper.analysis.faults --baseline   # 정본 봉인 + 기준선
-faults-fc:       python -m sdkb_paper.analysis.faults --fc-cache   # FC 성분 1회 + P1 재현 검증
-faults:          python -m sdkb_paper.analysis.faults --reps 3 --workers 10
-
-# W4b 판정 세분화 재판정 (§6.5.2) — 결함을 다시 주입하지 않는다. 새로 넣는 것은 정상 델타뿐.
-faults-n03:      python -m sdkb_paper.analysis.faults --n03        # 완전중복 병합 9건
-faults-rejudge:  python -m sdkb_paper.analysis.faults --rejudge    # 격리본 재판정 v1 vs v2 × τ
-```
-
-**판정 규칙은 인자가 아니라 동결값이다.** `config.CQ_TAU=0.05`·`config.CQ_TAU_GRID=(0, 0.05, 0.10)`이 코드에 있고, 극성은 각 `.rq` 헤더의 `# monotone:`이 정본이다. 라벨이 없거나 허용값이 아니면 러너가 **에러로 막는다** — 조용한 기본값을 두면 공백 탐색 질의의 정당한 개선이 회귀로 오판되기 때문이다(§6.5.2).
-
-**CQ 실행 엔진 (as-built).** `cq_runner`는 pyoxigraph로 SPARQL을 실행한다. rdflib 인메모리는 G₀(23 MB)에서 CQ 28개에 150초가 걸려 결함 주입 108 인스턴스를 감당하지 못한다. 전환은 **두 엔진의 CQ별 결과 행 수가 28/28 전부 일치함을 확인한 뒤에만** 수행했으며(`--verify-engines`, 불일치 0건), `--engine rdflib`로 언제든 되돌릴 수 있다. 전환 후 2.4초다 — 상시 CI 게이트의 비용 장벽이 사라졌다.
-
-**결함 주입의 오염 격리.** 결함 주입은 그래프를 고의로 훼손하므로 산출물이 정본으로 새면 연구 전체가 조용히 오염된다. `validate/quarantine.py`가 이를 물리적으로 막는다. (i) 실험 전 정본 산출물 전량의 sha256을 봉인하고 주입 대상 그래프는 별도 디렉터리에 실제로 복사한다. (ii) 결함 산출물은 `data/quarantine/<run>/<label>/` 밖에 쓰이지 않으며 디렉터리마다 결함 사양·시드·커밋을 담은 오염 스탬프가 찍힌다. (iii) 정본 경로를 읽는 진입점은 오염 경로·스탬프를 감지하면 즉시 예외를 던지고, 러너는 **매 인스턴스마다** 정본 해시를 재검증해 한 바이트라도 다르면 그 지점에서 중단한다. (iv) 배치 종료 시 격리본은 읽기전용으로 잠기고 감사 원장이 남는다. 격리 산출물은 저장소에 커밋되지 않는다.
-
-ε·δ는 명령행 인자가 아니라 `config.T_EPSILON=0.02`·`config.T_DELTA=0.05`로 코드에 동결돼 있다 — 호출 시점에 마진을 바꿀 수 있으면 사전등록이 아니기 때문이다. `t_gate.py`는 승인식을 **곱**으로 계산하고 하나라도 0이면 비영 종료하며, 판정과 근거를 `tgate_report.json`으로 남긴다.
-
-`t3_cross_task_cq.py`는 이전 정본의 태스크별 통과율을 세대 아티팩트(`data/cq_generations/cq_<세대>.json`)로 저장해 두고 현재 값과 비교하며, 하락 시 비영 종료한다. 스위트가 통째로 사라진 경우도 통과율 0으로 취급해 "CQ를 지워 통과시키는" 우회로를 막는다. waiver는 커밋 메시지의 명시적 토큰(`T3-WAIVER:`)으로만 허용하고 그 횟수를 로그(`data/cq_generations/waiver_log.jsonl`)로 남겨 논문(표 6.6)에 보고한다.
-
-## E-3. 재현성 체크리스트
-
-- [ ] 트리플 서명 105,588 세대 검증 (`check_signatures.py`)
-- [ ] 라이선스 매니페스트 (§3.2 큐레이션 소스 표와 일치)
-- [ ] 난수 시드 고정 (분할·부트스트랩·hard negative 샘플링)
-- [ ] `g:qrels-test` 해시 고정 및 봉인 해제 시점 기록
-- [ ] 메타데이터 전용 배포 범위 확인 (KIPRIS 조건)
-- [ ] 3모드(Oracle-free / Citation-assisted / GT-assisted) 결과 분리 저장
-- [x] CQ 스위트 버전과 결함 주입 실험 버전의 대응 기록 (판정 규칙 v1/v2 · 표 6.6 규칙 열 · 표 6.5v2)
-- [ ] 결함 주입 전후 정본 해시 무결성 (`data/PRISTINE.json` · 격리 원장)
-- [ ] CQ 엔진 대조 결과(oxigraph ↔ rdflib 28/28 일치)
-- [ ] FC 캐시의 동결 P1 run 재현(top-100 197/197)
-
-# 부록 F. 의사결정 임계치 (방향 전환 트리거)
-
-| 관측 | 대응 |
-|---|---|
-| 하이브리드가 최강 텍스트 기준선 대비 Recall@100 **비열등성조차 실패** | H3의 전체 효과를 주장하지 말고, 논문 무게중심을 검증 게이트 방법론(RQ1)에 두고 검색은 보조 근거로 재배치 |
-| graded qrels 표본이 검정에 부족 | nDCG는 고품질 부분집합 한정으로 강등, 특허 수준 Recall을 주 지표로 |
-| 전문가 재평가 Cohen's κ < 0.4 | 미인용 상위 결과 재분류를 본문에서 제외, 민감도 분석 부록으로만 |
-| **H5 실패** (A8이 검색을 유의하게 악화) | 음성 대조군 프레임을 버리고 "태스크 간 결합(entanglement) 발견"으로 전환 — T3 필요성의 직접 증거로 승격 (§7.6) |
-| **T3가 교차 결함군을 검출하지 못함** | 교차 태스크 CQ 스위트가 너무 느슨한 것 → CQ 세분화 후 재실행, 스위트 버전 이력 보고 — **2026-07-28 발동·수행 완료**(판정 v2 · §6.5.2 · 표 6.6에 규칙 버전 열) |
-| **세분화 후에도 T3 단독 검출이 0** | 판정 해상도가 아니라 **층 정의의 포함 관계**를 의심할 것 → L3와 T3의 검출 표면을 분리한 새 사전등록. 결과를 본 뒤 층 정의를 바꾸지 않는다 — **2026-07-28 발동·수행 완료**(PLAN-022 동결 후 재판정 · §6.5.3 · H1″ 지지) |
-| **층 분리가 게이트를 완화할 위험** | 재정의 전에 `L3_all ⟺ L3_pa ∨ T3` 불변량을 인스턴스마다 검사할 것 — 합집합이 CQ 전량이고 승인식이 곱이면 귀속만 바뀐다. 위반이 1건이라도 나오면 결과를 쓰지 않는다 — **2026-07-28 검사·위반 0/144**(§6.5.3) |
-| **정당한 델타가 분포 검사에 걸림**(중복 제거) | \(\tau\)를 올리지 말 것(검출력이 무너진다) → 델타가 유형을 선언하고 **데이터가 그 선언을 검증**할 때만 분포 검사를 면제(존재 검사는 유지). 면제가 여는 구멍은 결함으로 주입해 함께 측정 — **2026-07-28 수행, 위양성 1/27 → 0/27 · 악용 결함 9/9 불승인**(§6.5.3) |
-| **성립한 판정이 전부 사후적**(H1 기각 → H1′ 기각 → H1″ 지지가 같은 데이터의 3회차 재판정) | 규칙을 다시 고치지 말 것 — 고칠수록 사후성이 누적된다. 층 정의·판정 규칙을 동결한 채 **아직 판정한 적 없는 결함 인스턴스**로 복제하고, 판정식·정지 규칙·예상 결과를 실행 전에 사전등록할 것. 교차성은 결과가 아니라 **구성**으로 보증한다(조작 술어 ∩ 주 태스크 CQ 술어 = ∅ · 정적 추출로 테스트가 강제) — **2026-07-28 발동·수행 완료**(PLAN-025 v2 동결 `a474126` → 홀드아웃 72 인스턴스 · §6.5.4 · **H1‴ 지지** · τ=0.10 기각과 특이성 미검정은 그대로 보고) |
-| 최신 20% 테스트 구간의 질의·거절근거 분포 부족 | 시간 순서 보존 5-fold rolling-origin 보조 분석으로 전환 (§4.3) |
-| 하위집단 표본이 최소 크기 미달 | 해당 집단을 T2 차단 규칙에서 제외하고 관측만 보고 |
-
-# 부록 G. 대상 저널 심사 리스크와 대응 (AEI 기준)
-
-AEI(Advanced Engineering Informatics, Elsevier)는 지식표현 형식·추론 기법을 스코프에 명시하고 방법의 일반성·확장성을 정성·정량 양면으로 검증할 것을 요구하는 한편, 소프트웨어 공학 이슈만 다루는 논문은 범위 밖임을 명시한다. `[저널 공식 스코프·지표는 투고 전 Elsevier 페이지에서 재확인]`
-
-| 리스크 | 대응 |
-|---|---|
-| **신규성** — Siddharth·PaECTER·IPRally Graph Transformer가 KG+검색을 선점 | "KG로 검색 개선"이 아니라 "검색으로 KG 진화를 통제하되 교차 태스크를 감시"라는 방향 역전을 전면에. PatenTEB(2025) 등 최신 비교선 명시. "최초" 주장 회피 |
-| **SW 이슈 배제 스코프** | 게이트 구현·CI 배선은 **부록 E로 격리**. 본문은 지식표현·검증 방법론·평가설계에 집중 |
-| **단일 태스크 평가로 다태스크 온톨로지를 검증한다는 지적** | §1.3 깊이 비대칭 설계 명시 + T3 cross-task 조건 + 표 6.6 세대별 추이 + §9.6 한계 자인 |
-| **게이트 태스크의 CQ 비중이 낮음(4/28)** | 부록 D-0의 CQ 세분화 선결 — 판정 세분화는 수행(§6.5.2), 청구항 수준 분해는 미실행 |
-| **T3의 독립성을 주장하면서 단독 검출이 0인 점** | 숨기지 않는다 — 층 정의상 L3 ⊇ T3라 단독 검출이 불가능함을 실측으로 규명하고(§6.5.2), 주장을 약한 형태(회귀의 **소재를 지목**하는 유일 층)로 좁혔다. 이후 층을 분리한 새 사전등록(§6.5.3)과 **홀드아웃 확증**(§6.5.4 · T3 단독 검출 12/45 · 단측 p=.0001)으로 강한 형태를 되살렸으며, 특이성 미검정과 τ=0.10 기각은 같은 절에 명시한다 |
-| **weak ground truth** | positive-only 용어, bpref, 2인 전문가 블라인드 κ 재평가 |
-| **수치 미산출** | C2(§6.2–6.4)·C3(§6.5–6.6)는 누출 통제 하에 산출 완료 — 봉인 개봉 1회·재선택 없음. H1은 기각·H1″는 탐색적 지지·**H1‴는 홀드아웃에서 확증**·**H2는 확증 분할에서 지지**이며, 게이트의 판별력(H1)과 델타의 승인 안전성(H2)을 구분해 읽어야 한다 |
-| **주 시스템이 유의 미달인데 왜 P1을 앞세우나** | 앞세우지 않았다 — 사전지정 P0★(p=.181)를 주로 보고하고 P1 우세는 부차 관찰로 기술한다(§6.2·§6.3). 사후 교체는 하지 않았다 |
-| **R@100만 좋아진 것 아닌가** | 그렇다 — nDCG@20·MRR·bpref는 개선되지 않았고 표 6.2c에 그대로 싣는다. 주장 범위를 "깊은 회수"로 명시적으로 좁혔다(§6.3·§8.5) |
-| **다국어 특허 검색인데 단일 언어 파이프라인 아닌가** | 그렇다 — 숨기지 않고 §6.2f에서 정답 언어별로 분해해 실측 보고한다(어휘 검색 영어 회수 0/334). 동시에 같은 표가 온톨로지 단독 팔의 교차언어 비교우위(영어에서 하이브리드의 2.3배)를 보여 후속 설계를 특정한다. 번역·개념 보강 실험은 동결 설계 밖이므로 별도 사전등록으로 분리(§9.1) |
-| **salami-slicing** (전문가 매칭 연구와의 중복 우려) | §8.3 범위 분리 명시 — 전문가 매칭은 T3 입력·음성 대조군으로만 사용하고 성능·방법론을 주장하지 않음 |
-
-# 부록 H. 미확인 사항 (Caveats)
-
-- **CQ 판정 세분화는 수행됐으나 청구항 수준 분해는 미실행.** 존재 검사를 분포 검사로 강화하는 세분화는 2026-07-28 수행했고(판정 v2 · §6.5.2), T3 검출은 0/108 → 34/108로 회복됐다. 그러나 선행기술 CQ의 **청구항 수준 분해**는 여전히 미실행이며(부록 D-0), 더 중요하게는 세분화가 H1′을 되살리지 못했다 — 원인이 판정 해상도가 아니라 **L3와 T3의 검출 표면이 포개져 있다**는 데 있기 때문이다. 층 정의 분리는 결과를 본 뒤 바꿀 수 없으므로 차기 사전등록으로 이월했다.
-- **분포 검사는 정당한 중복 제거를 회귀로 오판한다(2026-07-28 실측).** 완전 중복 개체 병합(정상 델타 N03)이 τ=0.05에서 1/9, τ=0에서 3/9 거부됐다(§6.5.2). 중복이 만들던 허수 조합 행이 사라지는 것을 행 수만 보는 판정이 구분하지 못한다. τ를 올리면 검출력이 55→18로 무너지므로 처방은 마진 조정이 아니라 델타 유형 선언이다(미실행).
-- **L2(추론 게이트)에 검출 표면이 거의 없다(2026-07-28 실측).** SDKB T-Box에 `owl:disjointWith`·카디널리티 제약·함수적 속성이 **하나도 없다**. 논리 결함을 주입해도 OWL 의미론상 모순이 되지 않아 HermiT는 일관이라고 답한다. 결함 주입 9건 중 L2 검출은 0건이었고 1건은 L1이 잡았다(§6.5). 형식 검증 4층 중 L2는 현재 자원에서 사실상 비어 있는 층이다.
-- **T1의 실효 민감도가 낮다(2026-07-28 실측).** T1은 결함본 P1을 정상 B3와 비교하므로, 결함이 온톨로지 이득(+0.042)을 전부 소진하고 추가로 \(\varepsilon=0.02\)를 넘겨야 발화한다. 개념 정렬 10% 오류에서 이득은 +0.032로 줄었을 뿐 T1은 통과했다(§6.5). 마진 재설정은 사전등록 변경이므로 별도 절차가 필요하다.
-- **누출 감사 G-3은 누출에 특이적이지 않다(2026-07-28 실측).** 개념 병합 결함이 G-3을 상승시켜 누출 층에서 0.67 비율로 검출됐으나 실제 누출이 아니다(§6.5). G-1(문서를 개념 자리에 넣었는가)은 특이도가 확인됐다.
-- **결함 주입의 위양성 분모 한계.** 정상 델타 N01(실제 병합 델타의 부분집합)은 그 트리플이 이미 G₁에 있어 **T1·T2에 대해 구조적으로 공허**하다(합집합 뷰가 변하지 않는다). 성능층의 위양성은 N02(의미보존 보강)로만 측정했다. 미공개 실제 보강분을 홀드아웃해 재는 것이 더 강한 설계이며, 그런 홀드아웃이 없다는 것이 현재 자원의 제약이다.
-- **정량 결과의 현재 상태 (2026-07-28 3차 갱신).** 표 6.2(및 6.2b–6.2e)·6.3·6.4와 그림 2–5는 **실측으로 채워졌다** — 전량 코드 생성이며 수기 기입은 없다(`make tables && make figures`). **T-gate(T1·T2·T3)와 누출 감사는 이제 코드로 존재하고 개발·확증 두 분할에서 실행된다**(`make gate` · 부록 E-2). **표 6.5(결함 주입)도 실측으로 채워졌다** — 결함 12종 × 강도 3 × 반복 3 = 108 인스턴스 + 정상 델타 18건, 개발 분할, 오류 0(`make faults`). 그 결과 **H1은 기각됐다**(§6.5). 예고된 처방(CQ 판정 세분화)을 수행한 재판정도 산출됐고(표 6.5v2 · `make faults-rejudge` · 정상 델타 N03 9건 추가), **H1′ 역시 기각이되 원인이 다르다**(§6.5.2). **표 6.6(세대별 CQ 통과율)은 축적된 세대 두 개까지 채워졌고, 2026-07-28 이 표에서 수기 기입 1건이 발견되어 시정됐다** — 둘째 행이 세대 아티팩트 없이 손으로 적혀 있었고 생성기가 판정 열에 자리표시자를 찍고 있었다. `graph_v1` 세대를 실제로 동결해 판정을 코드가 채우게 하고, 판정 없는 세대는 생성기가 예외로 막도록 계약을 바꿨다(§6.6). 기준 세대와 병합 세대 둘뿐이라 아직 추이가 아니며, 세대를 만들어 표를 채우지 않는다. **H2(승인 안전성)는 2026-07-28 확증 분할에서 판정됐다**(§6.3 · Accept(ΔG)=1 · 새 검색 없이 동결 run 재판정). 그 전까지 이 자리에 "H2 성능 주장을 기술하지 않는다"고 적어 두었던 것은 사전등록이 요구한 **동결 테스트셋 판정이 없었기 때문**이며, 개발 분할 판정을 대신 싣지 않은 것이 그 규율이었다.
-- **지표 관례 두 가지가 원고 §5.1의 예고와 다르다.** qrel이 전량 등급 1이어서 nDCG@20은 **이진 이득**, bpref는 **retrieved-as-judged** 관례로 계산했다(§5.1·§6.2 고지). 등급형 평가는 §5.5 전문가 판정 확보가 선결 조건이다.
-- **검색 파이프라인은 단일 언어 질의 처리로 동결되어 있다(2026-07-28 측정·갱신).** 번역 계층을 두지 않으므로 교차언어 회수는 다국어 임베딩과 언어중립 개념 IRI 두 통로에만 의존한다. 그 결과는 §6.2f에 정답 언어별로 분해해 실측 보고했다(어휘 검색의 영어 정답 회수 0/334 · 최종 시스템의 비한국어 정답 회수 5%). 번역·개념 보강·후보 생성을 요인으로 하는 개선 실험은 F8·F13 동결을 변경하므로 **별도 사전등록**으로만 가능하다(§9.1 · PLAN-019).
-- **문헌 서지 재확인 필요.** 참고문헌 말미에 표시한 미확정 서지(PatenTEB, CLEF-IP overview, IPRally, Keet & Khan, Potoniec et al.)는 투고 전 원문 대조가 필요하다.
-- **SemiKong은 arXiv 프리프린트(피어리뷰 미게재).** 공정 계층 라벨은 원문(Process Group/Module/Unit) 기준으로 최종 조정한다.
-- **저널 지표 상충.** 대상 저널의 IF/CiteScore는 집계원·연도별로 상이하므로 투고 전 공식 페이지 재확인이 필요하다.
-- **T-Box 어휘·자산 수치는 저장소 동결 커밋 대조 전 상태.** 최종 원고에서 자동 계수로 대체한다(§3.1.5).
+| 공유 T-Box가 세 태스크 어휘를 포함 (C1) | TTL 클래스·속성 · CQ 매트릭스 | 확인 | §3.1·§6.1 |
+| 노드 도달성 95.3% · 의미 도달성 54.6–70.5% (C1) | 대상/존재 노드 계수 · 관계별 경로 계수 | 확인 | §6.1.3 |
+| 세 태스크의 **성능**이 모두 검증됨 | 태스크별 외부 정답 평가 | **주장하지 않음** | §7.4 |
+| **하이브리드가 텍스트 기준선 개선** (H3) | 시스템 비교 | **부분 지지 — 주 지표 한정** (주 구성 비유의 · nDCG 미개선) | §6.2·§6.3 |
+| **저중첩 질의에서 효과가 큼** (H3 조건부) | 사전 하위집단 분석 | **반증** — 이득이 고중첩에 집중 | §6.4 |
+| **음성 대조군 무영향** (H5) | A8 절제 | **기각 → 교차 태스크 의존성 관측** | §6.4·§7 |
+| ClaimFeature/거절근거 기여가 큼 (H4) | 절제 | **기각** — 독립 기여 없음 | §6.4 표(A4·A5) |
+| T-gate 판별력 (H1) | 결함 주입 | dev 기각 → 층 분리 후 **홀드아웃 확증**(T3 단독 12/45 · *p* = .0001) | §4.9·§6.5 |
+| 승인 델타의 비열등·하위집단 안전 (H2) | 동일 파이프라인 O 대 O′ | **미검정** — 자격 있는 T-Box 델타가 존재한 적 없다 | §8 |
+| 미인용 상위 후보 일부가 관련 | 전문가 표본 판정 | 미실험 | §8 |

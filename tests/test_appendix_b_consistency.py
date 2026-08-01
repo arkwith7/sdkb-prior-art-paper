@@ -20,9 +20,10 @@ PAPER = Path(__file__).resolve().parents[1] / "paper" / "논문_v0_9_SDKB_통합
 PLACEHOLDERS = ("[지지/기각", "[실험 후 기입]", "[기입]")
 
 
-def _section(text: str, start: str, end: str) -> str:
+def _section(text: str, start: str, end: str | None) -> str:
+    """[start, end) 구간. `end=None` 이면 문서 끝까지 — 마지막 절을 잡을 때 쓴다."""
     i = text.index(start)
-    j = text.index(end, i)
+    j = text.index(end, i) if end is not None else len(text)
     return text[i:j]
 
 
@@ -72,7 +73,9 @@ def verdicts(paper: str) -> dict[str, str]:
 @pytest.fixture(scope="module")
 def appendix_b(paper: str) -> list[tuple[str, str, str]]:
     """부록 B → [(가설, 주장문, 상태)]. 가설 라벨이 없는 행은 제외."""
-    sec = _section(paper, "# 부록 B. 논문 주장–증거 매트릭스", "# 부록 C.")
+    # v2.0 재구성(PLAN-033)에서 부록 B 는 축약본이 되고 부록 A·C–H 는 supplementary 로
+    # 이동해, 이제 문서의 마지막 절이다 — 끝 앵커를 두지 않는다.
+    sec = _section(paper, "# 부록 B.", None)
     out = []
     for cells in _rows(sec):
         if len(cells) < 3:

@@ -23,7 +23,7 @@
 
 | 축 | 정본 (FINAL) | 위치 |
 |---|---|---|
-| **논문** | `논문_v0_9_SDKB_통합초안.md` (§1.4=H1–H5 · 기여 **4개** — CLAUDE.md §0) | `paper/` |
+| **논문** | `논문_v0_9_SDKB_통합초안.md` — **v2.0 재구성 1단계 반영(2026-08-01 · PLAN-033)**: §1.4 = **확증가설 H3·H5 두 개** · 기여 **2개** · H1·H2·H4 는 판정 불변·지위 강등 · §7 흡수로 장 번호 8–11 → 7–10 | `paper/` |
 | **작업 규약** | `CLAUDE.md` (v0.9 기조 · C0/C1/C2/C3·T-gate) | 루트 |
 | **상류 환류 (C0)** | `DEFECT-LEDGER.md`(결함 D-01~D-16) · `CR-001~007` · `HANDOFF-QUEUE.md`(송부 순서) | `upstream/` |
 | **정합 원장(전파 추적)** | `RECONCILIATION-v09.md` (라벨 사전·SoT 델타·배치 B0–B8 완료) | `01.code_spec/` |
@@ -145,11 +145,12 @@
 ### `paper/`
 | 분류 | 파일 |
 |---|---|
-| **FINAL** | `논문_v0_9_SDKB_통합초안.md` (정본 · 유일) |
+| **FINAL** | `논문_v0_9_SDKB_통합초안.md` (정본 · 유일 · v2.0 재구성 1단계) |
+| **SUPPLEMENTARY (공개 예정 · 인용 가능)** | `supplementary/S1-appendices-v09.md`(잘라낸 부록 A·C–H 전문) · `supplementary/S2-fault-injection-v09.md`(결함주입 4회차 재판정 §6.5–6.6 + 구 §6.3 가설 판정표 전문) |
 | **ARCHIVED (인용 금지)** | `archive/논문_v1_1_SDKB_국문정본.md` · `archive/논문_v1_0_SDKB_AEI_투고초안.md` (**2026-07-29 강등** — "교정 전 상태"의 정직한 기록으로 보존) · `archive/논문_v0.7_SDKB.md` · `archive/논문_v0.5_SDKB.md` · `archive/논문초안_v0.2·v0.3` |
 | **GENERATED — LIVE** | `figures/{cq_report,vocab_coverage}_*.md` (CQ·어휘 측정 리포트) |
 | **ARCHIVED 그림·표 (S-시리즈)** | `archive/figures/*.svg`(fig1·4·6·7·8·10·11 등) · `archive/tables/*.md`(h1·h2·robustness) — 구 커버리지/시계열/이식성, **인용 금지** |
-| **v0.9 그림·표 — 산출 완료** | `tables/ir_{performance,subgroup,increment,crosslingual}_{dev,test}.md`(C2 · 9건) · `tables/fault_matrix{,_v2,_v3,_v4}.md`·`tables/cq_generations.md`(C3 · 5건) · `figures/ir_{increment,metrics,ablation,subgroup}.svg`(그림 2–5) |
+| **v0.9 그림·표 — 산출 완료** | `tables/ir_{performance,subgroup,increment,crosslingual}_{dev,test}.md`(C2 · 9건) · `tables/fault_matrix{,_v2,_v3,_v4}.md`·`tables/cq_generations.md`(C3 · 5건) · `figures/ir_{increment,metrics,ablation,subgroup}.svg`(**원고 그림 1–4** — v2.0 에서 mermaid 그림 1 제거로 한 칸씩 당겨졌다) |
 | **빈 디렉토리 (함정)** | `manuscript/`(.gitkeep 뿐 — 진짜 원고는 `paper/논문_v0_9…md`) |
 
 ### `01.code_spec/`
