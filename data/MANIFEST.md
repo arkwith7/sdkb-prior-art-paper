@@ -367,3 +367,24 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - 규칙 불변 검증: A층 1,000건을 이 지도로 다시 풀어 `split.parquet` 과 대조 →
   **일치 998 · 불일치 0 · 미조인 2**(= §5.0 이 기록한 fallback-self 2건과 동일 건)
 - 반영: PLAN-032 §5.1 ③ "배치 조회" 의 집행. `resolve_families()`·`build_family_map()` 은 불변
+
+## 2026-08-01 · B층 사전등록 개정 §3 표집 창 + 2005년 산출물 은퇴 (PLAN-031 §9 · **재수집 착수 전**)
+- 승인: 2026-08-01 사용자 "개정안대로 진행" (3안 중 **질의 재표집** 선택)
+- 개정 내용: `B_LAYER_DATE_FROM` **20050101 → 20180101** · `B_LAYER_DATE_TO` **20251231 → 20201231**.
+  **그 외는 전부 불변** — IPC 21종 · 포함기준 5 · 목표 200 · 호출 캡(search 300 / detail 500 /
+  audit 50) · 평가 프로토콜(§4) · 시스템 정의(§5 · B2′ `BAAI/bge-m3` revision 고정)
+- 사유(실측): 구 창에서 채택 200건이 전부 2005-01~02 출원이 되어, 후보 코퍼스 40,552건 중
+  **공개일 < 질의 출원일** 을 만족하는 문서가 **2건**뿐이었다(공개일 결측 4,492 · 대부분 2005년 이전
+  출원분). 대조로 A층 test 질의(출원 2021–2025)는 마스크 후 **19,039~23,000건**을 마주한다.
+  새 창의 마스크 후 후보는 질의 2018년 **13,801** · 2020년 **17,209**(A층 test 의 60–75 %)
+- 은퇴 처리: 2005년 창 산출물 4개를 `data/processed/ir/b_layer_retired_2005/` 로 이동(삭제 아님).
+  **폐기 시점 sha256 이 파일럿 기록과 전건 동일** = 파일럿 이후 한 번도 열리거나 바뀌지 않았다는 증명:
+  - `qrel_b_sealed.parquet` **🔒봉인 미개봉** · `f0d423268b4f3554ccd05d1bf511daab70d5f5f4c4c5c00e77a79e3e4a69206a`
+  - `accepted.parquet` · `7b355b9b13716f8a05dac4e43549227966493bbf7b84fd0d93621da69a5ff5e1`
+  - `screening_ledger.jsonl` · `62a564c5504ec05bdaa318259979b9bb701c3232c5879215f26d848656fc8238`
+  - `call_budget.json` · `bd871ae6c04947369316184d24a78c4e0c57fb1e5b22af8cbdeae285faaddf90`
+- 유지: `data/raw/kipris/b_layer_cache.sqlite`(410 응답 · 원 API 증거이므로 지우지 않는다) ·
+  `data/interim/kr_family_map.parquet`(KR 전량이라 창과 무관하게 재사용)
+- 판정 기록 보존: 파일럿의 `r` 0.5970 · `r_free` 0.0783 · `r_family` 1.0000 · 감사 위음성 0/50 은
+  **2005년 표본에서의 관측**으로 남는다. 새 창의 `r` 는 다시 잰다 — 연도가 다르면 거절률이 다르다
+- 반영: PLAN-031 §9(동결) · `src/sdkb_paper/config.py` · STATUS §2
