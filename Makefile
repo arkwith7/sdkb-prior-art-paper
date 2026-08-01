@@ -1,4 +1,4 @@
-.PHONY: faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -188,6 +188,27 @@ cq-freeze:
 	uv run python -m sdkb_paper.validate.t3_cross_task_cq \
 		$(or $(GRAPH),data/processed/graph_v0.ttl) --freeze $(or $(GEN),g0) \
 		$(if $(AGAINST),--against $(AGAINST),)
+
+# --- 자원 델타 O/O′ (D-19 · H2 를 잴 수 있게 만드는 경로) --------------------
+# H2 는 **변경 없는 동일 파이프라인에 O 와 O′ 를 넣은** 비교로만 잰다. run 경로에는 자원
+# 차원이 없어 `make vendor` 뒤 재실행하면 O 의 run 이 덮어써지므로, **재벤더 전에** 얼린다.
+#   make freeze-runset LABEL=O_pre_CR007 SPLIT=test NOTE="CR-007 적용 전"
+#   ... make vendor → corpus → index → retrieve ...
+#   make freeze-runset LABEL=O_post_CR007 SPLIT=test
+#   make tgate-resource OLD=O_pre_CR007 NEW=O_post_CR007 SYSTEM=P1 SPLIT=test
+# 적격심사 실패는 불통과가 아니라 **미검정**이다(종료코드 2) — T1·T2 를 돌리지 않는다.
+freeze-runset:
+	uv run python -m sdkb_paper.validate.runset --freeze $(LABEL) \
+		--split $(or $(SPLIT),test) $(if $(NOTE),--note "$(NOTE)",)
+
+runsets:
+	uv run python -m sdkb_paper.validate.runset --list
+
+tgate-resource:
+	uv run python -m sdkb_paper.validate.t_gate --mode resource \
+		--old-runset $(OLD) --new-runset $(NEW) --system $(or $(SYSTEM),P1) \
+		--split $(or $(SPLIT),test) $(if $(GRAPH),--graph $(GRAPH),) \
+		--baseline $(or $(GEN),g0)
 
 # T1·T2·T3 종합 판정 (+ 누출 감사). 실패 시 비영 종료 — 우회 경로 없음.
 tgate:

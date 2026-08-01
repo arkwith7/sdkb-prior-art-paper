@@ -239,6 +239,15 @@ DEDUP_EXEMPTION_LOG = CQ_GEN_DIR / "dedup_exemption_log.jsonl"
 T3_WAIVER_TOKEN = "T3-WAIVER:"
 # T-gate 종합 판정 산출(JSON). 재생성 가능 → data/processed(gitignore).
 TGATE_REPORT = PROCESSED / "tgate_report.json"
+# --- 자원 델타(O/O′) 비교 아티팩트 (D-19 · CLAUDE.md §0 델타 유형표) -----------
+# H2(갱신 승인 안전성)는 **변경 없는 동일 파이프라인에 O 와 O′ 를 넣은** 비교로만 잰다.
+# 그런데 run 경로에는 자원 차원이 없어(IR_RUNS_DIR 플랫) `make vendor` 뒤 재실행하면 O 의
+# run 이 덮어써진다 — 그래서 O 를 **재벤더 전에** 얼려 둔다. run 사본은 특허 본문 파생이라
+# gitignore, 매니페스트는 해시·집계뿐이라 커밋 가능(CQ 세대 동결과 같은 규율).
+IR_RUNSETS_DIR = IR_DIR / "runsets"          # run 사본 (재생성 가능 · gitignore)
+RUNSET_DIR = DATA / "runsets"                # 매니페스트 JSON (커밋 가능)
+# 델타 유형표 ①T-Box·②개념층만 H2 자격이 있다. ③A-Box 코퍼스 델타는 비교 불성립이다.
+H2_ELIGIBLE_DELTA_TYPES = ("tbox", "concept")
 # ── W9 홀드아웃 결함 사전등록 동결 (PLAN-025 v2 · 2026-07-28 · 주입 실행 전) 🔒 ──────────
 # H1‴ 확증. 1차(W4·W4b·W4c)는 **같은 결함 인스턴스를 세 번 판정**했으므로 확증이 아니다 —
 # 층 정의(L3_SUITES ⊥ T3_SUITES)를 동결한 채 **아직 판정한 적 없는 인스턴스**로 복제한다.
