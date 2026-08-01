@@ -159,8 +159,8 @@
 | **CANONICAL (계약)** | `specs/SPEC-001·002·004~008` (§0.2) |
 | **REFERENCE** | `README.md` · `GLOSSARY-{ONTOLOGY,SEMICONDUCTOR,STATISTICS}.md` · `REF-001`(IP-R&D) · `TOOLING.md` |
 | **REPORT (실험 기록)** | `reports/M4-{실험결과-1차,실험파이프라인-설명,검색유용성-서술전략,확증결과-원고반영}.md` — **v0.9 §6 산출의 근거 기록**. "원고 반영"은 v0.9 §6 반영을 뜻한다 |
-| **PLAN — 살아 있는 계획 (7건)** | `plans/PLAN-017`(IR 벤치마크 데이터셋) · `PLAN-018`(검색·T-gate 하네스 사전등록 🟢) · `PLAN-019`(v0.9 완성도 원장) · `PLAN-025`(H1‴ 확증 사전등록 🔒 — C층이 문면 재사용) · `PLAN-027`(강한 밀집 기준선 — PLAN-029 B층에 흡수) · `PLAN-029`(재실험 로드맵 🛑) · `PLAN-031`(B층 수집 사전등록 **🔒 동결**) |
-| **ARCHIVED (인용 금지)** | `archive/CANONICAL-INDEX-v05.md` · `archive/STATUS-v05.md` · `archive/AUDIT-2026-07-18.md`(구 v0.5 원고 감사 · 2026-07-31 이동) · `archive/SPEC-003-competency-questions.md`(2026-07-31 이동) · `archive/CR-004-full-analysis-2026-07-30.md` · **종결 PLAN 22건 → 아래 §3.1** |
+| **PLAN — 살아 있는 계획 (4건 · 2026-08-01 정리)** | `plans/PLAN-018`(검색·T-gate 하네스 사전등록 🟢 — F1–F18 동결이 현행 코드의 계약) · `PLAN-029`(재실험 로드맵 🛑) · `PLAN-031`(B층 수집 사전등록 **🔒 동결**) · `PLAN-032`(B층 수집 드라이버 · 2단계 분석 진행 중) |
+| **ARCHIVED (인용 금지)** | `archive/CANONICAL-INDEX-v05.md` · `archive/STATUS-v05.md` · `archive/AUDIT-2026-07-18.md`(구 v0.5 원고 감사 · 2026-07-31 이동) · `archive/SPEC-003-competency-questions.md`(2026-07-31 이동) · `archive/CR-004-full-analysis-2026-07-30.md` · **종결 PLAN 26건 → 아래 §3.1** |
 
 #### 3.1 종결 PLAN — 한 줄 요약 (2026-07-30 `plans/` → `archive/` 이동)
 
@@ -195,6 +195,15 @@
 | 023 N5d 선행기술 CQ 청구항 수준 확장 | 완료 · 동결 `8b55611`. C1 표현범위 확장 |
 | 024 N12 확증분할 T-gate 판정·부록 B 매트릭스 | 완료 · **부록 B는 §6.3 수치의 복사본을 두지 않는다**(단일 원천 규율) |
 | 028 원고–산출물 정합 | 완료(2026-07-28 이전 아카이브) |
+
+**2026-08-01 추가 이동 4건 — 실행이 끝났거나 대체된 계획**
+
+| PLAN | 한 줄 결론 |
+|---|---|
+| 017 v0.9 IR 벤치마크 데이터셋 | **실행 완료** — M1 조립됨. as-built 정본은 [SPEC-007](specs/SPEC-007-ir-corpus-asbuilt.md)(코퍼스 40,552·qrel 2,321)이며 이 문서는 조립 전 설계 의도만 보존 |
+| 019 v0.9 완성도·교차언어 원장 | **W-시리즈 종결** — W1·W3·W4·W4b·W4c·W5b·W6·W7·W9 완료 · W8 폐기 · W5 구조적 미성립(D-12) · **W2는 [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) §3.2로 이월**. 현행 원장은 STATUS §2.0 |
+| 025 W9 H1‴ 홀드아웃 확증 사전등록 | **판정 완료 — H1‴ 지지**(T3 단독검출 12/45·p=.0001·위양성 0/27). 사전등록 증거라 내용 불변 · C층이 판정 규칙 문면을 재사용(새 문서로 복사·출처 표기) |
+| 027 강한 밀집 기준선 B2′ | **대체됨** — [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) §5가 흡수하고 **B2′=`BAAI/bge-m3`** 로 동결(2026-07-31). test 198 재개봉 방식은 폐기라 이 문서는 실행되지 않는다 |
 
 ### `data/`
 | 분류 | 파일 |

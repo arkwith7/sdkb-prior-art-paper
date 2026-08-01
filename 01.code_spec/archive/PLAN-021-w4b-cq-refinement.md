@@ -1,7 +1,7 @@
 # PLAN-021 — W4b CQ 판정 세분화 사전등록 동결 (H1′ · 원고 §6.5·§6.6·부록 D-0·F)
 
 > **상태: 동결 (2026-07-28 · 사용자 승인 "네 진행해 주세요").** 상위 원장 =
-> [PLAN-019 §5](../plans/PLAN-019-v09-completeness-crosslingual.md) · 직전 실험 =
+> [PLAN-019 §5](PLAN-019-v09-completeness-crosslingual.md) · 직전 실험 =
 > [PLAN-020](PLAN-020-w4-fault-injection.md). **이 문서는 실행 전에 동결된 규칙이다 — 여기 적힌
 > τ·극성·분모는 결과를 본 뒤 바꾸지 않는다.**
 

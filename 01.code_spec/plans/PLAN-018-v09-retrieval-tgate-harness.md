@@ -6,7 +6,7 @@
 > ablation** 전량을 설계·사전등록한다. 이 문서는 **결과를 보기 전에 동결하는 사전등록**이다
 > (CLAUDE.md §2 Phase 3 · 규칙 #3 · 원고 §5.6·부록 A). 동결 후 결과를 보고 임계·모델·가중치를 바꾸지 않는다.
 > 정본 원고 [paper/논문_v0_9_SDKB_통합초안.md] §4.5–4.10·§5 를 구현으로 옮긴다 — 방법은 원고가 정본.
-> 관련: [PLAN-017](PLAN-017-v09-ir-benchmark-dataset.md) · [SPEC-007](../specs/SPEC-007-ir-corpus-asbuilt.md) ·
+> 관련: [PLAN-017](../archive/PLAN-017-v09-ir-benchmark-dataset.md) · [SPEC-007](../specs/SPEC-007-ir-corpus-asbuilt.md) ·
 > [SPEC-001](../specs/SPEC-001-validation-gate.md) · 메모리 `pivot-v09-retrieval-primary-task`.
 
 ---

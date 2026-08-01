@@ -5,7 +5,7 @@
 | 지지하는 것 | **C2 핵심증명**(선행기술 검색에서 데이터셋 실효) / 논문 §5–6(RQ2·RQ3·T1·T2) |
 | 정본(측정 대상) | `data/processed/ir/ir_corpus_v09.parquet` (40,552행) · `data/processed/ir/qrel_examiner.parquet` (2,416엣지) |
 | 원천 | `graph_v0/v1/v2.ttl` + `central_axis.oxstore`(sidecar 청구항) — 조립기 `corpus/assemble.py` |
-| 입력 명세 | [SPEC-006](SPEC-006-g0-asbuilt-inventory.md) (G₀ 원천이 어디 있는가) · 계획 [PLAN-017](../plans/PLAN-017-v09-ir-benchmark-dataset.md) |
+| 입력 명세 | [SPEC-006](SPEC-006-g0-asbuilt-inventory.md) (G₀ 원천이 어디 있는가) · 계획 [PLAN-017](../archive/PLAN-017-v09-ir-benchmark-dataset.md) |
 | 재측정 | §8 스크립트 (pandas) |
 
 > **이 문서는 "조립된 검색 데이터셋이 실제로 무엇인가"의 정본 기록이다.** SPEC-006이 *입력*(원천에

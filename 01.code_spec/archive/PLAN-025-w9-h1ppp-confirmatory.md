@@ -1,8 +1,15 @@
 # PLAN-025 — W9 · H1‴ 확증 재사전등록 (홀드아웃 결함 · 원고 §6.5.4·§7.2·표 7.1)
 
-> **상태: 🔒 동결 (2026-07-28 · v2).** 상위 원장 = [PLAN-019 §5](PLAN-019-v09-completeness-crosslingual.md).
-> 선행 = [PLAN-020](../archive/PLAN-020-w4-fault-injection.md)(H1 기각) · [PLAN-021](../archive/PLAN-021-w4b-cq-refinement.md)(H1′ 기각·원인 규명) ·
-> [PLAN-022](../archive/PLAN-022-n5c-layer-separation.md)(H1″ 탐색적 지지 · 동결 `44f8022`).
+> **📦 아카이브 (2026-08-01) — 실행·판정 완료.** 홀드아웃 72 인스턴스 주입·판정 완료 →
+> **H1‴ 지지**(T3 단독검출 12/45 · 단측 McNemar b=0·c=14·p=.0001 · 위양성 0/27). 결과 정본은
+> 원고 §6.5.4·표 6.5d(`paper/tables/fault_matrix_v4.md`)다.
+> **이 문서는 사전등록 증거이므로 내용을 수정하지 않는다**(CLAUDE.md §1-3). 다만 C층 재실험이
+> 판정 규칙 문면을 그대로 재사용하므로([PLAN-029 §C층](../plans/PLAN-029-post-remediation-reexperiment.md)),
+> **참조는 계속 유효**하다 — 재사용 시에는 새 사전등록 문서에 문면을 복사하고 이 문서를 출처로 적는다.
+>
+> **상태(원문): 🔒 동결 (2026-07-28 · v2).** 상위 원장 = [PLAN-019 §5](PLAN-019-v09-completeness-crosslingual.md).
+> 선행 = [PLAN-020](PLAN-020-w4-fault-injection.md)(H1 기각) · [PLAN-021](PLAN-021-w4b-cq-refinement.md)(H1′ 기각·원인 규명) ·
+> [PLAN-022](PLAN-022-n5c-layer-separation.md)(H1″ 탐색적 지지 · 동결 `44f8022`).
 > **이 문서는 실행 전에 동결한다.** 여기 적힌 홀드아웃 정의·신규 결함군 명세·판정식·성공/기각 기준은
 > **결과를 본 뒤 바꾸지 않는다.** 동결 커밋은 결과 커밋과 분리한다(전례 `45ec85c`→`02d792a`, `44f8022`→실행).
 >

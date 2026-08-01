@@ -314,3 +314,18 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - **아직 하지 않은 것:** 추론 실행·임베딩 산출. `sentence-transformers` 미설치이며
   의존성 추가는 별도 승인 대상(CLAUDE §1-10). 이 항목은 **모델 동결 기록일 뿐 B2′ 실행이 아니다**
 - 반영: PLAN-031 §5 `[동결 시 기입: revision · sha256]` 해소 (C2 재확증 기준선)
+
+## 2026-07-31 · PLAN-032 2단계 분석 — KIPRIS 검색 API 프로브 (수집 아님 · 저장물 없음)
+- 명령: scratchpad 프로브 3본 (`probe_sort.py` · `probe_range.py` · `probe_pop.py`)
+- 오퍼레이션: `getAdvancedSearch` (`plus.kipris.or.kr/kipo-api/kipi/patUtiModInfoSearchSevice`)
+- **검색 호출 81콜** (25+25+9+22) — PLAN-032 §1 호출 회계상 **파일럿 500콜(서지상세)과 별도 계정**.
+  서지상세(`getBibliographyDetailInfoSearch`) 호출 **0**. `quota_hit` 없음(전 호출 `resultCode=00`)
+- 확인 사항(상세 PLAN-032 §2.5): ① `sortSpec=AD&descSort=false` **서버측 출원일 오름차순 지원** ·
+  동일 요청 2회 순서 동일 · 페이지 1↔2 중복 0 ② `applicationDate=20050101~20251231` **물결 표기만
+  지원**(파이프·연도만 = `INVALID_REQUEST_PARAMETER_ERROR`) ③ `numOfRows` 상한 **500**
+  ④ 검색 응답이 `ipcNumber`(주분류 포함)·`registerStatus`·`astrtCont`를 이미 실어 보냄
+  ⑤ 2005–2025 창 21 IPC 모집단 합 **737,834**(중복 포함) ⑥ `registerStatus` 결측률 = **0/100**
+  (H10B·2005–2025) — §8.1 전제("자주 빈다")가 이 창에서는 성립하지 않음
+- **원문 데이터 미저장**: 응답은 메모리 내 집계만 하고 raw 를 저장·커밋하지 않았다(CLAUDE §1-5).
+  scratchpad 산출물은 집계 JSON뿐
+- 반영: PLAN-032 §2.5·§2.6 (2단계 분석 · C2 재확증 전제)

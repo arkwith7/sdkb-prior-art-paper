@@ -106,7 +106,14 @@
 | 4 | **CR-001A** — 개념 해상도 즉시분(P0 · 어휘 확장 0 · 전문 재추출) | 1·2·**3단계 완료(결정 4건 확정 2026-07-31)** → **CR-007 구현 후 실행** | [upstream/CR-001](../upstream/CR-001-concept-resolution.md) · [HANDOFF-QUEUE §1.4](../upstream/HANDOFF-QUEUE.md) |
 | 5 | **CR-002·003 · CR-001B** — 계층(P0)·다국어(P0)·어휘 수확 | **보류** — CR-001A 재검정 후 (단 `skos:broader`는 CR-007이 선착수) | CR-002·003 |
 | 6 | **PLAN-031 B층 수집 착수** — 제2 확증분할 200건 | **🔒 사전등록 동결(2026-07-31 승인)** → 파일럿 500콜부터. CR-007과 독립 | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
+| 6-b | **PLAN-032 수집 드라이버** — §3 집행 코드(표집 순서·IPC 21종·패밀리 서로소) | **1단계 요구정의 승인 · 🛑 2단계 분석 진행 중** | [PLAN-032](plans/PLAN-032-b-layer-pilot-collection.md) |
 | 7 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) |
+
+> **문서 정리 (2026-08-01).** `plans/`에는 **살아 있는 4건만** 둔다 — PLAN-018·029·031·032.
+> 실행이 끝났거나 대체된 **PLAN-017·019·025·027은 `archive/`로 이동**했다(삭제하지 않는다 —
+> 025는 사전등록 증거, 019는 W-시리즈 판정 이력이다). 결론 요약은
+> [CANONICAL-INDEX §3.1](CANONICAL-INDEX.md). 상류 `upstream/`은 **CR 7건 전량이 미완**이라
+> 아카이브 대상이 없다(상류 `~/Dev/sdkb` 최신 커밋 `d578bf3` — CR 구현 착수 전).
 
 **왜 실험이 아니라 자원을 고치는가.** 개념 어휘 143개·문서당 1.55개라는 해상도에서 온톨로지 팔은
 40,552 문서를 3,292개 동치류로만 구분한다(동점블록 문서가중 중앙값 **670**). 이 해상도로는 깊은
@@ -132,8 +139,9 @@
 
 #### 2.1.1 N·W 작업 원장 (전량 완료 · 이력)
 
-> **개선 계획 정본 = [PLAN-019](plans/PLAN-019-v09-completeness-crosslingual.md) (2026-07-28 신설).**
-> 진보성·신규성 입증을 위한 작업 W1–W8 과 **진행 경과 원장**은 그 문서 §5에서만 갱신한다. 아래 N 표는
+> **개선 계획 = [PLAN-019](archive/PLAN-019-v09-completeness-crosslingual.md) (2026-07-28 신설 ·
+> **2026-08-01 아카이브 — W-시리즈 종결**). W1–W9의 **완료 이력**은 그 문서 §5에 동결돼 있고
+> **더 이상 갱신하지 않는다**; 남은 W2(교차언어 실험)는 [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) §3.2로 이월됐다. 아래 N 표는
 > 유지하되, W 와 겹치는 항목은 매핑을 병기한다: N4=W3 · N5=W4 · N6=W5 · N11=W2.
 > **W1(교차언어 진단·§6.2f) · W3(T-gate) · W4(결함주입) 완료 — 2026-07-28.**
 > W4 설계·결과 정본 = [PLAN-020](archive/PLAN-020-w4-fault-injection.md) · W4b = [PLAN-021](archive/PLAN-021-w4b-cq-refinement.md).

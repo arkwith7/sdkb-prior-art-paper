@@ -1,6 +1,12 @@
 # PLAN-017 — v0.9 선행기술 검색 벤치마크 데이터셋: 정의 및 보완
 
-> **상태: 초안 (2026-07-25) · 승인 대기 🛑**
+> **📦 아카이브 (2026-08-01) — 실행 완료.** 이 계획이 정의한 IR 벤치마크는 M1에서 조립됐고,
+> **as-built 정본은 [SPEC-007](../specs/SPEC-007-ir-corpus-asbuilt.md)** (코퍼스 40,552 · qrel 2,321)이다.
+> 새 작업의 근거로 인용하지 않는다 — 코퍼스의 현재 상태는 SPEC-007·`data/profiles/ir_corpus_v09.md`가
+> 정본이고, 이 문서는 **조립 전의 설계 의도**를 보존할 뿐이다.
+> 아래 상태 배너는 아카이브 시점의 원문이다.
+>
+> **상태(원문): 초안 (2026-07-25) · 승인 대기 🛑**
 > 정본 초안 [paper/논문_v0_9_SDKB_통합초안.md] 기조 전환의 첫 실행 계획.
 > 이 PLAN은 데이터셋(B)만 다룬다. 거버넌스 재작성(A)·검색 시스템·T-gate는 후속 PLAN.
 > 관련 결정: 메모리 `pivot-v09-retrieval-primary-task` · `spike-retrieval-feasibility-passed`.
@@ -130,7 +136,7 @@ B7 언어정책 결정(선행) → B1 질의청구항 → B3 코퍼스 조립 �
 5. 진입 임계치 BM25 Recall@100 산출(값 자체는 성패 아님 — 비공허 확인).
 
 ## 6. 비목표 (스코프 방어선)
-- 검색 시스템(Dense/Hybrid/Ontology reranking)·T-gate·결함주입·ablation — 후속 **[PLAN-018](PLAN-018-v09-retrieval-tgate-harness.md)**(계층 B · 2026-07-26 신설·승인대기).
+- 검색 시스템(Dense/Hybrid/Ontology reranking)·T-gate·결함주입·ablation — 후속 **[PLAN-018](../plans/PLAN-018-v09-retrieval-tgate-harness.md)**(계층 B · 2026-07-26 신설·승인대기).
 - 새 CLAUDE.md 거버넌스 — 산출물 A(별도).
 - G0/G1/G2 그래프 자체의 온톨로지 변경 — 하지 않음(코퍼스는 파생 뷰).
 - 라이선스 제한 원문 커밋 — 하지 않음(식별자·해시·재구축 절차만).

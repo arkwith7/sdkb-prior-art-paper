@@ -1,7 +1,7 @@
 # CLAUDE.md — 작업 규약 (v0.9 기조)
 
 > **전환 배경(2026-07-25):** 커버리지 H1 패러다임(v0.5/v0.7)에서 **선행기술 검색 주 태스크 + T-gate**
-> 기조로 전환. 구본은 [archive/CLAUDE-v05.md]. 상세 [01.code_spec/plans/PLAN-017-v09-ir-benchmark-dataset.md],
+> 기조로 전환. 구본은 [archive/CLAUDE-v05.md]. 상세 [01.code_spec/archive/PLAN-017-v09-ir-benchmark-dataset.md],
 > 메모리 `pivot-v09-retrieval-primary-task`·`spike-retrieval-feasibility-passed`.
 
 이 저장소는 **소프트웨어 제품이 아니라 논문의 증거를 만드는 연구 코드**다. 모든 코드·데이터·그림의
