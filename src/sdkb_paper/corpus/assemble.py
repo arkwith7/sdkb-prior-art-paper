@@ -32,6 +32,7 @@ from pyoxigraph import NamedNode, RdfFormat, Store
 
 from .. import config
 from . import claim_join
+from . import concept_link
 from . import text as textmod
 
 ONT = "https://w3id.org/sdkb/ont/"
@@ -165,25 +166,31 @@ def _qrel(store: Store) -> pd.DataFrame:
 
 # --- 조립 --------------------------------------------------------------------
 
-def assemble() -> tuple[pd.DataFrame, pd.DataFrame]:
-    """코퍼스·qrel DataFrame 을 만든다(파일 쓰기는 build 가 담당)."""
-    print("[1/5] G₀/G₁/G₂ 적재(pyoxigraph named graph)…", flush=True)
+def assemble() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """코퍼스·qrel·개념링크 사이드카 DataFrame 을 만든다(파일 쓰기는 build 가 담당).
+
+    개념 링크는 두 원천의 **합집합**이다(PLAN-034 결정 Q4):
+      ① 그래프에 이미 있는 링크(`CONCEPT_PROPS` · `_multi`)
+      ② 사전을 본문에 적용한 링크(`concept_link` · CR-007 하류)
+    사전이 스냅샷에 없으면 ②는 없고 `concepts` 열은 손대지 않는다 — 그 상태가 O 팔이다.
+    """
+    print("[1/6] G₀/G₁/G₂ 적재(pyoxigraph named graph)…", flush=True)
     tmp = tempfile.mkdtemp(prefix="ir_union_")
     store = Store(path=str(Path(tmp) / "s"))
     _load_union(store)
     print(f"      union triples: {len(store):,}", flush=True)
 
-    print("[2/5] 스칼라·다중값·역할 조회…", flush=True)
+    print("[2/6] 스칼라·다중값·역할 조회…", flush=True)
     scalars = _scalars(store)
     multi = _multi(store)
     queries, positives, extra = _roles(store)
     cited, src = extra["cited"], extra["src"]
 
-    print("[3/5] sidecar 청구항 재구성…", flush=True)
+    print("[3/6] sidecar 청구항 재구성…", flush=True)
     recon = claim_join.reconstruct_all()
     print(f"      청구항 보유 특허: {len(recon):,}", flush=True)
 
-    print("[4/5] 문서 레코드 조립…", flush=True)
+    print("[4/6] 문서 레코드 조립…", flush=True)
     rows = []
     all_iris = set(scalars) | set(recon.keys())
     for iri in sorted(all_iris):
@@ -252,9 +259,13 @@ def assemble() -> tuple[pd.DataFrame, pd.DataFrame]:
 
     corpus = pd.DataFrame(rows).sort_values("doc_id").reset_index(drop=True)
 
-    print("[5/5] qrel 추출…", flush=True)
+    print("[5/6] 개념 적용기(사전 → 본문)…", flush=True)
+    # 질의·후보에 **같은 함수·같은 사전**이 적용된다(PLAN-034 결정 D). 사전이 없으면 무작동.
+    links = concept_link.apply_to_corpus(corpus)
+
+    print("[6/6] qrel 추출…", flush=True)
     qrel = _qrel(store)
-    return corpus, qrel
+    return corpus, qrel, links
 
 
 # --- 쓰기·프로파일·검증 -------------------------------------------------------
@@ -353,7 +364,9 @@ def _append_manifest(corpus, qrel, sigs) -> None:
         "- 명령: `make corpus` (`python -m sdkb_paper.corpus.assemble`)",
         f"- ir_corpus_v09.parquet: {len(corpus):,} 행 · sha256 `{sigs['corpus_sha'][:16]}`",
         f"- qrel_examiner.parquet: {len(qrel):,} 엣지 · sha256 `{sigs['qrel_sha'][:16]}`",
-        "- 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성)",
+        "- 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성)"
+        + (f" + concept_mapping.json(적용기 링크 {sigs['n_concept_links']:,}건)"
+           if sigs.get("n_concept_links") else " + 개념 사전 없음(적용기 무작동)"),
         "- 반영: C2 입력 · 논문 §5–6",
     ]
     with open(man, "a", encoding="utf-8") as f:
@@ -375,11 +388,12 @@ def _filter_qrel_to_corpus(corpus: pd.DataFrame, qrel_raw: pd.DataFrame) -> pd.D
 
 
 def build() -> None:
-    corpus, qrel_raw = assemble()
+    corpus, qrel_raw, links = assemble()
     qrel = _filter_qrel_to_corpus(corpus, qrel_raw)
     config.IR_DIR.mkdir(parents=True, exist_ok=True)
     corpus.to_parquet(config.IR_CORPUS, index=False)
     qrel.to_parquet(config.QREL_EXAMINER, index=False)
+    concept_link.write_sidecar(links)
     sigs = {
         "built_utc": datetime.now(timezone.utc).isoformat(),
         "corpus_sha": _sha256_bytes(config.IR_CORPUS.read_bytes()),
@@ -387,8 +401,11 @@ def build() -> None:
         "graphs": {g: _sha256_bytes(p.read_bytes()) for g, p in GRAPHS.items()},
         "qrel_raw_edges": len(qrel_raw),
         "qrel_raw_nodes": int(qrel_raw.doc_id.nunique()),
+        "n_concept_links": len(links),
     }
     _write_profile(corpus, qrel, sigs)
+    concept_link.write_profile(corpus, links, concept_link.concept_dict.load(),
+                               before=links.attrs.get("before_counts"))
     _append_manifest(corpus, qrel, sigs)
     print(f"\n완료: {config.IR_CORPUS} ({len(corpus):,} 행) · {config.QREL_EXAMINER} ({len(qrel):,} 엣지)")
     check(corpus, qrel)

@@ -243,3 +243,291 @@ BOUND 에서도 남는 문제. `hf` → `material:hf_acid`(불산)인데 반도�
 ## 2.9 다음 게이트
 
 🛑 **3단계 설계** — 모듈 배치(`corpus/`)·시그니처·BOUND 매칭의 결정성·위 A–D 결정·누출 검사 지점.
+
+---
+---
+
+# 3단계 · 설계 🛑
+
+> 작성 2026-08-01 · 승인 대기. **코드는 아직 쓰지 않았다.**
+> 이 절의 모든 수치는 이 세션에서 실행한 **읽기 전용 측정**의 출력이다(코퍼스·사전 무변경).
+> 2단계가 연 결정 A–D 에 답하고, **새로 발견한 차단 요인 E** 를 추가한다.
+
+## 3.1 결론 먼저
+
+설계는 다섯 결정으로 압축된다.
+
+| # | 결정 | 근거 |
+|---|---|---|
+| **A** | `concepts` 열의 키는 **지금 그대로 지역명(slug)** 을 쓴다. 접두어(축)는 **별도 사이드카**에 보관한다 | 그래프 어휘 143 과 사전 269 사이의 **축 불일치가 0건**(실측). 충돌은 사전 내부 5쌍뿐이고 실제 발화는 3쌍(88·5·1 문서) |
+| **B** | **confidence 를 점수에 반영하지 않는다.** 값은 사이드카에 기록만 한다 | 점수식(w_c=1.0·평 Jaccard)을 건드리면 재측정이 아니라 새 방법이다(§5 비목표 2) |
+| **C** | 무발화 256 표면형은 **결함으로 다루지 않는다.** 프로파일에 "유효 사전 380" 으로 보고 | 특허 산문에 안 나오는 장비 모델명·Vendor |
+| **D** | 질의·후보 **대칭**은 코드 구조로 강제한다 — 적용 함수는 `is_query` 를 인자로 받지 않는다 | 비대칭은 T1 오염 |
+| **E**★ | **O 팔을 다시 얼려야 한다.** 현 `O_pre_linker` 로는 적격심사 **E4(동일 코드)가 실패**해 H2 가 또 미검정으로 끝난다 | 아래 §3.3 |
+
+**E 는 2단계가 예측하지 못한 차단 요인이고, 지금 말하지 않으면 구현이 끝난 뒤 종료코드 2(미검정)로
+드러난다.** 설계 승인의 실질은 A–D 가 아니라 E 다.
+
+## 3.2 결정 A — 키는 slug, 축은 사이드카 (실측 근거)
+
+측정(읽기 전용): 그래프 축지도 143 슬러그 · 사전 269 슬러그 · 공통 113.
+
+| 관측 | 값 | 의미 |
+|---|---:|---|
+| 그래프와 사전이 **같은 slug 를 다른 축**에 쓰는 경우 | **0건** | slug 키로 합쳐도 **기존 141 어휘와의 오합병은 일어나지 않는다** |
+| 사전 **내부** 축 충돌 | 5쌍 | `oxidation`(subprocess/rootcause) · `cd_sem`(equipment_class/metrology) · `implanter`(equipment/equipment_class) · `defect_inspection` · `recipe_tuning` |
+| 그중 **실제 발화** | 3쌍 | oxidation 88문서 · cd_sem 5문서 · implanter 1문서 (전체 40,552 의 0.23 %) |
+
+세 쌍 모두 **같은 표면형에서 두 축이 동시에 발화**한다(예 `산화`→subprocess+rootcause). 즉 두 개념을
+구분해 봐야 문서 집합이 같으므로, slug 로 합쳐도 **검색 신호는 잃지 않는다.** 반면 접두어를 키로
+쓰면 기존 111개 어휘와의 조인이 전부 깨지고 — 그것은 자원 델타가 아니라 **표현 변경**이므로 O/O′
+비교가 "같은 파이프라인"이기를 그친다.
+
+**대신 버리지 않는다.** 접두어 붙은 정본 `concept_id`·표면형·rule_id·confidence 는 사이드카
+`data/processed/ir/concept_links.parquet` 에 전량 남긴다(D-20 류 감사의 재료).
+
+**부수 결정 A′ — 축 지도(concept_axis)를 넓혀야 한다.** 발화 슬러그 157 중 **58개가 축 지도에 없다**
+(축 지도의 우주가 `CONCEPT_PROPS` 객체로 한정돼 있어서다). 이대로 두면 ConceptOverlap 은 정상
+동작하지만(축 불요) **A2·A3·A8 절제가 신규 개념을 통째로 누락**해 기여를 오귀속한다. 축은
+① 그래프 `rdf:type`(실물 확인 — `data/material/argon a ont:Material` 등 core-data.ttl 에 있다)
+② 없으면 사전 `concept_type` ③ 없으면 IRI 세그먼트 순으로 결정한다. **슬러그가 이미 있으면 기존
+축을 이긴다**(신규가 기존 개념의 축을 뒤집어 절제 정의를 조용히 바꾸는 것을 막는다).
+`concept_axis.parquet` 의 **스키마는 바꾸지 않는다**(§3.3 의 동치성 검사를 살리기 위해).
+
+## 3.3 결정 E★ — O 팔 재동결 없이는 H2 가 또 미검정이다
+
+`data/runsets/O_pre_linker.json` 실측: `code_git.commit = e8eed02` · `snapshot.upstream_commit =
+2839afb`. 적격심사(`runset.eligibility`)는 일곱 검사다.
+
+| 검사 | 현 O_pre_linker vs 적용기 도입 후 | 판정 |
+|---|---|---|
+| E1 동일 시스템(P1) | 양쪽 보유 | 통과 |
+| E2·E3 분할·qrel | 동일 | 통과 |
+| **E4 동일 코드** | e8eed02 **대** 적용기 커밋 | **실패 → 미검정(종료코드 2)** |
+| E5 스냅샷 서명 상이 | 양쪽 2839afb(파일 목록만 다름) | 아슬아슬 |
+| E6 파이프라인 서명 상이 | 코퍼스가 바뀌므로 통과 예정 | 통과 |
+| E7 델타 유형 | concept/tbox | 통과 |
+
+즉 **적용기만 만들면 S4·S5 는 달성되지 않는다.** 해법은 O 팔을 **적용기 코드가 들어간 상태에서
+다시 뜨는 것**이고, 다행히 CR-007 이전 스냅샷은 **우리 저장소 git 이력 안에 온전히 있다.**
+
+- `83fd494:data/external/sdkb/PROVENANCE.json` = 상류 **d578bf3**(CR-007 직전) · 17파일.
+- 두 스냅샷의 차이는 **4파일**: `sdkb-core.ttl` · `sdkb-core-data.ttl` · `semiconductor_v0_3.json` ·
+  `schema_report.json`. **license_restricted 2파일(abox-patents·abox-prior-art)은 불변**이므로
+  git 에 없어도 현재 디스크 사본이 양쪽 팔에 그대로 유효하다.
+- 따라서 **상류 저장소를 체크아웃할 필요가 없다**(§0.1 준수 — 상류를 건드리지 않는다).
+
+**두 팔의 정의(재실험 사전등록에 그대로 들어갈 문장):**
+
+| 팔 | 스냅샷 | 코드 | 사전 |
+|---|---|---|---|
+| **O** | d578bf3 (git 이력에서 복원) | 적용기 포함 커밋 | **없음**(CR-007 이 만들기 전) → 적용기 무작동 |
+| **O′** | 2839afb (현행) + `mappings/concept_mapping.json` vendor | 같은 커밋 | patent-text 653 표면형 |
+
+이 구성이 **E4 를 통과**시키고, 델타를 "코드가 생겼다"가 아니라 **"자원이 자랐다"** 로 온전히
+귀속시킨다. 지금의 `O_pre_linker` 는 폐기하지 않고 **"적용기 이전 상태의 기록"** 으로 보존한다.
+
+**무작동 동치성 검사(설계의 핵심 안전장치).** O 팔에서 재조립한 `ir_corpus_v09.parquet` 의 sha256 은
+**`ec5ea51b626d3ff9…` 와 바이트 단위로 같아야 한다**(D-19 가 기록한 값). 같으면 "사전이 없을 때
+적용기는 아무것도 하지 않는다"가 증명되고, ΔR₁₀₀ 전량이 자원 델타에 귀속된다. **다르면 그 자체가
+실패 보고 대상이다**(코드가 조용히 무언가를 바꿨다는 뜻). 이 검사를 살리기 위해:
+
+- **`ir_corpus_v09.parquet` 에 컬럼을 추가하지 않는다** — 링크 정본은 `concepts` 값만 바꾼다.
+- **`concept_axis.parquet` 의 스키마도 바꾸지 않는다.**
+- 접두어·표면형·confidence 는 전부 **별도 사이드카**로 뺀다(§3.2).
+
+O 팔의 run 파일은 기존 `O_pre_linker` 의 run 과 **바이트 동일해야 한다**(입력이 같으므로). 일치를
+검사해 보고하고, 불일치는 실패로 보고한다 — 재사용으로 대체하지 않는다.
+
+## 3.4 모듈 배치와 시그니처 (배치표 §3 준수)
+
+새 파일 **2개**, 수정 **4개**. 그 밖에는 손대지 않는다.
+
+### 신규 ① `src/sdkb_paper/ontology/concept_dict.py` — 사전 읽기(순수)
+
+사전은 **온톨로지 자산**이므로 `ontology/` 에 둔다. 텍스트를 모르고, 코퍼스를 모른다.
+
+```python
+PROFILE = "patent-text"          # 동결. expert-tag 는 쓰지 않는다(§5 비목표 4 · D-15)
+
+@dataclass(frozen=True)
+class Surface:
+    text: str            # R1 정규화된 표면형
+    bound: bool          # True = 라틴/숫자 포함 → 경계 요구
+    entries: tuple[Entry, ...]   # concept_id·concept_type·rule_id·confidence·ambiguous
+
+def normalize(s: str) -> str: ...
+    """R1-NORMALIZE 그대로: lowercase · [/_\-.()\s]+ → ' ' · strip. 형태소 분석 없음."""
+
+def load(path: Path | None = None, profile: str = PROFILE) -> tuple[Surface, ...]:
+    """벤더 스냅샷의 concept_mapping.json → 표면형 사전. **파일이 없으면 빈 튜플**(O 팔).
+    반환은 (text 오름차순) 정렬된 튜플 — 사전의 기재 순서에 의존하지 않는다(S1)."""
+
+def concept_universe(surfaces) -> dict[str, str]:
+    """concept_id('material:argon') → IRI. concept_axis 확장의 입력."""
+```
+
+### 신규 ② `src/sdkb_paper/corpus/concept_link.py` — 적용(코퍼스 대면)
+
+```python
+@dataclass(frozen=True)
+class Link:
+    doc_id: str; concept_id: str; slug: str; surface: str; rule_id: str
+    confidence: float; ambiguous: bool
+
+def match(text: str, surfaces: tuple[Surface, ...]) -> frozenset[str]:
+    """정규화된 텍스트에 발화한 concept_id 집합. **역할(질의/후보)을 인자로 받지 않는다**(결정 D)."""
+
+def link_corpus(texts: pd.Series, doc_ids: pd.Series,
+                surfaces: tuple[Surface, ...]) -> tuple[list[frozenset[str]], pd.DataFrame]:
+    """문서별 concept_id 집합 + 감사 사이드카(Link 행). 사전이 비면 (빈 집합들, 빈 DF)."""
+
+def write_sidecar(df: pd.DataFrame) -> None: ...     # config.IR_CONCEPT_LINKS
+def write_profile(...) -> None: ...                  # data/profiles/concept_link.md (§4 의무)
+```
+
+### 수정
+
+| 파일 | 변경 | 이유 |
+|---|---|---|
+| `corpus/assemble.py` | `[4/5]` 뒤에 링크 단계 추가: `concepts = 그래프링크 ∪ {slug(cid)}`. 사전 부재 시 로그 남기고 통과 | Q4 합집합 · 정본 한 곳 |
+| `ontology/vendor.py` | `VENDOR_FILES` 에 `("mappings/concept_mapping.json", "매핑: 특허 본문 → 개념 링크 사전(CR-007 patent-text)")` | S6 · D-16 |
+| `ontology/concept_axis.py` | `extract(..., extra_iris=None)` — 우주 확장 + 슬러그 충돌 시 **기존 우선** 정렬키. 스키마 불변 | A′ |
+| `config.py` | `IR_CONCEPT_LINKS = IR_DIR / "concept_links.parquet"` (gitignore) · `SDKB_CONCEPT_MAP = EXTERNAL_SDKB / "concept_mapping.json"` | 경로 하드코딩 금지 |
+
+**만들지 않는 것:** 새 make 타깃 · 새 의존성 · 자유 텍스트 질의 API · 사전 편집기.
+
+## 3.5 매칭 명세 — 결정성(S1)이 지켜지는 방식
+
+1. **정규화**: 문서 텍스트(`text_main`)와 표면형 모두 `normalize()` 한 번. 그 외 전처리 없음.
+2. **경계(BOUND · 2단계가 정한 것)**: 표면형에 `[a-z0-9]` 가 하나라도 있으면 **양끝이 `[a-z0-9]` 가
+   아닐 것**을 요구한다. 한글 전용 표면형은 부분문자열 허용.
+3. **표면형 독립 판정(설계가 새로 고정하는 규칙)**: 한 표면형의 발화 여부는 **다른 표면형과 무관**하게
+   판정한다. 정규식 교체(alternation)로 훑으면 먼저 매치한 표면형이 뒤 문자를 소비해 **사전 순서에
+   결과가 의존**한다 — S1("사전 순서 무관")과 정면으로 충돌한다.
+   > **정직 고지:** 2단계 측정은 alternation(소비형)이었다. 독립 판정은 **소비형의 상위집합**이므로
+   > 최종 수치는 2.9 절의 문서당 3.737 **이상**으로 나온다. 2단계 수치를 최종값으로 인용하지 않고,
+   > 구현 후 프로파일의 값을 정본으로 삼는다.
+4. **중복 제거**: 문서당 `concept_id` 집합(빈도 무시). 그래프 링크와의 합집합은 slug 수준.
+5. **시드·난수 없음. 해시 순회 없음** — 사전은 정렬된 튜플, 출력은 정렬된 리스트.
+
+## 3.6 누출 검사 지점 (S3 · §1-4)
+
+| 지점 | 검사 | 위치 |
+|---|---|---|
+| 사전 자체 | 표면형·concept_id 에 `hasPriorArt*`·`overPriorArt`·`NoveltyScore`·qrel 파생어(`relevance`·`is_positive`…)가 0 | `leakage_check.audit_feature_sources()` 에 `concept_mapping.json` 추가 |
+| 사전 자체 | 표면형에 **문서 식별자(특허번호 형태)** 가 없음 | 신규 순수 함수 + 단위 테스트 |
+| 적용 시점 | 함수 시그니처에 역할 인자 없음(결정 D) → 질의·후보 동일 규칙 | 단위 테스트(계약 테스트) |
+| 산출물 | 코퍼스 `concepts` 값 전량 검사(기존 L-1 이 이미 함) | 변경 없음 |
+| run | L-3 마스크 잔여 0 | 변경 없음 |
+
+사전은 **온톨로지 개념 어휘에서만 유도**됐고 인용 간선을 보지 않는다(상류 `leakage_note` 기재).
+그러나 그 진술을 믿지 않고 **파일을 열어 재확인**하는 것이 위 표의 첫 두 행이다.
+
+## 3.7 산출물
+
+| 산출물 | 커밋 | 내용 |
+|---|---|---|
+| `ir_corpus_v09.parquet` | ✗ | `concepts` 값만 변경(컬럼 불변) |
+| `concept_links.parquet` | ✗ | 감사 사이드카 ~10만 행(doc_id·concept_id·surface·rule_id·confidence) |
+| `data/profiles/concept_link.md` | ✓ | §4 의무 4항목 + 언어별 이득·축 분포·발화/무발화·**D-20 오링크 목록** |
+| `data/profiles/ir_corpus_v09.md` | ✓ | 개념 통계 갱신 |
+| `data/MANIFEST.md` | ✓ | 조립 기록 |
+
+## 3.8 테스트 3층 (5단계에서 판정)
+
+**(a) 단위** — `normalize` 의 R1 일치 · `al` 이 *metal* 안에서 안 걸림 / 단독 `al` 은 걸림 ·
+한글 부분문자열 · 빈 텍스트·None · **사전 순서를 섞어도 출력 동일**(S1) · **빈 사전 → 빈 출력**(무작동) ·
+5쌍 충돌의 slug 합병 규칙 · 축 결정 우선순위(그래프>사전>세그먼트, 기존 우선) · 역할 인자 부재.
+
+**(b) 통합** — 링크된 slug 전량이 축 지도에 존재(A′ 계약) · 누출 검사 통과 · `assemble.check()` 의
+성공기준 1–4 불변 · 사이드카 행수 = 문서별 집합 크기 합.
+
+**(c) 파이프라인** — **무작동 동치성**(O 팔 코퍼스 sha == `ec5ea51b…`) · 사전 있으면 sha 변함(S2) ·
+적격심사 E1–E7 전량 통과(S4) · `make lint && make test`.
+
+## 3.9 하지 않는 것 — 알려진 결함을 하류에서 우회하지 않는다
+
+**D-20(`hf` → 불산 오링크 1,234문서)을 코드로 고치지 않는다.** 사전을 하류에서 덮어쓰면 스냅샷
+출처가 거짓이 된다(§0.1). 오링크는 **그대로 통과시키고 프로파일에 명시**하며, 교정은 상류 CR 로
+요청한다. 같은 이유로 `co`(코발트 대 CO)도 손대지 않는다.
+
+## 3.10 승인 후 실행 순서
+
+```
+4단계 구현(신규 2 · 수정 4)
+🛑 5단계 검증 (a)(b)(c) + make lint/test  → 여기서 코드 동결·커밋
+🛑 §2.1 사전등록 동결 (파일별 sha256 · ε·δ·주지표·봉인 qrel 해시 · O/O′ 정의 · 확증/탐색 구분)
+   O  팔: git 에서 d578bf3 스냅샷 복원 → baseline·merge → corpus(무작동 동치성 검사) → index
+          → leakage → retrieve → freeze-runset LABEL=O_d578bf3_linkercode
+   O′ 팔: make vendor(2839afb + mappings) → corpus → index → leakage → retrieve
+          → freeze-runset LABEL=Oprime_2839afb
+   판정: make tgate-resource OLD=O_d578bf3_linkercode NEW=Oprime_2839afb SYSTEM=P1 SPLIT=test
+   → T1·T2·T3 = **H2 최초 실검정**. 지지든 기각이든 그대로 보고.
+```
+
+## 3.11 남은 위험 (구현 전에 말한다)
+
+1. **성능** — 표면형 독립 판정은 636 × 40,552 회 탐색이다. 순수 파이썬 `str.find` + 경계 확인으로
+   수 분 예상. 느리면 최적화하되 **규칙은 바꾸지 않는다**(결과가 달라지면 안 된다).
+2. **O 팔 재조립이 완전 복원이 아닐 수 있다** — `graph_v0/v1/v2` 재빌드가 d578bf3 시점과 바이트
+   동일하지 않으면 무작동 동치성 검사가 실패한다. 그 경우 **실패로 보고**하고 원인(빌드 비결정성)을
+   D 대장에 등재한다. 숨기고 진행하지 않는다.
+3. **개념 수 팽창이 P1 을 악화시킬 수 있다** — 문서당 1.5 → 3.7 이면 Jaccard 분모가 커져 ΔR₁₀₀ 이
+   **음수**로 나올 수 있다. 그것은 실패가 아니라 **H2 검정의 결과**다(S5). ε=0.02 는 동결돼 있고
+   결과를 본 뒤 손대지 않는다.
+4. **위험 A(일본어 0)는 여전히 열려 있다** — 이 설계는 그것을 닫지 않는다(D-21 · CR-003 후속).
+
+---
+---
+
+# 4단계 · 구현 기록 (2026-08-01)
+
+> 승인 범위 안에서만 썼다. **파이프라인은 아직 돌리지 않았다** — 디스크의
+> `ir_corpus_v09.parquet`(`ec5ea51b…`)·`concept_axis.parquet`(`5caac56e…`)는 그대로다.
+> 아래 수치는 코퍼스를 **메모리에서** 적용해 본 건식 실행(dry run)의 출력이다.
+
+## 4.1 파일
+
+| 파일 | 상태 | 내용 |
+|---|---|---|
+| `src/sdkb_paper/ontology/concept_dict.py` | 신규 | 사전 적재(R1 정규화·표면형 정렬·경계 플래그)·개념 우주·요약. 사전 부재 시 빈 튜플 |
+| `src/sdkb_paper/corpus/concept_link.py` | 신규 | BOUND 매칭·표면형 독립 판정·합집합 적용·감사 사이드카·§4 프로파일 |
+| `src/sdkb_paper/corpus/assemble.py` | 수정 | `[5/6] 개념 적용기` 단계 추가. `assemble()` 이 사이드카를 함께 반환 |
+| `src/sdkb_paper/ontology/concept_axis.py` | 수정 | `extract(extra_iris=…)` — 우주 확장 · 축 우선순위 · **기존 슬러그 우선** |
+| `src/sdkb_paper/ontology/vendor.py` | 수정 | `VENDOR_FILES` 에 `mappings/concept_mapping.json`(S6 · D-16) |
+| `src/sdkb_paper/validate/leakage_check.py` | 수정 | **L-2b 개념 매핑 사전** 검사(금지술어·qrel 파생어·문서 식별자 표면형) |
+| `src/sdkb_paper/config.py` | 수정 | `IR_CONCEPT_LINKS` · `SDKB_CONCEPT_MAP` |
+| `tests/test_concept_link.py` | 신규 | 단위 23 + 통합 2(산출물 있을 때만) |
+
+**설계에 없던 코드는 쓰지 않았다.** 새 make 타깃·새 의존성·질의 API 없음.
+
+## 4.2 건식 실행 관측 (코퍼스 40,552 × patent-text 사전)
+
+| 항목 | 값 | 비고 |
+|---|---:|---|
+| 문서당 개념 | 1.545 → **3.779** | 2단계 예고대로 소비형(3.737)보다 **크다** — 표면형 독립 판정의 귀결 |
+| 개념 어휘 | 141 → **199** | |
+| 신규 링크 | **128,875** | 2단계 103,401 보다 큼(같은 이유) |
+| 개념 보유율 | 98.0 % → **98.9 %** | |
+| 언어별 문서당(합집합) | ko 3.800 · en 3.465 · **ja 0.000** | 위험 A 확증 그대로 |
+| 질의 문서당 | 2.906 → **5.992** | Q2 대칭 적용 확인 |
+| 발화 표면형 | **380/636** | 유효 사전 ~380(결정 C) |
+| 소요 | 21.4 s | `make corpus` 안에서 무시 가능 |
+
+**축 확장 검증(A′):** 축 지도 143 → 299 행. **적용기가 붙인 슬러그 157 중 축 미상 0건**이고,
+**기존 슬러그의 축이 바뀐 것도 0건**이다(`oxidation`→SubProcess 유지).
+
+## 4.3 검증 현황
+
+- `make lint` 통과 · `uv run pytest tests/` **478 passed · 2 skipped**(사이드카 미생성 → skip).
+- 아직 못 한 것: **파이프라인층**(무작동 동치성 · S2 서명 변화 · 적격심사 E1–E7). 이것은
+  코드 동결·커밋 후 §2.1 사전등록 아래에서 두 팔을 실제로 돌려야 나온다.
+
+## 4.4 범위 밖으로 남긴 것 — 알아야 할 부작용 하나
+
+`analysis/faults.py` 는 결함주입 시 개념 뷰를 **오염된 그래프에서만** 다시 만든다
+(`_multi` + `concept_axis.extract`). 적용기 도입 후에는 그 뷰에 **사전 링크가 빠져** 정본
+코퍼스와 달라진다. H1 결함주입은 이미 판정이 끝난 실험이라 이번 범위에 넣지 않았고 코드도
+건드리지 않았다. **다음에 결함주입을 다시 돌린다면 이 불일치를 먼저 해소해야 한다** — 지금
+등재해 둔다(설계 승인 범위 밖 · 새 요구정의 대상).

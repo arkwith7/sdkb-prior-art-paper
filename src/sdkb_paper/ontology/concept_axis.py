@@ -42,13 +42,20 @@ def _segment(iri: str) -> str:
     return parts[-2] if len(parts) >= 2 and "/data/" in iri else ""
 
 
-def extract(graphs: dict[str, Path] | None = None, store=None) -> tuple:
+def extract(graphs: dict[str, Path] | None = None, store=None,
+            extra_iris: dict[str, str] | None = None) -> tuple:
     """그래프 집합(또는 이미 적재된 store) → (axis_df, tree). **파일을 쓰지 않는다.**
 
     `build()` 가 정본 산출물을 만들 때도, 결함주입 실험(PLAN-020 W4)이 **오염된 합집합 store**
     에서 대체 뷰를 만들 때도 **같은 이 함수**를 쓴다 — 추출 로직이 두 벌로 갈라지면 실험이
     정본과 다른 것을 재고 있게 된다. `store` 를 주면 적재를 건너뛴다(오염본을 디스크에 쓰지
     않기 위해 필요하다).
+
+    `extra_iris`(IRI → 축 후보)는 **개념 적용기가 새로 링크한 개념**의 우주다(PLAN-034 §3.2 A′).
+    적용기가 붙인 개념은 `CONCEPT_PROPS` 의 객체가 아니라서 이 우주를 넓히지 않으면 축이 미상이
+    되고, 그러면 A2·A3·A8 절제가 신규 개념을 통째로 누락해 **기여를 오귀속**한다(실측 2026-08-01:
+    발화 슬러그 157 중 58 이 축 미상). 축은 ①그래프 `rdf:type` ②이 인자의 값(사전 concept_type)
+    ③IRI 세그먼트 순으로 정한다. **스키마는 넓히지 않는다** — 무작동 동치성(§3.3) 때문이다.
     """
     import contextlib
     import tempfile
@@ -74,8 +81,13 @@ def extract(graphs: dict[str, Path] | None = None, store=None) -> tuple:
         vals = " ".join(f"ont:{p}" for p in CONCEPT_PROPS)
         q_iri = (f"PREFIX ont:<{ONT}> SELECT DISTINCT ?c WHERE {{ GRAPH ?g {{ "
                  f"?s ?prop ?c . VALUES ?prop {{ {vals} }} }} }}")
-        concept_iris = {r["c"].value for r in store.query(q_iri)
-                        if r["c"].value.startswith(str(config.SDKB_DATA))}
+        incumbent = {r["c"].value for r in store.query(q_iri)
+                     if r["c"].value.startswith(str(config.SDKB_DATA))}
+        # 적용기 우주를 더한다. **기존(그래프 링크) 개념이 우선**이다 — 신규가 기존 슬러그의
+        # 축을 뒤집으면 절제(A2/A3/A8)의 정의가 조용히 바뀐다(§3.2 A′).
+        extra = {k: v for k, v in (extra_iris or {}).items()
+                 if str(k).startswith(str(config.SDKB_DATA))}
+        concept_iris = incumbent | set(extra)
 
         # ② 각 개념 IRI → axis_class(rdf:type ont:X 지역명)
         types: dict[str, set[str]] = {}
@@ -101,16 +113,23 @@ def extract(graphs: dict[str, Path] | None = None, store=None) -> tuple:
         slug = _local(iri)
         seg = _segment(iri)
         classes = types.get(iri, set())
-        # 축 클래스: 유일하면 그것, 다중이면 사전순 첫(결정적)·미상이면 세그먼트에서 유도
-        axis_class = sorted(classes)[0] if classes else (seg if seg else "")
+        # 축 클래스: ①그래프 타입(유일하면 그것·다중이면 사전순 첫) ②사전 concept_type
+        # ③세그먼트. 셋 다 없으면 빈 문자열.
+        if classes:
+            axis_class = sorted(classes)[0]
+        else:
+            axis_class = extra.get(iri) or (seg if seg else "")
         rows.append(
             {"slug": slug, "iri": iri, "axis_class": axis_class,
-             "axis_segment": seg, "n_types": len(classes), "ambiguous": len(classes) > 1}
+             "axis_segment": seg, "n_types": len(classes), "ambiguous": len(classes) > 1,
+             "_incumbent": iri in incumbent}
         )
-    # 슬러그 중복 시 타입보유 행 우선(결정적): n_types 내림·iri 사전순
+    # 슬러그 중복 시: **기존(그래프 링크) 우선** → 타입보유 → iri 사전순 (전부 결정적)
     axis_df = (pd.DataFrame(rows)
-               .sort_values(["slug", "n_types", "iri"], ascending=[True, False, True])
-               .drop_duplicates("slug").sort_values("slug").reset_index(drop=True))
+               .sort_values(["slug", "_incumbent", "n_types", "iri"],
+                            ascending=[True, False, False, True])
+               .drop_duplicates("slug").sort_values("slug")
+               .drop(columns=["_incumbent"]).reset_index(drop=True))
 
     parent = {k: sorted(set(v)) for k, v in parent.items()}
     classes_all = set(axis_df["axis_class"]) | set(parent) | {
@@ -142,7 +161,11 @@ def build(snapshot: Path | None = None) -> dict:
     코퍼스와 동일 원천(assemble 의 GRAPHS)에서 pyoxigraph 온디스크로 적재해 SPARQL 로 뽑는다
     (rdflib 는 대용량 그래프서 메모리 폭주 — 메모리 `central-axis-use-oxigraph-ondisk`).
     """
-    axis_df, tree = extract()
+    from . import concept_dict
+
+    # 적용기가 링크할 개념도 축 지도에 들어와야 한다(§3.2 A′). 사전이 없으면 빈 dict → 무작동.
+    surfaces = concept_dict.load()
+    axis_df, tree = extract(extra_iris=concept_dict.concept_types(surfaces))
 
     config.IR_CONCEPT_AXIS.parent.mkdir(parents=True, exist_ok=True)
     axis_df.to_parquet(config.IR_CONCEPT_AXIS, index=False)

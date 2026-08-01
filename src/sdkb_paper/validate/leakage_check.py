@@ -6,12 +6,14 @@ claim-feature sidecar·family 지도·후보 마스크. 조립이 깨끗해도 *
 정답 파생 정보가 되돌아올 수 있다. 이 모듈은 그 잔여를 독립적으로 재검증하고, 하나라도 걸리면
 비영 종료한다(우회 경로를 만들지 않는다 · CLAUDE.md §5).
 
-네 검사:
+다섯 검사:
 
 - **L-1 코퍼스 피처** — IR 코퍼스의 컬럼명·개념값에 금지 술어(`hasPriorArt*`·`overPriorArt`·
   `NoveltyScore`) 유래 흔적이 0 인가.
 - **L-2 런타임 피처 자원** — 개념축·feature sidecar 의 컬럼에 금지 술어 유래·qrel 파생
   (`relevance`·`qrel`·`is_positive` 류) 컬럼이 0 인가.
+- **L-2b 개념 매핑 사전** — 개념 적용기의 입력 사전(CR-007)에 금지 술어·qrel 파생어·**문서
+  식별자 모양의 표면형**이 0 인가. 사전이 없으면(=O 팔) 검사 대상이 없는 것이지 위반이 아니다.
 - **L-3 run 마스크 잔여** — 산출된 run 상위 K 에 F10 위반(자기 자신·동일 패밀리·시점 미래)이
   0 인가. 마스크가 코드에 있다는 것과 산출물이 실제로 지켜졌다는 것은 다른 명제다.
 - **L-4 qrel 봉인 상태** — qrel 파일 sha256 과 봉인 test qrel 존재 여부를 기록한다(차단 아님·기록).
@@ -24,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -54,6 +57,40 @@ def check_names(names: list[str], forbidden: tuple[str, ...] = FORBIDDEN) -> lis
 def check_qrel_derived(names: list[str]) -> list[str]:
     """qrel 파생 컬럼(정답 라벨 그 자체)이 피처 자원에 섞였는지."""
     return check_names(names, QREL_DERIVED)
+
+
+# 문서 식별자로 보이는 표면형 — 사전이 개념 어휘가 아니라 **정답 문서**를 가리키면 그것은 누출이다.
+# 특허 식별자는 국가코드+긴 숫자이거나 6자리 이상 숫자열이다(정상 표면형에는 나오지 않는다).
+_DOC_ID_RX = re.compile(r"(?:\b(?:kr|us|jp|ep|wo|cn)[\s_-]?\d{4,})|(?:\d{6,})")
+
+
+def check_doc_identifiers(values: list[str]) -> list[str]:
+    """사전 표면형에 문서 식별자 모양이 섞였는지(개념 사전은 어휘만 담아야 한다)."""
+    return sorted({str(v) for v in values if _DOC_ID_RX.search(str(v).lower())})
+
+
+def audit_concept_dict(path: Path | None = None) -> dict:
+    """L-2b: 개념 매핑 사전 자체(PLAN-034 §3.6).
+
+    상류는 `leakage_note` 로 "인용 간선을 보지 않았다"고 진술한다. 그 진술을 믿지 않고
+    **파일을 열어** 표면형·concept_id 를 전량 검사한다 — 사전은 이제 코퍼스 `concepts` 열의
+    절반 이상을 만드는 런타임 피처 자원이다.
+    """
+    from ..ontology import concept_dict as CD
+
+    p = Path(path) if path is not None else config.SDKB_CONCEPT_MAP
+    if not p.exists():   # O 팔(CR-007 이전 스냅샷) — 검사할 사전이 없는 것은 위반이 아니다
+        return {"check": "L-2b 개념 매핑 사전", "exists": False, "pass": True}
+    surfaces = CD.load(p)
+    surf_texts = [s.text for s in surfaces]
+    cids = [e.concept_id for s in surfaces for e in s.entries]
+    bad_forbidden = sorted(set(check_names(surf_texts + cids)))
+    bad_qrel = sorted(set(check_qrel_derived(surf_texts + cids)))
+    bad_docid = check_doc_identifiers(surf_texts)
+    return {"check": "L-2b 개념 매핑 사전", "exists": True, "file": p.name,
+            "sha256": sha256_file(p), "n_surfaces": len(surfaces), "n_concepts": len(set(cids)),
+            "bad_columns": bad_forbidden + bad_qrel, "bad_doc_identifiers": bad_docid,
+            "pass": not bad_forbidden and not bad_qrel and not bad_docid}
 
 
 def check_concept_values(values: list[str]) -> list[str]:
@@ -205,7 +242,8 @@ def audit_qrel() -> dict:
 
 
 def run_audit(split: str = "dev", k: int = 100) -> dict:
-    checks = [audit_corpus(), audit_feature_sources(), audit_runs(split, k), audit_qrel()]
+    checks = [audit_corpus(), audit_feature_sources(), audit_concept_dict(),
+              audit_runs(split, k), audit_qrel()]
     return {"split": split, "k": k, "checks": checks,
             "pass": all(c["pass"] for c in checks)}
 
@@ -215,7 +253,7 @@ def format_report(res: dict) -> str:
              "─" * 60]
     for c in res["checks"]:
         lines.append(f"  {'✅' if c['pass'] else '❌'} {c['check']}")
-        for key in ("bad_columns", "bad_concept_values"):
+        for key in ("bad_columns", "bad_concept_values", "bad_doc_identifiers"):
             if c.get(key):
                 lines.append(f"       {key}: {c[key]}")
         if "n_violations" in c:

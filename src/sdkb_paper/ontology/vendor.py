@@ -48,6 +48,10 @@ VENDOR_FILES: list[tuple[str, str]] = [
     ("ontology/sdkb-governance-kr.ttl", "TBox: KR 규제(NationalCoreTechnology·designatedAsNCT·산업기술보호법)"),
     ("ontology/sdkb-governance-us-instances.ttl", "ABox: US EAR/CCL 수출통제 8건 + G₀ 개념 연결"),
     ("ontology/sdkb-governance-kr-instances.ttl", "ABox: KR-ITPA 국가핵심기술 12건 + G₀ 개념 연결"),
+    # CR-007 이 낸 개념 매핑 사전. 이것이 vendor 되지 않아 하류가 CR-007 을 읽지 못했고,
+    # 그래서 O 대 O′ 의 ΔR₁₀₀ 이 정의상 0 이 되어 H2 가 공허하게 통과했다(D-16·D-19).
+    ("mappings/concept_mapping.json",
+     "매핑: 특허 본문 → 개념 링크 사전(patent-text 프로파일) — 개념 적용기의 입력"),
     ("data/semiconductor_v0_3.json", "ABox 의 커밋된 원천(=재현 기준점)"),
     ("data/schema_report.json", "원천의 sha256 + 노드/엣지 카운트"),
 ]

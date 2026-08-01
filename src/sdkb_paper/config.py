@@ -104,6 +104,12 @@ IR_USERDICT = IR_DIR / "userdict_sdkb.txt"             # nori 사용자사전 (S
 # 개념→축(axis)·TBox 계층 지도 (M4 온톨로지팔 입력 · PLAN-018 §7.3 M4-3/M4-4). 벤더 TTL 의
 # `a ont:X`·subClassOf 에서 결정적 추출 — 커밋 가능(집계·식별자·해시만). concept_axis.py 생성.
 IR_CONCEPT_AXIS = IR_DIR / "concept_axis.parquet"
+# 개념 적용기(linker) 감사 사이드카 (PLAN-034 · D-19). 문서×표면형×concept_id 링크 전량 —
+# **접두어(축) 붙은 정본 concept_id 는 여기에만 있다**(코퍼스 concepts 열은 지역명만 보관).
+# 재생성 가능 → gitignore. 코퍼스에 컬럼을 늘리지 않는 이유는 PLAN-034 §3.3 무작동 동치성.
+IR_CONCEPT_LINKS = IR_DIR / "concept_links.parquet"
+# 상류 CR-007 이 낸 개념 매핑 사전(벤더 스냅샷). 없으면 적용기는 무작동 — 그 상태가 O 팔이다.
+SDKB_CONCEPT_MAP = EXTERNAL_SDKB / "concept_mapping.json"
 # claim-feature sidecar (P1/P2 · PLAN-018 §7.5). central_axis.oxstore 에서 추출한 특허별 청구항 피처
 # (doc_id·claim·is_independent·featureText·seq). **featureText=KIPRIS 원문 → gitignore·재생성**.
 IR_FEATURE_SIDECAR = IR_DIR / "feature_sidecar.parquet"
