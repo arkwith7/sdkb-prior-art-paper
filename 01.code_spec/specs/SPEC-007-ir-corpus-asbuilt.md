@@ -26,7 +26,7 @@
 |---|---:|---|---|
 | **IR 코퍼스** | **40,552 행 · 29 컬럼** | `data/processed/ir/ir_corpus_v09.parquet` | `ec5ea51b626d3ff9` |
 | **심사관 qrel** | **2,416 엣지** | `data/processed/ir/qrel_examiner.parquet` | `10ab67f21cc1328d` |
-| 원천 G₀ | 105,588 트리플 | `data/processed/graph_v0.ttl` | `a79a8a27db593a77` |
+| 원천 G₀ | 105,588 트리플 (**구 세대**·상류 `d578bf3` · 현행은 105,713) | `data/processed/graph_v0.ttl` | `a79a8a27db593a77` |
 | 원천 G₁ | — | `data/processed/graph_v1.ttl` | `41094e9f053d6b4c` |
 | 원천 G₂ | — | `data/processed/graph_v2.ttl` | `16b4f3223e049762` |
 | sidecar | 11,606,318 트리플 | `data/processed/central_axis.oxstore` | (PROVENANCE.json) |

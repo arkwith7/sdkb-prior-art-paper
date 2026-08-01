@@ -27,10 +27,10 @@
 | **작업 규약** | `CLAUDE.md` (v0.9 기조 · C0/C1/C2/C3·T-gate) | 루트 |
 | **상류 환류 (C0)** | `DEFECT-LEDGER.md`(결함 D-01~D-16) · `CR-001~007` · `HANDOFF-QUEUE.md`(송부 순서) | `upstream/` |
 | **정합 원장(전파 추적)** | `RECONCILIATION-v09.md` (라벨 사전·SoT 델타·배치 B0–B8 완료) | `01.code_spec/` |
-| **baseline 그래프 G₀** | `graph_v0.ttl` (105,588 트리플) — 게이트 대상 | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
-| **후보 모집단 G₁** | `graph_v1.ttl` (924,814) — **세대가 아니라 방해문서 풀**(D-12) | `data/processed/` |
-| **후보 모집단 G₂** | `graph_v2.ttl` (490,529) — 〃 | `data/processed/` |
-| **얼린 상류 스냅샷** | `data/external/sdkb/` (SDKB `d578bf3`) | git-tracked · sha256 in `PROVENANCE.json` |
+| **baseline 그래프 G₀** | `graph_v0.ttl` (**105,713** 트리플 · 구 105,588) — 게이트 대상 | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
+| **후보 모집단 G₁** | `graph_v1.ttl` (924,814) — **세대가 아니라 방해문서 풀**(D-12) · ⚠ 구 G₀ 위 조립 | `data/processed/` |
+| **후보 모집단 G₂** | `graph_v2.ttl` (490,529) — 〃 · ⚠ 구 G₀ 위 조립 | `data/processed/` |
+| **얼린 상류 스냅샷** | `data/external/sdkb/` (SDKB `2839afb` · 스냅샷 서명 `b98ad787d1fe`) | git-tracked · sha256 in `PROVENANCE.json` |
 | **IR 벤치마크 코퍼스** | 질의(거절특허 1,000)·후보 코퍼스(G1/G2 ~40k)·qrel 정답 2,321 — as-built [SPEC-007](specs/SPEC-007-ir-corpus-asbuilt.md) | `data/processed/ir/` (원문 gitignore) |
 | **검증 게이트 (L0–L3)** | `queries/cq/*.rq` **28개** · `queries/shapes/graph/` 5 + `shapes/delta/` 1 | 전부 LIVE · 고아 0 |
 | **T-gate (T1·T2·T3)** | 계약 = [SPEC-001](specs/SPEC-001-validation-gate.md) §T-gate · 구현 = `validate/{t1_noninferiority,t2_subgroup,t3_cross_task_cq,t_gate,leakage_check}.py` | **LIVE** (`make leakage`·`cq-freeze`·`tgate` · dev·확증분할 실행 완료) |
@@ -82,20 +82,32 @@
 **이 표가 최종이다.** 온디스크 실측(rdflib) = MANIFEST §3 값이다. (v0.5 구본과 **동일한 동결 사실** —
 패러다임 전환은 라벨·서술을 바꿨을 뿐 그래프 서명은 바꾸지 않았다.)
 
+> **⚠ 세대가 갈렸다 (2026-08-01).** G₀ 는 상류 `2839afb` 스냅샷 위에서 **재조립됐고**(105,588 →
+> **105,713**), G₁·G₂ 는 **재조립하지 않았다** — 디스크의 `graph_v1/v2.ttl` 은 2026-07-23 산출물이라
+> **구 G₀(105,588) 위에 얹혀 있다.** 아래 G₁·G₂ 열은 그래서 *구 세대의 실측*이고, 새 세대의 값이
+> 아니다. 재조립 전까지 G₁·G₂ 수치를 "현행"으로 인용하지 않는다. 두 열을 +125 로 더해 추정하는 것도
+> **금지**(§1-1 — 실행되지 않은 수치다).
+
 | 항목 | G₀ | G₁ | G₂ (소부장) |
 |---|---:|---:|---:|
-| **트리플 (정본)** | **105,588** | **924,814** | **490,529** |
-| 커버된 공정 / 49 | 20 | 26 | 26 |
+| **세대** | 상류 `2839afb` · 스냅샷 `b98ad787d1fe` (현행) | 상류 `d578bf3` (**구**·미재조립) | 〃 |
+| **트리플 (정본)** | **105,713** | **924,814** | **490,529** |
+| 커버된 공정 | 20 / **50** | 26 / 49 (구) | 26 / 49 (구) |
 | 특허 (병합) | 1,000 (SIRP 거절) | +24,179 델타 (총 25,179) | +12,339 델타 (총 13,339) |
 | 선행기술 정답지 (`ont:CitedPatent`) | 3,034 (심사관 인용 + 개념링크) | 상속 | 상속 |
-| Process 11 / SubProcess 38 · Device 34 | ✓ | | |
+| Process **12** / SubProcess 38 · Device 34 | ✓ (구 Process 11 — 신규 `data:process/plasma_processing`) | | |
 | IPCSymbol | 810 | 2,924 | 2,914 |
 | FailureMode (문제층) | 25 | 55 | 25 |
 | 청구항 축 | — | claimText 371,267 · abstractText 24,179 · claimCount 24,178 | claimText 161,184 |
 | 문제층 | — | exhibitsFailureMode 2,816 · relatedToTopic 3,236 | — |
 | 출원인(Organization) / 벤더 | 351 / 340 | | 188사(장비 93·재료 50·부분품 45) |
 | 게이트 | L1(완화)·L2 consistent·L3 CQ 27/28 | L1·L2·L3 CQ 28/28 | L1·L2 consistent·L3 CQ 28/28 |
-| 그래프 커밋(상류) | SDKB `d578bf3` | 〃 위 델타 | 〃 위 델타 |
+| 그래프 커밋(상류) | SDKB **`2839afb`** (구 `d578bf3`) | `d578bf3` 위 델타 (구) | 〃 (구) |
+
+> **서명 이력 (G₀ · 최근 세대만).** 105,588(상류 `d578bf3` · 2026-07-23 재조립 · v0.9 §6 의 모든 결과가
+> 이 세대 위에서 측정됐다) → **105,713**(상류 `2839afb` · 2026-08-01 · CR-007 반영 · +125).
+> 구 세대 값은 `scripts/check_signatures.py` 의 `HISTORICAL_SIGNATURES` 로 내렸다 — 문서에 '현재
+> 값'으로 다시 나타나면 `make sig-check` 가 실패한다. 전체 이력은 `data/DATASET-CARD.md` §③.
 
 > **동결 규율.** §1 서명은 CLAUDE.md §0 "동결된 사실"이며 예고 없이 바뀌면 회귀 테스트가 차단한다.
 > `scripts/check_signatures.py`가 이 표의 `**트리플 (정본)**` 행을 파싱해 TARGETS 문서의 표류를 잡는다.

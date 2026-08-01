@@ -37,8 +37,9 @@ URL 처럼 생겼지만 **웹 주소일 필요는 없다** — 가리키는 것�
 | `pat:` | `https://w3id.org/sdkb/data/patent/` | 특허 인스턴스 서브트리 |
 | `gov:` | `https://w3id.org/sdkb/gov/` | 거버넌스 모듈(이 논문 미사용) |
 
-**그래프(graph) / 지식 그래프** — 트리플의 집합. 우리의 `graph_v0.ttl`(G₀) 은 105,588 트리플이다
-(보강 후 G₁ 924,814 · G₂ 490,529 — 정본은 [CANONICAL-INDEX §1](CANONICAL-INDEX.md)).
+**그래프(graph) / 지식 그래프** — 트리플의 집합. 우리의 `graph_v0.ttl`(G₀) 은 **105,713** 트리플이다
+(구 105,588 · 상류 `2839afb` 스냅샷에서 재조립). 보강 후 G₁ 924,814 · G₂ 490,529 는 **구 G₀ 위에
+조립된 미재조립 산출물**이다 — 정본은 [CANONICAL-INDEX §1](CANONICAL-INDEX.md).
 
 **Turtle(`.ttl`)** — 트리플을 사람이 읽을 수 있게 적는 직렬화 형식. **RDF/XML**·**N-Triples** 는 다른 형식.
 → ⚠ **owlready2 는 Turtle 을 못 읽는다.** 그래서 L2 리즈너 게이트가 오래 죽어 있었다(§6).

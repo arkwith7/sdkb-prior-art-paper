@@ -3,7 +3,8 @@
 | | |
 |---|---|
 | 지지하는 것 | **C1 자원**(공유 T-Box가 세 태스크를 표현) · 반복 조사 종식 / 논문 §3·§6.1 |
-| 정본(측정 대상) | `data/processed/graph_v0.ttl` (105,588) · `data/processed/central_axis.oxstore` (11,606,318) |
+| 정본(측정 대상) | `data/processed/graph_v0.ttl` (105,588 — **구 세대**·상류 `d578bf3`) · `data/processed/central_axis.oxstore` (11,606,318) |
+| ⚠ 세대 | 이 문서는 **상류 `d578bf3` 스냅샷 시점의 as-built 실측**이다. 현행 G₀ 는 105,713(상류 `2839afb`) — 정본은 [CANONICAL-INDEX §1](../CANONICAL-INDEX.md). 재측정 전까지 아래 census 를 '현행'으로 인용하지 않는다 |
 | 원천 | 벤더 스냅샷 `data/external/sdkb/*.ttl` (SDKB 커밋 `d578bf3` · 미반영분 반영 `3429d66`) |
 | 재측정 | §9 스크립트 (rdflib + pyoxigraph) |
 

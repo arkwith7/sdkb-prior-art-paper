@@ -193,12 +193,17 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 
 | 그래프 | 트리플 | 만드는 법 | 게이트 |
 |---|---:|---|---|
-| `graph_v0` (G₀) | **105,588** | `make baseline` (미반영 SDKB 온톨로지 전량 반영: 선행기술 ABox·상용화·RBV 편입) | L1(완화)·L2·L3 27/28 |
+| `graph_v0` (G₀) | **105,713** (구 105,588) | `make baseline` (상류 `2839afb` 스냅샷 · 미반영 SDKB 온톨로지 전량 반영: 선행기술 ABox·상용화·RBV 편입) | L1(완화)·L2·L3 27/28 |
 | `delta_v1` | 370,077 | `make merge` 1단계 — 특허 24,179건 | L1(엄격): 개념 ≥1 |
 | `graph_v1` (G₁) | **924,814** | `make merge` 2단계 (+ §G1 Phase A 청구항 축 · Phase C 문제층 · baseline 재반영) | L1 통과 · **L2 HermiT consistent=True** · L3 CQ |
 | `delta_v2` (소부장) | 385,577 | `make merge CORPUS=ksia-equipment` 1단계 — 특허 **12,339건** · 초록·청구항 포함 | L1(엄격): 개념 ≥1 |
 | `graph_v2` (G₂ · RQ3) | **490,529** | 2단계 — G₀ 위 KSIA 소부장 188사 델타 | L1 통과 · **L2 consistent=True** · L3 CQ **28/28** |
 | `graph_v2_{equipment,material,component}` (층별) | 각 층 subset | `make ksia-strata` — 층별 H1(표 5b) 전용, 같은 L1 게이트 | L1 통과 |
+
+> **⚠ 세대 불일치 (2026-08-01).** 위 표에서 **G₀ 만 상류 `2839afb` 로 재조립됐다.** `delta_v1`·
+> `graph_v1`·`delta_v2`·`graph_v2` 및 층별 subset 은 전부 **2026-07-23 산출물**이며 구 G₀(105,588)
+> 위에 얹혀 있다. 세대를 맞추려면 `make merge` 를 다시 돌려야 하고, 그것은 IR 후보 코퍼스 서명을
+> 바꾸므로 **§2.1 사전등록 동결이 선행한다**. 그 전까지 G₁·G₂ 값은 *구 세대 실측*으로만 인용한다.
 
 > **G₀·G₁·G₂ 재조립 49,307→105,588 · 868,669→924,814 · 434,342→490,529 (2026-07-23 · 커밋 `3429d66`).**
 > 사용자 결정으로 baseline 동결을 풀고, 벤더 스냅샷엔 있으나 `baseline.py` 적재 목록에서 빠져 있던 SDKB
@@ -439,4 +444,15 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
   `pre_remediation` / `current` 두 세대로 분리 기록(CLAUDE.md §1-3 소급 수정 금지 · §2.1)
 - **D-19 확증**: 개념층은 이만큼 자랐는데 `ir_corpus_v09.parquet` sha256 은 `ec5ea51b626d3ff9`
   로 바이트 단위 동일했다 — 자원은 움직였고 검색 파이프라인만 읽지 않았다
-- 미처리(다음 결정 대상): CANONICAL-INDEX §1 정본 서명 체인은 아직 G₀=105,588 이다
+- **처리 완료(2026-08-01)**: 정본 서명 체인을 G₀=**105,713** 으로 갱신 — CANONICAL-INDEX §0·§1 ·
+  GLOSSARY · STATUS · DATASET-CARD(§②·§③·계보도) · MANIFEST §3 · SPEC-006/007 세대 헤더 ·
+  CLAUDE.md(§0 H2 경계 · §5 G1/G2). 구 값 `105,588` 은 `check_signatures.py` 의
+  `HISTORICAL_SIGNATURES` 로 내렸고, **원고 v0.9 의 105,588 인용 4곳은 수치를 바꾸지 않고**
+  `<!-- sig-history -->` 로 예외 처리했다 — v0.9 §6 의 모든 결과가 그 세대 위에서 측정됐으므로
+  새 값으로 갈아끼우면 실제로 돌린 자원과 달라진다(§1-1·§1-3)
+- **함께 확인된 것 두 가지**
+  - **T-Box 가 연구 최초로 바뀌었다**: `owl:ObjectProperty` 97 → **98**(`skos:broader` 선언) ·
+    `skos:broader` 11 → **18** · 클래스 103·DatatypeProperty 81 불변(rdflib 실측). CLAUDE.md §0
+    델타유형표의 **유형 ① = H2 자격 있음**. 단 D-19 로 하류가 읽지 않아 **여전히 미검정**
+  - **세대 불일치**: `graph_v1/v2.ttl` 은 2026-07-23 산출물이라 구 G₀(105,588) 위에 있다.
+    `make merge` 재실행은 IR 후보 코퍼스 서명을 바꾸므로 **§2.1 사전등록 동결이 선행한다**
