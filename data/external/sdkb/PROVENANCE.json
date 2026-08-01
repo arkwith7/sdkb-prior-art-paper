@@ -1,35 +1,35 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "d578bf3074edbab4cdd39c21917cb44684dc8400",
-  "source_commit_date": "2026-07-23T11:32:45+09:00",
+  "source_commit": "2839afb87825874eb4f299e02c30d6d801d49c6a",
+  "source_commit_date": "2026-08-01T17:21:32+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-07-23T06:24:50+00:00",
+  "vendored_at": "2026-08-01T08:49:08+00:00",
   "baseline_counts": {
-    "nodes": 261,
-    "edges": 294,
+    "nodes": 274,
+    "edges": 312,
     "synonyms": 203,
     "cases": 3,
     "provenance_sources": 14
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-07-23T06:24:50+00:00",
+    "checked_at": "2026-08-01T08:49:07+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
           "input": "scripts/build_owl.py",
-          "sha256": "56310cf124b326765d6f64a5c1ef8fd87bdce1feebbc6a391e58c2b8d707f333"
+          "sha256": "e58bf44342a0ef67e5144e3867cc5a95d23ff61a5208b7b5caa4b5b1449ea378"
         }
       ],
       "ontology/sdkb-core-data.ttl": [
         {
           "input": "scripts/convert_rdf.py",
-          "sha256": "932d132a962d30922081ddbd9bd1797a9ceed956f36e6720291d8648b93250e4"
+          "sha256": "dfb56dc3b037ae62e0e29ad0e896d6cd7dbbbe3ba2b80d7061b27fb328d4ae77"
         },
         {
           "input": "data/semiconductor_v0_3.json",
-          "sha256": "c5d55aa9a06f77f8bdc995eabf3be129d9d7f9604bcec258e48aa66efd2a4032"
+          "sha256": "9260a395a071067c8ffd1102c435d605fc1826b16c35a04efb8cb52d4702d8b4"
         }
       ],
       "ontology/sdkb-abox-patents.ttl": [
@@ -49,11 +49,11 @@
       "ontology/sdkb-abox-experts-problems.ttl": [
         {
           "input": "scripts/build_abox_experts_problems.py",
-          "sha256": "e4357d4cca940989d2e51eaac6d7b46456162798d8eadfdddad9825da8f58cba"
+          "sha256": "7498b791eadca8f2718f0752d8010e6744aed32b633382a259e8b0fdbce7aaec"
         },
         {
           "input": "data/semiconductor_v0_3.json",
-          "sha256": "c5d55aa9a06f77f8bdc995eabf3be129d9d7f9604bcec258e48aa66efd2a4032"
+          "sha256": "9260a395a071067c8ffd1102c435d605fc1826b16c35a04efb8cb52d4702d8b4"
         }
       ],
       "ontology/sdkb-abox-vendors.ttl": [
@@ -91,7 +91,7 @@
         },
         {
           "input": "ontology/sdkb-core-data.ttl",
-          "sha256": "fa326cf2153e42b861ff1b5f82af51d1fd918e0f5dda4c949d34e51e211b251c"
+          "sha256": "f366a764569113608e467797a7422ba5f4503cacd3b6a470671a63b2abbaa3fa"
         }
       ],
       "ontology/sdkb-governance-kr-instances.ttl": [
@@ -109,7 +109,7 @@
         },
         {
           "input": "ontology/sdkb-core-data.ttl",
-          "sha256": "fa326cf2153e42b861ff1b5f82af51d1fd918e0f5dda4c949d34e51e211b251c"
+          "sha256": "f366a764569113608e467797a7422ba5f4503cacd3b6a470671a63b2abbaa3fa"
         }
       ]
     }
@@ -120,7 +120,7 @@
       "file": "sdkb-core.ttl",
       "source_path": "ontology/sdkb-core.ttl",
       "role": "TBox: 제조 코어(Process/SubProcess/Equipment/Material/Device/FailureMode)",
-      "sha256": "0cc3aa5dfd8ecb939043d6580c95bf8e430b25afae6f3b94e78cf1d98e1da2f3"
+      "sha256": "256346fcb83bcf286e1cc66d49e131e36d3e0095701d46d1612a3e5694097f1f"
     },
     {
       "file": "sdkb-patent.ttl",
@@ -138,14 +138,13 @@
       "file": "sdkb-core-data.ttl",
       "source_path": "ontology/sdkb-core-data.ttl",
       "role": "ABox: 도메인 인스턴스 (공정 20 · 디바이스 31 …)",
-      "sha256": "fa326cf2153e42b861ff1b5f82af51d1fd918e0f5dda4c949d34e51e211b251c"
+      "sha256": "f366a764569113608e467797a7422ba5f4503cacd3b6a470671a63b2abbaa3fa"
     },
     {
       "file": "sdkb-abox-patents.ttl",
       "source_path": "ontology/sdkb-abox-patents.ttl",
       "role": "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다",
-      "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089",
-      "license_restricted": true
+      "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089"
     },
     {
       "file": "sdkb-abox-experts-problems.ttl",
@@ -163,8 +162,7 @@
       "file": "sdkb-abox-prior-art.ttl",
       "source_path": "ontology/sdkb-abox-prior-art.ttl",
       "role": "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지",
-      "sha256": "013018db544d0a4028e9c6135197dcb492873eb4ea93f5fcaa809e1bb66c89f3",
-      "license_restricted": true
+      "sha256": "013018db544d0a4028e9c6135197dcb492873eb4ea93f5fcaa809e1bb66c89f3"
     },
     {
       "file": "sdkb-commercialization.ttl",
@@ -206,13 +204,13 @@
       "file": "semiconductor_v0_3.json",
       "source_path": "data/semiconductor_v0_3.json",
       "role": "ABox 의 커밋된 원천(=재현 기준점)",
-      "sha256": "c5d55aa9a06f77f8bdc995eabf3be129d9d7f9604bcec258e48aa66efd2a4032"
+      "sha256": "9260a395a071067c8ffd1102c435d605fc1826b16c35a04efb8cb52d4702d8b4"
     },
     {
       "file": "schema_report.json",
       "source_path": "data/schema_report.json",
       "role": "원천의 sha256 + 노드/엣지 카운트",
-      "sha256": "eed652d9ee3aebc3bafcea990a85f7e9593cfdccdc9afba7a67329b3cf0fb249"
+      "sha256": "42d4bcd1c55109cfc7ee7b897029ebaaea1c774380f0b6d1ed03ed0243dcea64"
     },
     {
       "file": "rejection_basis.csv",
@@ -226,6 +224,5 @@
         "inventiveness": 400
       }
     }
-  ],
-  "derived_updated_at": "2026-07-27T14:47:22+00:00"
+  ]
 }

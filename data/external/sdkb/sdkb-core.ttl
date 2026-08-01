@@ -9,6 +9,10 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+skos:broader a owl:ObjectProperty ;
+    rdfs:label "broader"@en ;
+    rdfs:comment "Concept-level hierarchy (narrower → broader). Introduced by CR-007 so that over-general surface forms resolve to a superordinate concept instead of being mis-attached to the Skill axis. Domain/range are deliberately unconstrained: SKOS is an external vocabulary and SDKB must not narrow it for other consumers."@en .
+
 sdkb:ont a owl:Ontology ;
     rdfs:label "SDKB v1.1 — Semiconductor Domain Knowledge Base Ontology"@en ;
     dcterms:creator "Park HyoungSik — SKKU MOT" ;

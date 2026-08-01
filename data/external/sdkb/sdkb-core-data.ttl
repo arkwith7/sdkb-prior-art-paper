@@ -554,6 +554,7 @@
     dcterms:bibliographicCitation "Author-defined generic/facilities equipment" ;
     dcterms:license "N/A" ;
     dcterms:source "author" ;
+    skos:broader <https://w3id.org/sdkb/data/equipment_class/process_chamber> ;
     skos:definition "Chemical vapor deposition"@en ;
     skos:prefLabel "CVD Reactor"@en ;
     ont:interpretationType "author-defined" ;
@@ -732,6 +733,7 @@
     dcterms:bibliographicCitation "Author-defined generic/facilities equipment" ;
     dcterms:license "N/A" ;
     dcterms:source "author" ;
+    skos:broader <https://w3id.org/sdkb/data/equipment_class/process_chamber> ;
     skos:definition "Physical vapor deposition"@en ;
     skos:prefLabel "PVD Chamber"@en ;
     ont:interpretationType "author-defined" ;
@@ -1203,6 +1205,66 @@
         <https://w3id.org/sdkb/data/subprocess/cvd> ;
     ont:validationRequired true .
 
+<https://w3id.org/sdkb/data/material/argon> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:broader <https://w3id.org/sdkb/data/material/process_gas> ;
+    skos:definition "Ar — inert carrier and sputtering gas."@en ;
+    skos:prefLabel "Argon"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
+<https://w3id.org/sdkb/data/material/cf4> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:broader <https://w3id.org/sdkb/data/material/process_gas> ;
+    skos:definition "CF4 — fluorocarbon etch gas."@en ;
+    skos:prefLabel "Carbon Tetrafluoride"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
+<https://w3id.org/sdkb/data/material/duv_photomask> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:broader <https://w3id.org/sdkb/data/material/photomask> ;
+    skos:definition "Transmissive photomask for DUV lithography."@en ;
+    skos:prefLabel "DUV Photomask"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
+<https://w3id.org/sdkb/data/material/euv_mask> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:broader <https://w3id.org/sdkb/data/material/photomask> ;
+    skos:definition "Reflective multilayer mask for EUV lithography."@en ;
+    skos:prefLabel "EUV Mask"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
+<https://w3id.org/sdkb/data/material/oxygen_gas> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:broader <https://w3id.org/sdkb/data/material/process_gas> ;
+    skos:definition "O2 — oxidant / ashing gas."@en ;
+    skos:prefLabel "Oxygen Gas"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
+<https://w3id.org/sdkb/data/material/sf6> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:broader <https://w3id.org/sdkb/data/material/process_gas> ;
+    skos:definition "SF6 — fluorine-source etch gas."@en ;
+    skos:prefLabel "Sulfur Hexafluoride"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
 <https://w3id.org/sdkb/data/material/sog> a ont:Material ;
     dcterms:bibliographicCitation "Venugopal et al. 2024, Scientific Data 11:217" ;
     dcterms:license "CC-BY-4.0" ;
@@ -1526,6 +1588,8 @@
     skos:altLabel "HfO2"@en,
         "High-k"@en,
         "하프늄 산화막"@ko ;
+    skos:broader <https://w3id.org/sdkb/data/material/dielectric>,
+        <https://w3id.org/sdkb/data/material/oxide> ;
     skos:definition "HfO2 high-k dielectric."@en ;
     skos:prefLabel "Hafnium Oxide"@en ;
     ont:interpretationType "mapped" .
@@ -1537,6 +1601,7 @@
     rdfs:seeAlso <https://zenodo.org/records/10144972> ;
     skos:altLabel "Low-k"@en,
         "저유전율 절연막"@ko ;
+    skos:broader <https://w3id.org/sdkb/data/material/dielectric> ;
     skos:definition "Low-k ILD material."@en ;
     skos:prefLabel "Low-k Dielectric"@en ;
     ont:interpretationType "mapped" .
@@ -1888,6 +1953,15 @@
     skos:definition "Chamber pressure (mTorr/Torr)."@en ;
     skos:prefLabel "Pressure"@en ;
     ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/process/plasma_processing> a ont:Process ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:definition "Plasma-based processing in general. subprocess:plasma_etch 는 과대특정이라 Process 층에 상위를 세운다."@en ;
+    skos:prefLabel "Plasma Processing"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
 
 <https://w3id.org/sdkb/data/rootcause/alignment_error> a ont:RootCause ;
     dcterms:bibliographicCitation "Bahr et al. 2025, J. Industrial Information Integration; FMEA triple: FailureMode→FailureCause" ;
@@ -2303,6 +2377,15 @@
     skos:prefLabel "Overlay Metrology"@en ;
     ont:interpretationType "mapped" .
 
+<https://w3id.org/sdkb/data/equipment_class/process_chamber> a ont:EquipmentClass ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:definition "Generic process chamber. Equipment 축의 41 노드는 전부 모델·부품 단위라 일반 개념은 EquipmentClass 층에 둔다."@en ;
+    skos:prefLabel "Process Chamber"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
 <https://w3id.org/sdkb/data/material/aluminum> a ont:Material ;
     dcterms:bibliographicCitation "Venugopal et al. 2024, Scientific Data 11:217" ;
     dcterms:license "CC-BY-4.0" ;
@@ -2325,6 +2408,15 @@
     skos:prefLabel "Bottom Anti-Reflective Coating"@en ;
     ont:interpretationType "mapped" .
 
+<https://w3id.org/sdkb/data/material/cmp_slurry> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:definition "CMP slurry superclass of cmp_slurry_cu · cmp_slurry_oxide."@en ;
+    skos:prefLabel "CMP Slurry"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
 <https://w3id.org/sdkb/data/material/cmp_slurry_cu> a ont:Material ;
     dcterms:bibliographicCitation "Venugopal et al. 2024, Scientific Data 11:217" ;
     dcterms:license "CC-BY-4.0" ;
@@ -2332,6 +2424,7 @@
     rdfs:seeAlso <https://zenodo.org/records/10144972> ;
     skos:altLabel "Cu Slurry"@en,
         "구리 슬러리"@ko ;
+    skos:broader <https://w3id.org/sdkb/data/material/cmp_slurry> ;
     skos:definition "Slurry for copper CMP."@en ;
     skos:prefLabel "Cu CMP Slurry"@en ;
     ont:interpretationType "mapped" .
@@ -2342,6 +2435,7 @@
     dcterms:source "matkg" ;
     rdfs:seeAlso <https://zenodo.org/records/10144972> ;
     skos:altLabel "산화막 슬러리"@ko ;
+    skos:broader <https://w3id.org/sdkb/data/material/cmp_slurry> ;
     skos:definition "Slurry for oxide CMP."@en ;
     skos:prefLabel "Oxide CMP Slurry"@en ;
     ont:interpretationType "mapped" .
@@ -2371,6 +2465,15 @@
     ont:interpretationType "mapped" ;
     ont:validationRequired true .
 
+<https://w3id.org/sdkb/data/material/photomask> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:definition "Photomask / reticle. Device 34 노드는 전부 반도체 소자라 마스크 자리가 없다."@en ;
+    skos:prefLabel "Photomask"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
 <https://w3id.org/sdkb/data/material/teOs> a ont:Material ;
     dcterms:bibliographicCitation "Venugopal et al. 2024, Scientific Data 11:217" ;
     dcterms:license "CC-BY-4.0" ;
@@ -2378,6 +2481,7 @@
     rdfs:seeAlso <https://zenodo.org/records/10144972> ;
     skos:altLabel "TEOS"@en,
         "테오스 산화막"@ko ;
+    skos:broader <https://w3id.org/sdkb/data/material/oxide> ;
     skos:definition "TEOS CVD oxide."@en ;
     skos:prefLabel "TEOS Oxide"@en ;
     ont:interpretationType "mapped" .
@@ -2542,6 +2646,15 @@
     ont:interpretationType "mapped" ;
     ont:madeBy <https://w3id.org/sdkb/data/organization/kla> .
 
+<https://w3id.org/sdkb/data/material/oxide> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:definition "Oxide material superclass of sio2 · teOs · hfO2."@en ;
+    skos:prefLabel "Oxide Material"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
 <https://w3id.org/sdkb/data/material/sin> a ont:Material ;
     dcterms:bibliographicCitation "Venugopal et al. 2024, Scientific Data 11:217" ;
     dcterms:license "CC-BY-4.0" ;
@@ -2550,6 +2663,7 @@
     skos:altLabel "Nitride"@en,
         "실리콘 질화막"@ko,
         "질화막"@ko ;
+    skos:broader <https://w3id.org/sdkb/data/material/dielectric> ;
     skos:definition "SiN hardmask/spacer material."@en ;
     skos:prefLabel "Silicon Nitride"@en ;
     ont:interpretationType "mapped" .
@@ -2562,6 +2676,8 @@
     skos:altLabel "Oxide"@en,
         "산화막"@ko,
         "실리콘 산화막"@ko ;
+    skos:broader <https://w3id.org/sdkb/data/material/dielectric>,
+        <https://w3id.org/sdkb/data/material/oxide> ;
     skos:definition "SiO2 dielectric material."@en ;
     skos:prefLabel "Silicon Dioxide"@en ;
     ont:interpretationType "mapped" .
@@ -2769,6 +2885,15 @@
     ont:interpretationType "mapped" ;
     ont:madeBy <https://w3id.org/sdkb/data/organization/tokyo_electron_limited> .
 
+<https://w3id.org/sdkb/data/material/dielectric> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:definition "Dielectric material superclass of sio2 · sin · low_k_dielectric · hfO2."@en ;
+    skos:prefLabel "Dielectric Material"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
+
 <https://w3id.org/sdkb/data/material/photoresist_arF> a ont:Material ;
     dcterms:bibliographicCitation "Venugopal et al. 2024, Scientific Data 11:217" ;
     dcterms:license "CC-BY-4.0" ;
@@ -2779,6 +2904,15 @@
     skos:definition "193nm ArF photoresist."@en ;
     skos:prefLabel "ArF Photoresist"@en ;
     ont:interpretationType "mapped" .
+
+<https://w3id.org/sdkb/data/material/process_gas> a ont:Material ;
+    dcterms:bibliographicCitation "CR-007 §3단계 결정 ①" ;
+    dcterms:license "CDLA-Permissive-2.0" ;
+    dcterms:source "author" ;
+    skos:definition "Generic process gas consumed in etch/deposition. 소모재는 Material 축 (hf_acid·barc 선례)."@en ;
+    skos:prefLabel "Process Gas"@en ;
+    ont:interpretationType "author-defined" ;
+    ont:validationRequired true .
 
 <https://w3id.org/sdkb/data/organization/lam_research> a ont:Vendor ;
     dcterms:bibliographicCitation "Lam Research public corporate information" ;
@@ -2978,6 +3112,7 @@
     skos:altLabel "건식 식각"@ko,
         "건식식각"@ko,
         "플라즈마 식각"@ko ;
+    skos:broader <https://w3id.org/sdkb/data/process/plasma_processing> ;
     skos:definition "Dry etch using RF plasma (RIE/ICP)."@en ;
     skos:prefLabel "Plasma Etch"@en ;
     ont:confidence 0.6,

@@ -5,8 +5,8 @@
 
 | 축 | CQ 검증 | SHACL 검사 | **게이트(합집합)** | 사용됨 | **아무도 안 봄** |
 |---|---:|---:|---:|---:|---:|
-| 술어 | 38 (45.8%) | 48 | **83 (100.0%)** | 83 | **0** |
-| 클래스 | 18 (66.7%) | 19 | **27 (100.0%)** | 27 | **0** |
+| 술어 | 38 (44.2%) | 51 | **86 (100.0%)** | 86 | **0** |
+| 클래스 | 18 (60.0%) | 22 | **30 (100.0%)** | 30 | **0** |
 
 ## CQ 별 검증 어휘
 
@@ -14,10 +14,10 @@
 |---|---:|---|
 | CQ01_patents_per_process_step | 20 | `Patent` · `Process` · `SubProcess` · `realizesProcess` |
 | CQ02_recent_patents_by_step | 365 | `Patent` · `filingDate` · `realizesProcess` |
-| CQ03_uncovered_process_steps | 29 | `Patent` · `Process` · `SubProcess` · `realizesProcess` |
+| CQ03_uncovered_process_steps | 30 | `Patent` · `Process` · `SubProcess` · `realizesProcess` |
 | CQ04_concept_annual_series | 304 | `Device` · `Patent` · `Process` · `SubProcess` · `concernsDevice` · `filingDate` · `realizesProcess` |
 | CQ05_concept_vs_ipc_series | 1959 | `Patent` · `filingDate` · `hasIPC` |
-| CQ06_concepts_without_recent_patents | 58 | `Device` · `Patent` · `Process` · `SubProcess` · `concernsDevice` · `filingDate` · `realizesProcess` |
+| CQ06_concepts_without_recent_patents | 59 | `Device` · `Patent` · `Process` · `SubProcess` · `concernsDevice` · `filingDate` · `realizesProcess` |
 | CQ07_device_process_crosswalk | 55 | `Patent` · `concernsDevice` · `realizesProcess` |
 | CQ08_applicant_process_portfolio | 316 | `Patent` · `assignedTo` · `realizesProcess` |
 | CQ09_rejection_prior_art | 414 | `RejectedPatent` · `hasPriorArt` · `hasPriorArtExaminer` · `rejectedFor` |
@@ -40,6 +40,9 @@
 | CQ26_patent_export_control_exposure | 1249 | `Patent` · `concernsDevice` · `realizesProcess` |
 | CQ27_fto_claim_readiness | 0 | — |
 | CQ28_patent_failuremode_expert | 40 | `Expert` · `Patent` · `caseFailureMode` · `exhibitsFailureMode` · `hasCaseExperience` |
+| CQ29_claim_level_rejection_judgment | 0 | — |
+| CQ30_independent_claim_features | 0 | — |
+| CQ31_dependent_claim_hierarchy | 0 | — |
 
 ## 아무도 보지 않는 어휘 (CQ 도 SHACL 도) — **0 이어야 한다**
 
@@ -49,16 +52,18 @@
 
 | 술어 | 사용 | | 클래스 | 사용 |
 |---|---:|---|---|---:|
-| `abstractText` | 1000 | | `IPCSymbol` | 810 |
+| `hasCPC` | 9204 | | `CPCSymbol` | 3504 |
+| `abstractText` | 3973 | | `CitedPatent` | 3034 |
+| `claimText` | 2197 | | `IPCSymbol` | 2655 |
 | `applicationNumber` | 1000 | | `Organization` | 351 |
 | `examinationStatus` | 1000 | | `ExpertCase` | 163 |
 | `firstClaimText` | 1000 | | `EquipmentModel` | 29 |
-| `patentOffice` | 1000 | | `STEEPVEDimension` | 7 |
-| `processFamily` | 1000 | | `OptionType` | 5 |
-| `publicationDate` | 1000 | | `RejectionType` | 5 |
-| `publicationNumber` | 1000 | | `ConstraintType` | 2 |
-| `valueChainStage` | 1000 | | `Semiconductor` | 1 |
-| `interpretationType` | 914 | |  |  |
+| `patentOffice` | 1000 | | `TechnologyReadinessLevel` | 9 |
+| `processFamily` | 1000 | | `STEEPVEDimension` | 7 |
+| `publicationDate` | 1000 | | `OptionType` | 5 |
+| `publicationNumber` | 1000 | | `RejectionType` | 5 |
+| `valueChainStage` | 1000 | | `ConstraintType` | 2 |
+| `interpretationType` | 927 | | `Semiconductor` | 1 |
 | `hasCertification` | 395 | |  |  |
 | `region` | 336 | |  |  |
 | `preferredProjectType` | 316 | |  |  |
@@ -72,6 +77,7 @@
 | `confidence` | 149 | |  |  |
 | `caseMitigation` | 135 | |  |  |
 | `caseProcess` | 122 | |  |  |
+| `validationRequired` | 121 | |  |  |
 | `age` | 110 | |  |  |
 | `complianceFlag` | 110 | |  |  |
 | `consultingAvailability` | 110 | |  |  |
@@ -89,8 +95,8 @@
 | `specialization` | 110 | |  |  |
 | `toeicScore` | 110 | |  |  |
 | `yearsExperience` | 110 | |  |  |
-| `validationRequired` | 108 | |  |  |
 | `retirementYear` | 53 | |  |  |
 | `caseRootCause` | 46 | |  |  |
 | `caseParameter` | 41 | |  |  |
+| `trlLevel` | 9 | |  |  |
 | `securityLevel` | 1 | |  |  |

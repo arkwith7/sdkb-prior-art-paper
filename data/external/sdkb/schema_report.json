@@ -1,20 +1,20 @@
 {
   "file": "semiconductor_v0_3.json",
-  "file_sha256": "c5d55aa9a06f77f8bdc995eabf3be129d9d7f9604bcec258e48aa66efd2a4032",
+  "file_sha256": "9260a395a071067c8ffd1102c435d605fc1826b16c35a04efb8cb52d4702d8b4",
   "version": "0.3",
   "version_id": "sdkb_semiconductor_v0_3",
   "status": "active",
   "counts": {
-    "nodes": 261,
-    "edges": 294,
+    "nodes": 274,
+    "edges": 312,
     "synonyms": 203,
     "cases": 3,
     "provenance_sources": 14
   },
   "node_types": {
-    "Process": 11,
+    "Process": 12,
     "SubProcess": 38,
-    "EquipmentClass": 11,
+    "EquipmentClass": 12,
     "Vendor": 16,
     "Organization": 2,
     "Parameter": 5,
@@ -24,7 +24,7 @@
     "Mitigation": 20,
     "TechnologyNode": 3,
     "Skill": 12,
-    "Material": 20,
+    "Material": 31,
     "Equipment": 41,
     "Device": 34
   },
@@ -42,15 +42,16 @@
     "NOT_ALLOWED_WITH": 7,
     "INCOMPATIBLE_WITH": 8,
     "IS_INSTANCE_OF": 42,
-    "PROVIDED_BY": 42
+    "PROVIDED_BY": 42,
+    "BROADER": 18
   },
   "validation_required": {
-    "nodes": 71,
+    "nodes": 84,
     "edges": 121
   },
   "interpretation_distribution": {
     "mapped": 158,
-    "author-defined": 82,
+    "author-defined": 95,
     "verbatim": 21
   },
   "integrity": {
