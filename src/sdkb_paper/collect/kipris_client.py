@@ -67,9 +67,14 @@ class KiprisClient:
         )
         self.session = requests.Session()
 
-    def _get(self, params: dict, endpoint: str = ENDPOINT) -> str:
+    @staticmethod
+    def cache_key(params: dict) -> tuple[str, str]:
+        """(정규화된 파라미터 문자열, sha256). 캐시 키이자 **재현 좌표**다 — 원장이 이 값을 남긴다."""
         key_src = "&".join(f"{k}={v}" for k, v in sorted(params.items()))
-        key = hashlib.sha256(key_src.encode()).hexdigest()
+        return key_src, hashlib.sha256(key_src.encode()).hexdigest()
+
+    def _get(self, params: dict, endpoint: str = ENDPOINT) -> str:
+        key_src, key = self.cache_key(params)
         row = self.cache.execute("SELECT body FROM responses WHERE key=?", (key,)).fetchone()
         if row:
             return row[0]
@@ -124,10 +129,47 @@ class KiprisClient:
             yield from items
             page += 1
 
+    def search_ipc(
+        self, ipc: str, date_from: str, date_to: str, *, page: int
+    ) -> tuple[int, list[KiprisRecord]]:
+        """IPC × 출원일 범위를 **출원일 오름차순**으로 1페이지 가져온다 (B층 · PLAN-032 §5.2).
+
+        기존 `search()` 는 출원인 축이고 정렬이 없다 — B층은 §3 표집 순서를 집행해야 하므로
+        서버 정렬을 쓴다. **가법 추가이며 `search()`/`_params()` 는 건드리지 않는다**(A층 재현 좌표).
+
+        실측 계약(PLAN-032 §2.5): `sortSpec=AD` + `descSort=false` → 출원일 오름차순 ·
+        `applicationDate=YYYYMMDD~YYYYMMDD`(물결) · `numOfRows` 상한 500 · 동일 요청 재현 동일.
+        **동일 출원일 내부 순서는 서버 정의**이므로 2차키는 호출자(`b_layer.stream`)가 건다.
+
+        반환: (totalCount, 레코드). 빈 페이지는 스트림 종료 신호다.
+        """
+        params = {
+            "ipcNumber": ipc,
+            "applicationDate": f"{date_from}~{date_to}",
+            "numOfRows": PAGE_SIZE,
+            "pageNo": page,
+            "sortSpec": "AD",
+            "descSort": "false",
+            "patent": "true",
+            "utility": "false",
+        }
+        body = self._get(params)
+        el = ET.fromstring(body).find(".//totalCount")
+        total = int(el.text) if el is not None and el.text and el.text.isdigit() else 0
+        return total, _parse(body, "", ipc)
+
     def detail(self, application_number: str) -> PatentDetail:
         """출원번호 1건의 초록 + 전체 청구항. 응답은 캐시된다(재실행 무호출)."""
-        body = self._get({"applicationNumber": application_number}, endpoint=DETAIL_ENDPOINT)
-        return _parse_detail(body, application_number)
+        return _parse_detail(self.detail_raw(application_number), application_number)
+
+    def detail_raw(self, application_number: str) -> str:
+        """서지상세 **원응답 XML**. 응답은 캐시된다(재실행 무호출).
+
+        `detail()` 은 초록·청구항만 뽑아 B층이 필요로 하는 심사관 인용
+        (`priorArtDocumentsInfo`)·행정상태(`finalDisposal`)를 버린다. B층은 같은 1콜에서
+        네 조건을 전부 읽어야 하므로 원문을 받아 `b_layer.biblio` 가 파싱한다.
+        """
+        return self._get({"applicationNumber": application_number}, endpoint=DETAIL_ENDPOINT)
 
 
 @dataclass(frozen=True)

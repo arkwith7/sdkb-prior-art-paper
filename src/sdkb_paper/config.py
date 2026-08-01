@@ -129,6 +129,40 @@ IR_SPLIT = IR_DIR / "split.parquet"
 # 봉인된 test qrel(F9 사전등록). 최종 비교 전까지 열지 않는다 — 개발은 dev 로만.
 IR_QREL_TEST_SEALED = IR_DIR / "qrel_test_sealed.parquet"
 
+# --- B층 제2 확증분할 수집 (PLAN-031 §3 🔒사전등록 · PLAN-032 §5 설계) -----
+# A층(기존 1,000건)은 1회 개봉·공표됐고 자원까지 바뀌므로 확증에 쓸 수 없다. B층은
+# **오염되지 않은** 질의 200건을 같은 규칙으로 새로 모은다. 아래 값은 전부 PLAN-031 §3의
+# 전사(轉寫)이며 **결과를 본 뒤 바꾸지 않는다** — 코드에서 고치면 사전등록 위반이다.
+#
+# 동결 IPC 21종 = A층 주분류 상위 20(누적 89.4%) + H10K(2023 IPC 개편 반영분).
+# 정렬은 검색 응답의 **선두** IPC 를 주분류로 본다(§2.5(3) 실측).
+B_LAYER_IPC = frozenset({
+    "H01L", "C23C", "H01J", "H10D", "H10P", "G11C", "H10B", "C09G", "B23K", "C04B",
+    "C07F", "B22F", "G02F", "H10W", "C09K", "H10F", "C22C", "G03F", "B82Y", "B81B", "H10K",
+})
+B_LAYER_DATE_FROM = "20050101"   # PLAN-031 §3 포함 5 (A층 손실 9건)
+B_LAYER_DATE_TO = "20251231"
+B_LAYER_TARGET = 200             # §3 목표. 미달해도 기준을 완화하지 않는다(정지 규칙)
+B_LAYER_MAX_DETAIL = 500         # §8.1 승인 파일럿 예산 — r 의 분모
+B_LAYER_MAX_SEARCH = 300         # 별도 계정(§1 호출 회계 동결)
+B_LAYER_MAX_AUDIT = 50           # registerStatus 감사(§6.1 결정 E) — r 의 분모에서 제외
+# §3 포함 1: register_status=거절 또는 examination_status 가 아래 집합에 듦.
+B_LAYER_REJECTED_STATUS = "거절"
+B_LAYER_EXAMINATION_REJECTED = frozenset({
+    "거절결정(일반)", "거절결정(재심사)", "원결정유지(심사전치)",
+})
+# 응답 캐시는 A층(kipris_cache.sqlite)과 **분리**한다 — 섞으면 A층 재현 좌표가 흔들린다.
+B_LAYER_CACHE = RAW_KIPRIS / "b_layer_cache.sqlite"
+B_LAYER_DIR = IR_DIR / "b_layer"
+B_LEDGER = B_LAYER_DIR / "screening_ledger.jsonl"      # 1행=1후보 · 인용 식별자 없음 · gitignore
+B_ACCEPTED = B_LAYER_DIR / "accepted.parquet"          # claim1 원문 포함 → gitignore(§1-5)
+# 집계만 담지만 data/processed/* 가 gitignore 이므로 파일 자체는 커밋되지 않는다 —
+# 내용(콜 회계·r·사유 분포)은 프로파일과 MANIFEST 로 전사해 커밋한다.
+B_BUDGET_REPORT = B_LAYER_DIR / "call_budget.json"
+# 봉인 qrel. 파일럿 단계에서 **어떤 코드도 읽지 않는다**(PLAN-032 §1 성공기준 ⑤).
+B_QREL_SEALED = IR_DIR / "qrel_b_sealed.parquet"
+B_LAYER_PROFILE = DATA / "profiles" / "ir_split_b_pilot.md"   # §4 데이터 프로파일(커밋)
+
 # --- T-gate 승인 규칙 (v0.9 · PLAN-019 W3 · 원고 §4.9) ---------------------
 # Accept(ΔG) = 1[L0=L1=L2=L3=pass] · 1[LB95(ΔR100) > −ε]_T1 · 1[max_s Drop_s < δ]_T2
 #              · 1[∀f∈{em,tf,core}: PassRate_f(new) ≥ PassRate_f(old)]_T3
