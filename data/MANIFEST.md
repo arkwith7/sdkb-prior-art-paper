@@ -388,3 +388,27 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - 판정 기록 보존: 파일럿의 `r` 0.5970 · `r_free` 0.0783 · `r_family` 1.0000 · 감사 위음성 0/50 은
   **2005년 표본에서의 관측**으로 남는다. 새 창의 `r` 는 다시 잰다 — 연도가 다르면 거절률이 다르다
 - 반영: PLAN-031 §9(동결) · `src/sdkb_paper/config.py` · STATUS §2
+
+## 2026-08-01 · B층 재수집 (개정 창 2018–2020 · PLAN-031 §10) — **200건 도달 · 봉인 미개봉**
+- 명령: `python -m sdkb_paper.collect.b_layer` (개정 커밋 `0de9ea8` 이후)
+- 정지 사유: `target_reached` · 호출 search 22 · detail 210 · audit 50 · `quota_hit=false`
+- 건수: 스크리닝 원장 **2,623행** · 고유 출원번호 **2,573** · **채택 200건** ·
+  봉인 qrel **538행 / 질의 200**
+- 비율: `r` **0.9524** [0.9146, 0.9739] (200/210) · `r_free` 0.0816 [0.0717, 0.0928] (210/2,573) ·
+  `r_family` 1.0000 [0.9820, 1.0000] (210/210) · 감사 위음성 **0/50**
+- 채택분 출원일 **20180102 ~ 20180216** · 주분류 H10P 58 · B23K 21 · H10K 20 · C23C 18
+- **건초더미 복구 확인**: 마스크(공개일 < 질의 출원일) 후 후보 **13,801 ~ 14,053**
+  (구 창에서는 **2건**이었다 — 개정의 목적이 달성됨)
+- **A층 배제 규칙 작동 확인**: `dup_application_a_layer` **5건**(구 창에서는 0이라 미검증이었다)
+- 🛑 **§9.4 도달성 검사 실패 — 개봉 전 차단**: 고유 인용 식별자 514 중 후보 코퍼스 적중 **6**
+  (도달성 0.0117 · A층 대조 0.953). 원인 둘 — ① KR 인용 235건은 **공개번호**인데 코퍼스 KR
+  37,518건은 **출원번호** 키(측정 불가) ② 외국 문헌 **268건(52 %)** 이 코퍼스에 부재.
+  **KR 전량 해소를 가정해도 상한 0.457.** 후보 코퍼스 증분 설계(§10.4) 승인 전까지 개봉 금지
+- 봉인 규율: `qrel_b_sealed.parquet` 은 **쓰기** 후 §9.4 ①이 허용한 **집계 통계만** 읽었다 —
+  질의별 정답·인용 목록은 산출하지 않았고 어떤 튜닝에도 쓰이지 않았다
+- 파일 sha256:
+  - `data/processed/ir/b_layer/screening_ledger.jsonl` · `eeb414c542105e6d18a3f82efc641585b2d9b49304c11481e7045c51b6efcb03`
+  - `data/processed/ir/b_layer/accepted.parquet` · `b81257e95f5324e248cdaca83d38d05c2432d57339a5ad30f6b72d79cb41b26d`
+  - `data/processed/ir/qrel_b_sealed.parquet` **🔒봉인** · `127a138f1c1651676ea81b9ecf50aa53e0172ca4ee7ff0c5b8f26e9d171db4c3`
+  - `data/raw/kipris/b_layer_cache.sqlite` · `f0e1b7ebc81251a216b7adb0ec107db438ce4ee771693b41351ddfb00a8201fd`
+- 반영: PLAN-031 §9(개정) 집행 · §10(실행 기록) · STATUS §2
