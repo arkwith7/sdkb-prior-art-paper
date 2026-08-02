@@ -344,6 +344,18 @@ SDKB의 L0–L3는 이 전통을 병합 게이트로 구현한 것이고, 본 �
 
 **연구 공백:** 기존 온톨로지·KG 품질 연구는 사후 비교에 머물며, 도메인 온톨로지의 지속적 보강을 **릴리스 전 사전 승인 게이트**에 연결한 설계는 제한적이다. 특히 여러 태스크를 함께 지탱하는 온톨로지에서, 한 태스크만 보는 게이트가 부르는 과적합을 교차 태스크 비회귀 조건으로 통제한 사례는 확인되지 않는다.
 
+## 2.3.1 자원 쪽 숫자가 좋아지면 태스크도 좋아지는가 — 대리지표 문제
+
+앞 절의 검사들은 모두 **자원 그 자체**를 본다. 구조가 맞는가, 논리가 모순되지 않는가, 어휘가 얼마나 넓은가, 링크가 얼마나 채워졌는가. 이런 숫자를 개선하는 일은 그 자체가 목적이 아니라 **쓰는 일이 잘되게 하려는 수단**이다. 그러므로 자원 쪽 숫자는 태스크 성능의 **대리지표(proxy)** 이고, 대리지표에는 늘 같은 질문이 붙는다 — **정말로 대신할 수 있는가.**
+
+이 질문을 정면으로 다룬 전통이 온톨로지 평가 안에 이미 있다. 온톨로지를 응용에 꽂아 넣고 그 응용의 출력으로 평가하는 **과제 기반 평가(task-based · application-based evaluation)** 가 그것이며(Porzel & Malaka, 2004), 평가 방법 분류에서도 금표준 기반·코퍼스 기반·기준 기반과 나란히 하나의 갈래로 자리 잡았다(Brank et al., 2005). 다만 이 전통에서 과제 성능은 **여러 온톨로지를 견주어 고르는 잣대**로 쓰였지, **하나의 온톨로지가 자라날 때 그 변경을 받아들일지 말지 정하는 조건**으로 쓰이지는 않았다.
+
+대리지표가 실제로 어긋난다는 증거는 인접 분야에서 반복해 보고됐다. 단어 표현 연구에서는 자원 자체의 품질을 재는 내재적 평가(intrinsic)가 **다운스트림 성능을 잘 예측하지 못한다**는 것이 여러 벤치마크와 과제에 걸쳐 관측됐고(Chiu et al., 2016; Faruqui et al., 2016), 지표를 최적화 대상으로 삼는 순간 그 지표가 재려던 것을 대표하지 못하게 되는 일반적 기제도 정리돼 있다(Thomas & Uminsky, 2020). 지식그래프 쪽에서는 KGrEaT가 같은 지적을 명시적으로 했다 — **KG를 보강하는 연구는 다운스트림 성능이 좋아진다는 전제로 정당화되면서 정작 그것을 거의 재지 않는다**(Heist et al., 2023). 한 층 더 아래에서도 같은 질문이 열려 있다. 검색 지표가 생성 답변의 품질을 예측하는지에 대해서는 **검색과 생성의 목표가 정렬될 때는 예측하지만 파이프라인이 복잡해지면 그 연결이 끊어진다**는 보고가 있다(Samuel et al., 2026).
+
+공학 정보학 분야의 온톨로지 연구에서 이 축은 특히 얇다. 이 분야의 검증은 대체로 **구조와 규칙의 준수**를 본다 — 모델이 스키마를 지키는가, 요구사항 규칙을 만족하는가(Solihin et al., 2015; Pauwels et al., 2024) — 이고, 온톨로지 자체는 응용에 적용해 **동작을 시연**하는 방식으로 정당화되는 경우가 많다. 시연은 "쓸 수 있다"를 보이지만 **"바꿔도 되는가"에는 답하지 않는다.**
+
+**본 연구가 이 흐름에 보태는 것은 상관관계가 아니라 통제된 한 사례와 그에 대한 결정이다.** 문서집합·검색 설정·가중치·분할·평가셋을 전부 고정하고 **온톨로지만 갈아 끼운** 조건에서, 자원 쪽 지표를 2.4배 개선한 변경이 주 시스템의 검색 회수를 유의하게 떨어뜨렸고, 그 변경은 형식 검증 네 층을 모두 통과했으나 **성능 조건에 의해 거부됐다**(§6.7). 즉 이 논문은 "대리지표가 어긋날 수 있다"는 명제를 한 번 더 확인하는 데서 멈추지 않고, 어긋났을 때 **릴리스를 어떻게 막을 것인가**까지를 함께 제시한다.
+
 ## 2.4 태스크 확장형 도메인 온톨로지 데이터셋
 
 도메인 온톨로지 데이터셋은 용어 목록이나 하나의 응용모델과 다르다. 여러 원천을 안정된 식별자와 명시적 의미관계로 묶는 공유 T-Box가 있어야 하고, T-Box의 표현 가능성과 A-Box의 실제 완전도를 나눠 보고해야 하며, 스키마·인스턴스·출처·라이선스·검증 산출물과 재구축 절차를 함께 제공해야 한다(Wilkinson et al., 2016; Hogan et al., 2021).
@@ -372,7 +384,8 @@ SDKB는 세 태스크의 표현 범위를 제시하고, 이 논문은 그중 선
 | 교차언어 특허검색 | 통로가 번역·다국어 임베딩에 한정 | 언어중립 개념 IRI를 제3 통로로 두고 정답 언어별 회수를 분해(탐색적 · §6.2f) |
 | 온톨로지 검증 | 순위 품질·교차 태스크 회귀를 보장하지 않는다 | 3조건 T-gate와 비열등 병합 규칙 |
 | KG 다운스트림 평가 | 사후 비교에 머물고 승인 게이트가 아니다 | 릴리스 전 사전 승인 게이트로 전환 |
-| 자원 품질 지표를 유용성의 **대리지표**로 쓰는 관행 (커버리지·링크 완전성·개념 밀도) | 대리지표가 다운스트림 성능과 **어긋난 사례**가 거의 보고되지 않는다 | 자원 지표를 2.4배 개선한 델타에서 검색이 유의하게 하락한 실측과 그 게이트 판정(§6.7·§7.5) |
+| 과제 기반 온톨로지 평가 (Porzel & Malaka, 2004; Brank et al., 2005) | 여러 온톨로지를 **고르는 잣대**로 쓰였고, 한 온톨로지의 **변경을 승인하는 조건**으로는 쓰이지 않았다 | 같은 과제 성능을 병합 전 승인식의 항으로 사용 |
+| 자원 품질 지표를 유용성의 **대리지표**로 쓰는 관행 (커버리지·링크 완전성·개념 밀도) | 어긋남이 상관 분석 수준에서 보고될 뿐(Chiu et al., 2016; Heist et al., 2023), **통제된 조건의 사례와 그에 대한 결정**은 드물다 | 문서집합·설정 고정·자원만 교체한 두 팔에서 자원 지표 2.4배 개선이 검색 하락을 낳은 실측과 그 거부 판정(§6.7·§7.5) |
 | 도메인 온톨로지 데이터셋 | 다중 태스크 표현과 단일 태스크 성능을 혼동 | 세 태스크 뷰·비대칭 검증·T3 감시를 명시 |
 
 "최초"를 주장하기보다 이 결합과 실험설계의 차별성에 기여를 둔다.
@@ -1392,11 +1405,17 @@ Alcácer, J., & Gittelman, M. (2006). Patent citations as a measure of knowledge
 
 Bekamiri, H., Hain, D. S., & Jurowetzki, R. (2024). PatentSBERTa: A deep NLP based hybrid model for patent distance and classification using augmented SBERT. *Technological Forecasting and Social Change, 206*, 123536. https://doi.org/10.1016/j.techfore.2024.123536
 
+Brank, J., Grobelnik, M., & Mladenić, D. (2005). A survey of ontology evaluation techniques. In *Proceedings of the Conference on Data Mining and Data Warehouses (SiKDD 2005)*. `[서지 재확인 필요]`
+
 Buckley, C., & Voorhees, E. M. (2004). Retrieval evaluation with incomplete information. In *Proceedings of the 27th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval* (pp. 25–32). https://doi.org/10.1145/1008992.1009000
 
 Büttcher, S., Clarke, C. L. A., Yeung, P. C. K., & Soboroff, I. (2007). Reliable information retrieval evaluation with incomplete and biased judgements. In *Proceedings of the 30th Annual International ACM SIGIR Conference* (pp. 63–70). https://doi.org/10.1145/1277741.1277755
 
+Chiu, B., Korhonen, A., & Pyysalo, S. (2016). Intrinsic evaluation of word vectors fails to predict extrinsic performance. In *Proceedings of the 1st Workshop on Evaluating Vector-Space Representations for NLP (RepEval)* (pp. 1–6). https://aclanthology.org/W16-2501/
+
 Daniell, S., Buzhinsky, I., & Björkqvist, S. (2025). Graph Transformer-based dense retrieval for prior-art search. In *Proceedings of the PatentSemTech Workshop at SIGIR 2025*. arXiv:2508.10496 `[서지 재확인 필요]`
+
+Faruqui, M., Tsvetkov, Y., Rastogi, P., & Dyer, C. (2016). Problems with evaluation of word embeddings using word similarity tasks. In *Proceedings of the 1st Workshop on Evaluating Vector-Space Representations for NLP (RepEval)*. https://doi.org/10.48550/arXiv.1605.02276 `[서지 재확인 필요]`
 
 Flouris, G., Manakanatas, D., Kondylakis, H., Plexousakis, D., & Antoniou, G. (2008). Ontology change: Classification and survey. *The Knowledge Engineering Review, 23*(2), 117–152. https://doi.org/10.1017/S0269888908001367
 
@@ -1424,15 +1443,25 @@ Mahdabi, P., & Crestani, F. (2014). Query-driven mining of citation networks for
 
 Piroi, F., & Hanbury, A. (2019). Multilingual patent text retrieval evaluation: CLEF–IP. In *Information Retrieval Evaluation in a Changing World* (The Information Retrieval Series, pp. 365–387). Springer. https://doi.org/10.1007/978-3-030-22948-1_15
 
+Pauwels, P., van den Bersselaar, R., & Verhelst, J. (2024). Validation of technical requirements for a BIM model using semantic web technologies. *Advanced Engineering Informatics*. `[권·페이지·DOI 재확인 필요]`
+
+Porzel, R., & Malaka, R. (2004). A task-based approach for ontology evaluation. In *Proceedings of the ECAI 2004 Workshop on Ontology Learning and Population*. `[서지 재확인 필요]`
+
 Potoniec, J., Wiśniewski, D., Ławrynowicz, A., & Keet, C. M. (2020). Dataset of ontology competency questions to SPARQL-OWL queries translations. *Data in Brief, 29*, 105098. https://doi.org/10.1016/j.dib.2019.105098 `[TDD 계열 대표 서지로 재확인 필요]`
 
 Risch, J., Alder, N., Hewel, C., & Krestel, R. (2020). PatentMatch: A dataset for matching patent claims and prior art. *arXiv*. https://doi.org/10.48550/arXiv.2012.13919
+
+Samuel, S., Martin, A., Yang, E., Yates, A., Lawrie, D., Soboroff, I., Dietz, L., & Van Durme, B. (2026). Beyond relevance: On the relationship between retrieval and RAG information coverage. *arXiv*. https://doi.org/10.48550/arXiv.2603.08819
 
 Shalaby, W., & Zadrozny, W. (2019). Patent retrieval: A literature review. *Knowledge and Information Systems, 61*, 631–660. https://doi.org/10.1007/s10115-018-1322-7
 
 Shomee, H. H., Wang, Z., Ravi, S. N., & Medya, S. (2025). A survey on patent analysis: From NLP to multimodal AI. In *Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)* (pp. 8545–8561). https://doi.org/10.18653/v1/2025.acl-long.419
 
 Siddharth, L., Li, Y., & Luo, J. (2022). Retrieving technologically distant patents using a knowledge graph approach. *Journal of Engineering Design, 33*(8–9), 670–683. https://doi.org/10.1080/09544828.2022.2144714
+
+Solihin, W., Eastman, C., & Lee, Y.-C. (2015). Toward robust and quantifiable automated IFC quality validation. *Advanced Engineering Informatics*. `[권·페이지·DOI 재확인 필요]`
+
+Thomas, R., & Uminsky, D. (2020). The problem with metrics is a fundamental problem for AI. *arXiv*. https://doi.org/10.48550/arXiv.2002.08512
 
 United States Patent and Trademark Office. (2023). *Manual of Patent Examining Procedure § 904: How to search*. https://www.uspto.gov/web/offices/pac/mpep/s904.html
 
