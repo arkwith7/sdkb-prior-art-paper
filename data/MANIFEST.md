@@ -477,3 +477,14 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
 - 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성) + concept_mapping.json(적용기 링크 128,875건)
 - 반영: C2 입력 · 논문 §5–6
+
+## 2026-08-02 · CR-008 봉인 이관 파일 발행 (PLAN-031 §11 · 봉인 미개봉)
+- 명령: `uv run python scripts/export_cr008_handoff.py`
+- `upstream/handoff/CR-008-b-cited-ids.txt`: **514행** · sha256 `9d0a7c0fc97547a67018556504d32d0b3ac8e22d2761f98e342ab3158c4b2dff`
+- 입력: `data/processed/ir/qrel_b_sealed.parquet` 의 **`examiner_citations` 열 하나만**
+  (538행 · 질의 200 · 고유 514). `application_number` 는 로드하지 않았다 — 질의–인용 대응 비이관(§11.2)
+- 형태: 식별자 1줄 1건 · 유니코드 코드포인트 오름차순 · 중복 0 · 질의 식별자 등장 0건
+- 관할 실측: KR 235 · JP 186 · US 51 · WO 24 · CN 6 · EP 1 · **NPL 11**
+- 규율 강제: `tests/test_handoff_seal_discipline.py` 4건 (경로 참조 금지 · 형태 동결 · sha 동결 · 질의 누출 0)
+- 반영: 상류 CR-008 입력 (1) · C2 재확증(B층)의 전제
+- **이관 후 이 파일은 바뀌지 않는다**(§11.3). 재생성 검증은 `--check`
