@@ -779,6 +779,41 @@ def fig_ir_subgroup(out: Path | None = None) -> Path:
     return _save(fig, out)
 
 
+def fig_ir_effort_curve(out: Path | None = None) -> Path:
+    """**깊이별 회수 곡선** — 같은 회수를 얻는 데 몇 건을 검토해야 하는가 (§6.3 탐색적 · PLAN-036).
+
+    입력은 `analysis/effort.py` 가 배출한 CSV 뿐이다(여기서 계산하지 않는다). 회수 곡선은
+    우측 절단의 영향을 받지 않는다 — 후보 풀이 마르면 평평해질 뿐이다. **탐색적 기술통계이므로
+    캡션에 그렇게 적는다**(개봉 분할 · CLAUDE.md §2.1).
+    """
+    out = out or FIGURES / "ir_effort_curve.svg"
+    df = pd.read_csv(IR_CSV / "effort_curve_test.csv")
+    styles = {"P1": (GREEN, "-", 2.2), "P0star": (TOBE, "-", 1.8), "B3_rrf": (INK, "-", 1.8),
+              "B0_bm25": (MUTE, "--", 1.3), "B2_dense": ("#B0B7C3", "--", 1.3),
+              "B5_concept": (GOLD, ":", 1.5)}
+    fig, ax = plt.subplots(figsize=(7.6, 4.6))
+    for sysname, (color, ls, lw) in styles.items():
+        d = df[df["system"] == sysname].sort_values("k")
+        if d.empty:
+            continue
+        ax.plot(d["k"], d["recall"], color=color, ls=ls, lw=lw, marker="o", ms=4,
+                label=d["label"].iloc[0])
+    ax.set_xscale("log")
+    ax.set_xticks(sorted(df["k"].unique()))
+    ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    ax.set_xlabel("검토 깊이 K (서로 다른 발명 = family 건수 · 로그 축)")
+    ax.set_ylabel("family Recall@K")
+    ax.set_title("같은 회수를 몇 건 검토해서 얻는가 (test 198질의 · 탐색적)",
+                 fontsize=11, color=INK)
+    ax.grid(color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    for spine in ("top", "right"):
+        ax.spines[spine].set_visible(False)
+    ax.legend(fontsize=8.5, frameon=False, loc="upper left")
+    plt.tight_layout()
+    return _save(fig, out)
+
+
 def main() -> None:
     """CSV·상수에서 논문 그림 전량을 SVG 로 결정적으로 재생성한다."""
     made: list[Path] = []
@@ -798,7 +833,8 @@ def main() -> None:
         pd.read_csv(PROCESSED / "h2_leadtime.csv"),
     ))
     # v0.9 · C2 선행기술 검색 (analysis/ 가 배출한 CSV 필요 — 없으면 건너뛰고 알린다)
-    for fn in (fig_ir_increment, fig_ir_metrics, fig_ir_ablation, fig_ir_subgroup):
+    for fn in (fig_ir_increment, fig_ir_metrics, fig_ir_ablation, fig_ir_subgroup,
+               fig_ir_effort_curve):
         try:
             made.append(fn())
         except FileNotFoundError as e:

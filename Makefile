@@ -75,6 +75,13 @@ index:
 eval:
 	uv run python -m sdkb_paper.analysis.metrics
 
+# 운용 효율 (PLAN-036 · 원고 §6.3 탐색적 표) — Effort@Recall · Candidate Reduction ·
+# 깊이별 회수 곡선 · 질의당 추가 발견 건수. 동결 팔(runsets/O_pre_linker)의 run 재판독이며
+# 새 검색이 없다. **탐색적 기술통계 — 개봉 분할이라 확증에 쓰지 않는다(CLAUDE §2.1).**
+# 산출: paper/tables/ir_effort_test.md + data/processed/ir/effort_curve_test.csv(그림 입력).
+effort:
+	uv run python -m sdkb_paper.analysis.effort --write
+
 # 논문 §6.2·§6.4 표 전량 재생성 (동결 run 재평가 · 새 검색 없음 · 수기 기입 금지 CLAUDE §1-7).
 # 산출: paper/tables/ir_{performance,subgroup,increment}_{dev,test}.md + viz 입력 CSV.
 # SPLIT=dev 로 개발 분할만 돌릴 수 있다. test 는 봉인 개봉 후 재평가 전용 — 재선택 금지.
