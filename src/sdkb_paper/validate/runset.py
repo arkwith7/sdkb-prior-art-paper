@@ -191,6 +191,25 @@ def runs_dir(label: str) -> Path:
     return config.IR_RUNSETS_DIR / label
 
 
+def arm_label(pipeline_sig: str | None = None) -> str | None:
+    """파이프라인 서명이 동결 runset 매니페스트 중 하나와 일치하면 그 이름을 돌려준다.
+
+    산출물(표·패널)이 **자기가 어느 팔에서 나왔는지 말할 수 있게** 하는 조회다. 일치하는
+    매니페스트가 없으면 None — 그것도 정보다("동결되지 않은 상태에서 만든 산출물").
+    """
+    sig = pipeline_sig or pipeline_signature()["sig"]
+    if not config.RUNSET_DIR.exists():
+        return None
+    for mf in sorted(config.RUNSET_DIR.glob("*.json")):
+        try:
+            d = json.loads(mf.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if d.get("pipeline", {}).get("sig") == sig:
+            return str(d.get("label") or mf.stem)
+    return None
+
+
 def freeze(label: str, split: str = "test", systems: list[str] | None = None,
            note: str | None = None, sources: dict[str, Path] | None = None) -> Path:
     """현 자원 상태의 run 세트를 얼린다. **`make vendor` 전에** 실행해야 의미가 있다.

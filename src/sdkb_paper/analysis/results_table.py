@@ -193,6 +193,20 @@ def measure_latency(split: str, n_queries: int = 30) -> dict:
     return out
 
 
+def _arm_line() -> str:
+    """표가 **어느 자원 팔**에서 나왔는지 한 줄로 밝힌다 (PLAN-036 §12).
+
+    표에 팔이 적혀 있지 않으면, `make vendor` 뒤 아무 생각 없이 `make tables` 를 돌렸을 때
+    원고 §6.2 의 수치가 **말없이 다른 팔의 것으로 바뀐다.** 실제로 탐색 패널에서 그 일이
+    한 번 일어났다. 서명을 표에 박아 두면 표를 보는 것만으로 팔을 알 수 있다.
+    """
+    from ..validate.runset import arm_label, pipeline_signature
+
+    pipe = pipeline_signature()
+    arm = arm_label(pipe["sig"])
+    return f"{arm or '미등록(동결 runset 과 불일치)'} · pipeline_sig `{pipe['short']}`"
+
+
 def render(split: str, rows: dict, boot: dict, n_q: int, n_qrel: int,
            latency: dict | None = None) -> str:
     hdr = ["시스템", "R@50", "R@100", "R@500", "Success@100", "MRR@500",
@@ -206,6 +220,8 @@ def render(split: str, rows: dict, boot: dict, n_q: int, n_qrel: int,
         f"qrel(문서수준) **{n_qrel}**건 · 페어드 부트스트랩 10k·seed {config.SEED}.",
         f"> **nDCG@{NDCG_K} 는 이진 이득**(qrel 전량 등급 1 — 등급 자원 없음), "
         "**bpref 는 retrieved-as-judged 관례**(양성 전용 qrel). 원고 §5.1 대비 관례 차이를 명시한다.",
+        f"> **자원 팔: {_arm_line()}** — 이 표는 재랭크를 현재 디스크의 온톨로지 자원으로 다시 "
+        "계산한다. 팔이 다르면 수치도 다르다(PLAN-036 §12).",
         "",
         "| " + " | ".join(hdr) + " |",
         "|" + "---|" * len(hdr),

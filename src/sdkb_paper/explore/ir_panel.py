@@ -4,7 +4,10 @@
 - `runs/hybrid_b3_rrf.txt` (텍스트 기준선 B3) · `IR_CORPUS`(질의 원문·개념·IPC) ·
   `QREL_EXAMINER`(심사관 정답) · `IR_SPLIT`(분할) · `IR_FAMILY_MAP`(family 접기).
 - 재랭크는 **실험과 같은 함수**(`analysis.ontology_eval.component_cache`/`rerank_from_cache`)를
-  같은 동결 가중치(`SELECTED_ALPHA`/`SELECTED_W`)로 호출한다 — 화면 수치 = 논문 수치.
+  같은 동결 가중치(`SELECTED_ALPHA`/`SELECTED_W`)로 호출한다 — 화면 수치 = **같은 자원 팔에서의**
+  논문 수치. 재랭크는 run 파일이 아니라 **현재 디스크의 온톨로지 자원**으로 다시 계산되므로,
+  `make vendor` 로 팔이 바뀌면 화면 수치도 바뀐다(O→O′: dev 평균 P0★ 0.4193 → 0.4071).
+  그래서 `provenance()` 가 팔을 밝히고, 회귀 기대값은 팔별로 기록한다(PLAN-036 §12).
 
 **봉인 규율(§1-3):** dev 분할만 노출한다. test 질의는 어떤 경로로도 반환하지 않는다.
 FeatureCoverage(P1)는 유료 임베딩 캐시가 필요해 이 패널에서 제외한다 — P0★는 concept+ipc 이므로
@@ -13,6 +16,8 @@ FeatureCoverage(P1)는 유료 임베딩 캐시가 필요해 이 패널에서 제
 읽기 전용. 최초 요청 시 1회 적재·계산 후 프로세스 수명 동안 캐시한다(수십 초).
 """
 from __future__ import annotations
+
+from pathlib import Path
 
 from .. import config
 
@@ -202,6 +207,22 @@ class IRDemo:
         }
 
 
+    # --- 팔 표시 (PLAN-036 §12 · 자원 팔 표류 방지) -------------------------
+    def provenance(self) -> dict:
+        """이 화면이 **어느 자원 팔**에서 나왔는가.
+
+        패널은 B3 run 파일만 읽고 온톨로지 재랭크는 **현재 디스크의 자원으로 다시 계산**한다.
+        그래서 `make vendor` 로 스냅샷이 바뀌면 run 파일이 그대로여도 화면 수치가 움직인다 —
+        실제로 O→O′ 에서 dev 평균 P0★ 가 0.4193 → 0.4071 로 내려갔다. 팔을 화면과 테스트가
+        **명시적으로** 읽게 해서, 표류를 '수치가 틀렸다'가 아니라 '팔이 바뀌었다'로 드러낸다.
+        """
+        from ..validate.runset import arm_label, pipeline_signature, qrel_signature
+
+        pipe = pipeline_signature()
+        return {"pipeline_sig": pipe["sig"], "pipeline_short": pipe["short"],
+                "parts": pipe["parts"], "qrel": qrel_signature(), "arm": arm_label(pipe["sig"])}
+
+
 def _date(v) -> str:
     """결측 공개일(4,492건)은 빈 문자열로 — 'nan' 이 화면에 날짜처럼 보이면 안 된다."""
     s = str(v or "")[:10]
@@ -230,3 +251,62 @@ def ready() -> bool:
 
     return all(p.exists() for p in (RUN_B3, config.IR_CORPUS, config.QREL_EXAMINER,
                                     config.IR_SPLIT, config.IR_FAMILY_MAP))
+
+
+# ── 팔별 기대값 (회귀 테스트의 정본) ────────────────────────────────────────────
+EXPECTED_PATH = config.ROOT / "tests" / "fixtures" / "ir_panel_expected.json"
+EXAMPLE_QID = "kr_1020170018545"      # 문서 M4 §2 의 예시 질의
+
+
+def expected_snapshot(d: IRDemo | None = None) -> dict:
+    """현재 팔에서 관측되는 계약 수치 — 테스트가 대조할 값을 **코드가 만든다**(§1-7)."""
+    d = d or demo()
+    q = d.queries()
+    det = d.detail(EXAMPLE_QID)
+    gold = {g["doc_id"]: g for g in det["gold"]}
+    return {
+        "arm": d.provenance()["arm"],
+        "pipeline_sig": d.provenance()["pipeline_sig"],
+        "n_queries": q["n_queries"], "mean_b3": q["mean_b3"], "mean_p0": q["mean_p0"],
+        "example": {
+            "qid": EXAMPLE_QID, "n_gold": len(gold),
+            "gold": {k: {"rank_b3": v["rank_b3"], "rank_p0": v["rank_p0"],
+                         "n_shared_concepts": len(v["shared_concepts"])}
+                     for k, v in sorted(gold.items())},
+        },
+    }
+
+
+def record_expected(path: Path | None = None) -> Path:
+    """현재 팔의 기대값을 파일에 **추가**한다(기존 팔의 기록은 덮지 않는다).
+
+    팔이 바뀌었을 때 테스트를 통과시키는 유일한 경로다. 이전 팔의 값을 지우지 않으므로,
+    자원 교체 전후의 화면 수치가 한 파일에 남아 대조된다.
+    """
+    import json
+
+    path = path or EXPECTED_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    book = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    snap = expected_snapshot()
+    book[snap["pipeline_sig"][:12]] = snap
+    path.write_text(json.dumps(book, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
+                    encoding="utf-8")
+    return path
+
+
+def main() -> None:
+    import argparse
+    import json
+
+    ap = argparse.ArgumentParser(description="IR 시연 패널 — 팔 표시·기대값 기록")
+    ap.add_argument("--record", action="store_true", help="현재 팔의 기대값을 fixture 에 기록")
+    args = ap.parse_args()
+    if args.record:
+        print(f"[written] {record_expected()}")
+    else:
+        print(json.dumps(expected_snapshot(), indent=2, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()
