@@ -24,7 +24,9 @@ def test_frozen_values_match_preregistration():
     assert frozen.K == 10
     assert frozen.TEMPERATURE == 0
     assert frozen.N_REPEATS == 3
-    assert frozen.MAX_TOKENS == 1024
+    # §12.4 고장 수리 (2026-08-03): 1024 → 4096. 스모크 절단율 0.400 ≥ 0.05 이 근거이며
+    # **판독값은 보지 않았다**(인용 정확도·환각률은 파싱 실패로 전량 None 이었다).
+    assert frozen.MAX_TOKENS == 4096
     assert frozen.ARMS == ("B3_rrf", "P1")
     assert frozen.RUNSET == "O_pre_linker"
     assert frozen.STATUS == "exploratory", "A층은 확증이 아니다(§7 결정 '다')"
@@ -186,6 +188,21 @@ def test_parse_failure_is_counted_not_repaired():
     bad = dict(_REC, text="여기 답이 있습니다: {\"cited\": [\"d1\"]} 감사합니다")
     assert score.score_one(bad, {"d1"}, _DOCS)["parse_fail"] is True
     assert score.score_one(dict(_REC, ok=False, text=""), {"d1"}, _DOCS)["parse_fail"] is True
+
+
+def test_code_fence_is_unwrapped_but_only_the_shell():
+    """§12.4 수리 — 껍질(```json)만 벗긴다. 펜스 밖에 글자가 있으면 여전히 실패다."""
+    body = json.dumps({"cited": ["d1"], "evidence": [], "insufficient": False}, ensure_ascii=False)
+    for fence in (f"```json\n{body}\n```", f"```\n{body}\n```", f"  ```json\n{body}\n```  "):
+        assert score.score_one(dict(_REC, text=fence), {"d1"}, _DOCS)["parse_fail"] is False
+    # 펜스가 있어도 밖에 설명이 붙으면 고쳐 읽지 않는다(§13.3-2 원칙 유지).
+    assert score.score_one(
+        dict(_REC, text=f"아래와 같습니다.\n```json\n{body}\n```"), {"d1"}, _DOCS
+    )["parse_fail"] is True
+    # 여는 펜스 줄에 다른 내용이 섞이면 언랩하지 않는다.
+    assert score.score_one(
+        dict(_REC, text=f"```json 답:\n{body}\n```"), {"d1"}, _DOCS
+    )["parse_fail"] is True
 
 
 def test_aggregate_reports_conditional_and_denominators():
