@@ -1,4 +1,4 @@
-.PHONY: faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: rag rageval faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -81,6 +81,19 @@ eval:
 # 산출: paper/tables/ir_effort_test.md + data/processed/ir/effort_curve_test.csv(그림 입력).
 effort:
 	uv run python -m sdkb_paper.analysis.effort --write
+
+# C2′ 전달 실험 (PLAN-038 §12 · RQ5) — 동결 run 상위 K=10 → 생성 → 결정적 채점.
+# **`rag` 는 기본이 dry-run 이다**(호출 0). 유상 실행은 `make rag EXECUTE=1` 로만 —
+# 1,188 호출 · 입력 ≈33.4M 토큰(§12.6)이며 되돌릴 수 없다.
+# A층 산출물은 **탐색적**이다(§7 결정 "다") — 계측기 동결이 목적이고 확증은 B층에서 한다.
+RAG_ARGS ?=
+rag:
+	uv run python -m sdkb_paper.rag.generate $(if $(EXECUTE),--execute,) $(RAG_ARGS)
+
+# 인용 정확도·환각률·근거 문장 일치 (LLM 판정자 미사용 · 재채점 시 바이트 동일).
+# 산출: paper/tables/rag_transfer_test.md + data/processed/ir/rag/scores/*.json
+rageval:
+	uv run python -m sdkb_paper.rag.score --write
 
 # 논문 §6.2·§6.4 표 전량 재생성 (동결 run 재평가 · 새 검색 없음 · 수기 기입 금지 CLAUDE §1-7).
 # 산출: paper/tables/ir_{performance,subgroup,increment}_{dev,test}.md + viz 입력 CSV.

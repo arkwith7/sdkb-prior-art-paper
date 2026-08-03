@@ -252,6 +252,13 @@ TGATE_REPORT = PROCESSED / "tgate_report.json"
 # gitignore, 매니페스트는 해시·집계뿐이라 커밋 가능(CQ 세대 동결과 같은 규율).
 IR_RUNSETS_DIR = IR_DIR / "runsets"          # run 사본 (재생성 가능 · gitignore)
 RUNSET_DIR = DATA / "runsets"                # 매니페스트 JSON (커밋 가능)
+# --- C2′ 전달 실험 (RQ5 · PLAN-038 §12 동결) -----------------------------------
+# 생성 원문은 특허 본문 파생이라 커밋 금지(§1-5) — data/processed 는 gitignore 이며,
+# 커밋되는 것은 채점 집계 표와 해시뿐이다(PLAN-038 §8-4).
+RAG_DIR = IR_DIR / "rag"
+RAG_GEN_DIR = RAG_DIR / "generations"        # 1파일 = (팔 × 회차) · JSONL · 원문 전량 보존
+RAG_SCORE_DIR = RAG_DIR / "scores"           # 결정적 채점 산출(JSON) · 재채점 시 바이트 동일
+RAG_TABLE = TABLES / "rag_transfer_test.md"  # 원고 §6.8 탐색적 표 (A층)
 # 델타 유형표 ①T-Box·②개념층만 H2 자격이 있다. ③A-Box 코퍼스 델타는 비교 불성립이다.
 H2_ELIGIBLE_DELTA_TYPES = ("tbox", "concept")
 # ── W9 홀드아웃 결함 사전등록 동결 (PLAN-025 v2 · 2026-07-28 · 주입 실행 전) 🔒 ──────────
