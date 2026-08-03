@@ -40,10 +40,29 @@ def norm_text(s: str) -> str:
     return _WS.sub(" ", s).strip()
 
 
+def strip_code_fence(text: str) -> str:
+    """표준 코드펜스 언랩 — ```json … ``` 또는 ``` … ``` 의 **껍질만** 벗긴다.
+
+    §12.4 고장 수리(2026-08-03 · 스모크 파싱 실패율 1.000). 모델이 스키마를 정확히 지키고도
+    펜스로 감싸 100 % 파싱 실패가 났다. 이것은 **내용이 아니라 포장**의 문제이므로 판독값과
+    무관하며, 수리 전후를 기록하고 A층을 전량 재실행한다.
+
+    §13.3-2("정규식으로 JSON 을 파내지 않는다")의 단서로만 작동한다 — 펜스 **밖에 다른 글자가
+    있으면 벗기지 않고** 그대로 넘긴다. 즉 설명 문장을 덧붙인 출력은 여전히 파싱 실패로 센다.
+    """
+    s = text.strip()
+    if not s.startswith("```") or not s.endswith("```"):
+        return s
+    body = s[3:-3]
+    head, _, rest = body.partition("\n")
+    # 여는 펜스의 언어 태그(json 등)만 허용한다. 그 줄에 다른 내용이 있으면 언랩하지 않는다.
+    return rest.strip() if head.strip().lower() in ("", "json") else s
+
+
 def parse_answer(text: str) -> dict | None:
     """엄격 파싱 — 스키마를 만족하지 않으면 None(파싱 실패로 계수한다)."""
     try:
-        obj = json.loads(text.strip())
+        obj = json.loads(strip_code_fence(text))
     except (ValueError, AttributeError):
         return None
     if not isinstance(obj, dict) or not isinstance(obj.get("cited"), list):
@@ -134,6 +153,10 @@ def aggregate(scored: list[dict]) -> dict:
 VARIANCE_KEYS = (
     "citation_precision", "citation_precision_cond", "hallucination_rate",
     "quote_grounded_rate", "insufficient_rate", "truncation_rate",
+    # 지표가 아니라 **분모의 맥락**이다 — 인용을 덜 하면 정확도는 저절로 오르므로, 정확도만
+    # 싣고 인용 건수를 빼면 표가 스스로를 오독하게 만든다. `aggregate()` 가 처음부터 내던 값이며
+    # 표에 노출하는 것이 2026-08-04 의 변경 전부다(계측기·채점 규칙 불변).
+    "mean_cited_per_query",
 )
 
 
@@ -206,6 +229,7 @@ def to_markdown(report: dict) -> str:
         "quote_grounded_rate": "근거 문장 일치 (결정적 하한)",
         "insufficient_rate": "근거 불충분 선언 비율",
         "truncation_rate": "출력 절단율",
+        "mean_cited_per_query": "질의당 평균 인용 건수 (정확도의 분모 맥락)",
     }
     for key, label in labels.items():
         cells = []
