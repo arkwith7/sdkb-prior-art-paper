@@ -1,4 +1,4 @@
-.PHONY: rag rageval faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: rag ragcount rageval faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -84,11 +84,16 @@ effort:
 
 # C2′ 전달 실험 (PLAN-038 §12 · RQ5) — 동결 run 상위 K=10 → 생성 → 결정적 채점.
 # **`rag` 는 기본이 dry-run 이다**(호출 0). 유상 실행은 `make rag EXECUTE=1` 로만 —
-# 1,188 호출 · 입력 ≈33.4M 토큰(§12.6)이며 되돌릴 수 없다.
+# 1,188 호출 · 입력 34.37M 토큰(§12.6 실측)이며 되돌릴 수 없다.
 # A층 산출물은 **탐색적**이다(§7 결정 "다") — 계측기 동결이 목적이고 확증은 B층에서 한다.
 RAG_ARGS ?=
 rag:
 	uv run python -m sdkb_paper.rag.generate $(if $(EXECUTE),--execute,) $(RAG_ARGS)
+
+# 입력 토큰 실측 — `bedrock:CountTokens` 는 **무과금**이다. 유상 실행 승인 전에 규모를
+# 추정이 아니라 실측으로 못박는다(§12.6). 생성 호출 0.
+ragcount:
+	uv run python -m sdkb_paper.rag.count $(RAG_ARGS)
 
 # 인용 정확도·환각률·근거 문장 일치 (LLM 판정자 미사용 · 재채점 시 바이트 동일).
 # 산출: paper/tables/rag_transfer_test.md + data/processed/ir/rag/scores/*.json
