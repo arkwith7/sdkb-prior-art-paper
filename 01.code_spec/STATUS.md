@@ -134,11 +134,13 @@
 
 | 순서 | 일 | 상태 | 정본 |
 |---|---|---|---|
-| 1 | **CR-007 상류 이관** — 텍스트→개념 매핑 규칙·사전(D-14·D-15·D-16) | 1·2·**3단계 완료(결정 4건 확정 2026-07-31)** → **상류 4단계 착수 가능** · 임계경로 선두 | [upstream/CR-007](../upstream/CR-007-concept-linking-rules.md) · [HANDOFF-QUEUE §1.3](../upstream/HANDOFF-QUEUE.md) |
-| 2 | **CR-004R 상류 이관** — 거절근거 조항 단위 구조화(D-06) | 하류 1·2·3단계 완료·승인 → **상류 4단계 착수 가능** | [upstream/CR-004](../upstream/CR-004-rejection-basis-structure.md) · [HANDOFF-QUEUE §1.1](../upstream/HANDOFF-QUEUE.md) |
+| — | ~~CR-007 상류 이관~~ — 텍스트→개념 매핑 규칙·사전(D-14·D-15·D-16) | ✅ **종료(2026-08-04)** — 상류 구현 `2839afb`(2026-08-01) · 하류 소비 PLAN-034/035 · D-19 해소. 잔여는 정밀도 표본 200건 판정뿐 | [archive/CR-007](../upstream/archive/CR-007-concept-linking-rules.md) · [종료 기록](../upstream/archive/README.md) |
+| 1 | **CR-008 상류 착수** — B층 인용 선행기술 A-Box(D-18) | **착수 지시 2026-08-04 · 상류 커밋 0** · **유일한 임계경로** — C2 재확증·C2′(RQ5) 확증 승격이 걸려 있다 | [upstream/CR-008](../upstream/CR-008-b-layer-prior-art-abox.md) |
+| 1-b | **CR-009 송부** — 개념별 df·계층깊이 릴리스 발행(D-23) | **1단계 완료(2026-08-04 발행) · 송부 가능** · CR-008과 병렬 · **CR-001A보다 선행** | [upstream/CR-009](../upstream/CR-009-concept-df-release-meta.md) · [HANDOFF-QUEUE §1.5](../upstream/HANDOFF-QUEUE.md) |
+| 2 | **CR-004R 회신 대기** — 거절근거 조항 단위 구조화(D-06) | **상류 4단계 구현 완료(`84ea514`) · 검증기준 2항(#1 연결률 · #6 T3) 미회신.** #2 조립률은 구조적 미달로 합격선 제외 → CR-010 분리 | [upstream/CR-004](../upstream/CR-004-rejection-basis-structure.md) · [HANDOFF-QUEUE §1.1a](../upstream/HANDOFF-QUEUE.md) |
 | 3 | **CR-005·CR-006 송부** — T-Box 논리 공리·SHACL 방향성(D-03·D-09) · 모듈 경계(D-13) | 1단계 완료 · 송부 가능 | CR-005 · CR-006 |
-| 4 | **CR-001A** — 개념 해상도 즉시분(P0 · 어휘 확장 0 · 전문 재추출) | 1·2·**3단계 완료(결정 4건 확정 2026-07-31)** → **CR-007 구현 후 실행** | [upstream/CR-001](../upstream/CR-001-concept-resolution.md) · [HANDOFF-QUEUE §1.4](../upstream/HANDOFF-QUEUE.md) |
-| 5 | **CR-002·003 · CR-001B** — 계층(P0)·다국어(P0)·어휘 수확 | **보류** — CR-001A 재검정 후 (단 `skos:broader`는 CR-007이 선착수) | CR-002·003 |
+| 4 | **CR-001A** — 개념 해상도 즉시분(P0 · 어휘 확장 0 · 전문 재추출) | 1·2·3단계 완료 → **CR-007 제약은 해소됐고, 이제 CR-009 완료 후 실행**(§1.5) | [upstream/CR-001](../upstream/CR-001-concept-resolution.md) · [HANDOFF-QUEUE §1.4](../upstream/HANDOFF-QUEUE.md) |
+| 5 | **CR-002·003 · CR-001B** — 계층(P0)·다국어(P0·**D-21 편입 필요**)·어휘 수확 | **보류** — CR-001A 재검정 후 (`skos:broader`는 CR-007이 이미 선착수·완료) | CR-002·003 |
 | 6 | **PLAN-031 B층 수집 착수** — 제2 확증분할 200건 | **🔒 사전등록 동결(2026-07-31 승인)** → 파일럿 500콜부터. CR-007과 독립 | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
 | 6-b | **PLAN-032 수집 드라이버** — §3 집행 코드(표집 순서·IPC 21종·패밀리 서로소) | **1단계 요구정의 승인 · 🛑 2단계 분석 진행 중** | [PLAN-032](plans/PLAN-032-b-layer-pilot-collection.md) |
 | 7 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) |
@@ -146,8 +148,13 @@
 > **문서 정리 (2026-08-01).** `plans/`에는 **살아 있는 4건만** 둔다 — PLAN-018·029·031·032.
 > 실행이 끝났거나 대체된 **PLAN-017·019·025·027은 `archive/`로 이동**했다(삭제하지 않는다 —
 > 025는 사전등록 증거, 019는 W-시리즈 판정 이력이다). 결론 요약은
-> [CANONICAL-INDEX §3.1](CANONICAL-INDEX.md). 상류 `upstream/`은 **CR 7건 전량이 미완**이라
-> 아카이브 대상이 없다(상류 `~/Dev/sdkb` 최신 커밋 `d578bf3` — CR 구현 착수 전).
+> [CANONICAL-INDEX §3.1](CANONICAL-INDEX.md).
+>
+> **상류 정리 (2026-08-04 갱신 — 위 문장을 대체한다).** 상류 `~/Dev/sdkb` 최신 커밋은
+> `84ea514`이고, CR 두 건이 구현됐다 — **CR-007 `2839afb`(2026-08-01)** · **CR-004R
+> `84ea514`(2026-08-04)**. `upstream/`에 [archive/](../upstream/archive/)를 신설하고
+> **CR-007 하나를 내렸다**(구현 + 하류 소비 완료). CR-004R 은 검증기준 2항 미회신이라
+> 아카이브하지 않는다. **CR-009**(D-23 · 개념별 df 발행)를 새로 발행했다.
 
 **왜 실험이 아니라 자원을 고치는가.** 개념 어휘 143개·문서당 1.55개라는 해상도에서 온톨로지 팔은
 40,552 문서를 3,292개 동치류로만 구분한다(동점블록 문서가중 중앙값 **670**). 이 해상도로는 깊은
