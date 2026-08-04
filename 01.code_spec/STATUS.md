@@ -1,8 +1,33 @@
 # 진행 실적 (v0.9)
 
-*최종 갱신: 2026-08-01 (B층 파일럿 수집 완료 · v2.0 재구성 1단계 · 문체 교정) · 기조: 선행기술 검색 주 태스크 + T-gate (CLAUDE.md v0.9)*
+*최종 갱신: 2026-08-04 (상류 교정 4건 회신 반영 · CR-004R 종료 · PLAN-040 조건 동결) · 기조: 선행기술 검색 주 태스크 + T-gate (CLAUDE.md v0.9 · v2.0 전환 중)*
 
-> ## 🔜 다음 세션이 할 일 — **후보 코퍼스 증분 설계** (2026-08-01 인계)
+> ## 🔜 다음 세션이 할 일 — **상류 회신 접수 → `make vendor` → PLAN-040 관통** (2026-08-04 인계)
+>
+> **먼저 읽을 것:** [PLAN-040](plans/PLAN-040-post-remediation-tgate-and-b-layer.md)(**조건 동결 ·
+> 서명 미기입**) · [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md) §1.6·§1.7·§1.8.
+>
+> **상류 교정 4건이 전부 구현됐다.** CR-004R `84ea514`(RejectionReason 2,749 · **종료**) ·
+> **CR-008 `39855bb`**(B층 `CitedPatent` 3,034 → **3,513** · 도달성 0.0117 → 상류 실측 **0.9583**) ·
+> **CR-009 `39855bb`**(`concept_mapping.json` 스키마 1.1 · 개념별 df) · CR-007 `2839afb`.
+> **아래 2026-08-01 인계가 적은 "🛑 새 차단"은 CR-008 로 해소되는 중이다** — 다만 **KR 키공간
+> 불일치는 CR-008 이 고친 문제가 아니므로**, 하류 후보 코퍼스에서 도달성을 다시 재는 것이
+> PLAN-040 §4.2 G1 이다. **상류 값이 아니라 이 값이 개봉 여부를 정한다.**
+>
+> **막고 있는 것은 하나다 — 상류에 요청한 US 문헌 2건 재시도 회신**(HANDOFF-QUEUE §3 첫 블록).
+> 그 결과가 스냅샷 sha256 을 바꿀 수 있어 PLAN-040 §4.2 G4 를 아직 채우지 못한다.
+> **회신이 오면 순서는 고정이다** — O′ 스냅샷 복사 → `vendor.py` 2건 추가 → `make vendor` →
+> 서명 기입 커밋 → **중간 승인 없이 corpus…gate 관통**(PLAN-040 §7).
+>
+> **판정 셋은 이미 정해져 있다(2026-08-04 승인).** ① CR-004R 청구항 단위 발행은 **요구하지
+> 않는다**(출원 단위 확정 · 지표 폐기) ② US 0.9608 은 **재시도 1회 · 실패하면 미달 그대로 보고 ·
+> 임계 0.99 불변** ③ 미선언 `requests` 2곳은 **대장 D-24 등재 · CR 미발행**.
+>
+> **미리 자인해 둔 위험 하나** — `concept_meta`(df)는 자산에 있을 뿐 현행 적용기가 읽지 않으므로
+> **T1 이 또 공허하게 통과할 수 있다**(D-19 재발). PLAN-040 §3.3 이 그 경우를 `Accept=1` 이 아니라
+> **"미검정"으로 기록**하게 못박았다. df 가중을 실제로 거는 것은 **코드 변경 = 새 사전등록**이다.
+>
+> **아래는 2026-08-01 시점의 인계이며 기록으로 남긴다.**
 >
 > **먼저 읽을 것:** [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) **§10.3–10.4
 > (새 차단 · 🛑 승인 대기)** · §9(개정 사전등록 · 동결) · [PLAN-033](plans/PLAN-033-v2-manuscript-restructure.md) §11.
@@ -135,14 +160,15 @@
 | 순서 | 일 | 상태 | 정본 |
 |---|---|---|---|
 | — | ~~CR-007 상류 이관~~ — 텍스트→개념 매핑 규칙·사전(D-14·D-15·D-16) | ✅ **종료(2026-08-04)** — 상류 구현 `2839afb`(2026-08-01) · 하류 소비 PLAN-034/035 · D-19 해소. 잔여는 정밀도 표본 200건 판정뿐 | [archive/CR-007](../upstream/archive/CR-007-concept-linking-rules.md) · [종료 기록](../upstream/archive/README.md) |
-| 1 | **CR-008 상류 착수** — B층 인용 선행기술 A-Box(D-18) | **착수 지시 2026-08-04 · 상류 커밋 0** · **유일한 임계경로** — C2 재확증·C2′(RQ5) 확증 승격이 걸려 있다 | [upstream/CR-008](../upstream/CR-008-b-layer-prior-art-abox.md) |
-| 1-b | **CR-009 송부** — 개념별 df·계층깊이 릴리스 발행(D-23) | **1단계 완료(2026-08-04 발행) · 송부 가능** · CR-008과 병렬 · **CR-001A보다 선행** | [upstream/CR-009](../upstream/CR-009-concept-df-release-meta.md) · [HANDOFF-QUEUE §1.5](../upstream/HANDOFF-QUEUE.md) |
-| 2 | **CR-004R 회신 대기** — 거절근거 조항 단위 구조화(D-06) | **상류 4단계 구현 완료(`84ea514`) · 검증기준 2항(#1 연결률 · #6 T3) 미회신.** #2 조립률은 구조적 미달로 합격선 제외 → CR-010 분리 | [upstream/CR-004](../upstream/CR-004-rejection-basis-structure.md) · [HANDOFF-QUEUE §1.1a](../upstream/HANDOFF-QUEUE.md) |
+| 1 | **CR-008** — B층 인용 선행기술 A-Box(D-18) | **구현 완료 `39855bb`(2026-08-04)** — `CitedPatent` 3,034 → 3,513 · 도달성 상류 실측 **0.9583** · **US 청구항 0.9608 미달 → 재시도 1회 요청 중.** 하류 도달성 재검은 PLAN-040 §4.2 G1 | [upstream/CR-008](../upstream/CR-008-b-layer-prior-art-abox.md) · [HANDOFF-QUEUE §1.6](../upstream/HANDOFF-QUEUE.md) |
+| 1-b | **CR-009** — 개념별 df·계층깊이 릴리스 발행(D-23) | **발행 완료 `39855bb`(2026-08-04)** — `concept_mapping.json` 스키마 1.1 · 분모 4,513. **CR-008과 분모를 공유한다 — 재수집 시 함께 재발행**(§1.7) | [upstream/CR-009](../upstream/CR-009-concept-df-release-meta.md) · [HANDOFF-QUEUE §1.7](../upstream/HANDOFF-QUEUE.md) |
+| — | ~~CR-004R~~ — 거절근거 조항 단위 구조화(D-06) | ✅ **종료(2026-08-04)** — 상류 `84ea514` · **#6 T3 하락 0** · **#1 은 산출 불가 → 출원 단위로 확정하고 지표 폐기** · #2 는 CR-010 분리. 하류 소비(vendor)는 PLAN-040 뒤 | [archive/CR-004R](../upstream/archive/CR-004-rejection-basis-structure.md) · [HANDOFF-QUEUE §1.1b](../upstream/HANDOFF-QUEUE.md) |
 | 3 | **CR-005·CR-006 송부** — T-Box 논리 공리·SHACL 방향성(D-03·D-09) · 모듈 경계(D-13) | 1단계 완료 · 송부 가능 | CR-005 · CR-006 |
-| 4 | **CR-001A** — 개념 해상도 즉시분(P0 · 어휘 확장 0 · 전문 재추출) | 1·2·3단계 완료 → **CR-007 제약은 해소됐고, 이제 CR-009 완료 후 실행**(§1.5) | [upstream/CR-001](../upstream/CR-001-concept-resolution.md) · [HANDOFF-QUEUE §1.4](../upstream/HANDOFF-QUEUE.md) |
+| 4 | **CR-001A** — 개념 해상도 즉시분(P0 · 어휘 확장 0 · 전문 재추출) | 1·2·3단계 완료 → **선행조건 전부 해소(2026-08-04) · 송부 가능** | [upstream/CR-001](../upstream/CR-001-concept-resolution.md) · [HANDOFF-QUEUE §1.4](../upstream/HANDOFF-QUEUE.md) |
 | 5 | **CR-002·003 · CR-001B** — 계층(P0)·다국어(P0·**D-21 편입 필요**)·어휘 수확 | **보류** — CR-001A 재검정 후 (`skos:broader`는 CR-007이 이미 선착수·완료) | CR-002·003 |
 | 6 | **PLAN-031 B층 수집 착수** — 제2 확증분할 200건 | **🔒 사전등록 동결(2026-07-31 승인)** → 파일럿 500콜부터. CR-007과 독립 | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
 | 6-b | **PLAN-032 수집 드라이버** — §3 집행 코드(표집 순서·IPC 21종·패밀리 서로소) | **1단계 요구정의 승인 · 🛑 2단계 분석 진행 중** | [PLAN-032](plans/PLAN-032-b-layer-pilot-collection.md) |
+| 2 | **PLAN-040 관통** — T-gate 재적용(H2 3회차) + B층 H3 재확증 | **조건 동결 · 서명 미기입** — 막는 것은 상류 US 2건 재시도 회신 하나 | [PLAN-040](plans/PLAN-040-post-remediation-tgate-and-b-layer.md) |
 | 7 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) |
 
 > **문서 정리 (2026-08-01).** `plans/`에는 **살아 있는 4건만** 둔다 — PLAN-018·029·031·032.
@@ -220,7 +246,7 @@
   **신규성 단독 0건** · 라벨 없음 600건. §7.7("신규성 ≠ 진보성 랭킹 목표")은 **검정 불가**로 후속 연구
   질문에 강등됐다. 또한 **벤더 TTL 이 `§1×n|§2×m` 를 단일 `Rejection_Inventiveness` 로 접어 신규성 축을
   잃는다** — 상류 결함이며 파생 스냅샷(`rejection_basis.csv`)으로 우회가 아닌 통로를 냈다.
-  **→ C0로 전환됨: 결함 D-06 · [CR-004R](../upstream/CR-004-rejection-basis-structure.md)** (하류 1·2·3단계
+  **→ C0로 전환됨: 결함 D-06 · [CR-004R](../upstream/archive/CR-004-rejection-basis-structure.md)** (하류 1·2·3단계
   완료·승인 · 의견제출통지서 998건 신규 수집으로 **무라벨 600 → 1**).
 - **재랭크 천장이 실측으로 확인됐다.** low-overlap 집단 Δ−0.0586 < high +0.0711. 원인은 B3 상위 1,000
   안에서만 재정렬하는 설계 — 원고 §9.1 에 명시. 돌파는 N11(질의 확장)이며 동결 설계 밖이다.
