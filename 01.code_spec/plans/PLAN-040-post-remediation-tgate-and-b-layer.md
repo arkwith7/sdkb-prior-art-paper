@@ -35,6 +35,16 @@
 **이 수정은 §2.1 이 금지하는 "로직 변경"이 아니다** — 검색 설정·가중치·토큰화·Dense 모델·분할
 경계 중 어느 것도 건드리지 않고, **스냅샷에 담을 파일 목록만** 넓힌다(PLAN-034 의 전례).
 
+> **집행 정정 (2026-08-05 · 사용자 승인).** 위 두 번째 항목의 **방식만** 바뀌었다 —
+> `sdkb-abox-claim-features.ttl` 은 **888MB** 이고 이미 `central_axis.py` 가 sha256 으로 얼려 두는
+> 별도 경로가 있어, `VENDOR_FILES` 에 넣으면 매 vendor 가 888MB 를 복사하며 이중화된다.
+> 그래서 `rejection_basis.csv` 와 **같은 파생 패턴**을 쓴다 — `_derive_rejection_reasons()` 가
+> `ont:RejectionReason` 만 라인 스캔으로 뽑아 `rejection_reasons.csv` 로 얼리고(원문 0열),
+> **원본 TTL 의 sha256 을 PROVENANCE 에 남긴다.** 실측 2,749건 · 출원 994 · 미연결 0 · 3.5초 ·
+> 재실행 sha256 동일 · 단위테스트 4건(`test_baseline_integration.py`).
+> **들어오는 자원도, 판정 조건(§2·§3·§5·§6)도 바뀌지 않는다** — 같은 데이터를 어떤 그릇에
+> 담아 얼리느냐만 바뀌었다. `abox_term_aliases.json` 은 예정대로 `VENDOR_FILES` 에 추가됐다.
+
 ---
 
 ## 2. 두 판독 — 하나의 스냅샷, 두 개의 질문
@@ -112,8 +122,21 @@ sha256 을 비교**해서 동일하면, 판정은 `Accept=1` 이 아니라 **"�
 | G1 | **B층 정답 도달성**(분모 **503** · NPL 11 별도 · 총계 514 병기) | **≥ 0.95** | `[vendor·조립 후 기입]` |
 | G2 | 관할별 본문 확보율 | 합계로 뭉치지 않고 관할별로 보고 | `[기입]` |
 | G3 | `make leakage` — 금지 간선 | **0** | `[기입]` |
-| G4 | 스냅샷 서명 4파일 sha256 | 사전등록에 기입 후 실행 | `[기입]` |
+| G4 | 스냅샷 서명 4파일 sha256 | 사전등록에 기입 후 실행 | `[vendor 후 기입]` — 아래 표 |
 | G5 | 봉인 qrel 해시 **불변** | B층 `qrel_b_sealed.parquet` = `127a138f1c1651676ea81b9ecf50aa53e0172ca4ee7ff0c5b8f26e9d171db4c3`(538행·질의 200) · A층 `qrel_test_sealed.parquet` = `984f8ef3…fda2c` | 대조 |
+
+**G4 서명표 — `make vendor` 직후 채우고 그 커밋이 사전등록을 완성한다.**
+
+| 자산 | 스냅샷 파일 | sha256 |
+|---|---|---|
+| CR-008 B층 A-Box | `sdkb-abox-prior-art.ttl` | `[vendor 후 기입]` |
+| CR-009 개념 df | `concept_mapping.json` | `[vendor 후 기입]` |
+| CR-007 별칭 사전 | `abox_term_aliases.json` | `[vendor 후 기입]` |
+| CR-004R 거절근거 조항 (파생) | `rejection_reasons.csv` | `[vendor 후 기입]` |
+| CR-004R 원본 (vendor 하지 않음 · 서명만) | `ontology/sdkb-abox-claim-features.ttl` | `9f75836fe240997226dabc171db129f4f98a521b68cc32e43884d9c1beb05fb6` (888,298,833 B · 2026-08-05 실측) |
+
+**대조군 O′ 의 서명은 이미 얼렸다** — `make vendor` 가 덮기 전에 복사·기록했다(§7 (0-b) 완료 ·
+[PLAN-040-oprime-snapshot-signatures.json](PLAN-040-oprime-snapshot-signatures.json) · 상류 `2839afb` · 18파일).
 
 **G1 이 실패하면 §9.4 가 다시 발동한다** — 개봉하지 않고 원인을 보고한다. 상류 실측
 482/503 = 0.9583 은 **상류 그래프에서의 값**이고, 하류 후보 코퍼스에서 다시 재는 것이 G1 이다.
@@ -147,9 +170,11 @@ G1 은 상류 값보다 낮게 나온다. **낮게 나오면 낮은 대로 보�
 ## 7. 실행 순서 — 중간 승인 없이 관통한다
 
 ```
-(0) 상류 회신 접수: US 2건 재시도 결과 + (해소 시) concept_mapping 재발행 sha256
-(0-b) 현 data/external/sdkb/ (= O′) 를 별도 경로로 복사 · 서명 기록  ← 덮이기 전에
-(1) vendor.py VENDOR_FILES += {abox_term_aliases.json, sdkb-abox-claim-features.ttl}
+(0) ✅ 상류 회신 접수(2026-08-05): US 2건 재시도 **실패** → 0.9608 미달 확정 · 노드 0 추가 ·
+    concept_mapping 재발행 조건 미발동(HANDOFF-QUEUE §1.6a)
+(0-b) ✅ 현 data/external/sdkb/ (= O′) 를 별도 경로로 복사 · 서명 기록  ← 덮이기 전에
+(1) ✅ vendor.py: VENDOR_FILES += abox_term_aliases.json ·
+    claim-features 는 _derive_rejection_reasons() 파생으로(§1 집행 정정)
 (2) make vendor          → §4.2 G4 서명 기입 → **커밋(= 사전등록 완성)**
 (3) make corpus          → 문서 증분 프로파일(§4 의무) · B층 도달성 G1 · 두 팔 코퍼스 E8
 (4) make index → make leakage(G3)
@@ -179,5 +204,6 @@ G1 은 상류 값보다 낮게 나온다. **낮게 나오면 낮은 대로 보�
 |---|---|
 | §1.8 판단 3건(청구항 단위 발행 · US 0.9608 · `requests`) | ✅ 승인 2026-08-04 |
 | 본 사전등록의 범위(판독 A + B) | ✅ 승인 2026-08-04 |
-| §2·§3·§5·§6 조건 동결 | **이 커밋** |
-| §4.2 서명 기입 | ⏳ 상류 재시도 회신 후 |
+| §2·§3·§5·§6 조건 동결 | ✅ 커밋 `c39aa9a`(2026-08-04) |
+| §1 집행 정정(claim-features 를 파생으로) | ✅ 승인 2026-08-05 — **판정 조건 무변경** |
+| §4.2 G4 서명 기입 | ⏳ `make vendor` 직후 · `make corpus` 이전 |

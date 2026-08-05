@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -52,6 +53,11 @@ VENDOR_FILES: list[tuple[str, str]] = [
     # 그래서 O 대 O′ 의 ΔR₁₀₀ 이 정의상 0 이 되어 H2 가 공허하게 통과했다(D-16·D-19).
     ("mappings/concept_mapping.json",
      "매핑: 특허 본문 → 개념 링크 사전(patent-text 프로파일) — 개념 적용기의 입력"),
+    # CR-007(D-16)이 함께 낸 별칭 사전. 하류에 아직 독자는 없지만, 이것이 없으면 상류가 만든
+    # 개념 링크를 **스냅샷만으로 재현할 수 없다** — 재현 주장의 구멍이라 얼려 둔다.
+    # (하류 `mappings/term_aliases.csv` 와 이름이 비슷하나 다른 자산이다 — 그쪽은 구 패러다임.)
+    ("mappings/abox_term_aliases.json",
+     "매핑: A-Box 별칭 사전 — 상류 개념 링크 생성의 표층형 원천(재현용)"),
     ("data/semiconductor_v0_3.json", "ABox 의 커밋된 원천(=재현 기준점)"),
     ("data/schema_report.json", "원천의 sha256 + 노드/엣지 카운트"),
 ]
@@ -89,6 +95,24 @@ LICENSE_RESTRICTED: frozenset[str] = frozenset({
 REJECTION_SRC = "data/patents/rejected_patents_meta.parquet"
 REJECTION_OUT = "rejection_basis.csv"
 LEGAL_BASIS_NAMES = {"§1": "novelty", "§2": "inventiveness"}   # 특허법 제29조 제1항·제2항
+
+# --- 파생 스냅샷: 거절근거 조항 인스턴스 (CR-004R `84ea514`) --------------------------
+#
+# 왜 파생인가: 원천 `ontology/sdkb-abox-claim-features.ttl` 은 **888MB** 다. 통째로 vendor 하면
+# 매 `make vendor` 가 888MB 를 복사하고, 이미 이 파일을 sha256 으로 얼려 두는 별도 경로
+# (`central_axis.py` → `data/external/sdkb-central-axis/PROVENANCE.json` + oxstore)와 이중화된다.
+# 그래서 rejection_basis.csv 와 같은 패턴을 쓴다 — 필요한 부분만 뽑아 작은 CSV 로 얼리고,
+# **원본 sha256 을 PROVENANCE 에 남겨** 출처를 잃지 않는다.
+#
+# 왜 필요한가: CR-004R 이 채운 `ont:RejectionReason` 2,749건은 **조항(項) 단위 해상도**를 갖는다.
+# 기존 rejection_basis.csv 는 `§1×n|§2×m` 을 신규성/진보성 두 축으로만 펼치므로 제42조(기재불비)
+# 계열과 회차(noticeRound)를 잃는다. 이 CSV 는 그 해상도를 옮기는 통로다.
+#
+# **누출 규율(CLAUDE.md §1-4):** 질의(거절특허) 속성이며 **하위집단 분해 전용**이다. 순위 함수
+# 입력이 아니다. 인용 문헌 식별자는 담지 않는다 — 담으면 정답 표면이 넓어진다.
+# **원문 0열**(청구항·초록 텍스트 없음)이라 커밋 가능하다(§1-5).
+REJECTION_REASON_SRC = "ontology/sdkb-abox-claim-features.ttl"
+REJECTION_REASON_OUT = "rejection_reasons.csv"
 
 
 def sha256(path: Path) -> str:
@@ -370,6 +394,107 @@ def _derive_rejection_basis(sdkb_home: Path, dest: Path) -> dict | None:
             "counts": {"rows": len(rows), "novelty": n_nov, "inventiveness": n_inv}}
 
 
+_REASON_IRI = re.compile(r"^<https://w3id\.org/sdkb/data/rejection/([^>]+)> a ont:RejectionReason\b")
+_REASON_REF = re.compile(r"<https://w3id\.org/sdkb/data/rejection/([^>]+)>")
+_PATENT_SUBJ = re.compile(r"^<https://w3id\.org/sdkb/data/patent/([^>]+)>")
+_PRED = re.compile(r"^\s+ont:(groundClause|noticeDate|noticeRound|noticeType|reasonGround)\s+(.+?)\s*[;.]\s*$")
+
+
+def _ttl_value(raw: str) -> str:
+    """`"29-2-"^^xsd:string` · `1` · `ont:Rejection_Inventiveness` → 값 문자열."""
+    raw = raw.strip()
+    if raw.startswith("ont:"):
+        return raw[4:]
+    if raw.startswith('"'):
+        end = raw.rfind('"')
+        return raw[1:end] if end > 0 else raw.strip('"')
+    return raw
+
+
+def _derive_rejection_reasons(sdkb_home: Path, dest: Path) -> dict | None:
+    """상류 claim-features TTL(888MB) → 거절근거 조항 인스턴스 CSV. 원천 부재면 None.
+
+    **rdflib 을 쓰지 않는다** — 인메모리 파싱은 피크 15GB·4분이다(config.py:83 실측).
+    상류 산출물은 `ont:` 접두 · 4칸 들여쓰기 · 술어 정렬이 고정된 결정적 직렬화라
+    한 번의 라인 스캔으로 충분하다. 형식이 바뀌면 개수 검사가 실패시킨다.
+
+    결정적: doc_id·조항·회차로 정렬하고 고정 열 순서로 쓴다 — 재실행하면 같은 sha256.
+    """
+    import csv
+
+    src = sdkb_home / REJECTION_REASON_SRC
+    if not src.exists():
+        return None
+
+    rows: dict[str, dict] = {}
+    linked: set[str] = set()          # rejectionEvidence 로 Patent 에 걸린 reason 지역명
+    subj: str | None = None
+    in_patent = False
+    with src.open("r", encoding="utf-8") as f:
+        for line in f:
+            m = _REASON_IRI.match(line)
+            if m:
+                subj, in_patent = m.group(1), False
+                rows[subj] = {"reason_id": subj}
+                continue
+            if _PATENT_SUBJ.match(line):
+                subj, in_patent = None, True
+                continue
+            if in_patent:
+                # Patent 블록 안의 rejectionEvidence 목적어(여러 줄에 걸친다)
+                for ref in _REASON_REF.findall(line):
+                    linked.add(ref)
+                if line.rstrip().endswith("."):
+                    in_patent = False
+                continue
+            if subj is None:
+                continue
+            p = _PRED.match(line)
+            if p:
+                rows[subj][p.group(1)] = _ttl_value(p.group(2))
+            if line.rstrip().endswith("."):
+                subj = None
+
+    if not rows:
+        raise SystemExit(
+            f"[vendor] {REJECTION_REASON_SRC} 에서 ont:RejectionReason 을 하나도 읽지 못했다 — "
+            "상류 직렬화 형식이 바뀐 것이다. 파서를 고치기 전에 스냅샷을 얼리지 않는다."
+        )
+
+    out_rows = []
+    for rid, r in rows.items():
+        doc_id = rid.split("__", 1)[0]
+        out_rows.append({
+            "doc_id": doc_id,
+            "clause": r.get("groundClause", ""),
+            "ground": r.get("reasonGround", ""),
+            "notice_round": r.get("noticeRound", ""),
+            "notice_type": r.get("noticeType", ""),
+            "notice_date": r.get("noticeDate", ""),
+            "reason_id": rid,
+        })
+    out_rows.sort(key=lambda x: (x["doc_id"], x["clause"], str(x["notice_round"]), x["reason_id"]))
+
+    out = dest / REJECTION_REASON_OUT
+    with out.open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(out_rows[0]))
+        w.writeheader()
+        w.writerows(out_rows)
+
+    n_docs = len({r["doc_id"] for r in out_rows})
+    orphan = len(set(rows) - linked)      # Patent 에 걸리지 않은 reason — 있으면 상류 결함이다
+    print(f"[vendor] 거절근거 조항 파생: {len(out_rows)}건 · 출원 {n_docs}"
+          f"{f' · 미연결 {orphan}' if orphan else ''} -> {out.name}")
+    return {
+        "file": out.name, "source_path": REJECTION_REASON_SRC,
+        "role": "파생: 거절근거 조항 인스턴스(CR-004R · 하위집단 전용 · 원문 0열 · 순위 입력 아님)",
+        "sha256": sha256(out), "derived": True,
+        "source_sha256": sha256(src), "source_bytes": src.stat().st_size,
+        "counts": {"reasons": len(out_rows), "applications": n_docs,
+                   "unlinked_to_patent": orphan},
+    }
+
+
 def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
     if not (sdkb_home / ".git").exists():
         raise SystemExit(f"[vendor] SDKB git repo 를 찾을 수 없음: {sdkb_home}")
@@ -397,9 +522,10 @@ def vendor(sdkb_home: Path = SDKB_HOME, dest: Path = EXTERNAL_SDKB) -> Path:
             entry["license_restricted"] = True
         files.append(entry)
 
-    derived = _derive_rejection_basis(sdkb_home, dest)
-    if derived is not None:
-        files.append(derived)
+    for derive in (_derive_rejection_basis, _derive_rejection_reasons):
+        entry = derive(sdkb_home, dest)
+        if entry is not None:
+            files.append(entry)
 
     prov = {
         "source_repo": _git(sdkb_home, "remote", "get-url", "origin"),

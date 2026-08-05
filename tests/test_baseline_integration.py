@@ -545,3 +545,104 @@ def test_vendor_verify_cli_exits_zero():
         capture_output=True, text=True,
     )
     assert r.returncode == 0, r.stderr
+
+
+# --- 파생: 거절근거 조항 인스턴스 (CR-004R · 888MB TTL 라인 스캔) ----------------
+
+_REASON_TTL_FIXTURE = """\
+@prefix ont: <https://w3id.org/sdkb/ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/sdkb/data/patent/kr_1020040038467> ont:hasClaim <https://w3id.org/sdkb/data/claim/rej_1020040038467_c1> ;
+    ont:rejectionEvidence <https://w3id.org/sdkb/data/rejection/kr_1020040038467__29-2-__r1>,
+        <https://w3id.org/sdkb/data/rejection/kr_1020040038467__42-3-__r1> .
+
+<https://w3id.org/sdkb/data/rejection/kr_1020040038467__29-2-__r1> a ont:RejectionReason ;
+    ont:groundClause "29-2-"^^xsd:string ;
+    ont:noticeDate "2010-10-26"^^xsd:date ;
+    ont:noticeRound 1 ;
+    ont:noticeType "의견제출통지서"^^xsd:string ;
+    ont:reasonGround ont:Rejection_Inventiveness .
+
+<https://w3id.org/sdkb/data/rejection/kr_1020040038467__42-3-__r1> a ont:RejectionReason ;
+    ont:groundClause "42-3-"^^xsd:string ;
+    ont:noticeDate "2010-10-26"^^xsd:date ;
+    ont:noticeRound 1 ;
+    ont:noticeType "의견제출통지서"^^xsd:string ;
+    ont:reasonGround ont:Rejection_ClaimRequirements .
+
+<https://w3id.org/sdkb/data/rejection/kr_1019990000001__29-1-2__r2> a ont:RejectionReason ;
+    ont:groundClause "29-1-2"^^xsd:string ;
+    ont:noticeRound 2 ;
+    ont:noticeType "거절결정서"^^xsd:string ;
+    ont:reasonGround ont:Rejection_Novelty .
+"""
+
+
+def _fake_sdkb_with_reasons(tmp_path, body: str):
+    from sdkb_paper.ontology.vendor import REJECTION_REASON_SRC
+
+    src = tmp_path / "sdkb" / REJECTION_REASON_SRC
+    src.parent.mkdir(parents=True, exist_ok=True)
+    src.write_text(body, encoding="utf-8")
+    return tmp_path / "sdkb"
+
+
+def test_derive_rejection_reasons_reads_clause_resolution(tmp_path):
+    """조항(項)·회차·통지종별을 잃지 않고 옮긴다 — rejection_basis.csv 가 접는 해상도다.
+
+    마지막 인스턴스는 `noticeDate` 가 없고 `rejectionEvidence` 로도 걸려 있지 않다.
+    결측은 빈 칸으로 남고, 미연결은 **세어서 보고**한다 — 조용히 지우지 않는다.
+    """
+    import csv
+
+    from sdkb_paper.ontology.vendor import _derive_rejection_reasons
+
+    dest = tmp_path / "out"
+    dest.mkdir()
+    entry = _derive_rejection_reasons(_fake_sdkb_with_reasons(tmp_path, _REASON_TTL_FIXTURE), dest)
+
+    assert entry["counts"] == {"reasons": 3, "applications": 2, "unlinked_to_patent": 1}
+    rows = list(csv.DictReader((dest / entry["file"]).open(encoding="utf-8")))
+    assert [r["doc_id"] for r in rows] == [
+        "kr_1019990000001", "kr_1020040038467", "kr_1020040038467"]   # 정렬은 결정적이다
+    assert rows[0] == {
+        "doc_id": "kr_1019990000001", "clause": "29-1-2", "ground": "Rejection_Novelty",
+        "notice_round": "2", "notice_type": "거절결정서", "notice_date": "",
+        "reason_id": "kr_1019990000001__29-1-2__r2",
+    }
+    # 조항 두 종이 한 출원 안에서 갈린다 — 접힘 해소의 직접 증거(CR-004R 검증기준 #4).
+    assert {r["clause"] for r in rows if r["doc_id"] == "kr_1020040038467"} == {"29-2-", "42-3-"}
+    # 원문 0열 — 청구항·초록 텍스트가 섞이면 커밋할 수 없다(CLAUDE.md §1-5).
+    assert set(rows[0]) == {"doc_id", "clause", "ground", "notice_round",
+                            "notice_type", "notice_date", "reason_id"}
+
+
+def test_derive_rejection_reasons_is_deterministic(tmp_path):
+    """두 번 돌리면 같은 sha256 — 스냅샷 서명이 실행마다 흔들리면 사전등록이 무의미하다."""
+    from sdkb_paper.ontology.vendor import _derive_rejection_reasons
+
+    home = _fake_sdkb_with_reasons(tmp_path, _REASON_TTL_FIXTURE)
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir()
+    b.mkdir()
+    assert (_derive_rejection_reasons(home, a)["sha256"]
+            == _derive_rejection_reasons(home, b)["sha256"])
+
+
+def test_derive_rejection_reasons_refuses_silent_zero(tmp_path):
+    """상류 직렬화가 바뀌어 0건이 나오면 **멈춘다** — 빈 CSV 를 얼리면 하위집단이 조용히 사라진다."""
+    from sdkb_paper.ontology.vendor import _derive_rejection_reasons
+
+    dest = tmp_path / "out"
+    dest.mkdir()
+    home = _fake_sdkb_with_reasons(tmp_path, "@prefix ont: <https://w3id.org/sdkb/ontology#> .\n")
+    with pytest.raises(SystemExit, match="RejectionReason"):
+        _derive_rejection_reasons(home, dest)
+
+
+def test_derive_rejection_reasons_absent_source_is_tolerated(tmp_path):
+    """상류 원본이 없는 환경(신선한 클론)에서는 None — vendor 전체를 깨뜨리지 않는다."""
+    from sdkb_paper.ontology.vendor import _derive_rejection_reasons
+
+    assert _derive_rejection_reasons(tmp_path / "nowhere", tmp_path) is None

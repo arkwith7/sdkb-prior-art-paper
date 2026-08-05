@@ -1,0 +1,71 @@
+{
+  "record": "CR-008 후속 · US 문헌 2건 재시도 1회 — 실행 결과(HANDOFF-QUEUE §3 첫 블록 · §1.8 ②)",
+  "executed_by": "이 세션이 상류 역할로 수행(§0.1 예외 · 사용자 승인 2026-08-05)",
+  "executed_at": "2026-08-05",
+  "verdict": "실패 — 해소되지 않았다. US 청구항 0.9608 을 미달 그대로 확정한다(임계 0.99 불변).",
+  "targets": [
+    {
+      "cited_doc_id": "US-P-03517643",
+      "cited_raw": "US03517643 A1",
+      "docdb": "US-3517643-A",
+      "pub_date": "1970-06-30",
+      "filing_date": "1968-11-25",
+      "title": "Vapor deposition apparatus including diffuser means"
+    },
+    {
+      "cited_doc_id": "US-P-03530092",
+      "cited_raw": "US03530092 A1",
+      "docdb": "US-3530092-A",
+      "pub_date": "1970-09-22",
+      "filing_date": "1968-07-26",
+      "title": "Process for preparing organosiliconnitrogen compounds"
+    }
+  ],
+  "sources_tried": [
+    {
+      "source": "EPO OPS 3.2 · published-data/publication/docdb/{doc}/biblio",
+      "http": 200,
+      "result": "두 건 모두 문헌 존재 확인 — 공개일·kind 회신됨"
+    },
+    {
+      "source": "EPO OPS 3.2 · .../abstract",
+      "http": 200,
+      "result": "응답에 abstract 요소 자체가 없다 — publication-reference 만 반환(520바이트)"
+    },
+    {
+      "source": "EPO OPS 3.2 · .../claims, .../description",
+      "http": 404,
+      "fault": "CLIENT.InvalidCountryCode",
+      "result": "OPS 전문(fulltext) 서비스는 US 를 지원하지 않는다 — 원천 자체가 US 청구항을 갖지 않는다"
+    },
+    {
+      "source": "PatentsView search.patentsview.org/api/v1",
+      "http": null,
+      "result": "이 호스트에서 DNS 해소 실패(NXDOMAIN) — **미시도**. 문헌 부재의 증거가 아니라 환경 제약이다"
+    },
+    {
+      "source": "PatentsView api.patentsview.org (구 엔드포인트)",
+      "http": 200,
+      "result": "포털 HTML 반환 — API 폐지됨"
+    },
+    {
+      "source": "BigQuery patents-public-data",
+      "http": null,
+      "result": "이 환경에 자격 없음(gcloud·ADC·서비스계정 전무) — 다만 아래 정정대로 BQ 는 이미 두 건을 매칭했다"
+    }
+  ],
+  "correction_to_upstream_diagnosis": {
+    "upstream_said": "원인은 청구항 부재가 아니라 문헌 2건 미해소",
+    "observed": "반대다. 두 건은 BigQuery 에서 이미 매칭됐다 — bigquery_us_b_layer.parquet 에 title·filing_date·ipc·cpc 가 전부 있고 abstract·claims 만 길이 0 이다.",
+    "therefore": "미해소가 아니라 **본문 부재**다. 1968년 출원·1970년 등록이라 Google Patents 에 OCR 전문이 없고, OPS 도 US 전문을 제공하지 않는다. 원천을 바꿔도 해소되지 않는 구조적 상한이며 D-05 계열이다.",
+    "mechanism": "collect_cited_biblio_claims.py 의 resolved = bool(claims or abstract) 가 **서지 해소와 본문 확보를 한 플래그로 뭉친다**. 그래서 리포트가 'no_match' 가 아닌데도 unresolved 에 '수집 미해소'로 적혔다."
+  },
+  "consequences": {
+    "nodes_added": 0,
+    "b_layer_reachability": "482/503 = 0.9583 불변",
+    "us_claim": "0.9608 불변 — 임계 0.99 미달로 확정",
+    "concept_mapping_reissue": "불필요 — 인용 노드 3,513 불변이므로 df 분모 4,513 도 불변(HANDOFF-QUEUE §1.7 의 재발행 조건 미발동)",
+    "snapshot_signature": "상류 sdkb-abox-prior-art.ttl 의 sha256 은 바뀌지 않는다 → PLAN-040 §4.2 G4 를 vendor 후 곧바로 기입할 수 있다"
+  },
+  "not_done": "임계 0.99 를 낮추지 않았다. 수치를 지어내지 않았다. JP 19건은 손대지 않았다(D-05 상한)."
+}

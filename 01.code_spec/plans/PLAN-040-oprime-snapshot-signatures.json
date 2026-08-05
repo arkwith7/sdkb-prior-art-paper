@@ -1,0 +1,83 @@
+{
+  "record": "PLAN-040 §7 (0-b) — O′ 스냅샷 서명 기록 (make vendor 로 덮이기 전 동결)",
+  "why": "이 스냅샷이 PLAN-035(D-23) 두 팔 실험의 O′ 팔이다. vendor 가 덮으면 재현 불가.",
+  "backup_path": "data/interim/snapshot_oprime_2839afb/  (gitignore — 서명만 커밋한다)",
+  "source_commit": "2839afb87825874eb4f299e02c30d6d801d49c6a",
+  "source_commit_date": "2026-08-01T17:21:32+09:00",
+  "vendored_at": "2026-08-01T14:25:53+00:00",
+  "n_files": 18,
+  "files": {
+    "concept_mapping.json": {
+      "sha256": "dc73bae2cc5e161860b0bfebf13df97aa3c210df5c1c40380bb70a468678528c",
+      "bytes": 342506
+    },
+    "rejection_basis.csv": {
+      "sha256": "651f03010228e8b9055a1b295a317a8bd8a3348cbbe670750b7a042aa7b0315b",
+      "bytes": 31608
+    },
+    "schema_report.json": {
+      "sha256": "42d4bcd1c55109cfc7ee7b897029ebaaea1c774380f0b6d1ed03ed0243dcea64",
+      "bytes": 2085
+    },
+    "sdkb-abox-experts-problems.ttl": {
+      "sha256": "4251b65a7032363aa81b5fb218e4bbda656747f778ef38dc248fe221a252bebc",
+      "bytes": 460290
+    },
+    "sdkb-abox-patents.ttl": {
+      "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089",
+      "bytes": 3437859
+    },
+    "sdkb-abox-prior-art.ttl": {
+      "sha256": "013018db544d0a4028e9c6135197dcb492873eb4ea93f5fcaa809e1bb66c89f3",
+      "bytes": 19158032
+    },
+    "sdkb-abox-vendors.ttl": {
+      "sha256": "2bed199d9afc8734ab05f375c34e7f1cd29adf6263157f0ad214cd7f89cf6d54",
+      "bytes": 153484
+    },
+    "sdkb-commercialization.ttl": {
+      "sha256": "763a4b0ed0386890ce6ec7f548d70ad313e102bddbacad60730f652c171d67aa",
+      "bytes": 6058
+    },
+    "sdkb-core-data.ttl": {
+      "sha256": "f366a764569113608e467797a7422ba5f4503cacd3b6a470671a63b2abbaa3fa",
+      "bytes": 155790
+    },
+    "sdkb-core.ttl": {
+      "sha256": "256346fcb83bcf286e1cc66d49e131e36d3e0095701d46d1612a3e5694097f1f",
+      "bytes": 31408
+    },
+    "sdkb-foresight.ttl": {
+      "sha256": "1a85936074e6f00c89e9e6ecbed5b03ebd8b4abc2d78a43d87ac95fd6445164a",
+      "bytes": 6393
+    },
+    "sdkb-governance-kr-instances.ttl": {
+      "sha256": "8bf1086788172a351704fa4e943d7b263f7974400787b727879acb532662c559",
+      "bytes": 11597
+    },
+    "sdkb-governance-kr.ttl": {
+      "sha256": "193136804bc7fa90bdb1f1ed4f56aa427841dfbfa83f598748cd3a3598c4c4dd",
+      "bytes": 5310
+    },
+    "sdkb-governance-us-instances.ttl": {
+      "sha256": "ae2b670973a60b6603ba62dfbf452491e6fd14a09938661118436edbc06b1522",
+      "bytes": 7216
+    },
+    "sdkb-governance.ttl": {
+      "sha256": "5da48ee6a916c6cf819e88afe8e6a19bc998ee9743905545da59d6908e86c5d3",
+      "bytes": 4659
+    },
+    "sdkb-patent.ttl": {
+      "sha256": "594071be3cb9d7a7ff27bcdb49f12e2b2df75b7058582bea9882df8e19f2b3a2",
+      "bytes": 22454
+    },
+    "sdkb-rbv.ttl": {
+      "sha256": "c2a260792d47d8356cde20ba6c4dacecb51c231d4cb1b2cb390f0422d0624486",
+      "bytes": 5719
+    },
+    "semiconductor_v0_3.json": {
+      "sha256": "9260a395a071067c8ffd1102c435d605fc1826b16c35a04efb8cb52d4702d8b4",
+      "bytes": 400917
+    }
+  }
+}

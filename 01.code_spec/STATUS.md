@@ -1,8 +1,40 @@
 # 진행 실적 (v0.9)
 
-*최종 갱신: 2026-08-04 (상류 교정 4건 회신 반영 · CR-004R 종료 · PLAN-040 조건 동결) · 기조: 선행기술 검색 주 태스크 + T-gate (CLAUDE.md v0.9 · v2.0 전환 중)*
+*최종 갱신: 2026-08-05 (US 2건 재시도 종료 · vendor 준비 완료) · 기조: 선행기술 검색 주 태스크 + T-gate (CLAUDE.md v0.9 · v2.0 전환 중)*
 
-> ## 🔜 다음 세션이 할 일 — **상류 회신 접수 → `make vendor` → PLAN-040 관통** (2026-08-04 인계)
+> ## 🔜 다음 세션이 할 일 — **`make vendor` → 서명 기입 커밋 → PLAN-040 관통** (2026-08-05 인계)
+>
+> **임계경로에서 상류가 빠졌다.** US 문헌 2건 재시도를 1회 수행했고 **실패했다** —
+> 두 건은 1968년 출원·1970년 등록이라 **본문 자체가 어느 원천에도 없다**(EPO OPS 는 US 전문
+> 미지원 · Google Patents 에 OCR 없음). **US 청구항 0.9608 을 미달로 확정**했고 임계 0.99 는
+> 건드리지 않았다. 증거 [upstream/handoff/CR-008-us-retry-evidence.json](../upstream/handoff/CR-008-us-retry-evidence.json) ·
+> 판정 [HANDOFF-QUEUE §1.6a](../upstream/HANDOFF-QUEUE.md).
+>
+> **상류 진단이 반대였고 대장 D-25 로 등재했다.** 상류는 "미해소"라고 읽었으나 실제는 **본문 부재**다 —
+> 수집기의 `resolved = bool(claims or abstract)` 가 서지해소와 본문확보를 한 칸에 뭉친 탓이다.
+> 수치는 바뀌지 않는다. 바뀌는 것은 **원인의 이름**이고, 그것이 다음 CR 의 범위를 정한다.
+>
+> **vendor 준비는 끝났다(§7 (0)·(0-b)·(1) 완료).** ① O′ 스냅샷을 덮이기 전에 복사·서명 동결
+> ([PLAN-040-oprime-snapshot-signatures.json](plans/PLAN-040-oprime-snapshot-signatures.json) · 18파일 · 상류 `2839afb`) ·
+> ② `VENDOR_FILES += abox_term_aliases.json` · ③ **claim-features(888MB)는 통째로 vendor 하지
+> 않고 파생으로 얼린다** — `_derive_rejection_reasons()` 실측 **2,749건 · 출원 994 · 미연결 0 ·
+> 3.5초 · 재실행 sha256 동일**(상류 회신값과 전부 일치). lint 통과 · 신규 단위테스트 4건 통과.
+>
+> **부수 확인 — 신규성 축이 살아났다.** 파생 CSV 의 `ground` 분포는 진보성 1,713 · 기재요건 503 ·
+> **신규성 277** · 개시요건 95 · 단일성 87 · 청구항형식 52. 구 TTL 은 신규성 단독 **0건**이었다
+> (D-06 의 본체). CR-004R 이 접힘을 실제로 풀었음을 하류가 처음 확인했다.
+>
+> **다음 행동은 하나다 — `make vendor` → PLAN-040 §4.2 G4 서명표 기입 → 커밋(사전등록 완성) →
+> 중간 승인 없이 corpus…gate 관통.** 서명 기입 커밋을 `make corpus` 앞에 두지 않으면 사후
+> 사전등록이 된다(§1-3).
+>
+> **미리 자인해 둔 위험은 그대로다** — `concept_meta`(df)를 현행 적용기가 읽지 않으므로 **T1 이
+> 또 공허하게 통과할 수 있다**(D-19 재발). PLAN-040 §3.3 이 그 경우를 `Accept=1` 이 아니라
+> **"미검정"으로 기록**하게 못박았다. E9(개념링크 열 sha256 대조)가 그것을 잡는다.
+>
+> **아래는 2026-08-04 시점의 인계이며 기록으로 남긴다.**
+>
+> ## (기록) 상류 회신 접수 → `make vendor` → PLAN-040 관통 (2026-08-04 인계)
 >
 > **먼저 읽을 것:** [PLAN-040](plans/PLAN-040-post-remediation-tgate-and-b-layer.md)(**조건 동결 ·
 > 서명 미기입**) · [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md) §1.6·§1.7·§1.8.
