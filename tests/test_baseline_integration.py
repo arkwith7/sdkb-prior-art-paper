@@ -51,12 +51,28 @@ from sdkb_paper.validate.vocab_coverage import measure
 # 이 성장이 D-19 의 반증이 아니라 **확증**이다: 개념층은 실제로 자랐는데
 # `ir_corpus_v09.parquet` 의 sha256 은 바이트 단위로 동일했다(ec5ea51b626d3ff9).
 # 자원은 움직였고 검색 파이프라인만 그것을 읽지 않았다.
+#
+# 상류 39855bb 스냅샷(CR-008·CR-009 + CR-004R `84ea514`)에서 움직인 것:
+#   트리플 105,713 → 115,095 (+9,382). 내역은 파일 단위로 전부 설명된다 —
+#   `sdkb-abox-prior-art.ttl` +9,378(B층 `CitedPatent` 3,034 → 3,513 · CR-008) ·
+#   `sdkb-patent.ttl` +60(**T-Box 술어 5개** `reasonGround`·`groundClause`·`noticeDate`·
+#   `noticeRound`·`noticeType` + `RejectionType` 개체 7 · CR-004R) ·
+#   **중복 흡수 −56**(B층 문헌이 A층과 같은 IPC 심볼 28개를 다시 선언한다 · 무해).
+#   Process·SubProcess·Device·covered·uncovered·mapping_rules 는 **전부 불변**이다 —
+#   이번 델타는 특허 문서층과 거절근거 어휘층이고 공정 개념축을 건드리지 않았다.
+#
+#   `sdkb-abox-prior-art.ttl` 의 **파일 단위 순감은 0** 이다 — CR-008 성공기준 ③
+#   ("사라진 트리플 0")을 하류가 독립적으로 확인했다. 병합 그래프의 집합 차분이 순감을
+#   보고한다면 그것은 `owl:unionOf` 리스트의 **공백노드 재라벨**이지 삭제가 아니다.
 SNAPSHOT_OBSERVATIONS = {
     # 구 스냅샷(≤ 83fd494) — 보존용. 테스트가 검사하지 않는다.
     "pre_remediation": {"triples": 105588, "process": 11, "subprocess": 38, "device": 34,
                         "steps": 49, "covered": 20, "uncovered": 29, "mapping_rules": 83},
-    # 현행 스냅샷(상류 2839afb · 스냅샷 서명 b98ad787d1fe) — 아래 EXPECTED_* 의 원천.
-    "current": {"triples": 105713, "process": 12, "subprocess": 38, "device": 34,
+    # 상류 2839afb(CR-007 반영 · 스냅샷 서명 b98ad787d1fe) — 보존용. PLAN-035 두 팔의 O′ 팔이다.
+    "post_cr007": {"triples": 105713, "process": 12, "subprocess": 38, "device": 34,
+                   "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
+    # 현행 스냅샷(상류 39855bb · PLAN-040) — 아래 EXPECTED_* 의 원천.
+    "current": {"triples": 115095, "process": 12, "subprocess": 38, "device": 34,
                 "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
 }
 _CURRENT = SNAPSHOT_OBSERVATIONS["current"]

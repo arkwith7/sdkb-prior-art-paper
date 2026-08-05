@@ -122,20 +122,38 @@ sha256 을 비교**해서 동일하면, 판정은 `Accept=1` 이 아니라 **"�
 | G1 | **B층 정답 도달성**(분모 **503** · NPL 11 별도 · 총계 514 병기) | **≥ 0.95** | `[vendor·조립 후 기입]` |
 | G2 | 관할별 본문 확보율 | 합계로 뭉치지 않고 관할별로 보고 | `[기입]` |
 | G3 | `make leakage` — 금지 간선 | **0** | `[기입]` |
-| G4 | 스냅샷 서명 4파일 sha256 | 사전등록에 기입 후 실행 | `[vendor 후 기입]` — 아래 표 |
+| G4 | 스냅샷 서명 sha256 | 사전등록에 기입 후 실행 | ✅ **기입 완료(2026-08-05)** — 아래 표 · **움직인 것은 4건이 아니라 5건이다** |
 | G5 | 봉인 qrel 해시 **불변** | B층 `qrel_b_sealed.parquet` = `127a138f1c1651676ea81b9ecf50aa53e0172ca4ee7ff0c5b8f26e9d171db4c3`(538행·질의 200) · A층 `qrel_test_sealed.parquet` = `984f8ef3…fda2c` | 대조 |
 
-**G4 서명표 — `make vendor` 직후 채우고 그 커밋이 사전등록을 완성한다.**
+**G4 서명표 (2026-08-05 · `make vendor` 실행 후 기입 · 상류 `39855bb` · dirty=false · 20/20 검증).**
 
 | 자산 | 스냅샷 파일 | sha256 |
 |---|---|---|
-| CR-008 B층 A-Box | `sdkb-abox-prior-art.ttl` | `[vendor 후 기입]` |
-| CR-009 개념 df | `concept_mapping.json` | `[vendor 후 기입]` |
-| CR-007 별칭 사전 | `abox_term_aliases.json` | `[vendor 후 기입]` |
-| CR-004R 거절근거 조항 (파생) | `rejection_reasons.csv` | `[vendor 후 기입]` |
-| CR-004R 원본 (vendor 하지 않음 · 서명만) | `ontology/sdkb-abox-claim-features.ttl` | `9f75836fe240997226dabc171db129f4f98a521b68cc32e43884d9c1beb05fb6` (888,298,833 B · 2026-08-05 실측) |
+| CR-008 B층 A-Box | `sdkb-abox-prior-art.ttl` | `1abbf5e54f66c8dc49e203244b5c3925369839524a5fd22768abf3aae137c3fd` |
+| CR-009 개념 df | `concept_mapping.json` | `b2da08e7c261465e4d50b0228f05fdcc2edc6b30b26643c90e1cffa2ab9cf09a` |
+| CR-007 별칭 사전 | `abox_term_aliases.json` | `f54ff7ea434612ccb91a3c33f1e4480de0be4d0a04cb30e3a9fa682e990ed179` |
+| CR-004R 거절근거 조항 (파생) | `rejection_reasons.csv` | `c0cecac96e8e47958363439213efb8bd578704431d9bd4acfa83ce7f6abbbd21` |
+| **CR-004R T-Box 술어 델타** | **`sdkb-patent.ttl`** | `ebe1c301e5585047900575e577989c26e58b90716f8bc38e78851c40010470e8` |
+| CR-004R 원본 (vendor 하지 않음 · 서명만) | `ontology/sdkb-abox-claim-features.ttl` | `9f75836fe240997226dabc171db129f4f98a521b68cc32e43884d9c1beb05fb6` (888,298,833 B) |
 
-**대조군 O′ 의 서명은 이미 얼렸다** — `make vendor` 가 덮기 전에 복사·기록했다(§7 (0-b) 완료 ·
+**나머지 15개 파일은 바이트 불변이다** — `sdkb-abox-patents.ttl`·`sdkb-core*.ttl`·거버넌스 4종·
+`rejection_basis.csv` 등. 상류 재빌드(`owl convert abox abox-patents abox-vendors compliance`)를
+거쳤는데도 불변이라는 것이 **재빌드가 자원을 조용히 흔들지 않았다는 증거**다.
+
+> **예상하지 못한 다섯째 — `sdkb-patent.ttl` 이 움직였고, 그것은 T-Box 술어 델타다.**
+> §1 표는 자원 4건을 적었으나 실제로 서명이 바뀐 것은 **5건**이다. 다섯째는 CR-004R 이
+> `84ea514` 로 넣은 **술어 5개**이며, O′ 대조 실측은 다음과 같다 —
+> `owl:ObjectProperty` **31 → 32**(`reasonGround`) · `owl:DatatypeProperty` **22 → 26**
+> (`groundClause`·`noticeDate`·`noticeRound`·`noticeType`) · `owl:Class` **22 불변** ·
+> `RejectionType` 개체 언급 9 → 17.
+> **이것은 델타 유형 ①(T-Box)이고 H2 자격이 있다**(CLAUDE.md §0 델타 유형표). 연구 통틀어
+> **두 번째** T-Box 술어 델타다(첫 번째는 `2839afb` 의 `skos:broader` 선언).
+> **판정 조건은 바뀌지 않는다** — 자격이 있다는 것과 검정됐다는 것은 다르며, 이번에도
+> §3.3 의 자인(개념링크가 그대로면 "미검정"으로 기록)이 그대로 적용된다. 다만 이 델타는
+> **T3(교차 태스크 CQ 비회귀)의 실질 대상**이다 — 상류가 T3 하락 0 을 회신했고(§1.1b),
+> 하류 `make gate` 가 그것을 독립적으로 재확인한다.
+
+**대조군 O′ 의 서명도 얼려 두었다** — `make vendor` 가 덮기 전에 복사·기록했다(§7 (0-b) 완료 ·
 [PLAN-040-oprime-snapshot-signatures.json](PLAN-040-oprime-snapshot-signatures.json) · 상류 `2839afb` · 18파일).
 
 **G1 이 실패하면 §9.4 가 다시 발동한다** — 개봉하지 않고 원인을 보고한다. 상류 실측
@@ -175,7 +193,8 @@ G1 은 상류 값보다 낮게 나온다. **낮게 나오면 낮은 대로 보�
 (0-b) ✅ 현 data/external/sdkb/ (= O′) 를 별도 경로로 복사 · 서명 기록  ← 덮이기 전에
 (1) ✅ vendor.py: VENDOR_FILES += abox_term_aliases.json ·
     claim-features 는 _derive_rejection_reasons() 파생으로(§1 집행 정정)
-(2) make vendor          → §4.2 G4 서명 기입 → **커밋(= 사전등록 완성)**
+(2) ✅ make vendor        → §4.2 G4 서명 기입 → **커밋(= 사전등록 완성)**
+    상류 39855bb · dirty=false · 20/20 검증 · 서명 이동 5건(나머지 15건 바이트 불변)
 (3) make corpus          → 문서 증분 프로파일(§4 의무) · B층 도달성 G1 · 두 팔 코퍼스 E8
 (4) make index → make leakage(G3)
 (5) make retrieve → eval → gate   ← 판독 A 의 T1·T2·T3
@@ -206,4 +225,4 @@ G1 은 상류 값보다 낮게 나온다. **낮게 나오면 낮은 대로 보�
 | 본 사전등록의 범위(판독 A + B) | ✅ 승인 2026-08-04 |
 | §2·§3·§5·§6 조건 동결 | ✅ 커밋 `c39aa9a`(2026-08-04) |
 | §1 집행 정정(claim-features 를 파생으로) | ✅ 승인 2026-08-05 — **판정 조건 무변경** |
-| §4.2 G4 서명 기입 | ⏳ `make vendor` 직후 · `make corpus` 이전 |
+| §4.2 G4 서명 기입 | ✅ **이 커밋 — 사전등록 완성.** 이후 `make corpus` 부터 무정지 관통 |

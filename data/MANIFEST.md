@@ -488,3 +488,47 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - 규율 강제: `tests/test_handoff_seal_discipline.py` 4건 (경로 참조 금지 · 형태 동결 · sha 동결 · 질의 누출 0)
 - 반영: 상류 CR-008 입력 (1) · C2 재확증(B층)의 전제
 - **이관 후 이 파일은 바뀌지 않는다**(§11.3). 재생성 검증은 `--check`
+
+## 2026-08-05 · SDKB 스냅샷 재vendor — 상류 교정 4건 반영 (PLAN-040 §4.2 G4 · 사전등록 완성)
+- 명령: `make vendor PYTHON=~/Dev/sdkb/.venv/bin/python`
+  (상류 Makefile 의 `PYTHON ?= python3` 이 rdflib 없는 시스템 인터프리터를 잡아 첫 시도가 실패했다 —
+  **인터프리터만 상류 venv 로 지정**했고, 절차·대상은 바꾸지 않았다)
+- 상류: `39855bb46c95897f401986caa18e1c423c8e63c6` · **dirty=false** · 20/20 파일 검증 통과
+- **서명이 움직인 것은 5건**(사전등록이 예상한 4건 + `sdkb-patent.ttl`):
+
+  | 파일 | 출처 CR | sha256 |
+  |---|---|---|
+  | `sdkb-abox-prior-art.ttl` | CR-008 | `1abbf5e54f66c8dc…` (B층 `CitedPatent` 3,034 → 3,513) |
+  | `concept_mapping.json` | CR-009 | `b2da08e7c2614650…` (스키마 1.1 · 개념별 df) |
+  | `abox_term_aliases.json` | CR-007 | `f54ff7ea43461200…` (**신규 vendor 대상**) |
+  | `rejection_reasons.csv` | CR-004R | `c0cecac96e8e4795…` (**신규 파생** · 2,749행 · 출원 994) |
+  | `sdkb-patent.ttl` | CR-004R | `ebe1c301e5585047…` (**T-Box 술어 +5** · 유형 ① · H2 자격) |
+
+- **T-Box 델타 실측**(O′ 대조): `owl:ObjectProperty` 31 → 32 · `owl:DatatypeProperty` 22 → 26 ·
+  `owl:Class` 22 **불변**. 새 술어 = `reasonGround`·`groundClause`·`noticeDate`·`noticeRound`·`noticeType`
+- **나머지 15파일은 바이트 불변** — `sdkb-abox-patents.ttl` 포함. 상류 재빌드를 거쳤는데도 불변이라는 것이
+  재빌드가 자원을 조용히 흔들지 않았다는 증거다
+- 파생 산출 2건: `rejection_basis.csv` 1,000건(신규성 14 · 진보성 400 · **불변**) ·
+  `rejection_reasons.csv` 2,749건(진보성 1,713 · 기재요건 503 · **신규성 277** · 개시요건 95 ·
+  단일성 87 · 청구항형식 52 · Patent 미연결 0). 원본 `sdkb-abox-claim-features.ttl` 은
+  vendor 하지 않고 서명만 남긴다 — sha256 `9f75836fe2409972…` (888,298,833 B)
+- 대조군 O′ 스냅샷(상류 `2839afb` · 18파일)은 덮이기 전에 복사·서명 동결 →
+  `01.code_spec/plans/PLAN-040-oprime-snapshot-signatures.json`
+- 반영: PLAN-040 판독 A(T-gate 재적용) · 판독 B(B층 H3 재확증)의 입력 · C2·C2′·C3
+
+## 2026-08-05 · G₀ baseline 재조립 (스냅샷 39855bb 반영)
+- 명령: `make baseline`
+- `graph_v0.ttl`: **105,713 → 115,095 트리플** (+9,382) · 상류 `39855bb` · Patent 1,000 (게이트 통과)
+- 내역이 파일 단위로 전부 설명된다:
+  - `sdkb-abox-prior-art.ttl` **+9,378** (B층 `CitedPatent` 3,034 → **3,513** · CR-008)
+  - `sdkb-patent.ttl` **+60** (T-Box 술어 5 + `RejectionType` 개체 7 · CR-004R)
+  - **중복 흡수 −56** — B층 문헌이 A층과 같은 **IPC 심볼 28개**를 다시 선언한다(type+notation · 무해)
+- `sdkb-abox-prior-art.ttl` **파일 순감 0** — CR-008 성공기준 ③("사라진 트리플 0")을 하류가 독립 확인.
+  병합 그래프의 집합 차분이 순감을 보고하면 그것은 `owl:unionOf` 리스트의 **공백노드 재라벨**이지 삭제가 아니다
+- 클래스 실측: `CitedPatent` 3,513 · `IPCSymbol` 810 → **3,273** · `Patent` 1,000 ·
+  `RejectionType` 12 · `FailureMode` 25 · `Organization` 351
+- **공정 개념축 불변**: Process 12 · SubProcess 38 · Device 34 · 커버 20 / 50 · 매핑규칙 84
+- 갱신한 동결값: `tests/test_baseline_integration.py` `SNAPSHOT_OBSERVATIONS["current"]`
+  (구 값은 `post_cr007` 로 보존) · `scripts/check_signatures.py` `HISTORICAL_SIGNATURES += "105,713"` ·
+  `01.code_spec/CANONICAL-INDEX.md` §1
+- ⚠ **G₁·G₂ 는 재조립하지 않았다** — 여전히 두 세대 전(105,588) 위에 얹혀 있다(CANONICAL §1 경고)

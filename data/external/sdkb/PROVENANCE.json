@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "2839afb87825874eb4f299e02c30d6d801d49c6a",
-  "source_commit_date": "2026-08-01T17:21:32+09:00",
+  "source_commit": "39855bb46c95897f401986caa18e1c423c8e63c6",
+  "source_commit_date": "2026-08-04T22:45:06+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-08-01T14:25:53+00:00",
+  "vendored_at": "2026-08-05T12:22:21+00:00",
   "baseline_counts": {
     "nodes": 274,
     "edges": 312,
@@ -14,7 +14,7 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-08-01T14:25:52+00:00",
+    "checked_at": "2026-08-05T12:22:16+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -126,7 +126,7 @@
       "file": "sdkb-patent.ttl",
       "source_path": "ontology/sdkb-patent.ttl",
       "role": "TBox: 특허 모듈(Patent/IPC/realizesProcess/concernsDevice)",
-      "sha256": "594071be3cb9d7a7ff27bcdb49f12e2b2df75b7058582bea9882df8e19f2b3a2"
+      "sha256": "ebe1c301e5585047900575e577989c26e58b90716f8bc38e78851c40010470e8"
     },
     {
       "file": "sdkb-foresight.ttl",
@@ -163,7 +163,7 @@
       "file": "sdkb-abox-prior-art.ttl",
       "source_path": "ontology/sdkb-abox-prior-art.ttl",
       "role": "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지",
-      "sha256": "013018db544d0a4028e9c6135197dcb492873eb4ea93f5fcaa809e1bb66c89f3",
+      "sha256": "1abbf5e54f66c8dc49e203244b5c3925369839524a5fd22768abf3aae137c3fd",
       "license_restricted": true
     },
     {
@@ -206,7 +206,13 @@
       "file": "concept_mapping.json",
       "source_path": "mappings/concept_mapping.json",
       "role": "매핑: 특허 본문 → 개념 링크 사전(patent-text 프로파일) — 개념 적용기의 입력",
-      "sha256": "dc73bae2cc5e161860b0bfebf13df97aa3c210df5c1c40380bb70a468678528c"
+      "sha256": "b2da08e7c261465e4d50b0228f05fdcc2edc6b30b26643c90e1cffa2ab9cf09a"
+    },
+    {
+      "file": "abox_term_aliases.json",
+      "source_path": "mappings/abox_term_aliases.json",
+      "role": "매핑: A-Box 별칭 사전 — 상류 개념 링크 생성의 표층형 원천(재현용)",
+      "sha256": "f54ff7ea434612ccb91a3c33f1e4480de0be4d0a04cb30e3a9fa682e990ed179"
     },
     {
       "file": "semiconductor_v0_3.json",
@@ -230,6 +236,20 @@
         "rows": 1000,
         "novelty": 14,
         "inventiveness": 400
+      }
+    },
+    {
+      "file": "rejection_reasons.csv",
+      "source_path": "ontology/sdkb-abox-claim-features.ttl",
+      "role": "파생: 거절근거 조항 인스턴스(CR-004R · 하위집단 전용 · 원문 0열 · 순위 입력 아님)",
+      "sha256": "c0cecac96e8e47958363439213efb8bd578704431d9bd4acfa83ce7f6abbbd21",
+      "derived": true,
+      "source_sha256": "9f75836fe240997226dabc171db129f4f98a521b68cc32e43884d9c1beb05fb6",
+      "source_bytes": 888298833,
+      "counts": {
+        "reasons": 2749,
+        "applications": 994,
+        "unlinked_to_patent": 0
       }
     }
   ]
