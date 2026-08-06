@@ -52,16 +52,16 @@
 
 | 술어 | 사용 | | 클래스 | 사용 |
 |---|---:|---|---|---:|
-| `hasCPC` | 9204 | | `CPCSymbol` | 3504 |
-| `abstractText` | 3973 | | `CitedPatent` | 3034 |
-| `claimText` | 2197 | | `IPCSymbol` | 2655 |
+| `hasCPC` | 10592 | | `CPCSymbol` | 4234 |
+| `abstractText` | 4438 | | `CitedPatent` | 3513 |
+| `claimText` | 2479 | | `IPCSymbol` | 3273 |
 | `applicationNumber` | 1000 | | `Organization` | 351 |
 | `examinationStatus` | 1000 | | `ExpertCase` | 163 |
 | `firstClaimText` | 1000 | | `EquipmentModel` | 29 |
-| `patentOffice` | 1000 | | `TechnologyReadinessLevel` | 9 |
-| `processFamily` | 1000 | | `STEEPVEDimension` | 7 |
-| `publicationDate` | 1000 | | `OptionType` | 5 |
-| `publicationNumber` | 1000 | | `RejectionType` | 5 |
+| `patentOffice` | 1000 | | `RejectionType` | 12 |
+| `processFamily` | 1000 | | `TechnologyReadinessLevel` | 9 |
+| `publicationDate` | 1000 | | `STEEPVEDimension` | 7 |
+| `publicationNumber` | 1000 | | `OptionType` | 5 |
 | `valueChainStage` | 1000 | | `ConstraintType` | 2 |
 | `interpretationType` | 927 | | `Semiconductor` | 1 |
 | `hasCertification` | 395 | |  |  |

@@ -532,3 +532,38 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
   (구 값은 `post_cr007` 로 보존) · `scripts/check_signatures.py` `HISTORICAL_SIGNATURES += "105,713"` ·
   `01.code_spec/CANONICAL-INDEX.md` §1
 - ⚠ **G₁·G₂ 는 재조립하지 않았다** — 여전히 두 세대 전(105,588) 위에 얹혀 있다(CANONICAL §1 경고)
+
+## 2026-08-05T12:46:50.217639+00:00 · IR 코퍼스 조립 (PLAN-017 M1)
+- 명령: `make corpus` (`python -m sdkb_paper.corpus.assemble`)
+- ir_corpus_v09.parquet: 41,031 행 · sha256 `db8132c33ceeb50a`
+- qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
+- 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성) + concept_mapping.json(적용기 링크 129,409건)
+- 반영: C2 입력 · 논문 §5–6
+
+## 2026-08-05T12:56:10.720825+00:00 · IR 코퍼스 조립 (PLAN-017 M1)
+- 명령: `make corpus` (`python -m sdkb_paper.corpus.assemble`)
+- ir_corpus_v09.parquet: 41,031 행 · sha256 `db8132c33ceeb50a`
+- qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
+- 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성) + concept_mapping.json(적용기 링크 129,409건)
+- 반영: C2 입력 · 논문 §5–6
+
+## 2026-08-05 · PLAN-040 관통 — 색인·누출·게이트 (판독 A)
+- 명령: `make index` · `make leakage SPLIT=test` · `make gate SPLIT=test`
+- 코퍼스: `ir_corpus_v09.parquet` **41,031행**(구 40,552 · B층 +479) · sha256 `db8132c33ceeb50a`
+  · qrel `10ab67f21cc1328d`(불변) · 질의밀도 97.6 % → **98.1 %**
+  · 언어분포 ko 39,479 · en 1,412 · ja 140
+- 색인: BM25(nori · pretokenized) **40,956 문서**(빈 문서 75 · 오류 0)
+- **누출 감사 PASS** — 금지간선 잔여 0 · run 7개 · L-1·L-2·L-2b·L-3·L-4 전부 통과
+  · `qrel_test_sealed` `984f8ef3…` 불변 · **B층 봉인 `127a138f…` 미개봉**
+- **개봉 게이트 G1(B층 도달성) = 482/503 = 0.9583** ≥ 0.95 통과. 미도달 21 = JP 19 + US 2
+  (상류 값·분모·내역 전부 일치 · KR 키공간 불일치 해소 확인)
+- **G2 비대칭 발견** — B층 청구항 KR 0.0085 · US 0.0000 대 A층 KR 1.0000 · US 0.9958
+  → 대장 **D-26** · **CR-011** 발행 · **개봉 보류**(사용자 판단)
+- **T1·T2 = 미검정** — 두 팔 `concept_mapping` 의 entries·blocked 해시 동일 ·
+  `concept_meta` 독자 0건 → ΔR₁₀₀ = 0 이 정의상 확정(PLAN-040 §3.3 자인 · E9)
+- **T3 = PASS(실질 검정)** — em 1.000 · tf 1.000 · core 1.000 · 하락 0
+  (T-Box 술어 +5 가 실제로 들어왔으므로 이것은 공허하지 않다)
+- ⚠ **`data/processed/tgate_report.json` 의 `accept: true` 를 인용하지 마라** —
+  `mode: system` · `h2_eligible: false` · `verdict: system_comparison` 이고,
+  사용된 run 은 2026-08-01 자 **구 코퍼스(40,552행)** 산출이다. 판독 A 의 결론은 위 항목이다
+- run 재산출·`make tables` 미실행 — 확증 증거를 만들지 않고 원고 §6.2 표(O 팔)를 덮어쓰기 때문
