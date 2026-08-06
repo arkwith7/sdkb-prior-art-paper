@@ -1,11 +1,11 @@
 # CR-004 · 거절근거의 조항 단위 구조화 (D-06)
 
 > 제출처: `~/Dev/sdkb` · 양식: 상류 CLAUDE.md §2 **1단계 요구정의** · 우선순위 **P1**
-> 근거: [DEFECT-LEDGER.md](DEFECT-LEDGER.md) §1.9 · 논문 v0.9 §6.4 각주·§6.3 탐색적 표·§7.7
+> 근거: [DEFECT-LEDGER.md](../DEFECT-LEDGER.md) §1.9 · 논문 v0.9 §6.4 각주·§6.3 탐색적 표·§7.7
 > **상태: 이 저장소 1·2·3단계 완료·승인 ✅ → 상류 4단계 대기.**
-> **구현 지시는 [HANDOFF-QUEUE.md](HANDOFF-QUEUE.md) §1.1 이 정본이다** — 이 문서는 요구정의만 남긴다.
+> **구현 지시는 [HANDOFF-QUEUE.md](../HANDOFF-QUEUE.md) §1.1 이 정본이다** — 이 문서는 요구정의만 남긴다.
 > 2·3단계 전문(수집 막힘 추적·API 오퍼레이션 규명·법령 대조표)은
-> [`01.code_spec/archive/CR-004-full-analysis-2026-07-30.md`](../01.code_spec/archive/CR-004-full-analysis-2026-07-30.md).
+> [`01.code_spec/archive/CR-004-full-analysis-2026-07-30.md`](../../01.code_spec/archive/CR-004-full-analysis-2026-07-30.md).
 
 ## 1단계 요구정의
 
@@ -66,7 +66,7 @@
   **관측된 사실**로 보고한다(더 강한 진술이다).
 - **열림**: "신규성 지적 포함(255) 대 진보성 전용(734)" 층화가 검정 가능해졌다. 부수로
   제42조(기재불비) 축(4항 422·3항 83·8항 52)이 새 하위집단 후보다.
-  **단 이 층화는 새 사전등록([PLAN-031](../01.code_spec/plans/PLAN-031-b-layer-second-confirmation-split.md))에서만 쓴다** —
+  **단 이 층화는 새 사전등록([PLAN-031](../../01.code_spec/plans/PLAN-031-b-layer-second-confirmation-split.md))에서만 쓴다** —
   기존 test 결과에 소급 적용하면 §1-3 위반이다.
 
 ## 하류가 되돌려줄 측정
