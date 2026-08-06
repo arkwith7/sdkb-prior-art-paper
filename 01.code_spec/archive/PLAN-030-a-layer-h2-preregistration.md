@@ -1,12 +1,16 @@
 # PLAN-030 — A층 사전등록: H2 최초 실검정 (스냅샷 O → O′)
 
+> **종결 (2026-08-06 `plans/` → `archive/` 이동) — 실행됐고 H2 는 미검정으로 끝났다(D-19).**
+> 대체 문서는 [PLAN-035](PLAN-035-h2-linker-preregistration.md)다. **사전등록 증거이므로 인용은
+> 가능하고 재실행은 하지 않는다.** 아래는 동결 당시의 원문이며 고치지 않는다.
+>
 > **상태: 동결 ✅ (2026-08-01 · 사용자 승인 "A로 진행").** 이 문서는 [CLAUDE.md §2.1](../../CLAUDE.md)이
 > 규정한 **유일한 정지 게이트**이며, 이 커밋이 사전등록의 증거다. 이후 §5 파이프라인은 중간 승인
 > 없이 실행하며, **여기 적힌 동결 항목은 결과를 본 뒤 바꾸지 않는다.**
 >
 > **§6 결정: 선택 A — CR-007 단독으로 A층 개시.** CR-001·002·003 병합 후 별도 사전등록으로 재실행.
 >
-> **상위 계획:** [PLAN-029 §2 A층](PLAN-029-post-remediation-reexperiment.md). 그 문서가
+> **상위 계획:** [PLAN-029 §2 A층](../plans/PLAN-029-post-remediation-reexperiment.md). 그 문서가
 > "사전등록은 PLAN-030으로 분리한다"고 예고한 자리를 이 파일이 채운다.
 
 ---
@@ -117,7 +121,7 @@ CR-007은 **+122 트리플 · 인스턴스 +13**이다. 대장의 핵심 결함 
 | T1 · T2 · T3 판정과 `Accept` | **확증** — H2의 결과. 논문 §6에 싣는다 |
 | nDCG@20 · MRR · bpref · w_h 격자 · A1–A8 절제 | **탐색적** — 대장 회신용. "확증"으로 인용하지 않는다 |
 | 개념 링크 밀도 · 동치류 수 · 동점블록 중앙값 (D-01 추적 지표) | **진단** — CR-001·002 우선순위 근거 |
-| H3 · H4 · H5 | **A층에서 판정하지 않는다.** 개봉된 표본이므로 재확증 불가 — B층([PLAN-031](PLAN-031-b-layer-second-confirmation-split.md))의 몫 |
+| H3 · H4 · H5 | **A층에서 판정하지 않는다.** 개봉된 표본이므로 재확증 불가 — B층([PLAN-031](../plans/PLAN-031-b-layer-second-confirmation-split.md))의 몫 |
 
 ---
 
@@ -292,7 +296,7 @@ sha256은 앞 16자리로 표기한다(전체 값은 각 시점의 `PROVENANCE.j
 > 병합 그래프 실측은 11 → 18(**+7**)이다. 상류가 "총량 18"을 "증분 +18"로 적은 것으로 보인다.
 > 판정에는 영향이 없으나(C-4는 기록 항목) 대장 회신 시 지적한다.
 
-**동결 커밋 해시: 이 파일을 담은 커밋** (`git log -1 --format=%H -- 01.code_spec/plans/PLAN-030-a-layer-h2-preregistration.md`)
+**동결 커밋 해시: 이 파일을 담은 커밋** (`git log --follow -1 --format=%H -- 01.code_spec/archive/PLAN-030-a-layer-h2-preregistration.md` — 2026-08-06 `plans/` → `archive/` 이동 전 경로는 `01.code_spec/plans/PLAN-030-a-layer-h2-preregistration.md`)
 
 ---
 

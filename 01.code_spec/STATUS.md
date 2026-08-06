@@ -231,21 +231,28 @@
 | 순서 | 일 | 상태 | 정본 |
 |---|---|---|---|
 | — | ~~CR-007 상류 이관~~ — 텍스트→개념 매핑 규칙·사전(D-14·D-15·D-16) | ✅ **종료(2026-08-04)** — 상류 구현 `2839afb`(2026-08-01) · 하류 소비 PLAN-034/035 · D-19 해소. 잔여는 정밀도 표본 200건 판정뿐 | [archive/CR-007](../upstream/archive/CR-007-concept-linking-rules.md) · [종료 기록](../upstream/archive/README.md) |
-| 1 | **CR-008** — B층 인용 선행기술 A-Box(D-18) | **구현 완료 `39855bb`(2026-08-04)** — `CitedPatent` 3,034 → 3,513 · 도달성 상류 실측 **0.9583** · **US 청구항 0.9608 미달 → 재시도 1회 요청 중.** 하류 도달성 재검은 PLAN-040 §4.2 G1 | [upstream/CR-008](../upstream/CR-008-b-layer-prior-art-abox.md) · [HANDOFF-QUEUE §1.6](../upstream/HANDOFF-QUEUE.md) |
-| 1-b | **CR-009** — 개념별 df·계층깊이 릴리스 발행(D-23) | **발행 완료 `39855bb`(2026-08-04)** — `concept_mapping.json` 스키마 1.1 · 분모 4,513. **CR-008과 분모를 공유한다 — 재수집 시 함께 재발행**(§1.7) | [upstream/CR-009](../upstream/CR-009-concept-df-release-meta.md) · [HANDOFF-QUEUE §1.7](../upstream/HANDOFF-QUEUE.md) |
+| — | ~~CR-008~~ — B층 인용 선행기술 A-Box(D-18) | ✅ **종료(2026-08-06)** — 상류 `39855bb` · 하류 소비 완료(PLAN-040 vendor) · **하류 재측정 482/503 = 0.9583**(상류 값 일치) · `make leakage` 0 · **US 청구항 0.9608 은 미달 확정**(재시도 1회 실패 · 임계 불변 · → D-25). **후속 CR-011 진행 중** | [archive/CR-008](../upstream/archive/CR-008-b-layer-prior-art-abox.md) · [종료 기록](../upstream/archive/README.md) |
+| **1** | **CR-011** — B층 청구항 사이드카 발행(D-26) | **송부 가능 · 대기열 1순위** — 판독 B 개봉을 차단 중 | [upstream/CR-011](../upstream/CR-011-b-layer-claim-features.md) · [HANDOFF-QUEUE §1.9](../upstream/HANDOFF-QUEUE.md) |
+| 1-b | **CR-009** — 개념별 df·계층깊이 릴리스 발행(D-23) | **상류 발행 완료 · 스냅샷 반영 · 하류 미소비** — `concept_mapping.json` 스키마 1.1 · 분모 4,513. **`concept_meta` 를 읽는 하류 코드가 0건**(2026-08-06 실측) — 대기 대상은 상류가 아니라 하류이고, 읽게 만드는 것은 **새 방법**이라 §2 전체를 탄다. **CR-008과 분모를 공유한다**(§1.7) | [upstream/CR-009](../upstream/CR-009-concept-df-release-meta.md) · [HANDOFF-QUEUE §1.7](../upstream/HANDOFF-QUEUE.md) |
 | — | ~~CR-004R~~ — 거절근거 조항 단위 구조화(D-06) | ✅ **종료(2026-08-04)** — 상류 `84ea514` · **#6 T3 하락 0** · **#1 은 산출 불가 → 출원 단위로 확정하고 지표 폐기** · #2 는 CR-010 분리. 하류 소비(vendor)는 PLAN-040 뒤 | [archive/CR-004R](../upstream/archive/CR-004-rejection-basis-structure.md) · [HANDOFF-QUEUE §1.1b](../upstream/HANDOFF-QUEUE.md) |
 | 3 | **CR-005·CR-006 송부** — T-Box 논리 공리·SHACL 방향성(D-03·D-09) · 모듈 경계(D-13) | 1단계 완료 · 송부 가능 | CR-005 · CR-006 |
 | 4 | **CR-001A** — 개념 해상도 즉시분(P0 · 어휘 확장 0 · 전문 재추출) | 1·2·3단계 완료 → **선행조건 전부 해소(2026-08-04) · 송부 가능** | [upstream/CR-001](../upstream/CR-001-concept-resolution.md) · [HANDOFF-QUEUE §1.4](../upstream/HANDOFF-QUEUE.md) |
 | 5 | **CR-002·003 · CR-001B** — 계층(P0)·다국어(P0·**D-21 편입 필요**)·어휘 수확 | **보류** — CR-001A 재검정 후 (`skos:broader`는 CR-007이 이미 선착수·완료) | CR-002·003 |
 | 6 | **PLAN-031 B층 수집 착수** — 제2 확증분할 200건 | **🔒 사전등록 동결(2026-07-31 승인)** → 파일럿 500콜부터. CR-007과 독립 | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
-| 6-b | **PLAN-032 수집 드라이버** — §3 집행 코드(표집 순서·IPC 21종·패밀리 서로소) | **1단계 요구정의 승인 · 🛑 2단계 분석 진행 중** | [PLAN-032](plans/PLAN-032-b-layer-pilot-collection.md) |
-| 2 | **PLAN-040 관통** — T-gate 재적용(H2 3회차) + B층 H3 재확증 | **조건 동결 · 서명 미기입** — 막는 것은 상류 US 2건 재시도 회신 하나 | [PLAN-040](plans/PLAN-040-post-remediation-tgate-and-b-layer.md) |
+| — | ~~PLAN-032 수집 드라이버~~ — §3 집행 코드(표집 순서·IPC 21종·패밀리 서로소) | ✅ **5단계 완주(2026-08-02)** — 200건 채택 · 봉인 미개봉. 2026-08-06 `archive/` 이동 | [archive/PLAN-032](archive/PLAN-032-b-layer-pilot-collection.md) |
+| 2 | **PLAN-040 관통** — T-gate 재적용(H2 3회차) + B층 H3 재확증 | **판독 A 종료(2026-08-05) · 판독 B 개봉 보류** — 막는 것은 CR-011 하나다(위 서두 표) | [PLAN-040](plans/PLAN-040-post-remediation-tgate-and-b-layer.md) |
 | 7 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) |
 
-> **문서 정리 (2026-08-01).** `plans/`에는 **살아 있는 4건만** 둔다 — PLAN-018·029·031·032.
-> 실행이 끝났거나 대체된 **PLAN-017·019·025·027은 `archive/`로 이동**했다(삭제하지 않는다 —
-> 025는 사전등록 증거, 019는 W-시리즈 판정 이력이다). 결론 요약은
-> [CANONICAL-INDEX §3.1](CANONICAL-INDEX.md).
+> **문서 정리 (2026-08-06 갱신 — 아래 2026-08-01 문장을 대체한다).** `plans/`에는 **살아 있는
+> 6건만** 둔다 — **PLAN-018**(검색·T-gate 하네스 · F1–F18 동결이 현행 코드의 계약) ·
+> **PLAN-029**(재실험 로드맵) · **PLAN-031**(B층 사전등록 🔒 · 봉인 미개봉) ·
+> **PLAN-033**(원고 재구성 · §6.2–6.4 재작성 미완) · **PLAN-038**(C2′ · 🛑 4단계 승인 대기) ·
+> **PLAN-040**(+ 서명 JSON · 판독 B 미개봉). 실행이 끝난 **PLAN-030·032·034·035·036·037·039 는
+> `archive/` 로 이동**했다(2026-08-06 · 삭제하지 않는다 — 030·035 는 사전등록 증거, 037·039 는
+> §2.2 정지 게이트 기록이다). 결론 요약은 [CANONICAL-INDEX §3.1](CANONICAL-INDEX.md).
+>
+> **(기록) 2026-08-01 정리.** `plans/`에 살아 있는 4건만 — PLAN-018·029·031·032.
+> **PLAN-017·019·025·027은 `archive/`로 이동**했다.
 >
 > **상류 정리 (2026-08-04 갱신 — 위 문장을 대체한다).** 상류 `~/Dev/sdkb` 최신 커밋은
 > `84ea514`이고, CR 두 건이 구현됐다 — **CR-007 `2839afb`(2026-08-01)** · **CR-004R

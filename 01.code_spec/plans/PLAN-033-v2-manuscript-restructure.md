@@ -4,7 +4,7 @@
 > 대상 정본: [paper/논문_v0_9_SDKB_통합초안.md](../../paper/논문_v0_9_SDKB_통합초안.md) (CLAUDE.md 정본 회귀 조항).
 > 상위: [PLAN-029](PLAN-029-post-remediation-reexperiment.md) (재실험 로드맵) ·
 > [PLAN-031](PLAN-031-b-layer-second-confirmation-split.md) 🔒(B층 사전등록) ·
-> [PLAN-032](PLAN-032-b-layer-pilot-collection.md)(B층 수집 · 200건 확보 완료).
+> [PLAN-032](../archive/PLAN-032-b-layer-pilot-collection.md)(B층 수집 · 200건 확보 완료).
 >
 > **이 문서는 사전등록을 바꾸지 않는다.** 가설의 이름(H1–H5)·임계(ε=0.02·δ=0.05·τ)·분할 경계·
 > 판정 결과는 전부 불변이다. 이 문서가 정하는 것은 **투고본에서 무엇을 어느 지위로 싣는가**뿐이다.
