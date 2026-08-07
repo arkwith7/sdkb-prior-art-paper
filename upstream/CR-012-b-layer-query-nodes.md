@@ -3,7 +3,7 @@
 > **1단계 요구정의 (하류 작성) · 상류 2단계부터 시작한다.**
 > 결함: [DEFECT-LEDGER.md](DEFECT-LEDGER.md) **D-27** · 우선순위 **P0**
 > 발행: 2026-08-07 · **송부 전 정정: 2026-08-07(§3 · 질의 식별 조건)** · 선행: CR-008(`39855bb`) · CR-011(`993f5e2`)
-> **차단 대상: [PLAN-042](../01.code_spec/plans/PLAN-042-cr011-central-axis-reprep.md) 판독 B 개봉.**
+> **차단 대상: [PLAN-042](../01.code_spec/archive/PLAN-042-cr011-central-axis-reprep.md) 판독 B 개봉.**
 
 ---
 

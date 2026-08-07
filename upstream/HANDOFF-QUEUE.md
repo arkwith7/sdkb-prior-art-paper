@@ -2,7 +2,7 @@
 
 > ## 2026-08-08 · 5차 — **CR-013 이 끝났다. 상류에 남은 것은 CR-012 하나다.**
 >
-> **상류 `4f3dbfb` 가 두 줄을 고쳤고, 하류가 [PLAN-043](../01.code_spec/plans/PLAN-043-cr013-hf-precision-remeasure.md)
+> **상류 `4f3dbfb` 가 두 줄을 고쳤고, 하류가 [PLAN-043](../01.code_spec/archive/PLAN-043-cr013-hf-precision-remeasure.md)
 > 사전등록(`8443f7c`) 아래 전량 재측정했다.** 절차는 §2.1 정지 게이트 1개였고, 동결 뒤 조건을
 > 한 글자도 고치지 않았다.
 >
@@ -117,7 +117,7 @@
 | — | [CR-004R](archive/CR-004-rejection-basis-structure.md) | D-06 | 완료 | ✅ **종료 — 상류 `84ea514` · 검증기준 6항 종결(#1 지표 폐기 · #2 CR-010 분리)** | **다시 보내지 않는다.** 종료 기록 [archive/README.md](archive/README.md) · 회신 판정 §1.1b · **하류 소비(vendor)는 PLAN-040 뒤** |
 | — | [CR-008](archive/CR-008-b-layer-prior-art-abox.md) | D-18 | 완료 | ✅ **종료(2026-08-06) — 상류 `39855bb` · ①③④ 통과 · ② US 0.9608 미달 확정(재시도 1회 실패 · §1.6a) · 하류 소비 완료(PLAN-040 vendor)** | **다시 보내지 않는다.** 종료 기록 [archive/README.md](archive/README.md). 하류 재측정 **482/503 = 0.9583**(상류 값 일치) · `make leakage` 0. **후속은 [CR-011](CR-011-b-layer-claim-features.md)** — 노드는 섰고 청구항 형식이 남았다 |
 | — | [CR-009](CR-009-concept-df-release-meta.md) | **D-23** | 1 완료(2026-08-04 신규) | ✅ **상류 발행 완료 — `39855bb` · 스키마 1.0 → 1.1.** 대기 대상은 상류가 아니라 **하류**다 | **P0 — H2 기각(ΔR₁₀₀ −0.0293)의 자원 측 조치.** 개념별 df·계층깊이·상위어 발행(분모 4,513). **파일은 CR-008과 겹치지 않으나 데이터가 겹친다 — §1.7**. **하류 미소비(2026-08-06 실측)** — `concept_meta`(df·depth·상위어)를 읽는 코드가 0건이라 df 가중은 아직 걸리지 않았다. 소비는 **새 사전등록** 아래 새 방법이다(§2 전체 · CLAUDE.md §2.1 적용 불가) |
-| — | [CR-011](CR-011-b-layer-claim-features.md) | **D-26** | ✅ **종료 (2026-08-07)** | ✅ **①②③ 상류 통과(`993f5e2`) · ④ 하류 통과 — 0.0085 → 1.0000** | **다시 보내지 않는다 — 끝났다.** §2.1 사전등록 [PLAN-042](../01.code_spec/plans/PLAN-042-cr011-central-axis-reprep.md) 아래 `central_axis build` → `make corpus` 로 재측정. **경로는 `make vendor` 가 아니었다**(§1.10). 판정 전문 §1.11. **판독 B 개봉 차단 해제** · 봉인 불변(`127a138f…`) |
+| — | [CR-011](CR-011-b-layer-claim-features.md) | **D-26** | ✅ **종료 (2026-08-07)** | ✅ **①②③ 상류 통과(`993f5e2`) · ④ 하류 통과 — 0.0085 → 1.0000** | **다시 보내지 않는다 — 끝났다.** §2.1 사전등록 [PLAN-042](../01.code_spec/archive/PLAN-042-cr011-central-axis-reprep.md) 아래 `central_axis build` → `make corpus` 로 재측정. **경로는 `make vendor` 가 아니었다**(§1.10). 판정 전문 §1.11. **판독 B 개봉 차단 해제** · 봉인 불변(`127a138f…`) |
 | **0** | **[CR-012](CR-012-b-layer-query-nodes.md)** | **D-27** | 1 완료 · 정정 반영 · **송부 완료(2026-08-07)** | **📤 송부됨 — 상류 2단계(분석) 대기 · 임계경로** | **판독 B 개봉을 실행 불가로 만든다.** 정답은 CR-008·CR-011 로 다 채웠는데 **질의 200 이 그래프에 없다.** 요구는 한 쌍 — ⓐ 질의 노드 발행 + 청구항 분해 · ⓑ **A/B 층 분리 표지**(선호 형태 = 별도 파일 · T-Box 델타 0). **ⓑ 의 근거가 정정됐다** — 질의 식별은 `a ont:RejectedPatent` 타입이고 간선이 아니다(**§1.13**). 이관 파일 [handoff/CR-012-b-query-ids.txt](handoff/CR-012-b-query-ids.txt) `ef4ad03c…` 발행. 관측 기록 §1.12 |
 | — | [CR-013](archive/CR-013-element-symbol-alias-precision.md) | **D-20** | ✅ **종료 (2026-08-08)** | ✅ **상류 구현 `4f3dbfb` · 하류 재측정 완료(PLAN-043) — 검증기준 ①–⑥ 전부 통과·예측 일치 · ⑦ 보고(ΔR₁₀₀ = +0.0000)** | **다시 보내지 않는다.** 후속 셋은 전부 **하류 소관** — D-28(대소문자) · **D-29**(G₁/G₂ 동결) · **D-30**(델타 유형 분류기) |
 | 2 | [CR-001A](CR-001-concept-resolution.md) | D-01·D-04 | 1·2·3 완료(결정 4건 확정 2026-07-31) | **송부 보류(2026-08-07)** | **어휘 확장 0** — 전문 재추출만. CR-007·CR-009 제약은 풀렸으나 **D-20 이 앞에 섰다**(§1.14). 보류 이유 둘 — ① 오링크 증폭 ② **하류 한계효과 ≈ 0**(적용기가 이미 `text_main` 에 돈다 · §1.14.4) → **성공기준 ① 재작성 후 송부** · 이관 내용 §1.4 |
@@ -771,7 +771,7 @@ CR-012 와 달리 **하류 코드가 한 줄도 바뀌지 않는다** — 사전
 
 **CR-013 — ✅ 종료(2026-08-08). 아래 블록은 기록이며 재송부 금지다.**
 > 상류 구현 `4f3dbfb` · 회신문 `docs/project/reply_cr013_element_symbol_alias_precision.md` ·
-> 하류 재측정 [PLAN-043](../01.code_spec/plans/PLAN-043-cr013-hf-precision-remeasure.md)(사전등록 `8443f7c`) ·
+> 하류 재측정 [PLAN-043](../01.code_spec/archive/PLAN-043-cr013-hf-precision-remeasure.md)(사전등록 `8443f7c`) ·
 > 검증기준 ①–⑥ 통과 · ⑦ ΔR₁₀₀ = +0.0000 · CR 는 `archive/` 로 내렸다.
 
 > 송부 직전 검증 — 정본 커밋 `f4e3705` · sha256 `4d0603cb…` · 워킹트리 clean.
