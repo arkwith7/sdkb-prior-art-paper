@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "39855bb46c95897f401986caa18e1c423c8e63c6",
-  "source_commit_date": "2026-08-04T22:45:06+09:00",
+  "source_commit": "4f3dbfb445b9ad8abb157b62cbeae2965152e7a4",
+  "source_commit_date": "2026-08-08T04:43:56+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-08-05T12:22:21+00:00",
+  "vendored_at": "2026-08-07T20:07:30+00:00",
   "baseline_counts": {
     "nodes": 274,
     "edges": 312,
@@ -14,7 +14,7 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-08-05T12:22:16+00:00",
+    "checked_at": "2026-08-07T20:07:26+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -35,7 +35,7 @@
       "ontology/sdkb-abox-patents.ttl": [
         {
           "input": "scripts/build_abox_patents.py",
-          "sha256": "83ea8bc1b3a42efe19036a3ea0a42f849df9e707c7ecfbe4a306868811285aed"
+          "sha256": "589dc47cd96ca09f0cdc95fe59800a59d43937cc65f44ad5b1474bae35993444"
         },
         {
           "input": "data/patents/rejected_patents_meta.parquet",
@@ -67,7 +67,7 @@
         },
         {
           "input": "ontology/sdkb-abox-patents.ttl",
-          "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089"
+          "sha256": "974899fa414f7444f64e578399056b4b1d014b2cfdcfe120685cbb8af458fcf5"
         }
       ],
       "ontology/sdkb-abox-prior-art.ttl": [
@@ -144,7 +144,7 @@
       "file": "sdkb-abox-patents.ttl",
       "source_path": "ontology/sdkb-abox-patents.ttl",
       "role": "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다",
-      "sha256": "3c16ad2597ba31db20407da0b3d3c9497cd1662f94575d471b3551f9b9583089",
+      "sha256": "974899fa414f7444f64e578399056b4b1d014b2cfdcfe120685cbb8af458fcf5",
       "license_restricted": true
     },
     {
@@ -163,7 +163,7 @@
       "file": "sdkb-abox-prior-art.ttl",
       "source_path": "ontology/sdkb-abox-prior-art.ttl",
       "role": "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지",
-      "sha256": "1abbf5e54f66c8dc49e203244b5c3925369839524a5fd22768abf3aae137c3fd",
+      "sha256": "e96d987358206f75f2fe2b444753c33dfd4e972ee006d18bea3af9068d5ff76b",
       "license_restricted": true
     },
     {
@@ -206,13 +206,13 @@
       "file": "concept_mapping.json",
       "source_path": "mappings/concept_mapping.json",
       "role": "매핑: 특허 본문 → 개념 링크 사전(patent-text 프로파일) — 개념 적용기의 입력",
-      "sha256": "b2da08e7c261465e4d50b0228f05fdcc2edc6b30b26643c90e1cffa2ab9cf09a"
+      "sha256": "cdf5fa5dc1dcc2b41eec61cae2c470b8c866d838eadb20ba38f93d4a4d4698f4"
     },
     {
       "file": "abox_term_aliases.json",
       "source_path": "mappings/abox_term_aliases.json",
       "role": "매핑: A-Box 별칭 사전 — 상류 개념 링크 생성의 표층형 원천(재현용)",
-      "sha256": "f54ff7ea434612ccb91a3c33f1e4480de0be4d0a04cb30e3a9fa682e990ed179"
+      "sha256": "9c8bbeb2067beab4a0f592e54e6103906c2d95a47b6f14f0825d6b954d17030b"
     },
     {
       "file": "semiconductor_v0_3.json",
@@ -244,8 +244,8 @@
       "role": "파생: 거절근거 조항 인스턴스(CR-004R · 하위집단 전용 · 원문 0열 · 순위 입력 아님)",
       "sha256": "c0cecac96e8e47958363439213efb8bd578704431d9bd4acfa83ce7f6abbbd21",
       "derived": true,
-      "source_sha256": "9f75836fe240997226dabc171db129f4f98a521b68cc32e43884d9c1beb05fb6",
-      "source_bytes": 888298833,
+      "source_sha256": "1b4c143d3da63bb47b456772d22bc2841f108b0c07db6790d1acbcba40ed4896",
+      "source_bytes": 895257084,
       "counts": {
         "reasons": 2749,
         "applications": 994,

@@ -574,3 +574,10 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
 - 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성) + concept_mapping.json(적용기 링크 129,922건)
 - 반영: C2 입력 · 논문 §5–6
+
+## 2026-08-07T20:10:30.623560+00:00 · IR 코퍼스 조립 (PLAN-017 M1)
+- 명령: `make corpus` (`python -m sdkb_paper.corpus.assemble`)
+- ir_corpus_v09.parquet: 41,031 행 · sha256 `55e38161ef99e7f3`
+- qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
+- 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성) + concept_mapping.json(적용기 링크 128,677건)
+- 반영: C2 입력 · 논문 §5–6

@@ -2,15 +2,15 @@
 
 > 코드 생성물. 재생성: `make corpus`. 원천 TTL 서명은 §서명. 특허 전문은 license_restricted(gitignore) — 이 프로파일의 집계만 커밋된다(CLAUDE.md §1.4·§4).
 
-- 생성(UTC): 2026-08-07T11:53:40.033243+00:00
+- 생성(UTC): 2026-08-07T20:10:30.623560+00:00
 - 지지 주장: **C2 핵심증명**(선행기술 검색)의 입력 · 논문 §5–6(RQ2·RQ3·T1·T2)
 
 ## 1. 서명 (원천·산출)
 | 자원 | 값 | sha256(앞16) |
 |---|---:|---|
-| ir_corpus_v09.parquet | 41,031 행 | `1a1080098a76082d` |
+| ir_corpus_v09.parquet | 41,031 행 | `55e38161ef99e7f3` |
 | qrel_examiner.parquet | 2,416 엣지 | `10ab67f21cc1328d` |
-| graph_v0.ttl | — | `3e01aa38e387ced1` |
+| graph_v0.ttl | — | `0edf68f84211f56b` |
 | graph_v1.ttl | — | `41094e9f053d6b4c` |
 | graph_v2.ttl | — | `16b4f3223e049762` |
 

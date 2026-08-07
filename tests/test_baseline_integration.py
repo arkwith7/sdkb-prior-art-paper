@@ -71,8 +71,14 @@ SNAPSHOT_OBSERVATIONS = {
     # 상류 2839afb(CR-007 반영 · 스냅샷 서명 b98ad787d1fe) — 보존용. PLAN-035 두 팔의 O′ 팔이다.
     "post_cr007": {"triples": 105713, "process": 12, "subprocess": 38, "device": 34,
                    "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
-    # 현행 스냅샷(상류 39855bb · PLAN-040) — 아래 EXPECTED_* 의 원천.
-    "current": {"triples": 115095, "process": 12, "subprocess": 38, "device": 34,
+    # 상류 39855bb(CR-008 반영 · PLAN-040) — 보존용.
+    "post_cr008": {"triples": 115095, "process": 12, "subprocess": 38, "device": 34,
+                   "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
+    # 현행 스냅샷(상류 4f3dbfb · CR-013 반영 · PLAN-043) — 아래 EXPECTED_* 의 원천.
+    # 트리플이 19 줄어든 것은 상류가 `involvesMaterial → hf_acid` 오링크 34 → 15 로 정리한
+    # 결과다(회신 §3 · patents −6 · prior-art −13). 어휘·T-Box·클래스는 불변이므로
+    # process·subprocess·device·steps·covered 는 그대로다.
+    "current": {"triples": 115076, "process": 12, "subprocess": 38, "device": 34,
                 "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
 }
 _CURRENT = SNAPSHOT_OBSERVATIONS["current"]
