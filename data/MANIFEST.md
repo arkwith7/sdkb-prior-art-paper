@@ -567,3 +567,10 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
   `mode: system` · `h2_eligible: false` · `verdict: system_comparison` 이고,
   사용된 run 은 2026-08-01 자 **구 코퍼스(40,552행)** 산출이다. 판독 A 의 결론은 위 항목이다
 - run 재산출·`make tables` 미실행 — 확증 증거를 만들지 않고 원고 §6.2 표(O 팔)를 덮어쓰기 때문
+
+## 2026-08-07T11:53:40.033243+00:00 · IR 코퍼스 조립 (PLAN-017 M1)
+- 명령: `make corpus` (`python -m sdkb_paper.corpus.assemble`)
+- ir_corpus_v09.parquet: 41,031 행 · sha256 `1a1080098a76082d`
+- qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
+- 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성) + concept_mapping.json(적용기 링크 129,922건)
+- 반영: C2 입력 · 논문 §5–6
