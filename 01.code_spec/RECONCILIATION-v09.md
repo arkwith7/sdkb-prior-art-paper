@@ -44,7 +44,7 @@ H5←H3d(음성 대조군 특이성). **탐색적 강등:** H2c(운용 효율)·
 
 > **갱신(2026-07-29).** v1.0·v1.1은 [paper/archive/](../paper/archive/)로 내려갔고 작업 정본은
 > [v0.9 통합초안](../paper/논문_v0_9_SDKB_통합초안.md)으로 되돌아왔다(CLAUDE.md 머리말 · 사유:
-> 자원 결함 교정 후 재실험 — [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md)).
+> 자원 결함 교정 후 재실험 — [PLAN-029](archive/PLAN-029-post-remediation-reexperiment.md)).
 > **아래 표는 이력으로 보존한다.** v1.0/v1.1의 네 델타 중 **H2 미검정 재분류와 절제 해석 완화는
 > 유효한 판단이므로 재실험 사전등록에 그대로 승계**한다 — 정본이 내려갔다고 그 판단이 취소되는
 > 것은 아니다. RQ4·기여 4개 정렬은 v2.0 집필 시 재검토한다.

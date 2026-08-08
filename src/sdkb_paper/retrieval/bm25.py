@@ -19,6 +19,7 @@ import sys
 from pathlib import Path
 
 from .. import config
+from . import layers
 
 # 산출 경로 (대용량·재생성 가능 → gitignore)
 PRETOK_DIR = config.IR_INDEX_DIR / "pretok_text_main"   # JsonCollection (사전토큰화 문서)
@@ -40,13 +41,21 @@ def _tokenizers():
 
 
 # --- 사전토큰화 → JsonCollection -----------------------------------------
+
+
+
 def pretokenize_corpus(text_col: str = "text_main") -> int:
     """코퍼스 전 문서를 언어별 사전토큰화해 JSONL(JsonCollection)로 쓴다. 반환: 문서 수."""
     import pandas as pd
 
     from .tokenize import pretokenize
 
-    df = pd.read_parquet(config.IR_CORPUS, columns=["doc_id", "lang", text_col])
+    cols = ["doc_id", "lang", text_col]
+    df = pd.read_parquet(config.IR_CORPUS, columns=layers.with_layer_cols(cols))
+    # **색인 대상 = 후보 자격 있는 문서만**(PLAN-045 D2). 질의는 후보가 아니다 —
+    # 이 한 줄이 없으면 B층 신규 문서가 A층 질의의 검색 대상이 되어 §6 수치가 오염된다.
+    # 기존 41,031 은 전부 is_candidate=True 이므로 **docs.jsonl 은 바이트 단위로 불변이어야 한다.**
+    df = layers.candidates(df)[cols]
     ko, en = _tokenizers()
     PRETOK_DIR.mkdir(parents=True, exist_ok=True)
     out = PRETOK_DIR / "docs.jsonl"
@@ -86,6 +95,7 @@ def search(
     exclude_self: bool = True,
     run_path: Path | None = None,
     tag: str = "bm25_b0",
+    layer: str = layers.LAYER_A,
 ) -> Path:
     """질의를 사전토큰화해 top-k 검색, TREC run 파일을 쓴다(qrel 미열람).
 
@@ -101,9 +111,10 @@ def search(
     run_path.parent.mkdir(parents=True, exist_ok=True)
 
     df = pd.read_parquet(
-        config.IR_CORPUS, columns=["doc_id", "lang", "is_query", query_col, fallback_col]
+        config.IR_CORPUS,
+        columns=layers.with_layer_cols(["doc_id", "lang", "is_query", query_col, fallback_col]),
     )
-    queries = df[df["is_query"]]
+    queries = layers.queries_of(df, layer)
     ko, en = _tokenizers()
 
     searcher = LuceneSearcher(str(BM25_INDEX_DIR))

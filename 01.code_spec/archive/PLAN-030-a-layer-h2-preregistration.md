@@ -10,7 +10,7 @@
 >
 > **§6 결정: 선택 A — CR-007 단독으로 A층 개시.** CR-001·002·003 병합 후 별도 사전등록으로 재실행.
 >
-> **상위 계획:** [PLAN-029 §2 A층](../plans/PLAN-029-post-remediation-reexperiment.md). 그 문서가
+> **상위 계획:** [PLAN-029 §2 A층](PLAN-029-post-remediation-reexperiment.md). 그 문서가
 > "사전등록은 PLAN-030으로 분리한다"고 예고한 자리를 이 파일이 채운다.
 
 ---

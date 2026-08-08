@@ -77,7 +77,7 @@ parquet 은 gitignore 다 — 잃어버려도 `make` 로 똑같이 되살아난�
 > G₀ 를 바꾸는 보강은 **사람 승인**이 있어야 하고(CLAUDE.md §0.1·§1-8), 바꾼 뒤에는 게이트를
 > 전면 재실행해 판정의 불변(또는 변화)을 보고한다.
 >
-> **상류 교정 후의 재평가는 새 사전등록 아래 새 검정이다** (CLAUDE.md §1-2·§1-3 · [PLAN-029](../01.code_spec/plans/PLAN-029-post-remediation-reexperiment.md)).
+> **상류 교정 후의 재평가는 새 사전등록 아래 새 검정이다** (CLAUDE.md §1-2·§1-3 · [PLAN-029](../01.code_spec/archive/PLAN-029-post-remediation-reexperiment.md)).
 > 스냅샷이 바뀌었다고 기존 원고의 판정을 소급 수정하지 않는다.
 
 > **왜 그래프를 커밋하지 않는가.** `.ttl` 을 커밋하면 "디스크의 파일"과 "코드가 만드는 그래프"가

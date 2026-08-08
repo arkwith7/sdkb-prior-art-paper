@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "4f3dbfb445b9ad8abb157b62cbeae2965152e7a4",
-  "source_commit_date": "2026-08-08T04:43:56+09:00",
+  "source_commit": "734741034eeba0fdb2bb9a5d85eb1bdaa8d38057",
+  "source_commit_date": "2026-08-08T08:56:50+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-08-07T20:07:30+00:00",
+  "vendored_at": "2026-08-08T01:04:46+00:00",
   "baseline_counts": {
     "nodes": 274,
     "edges": 312,
@@ -14,7 +14,7 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-08-07T20:07:26+00:00",
+    "checked_at": "2026-08-08T01:04:43+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -148,6 +148,13 @@
       "license_restricted": true
     },
     {
+      "file": "sdkb-abox-b-layer-queries.ttl",
+      "source_path": "ontology/sdkb-abox-b-layer-queries.ttl",
+      "role": "ABox: B층 제2 확증분할 질의 200건 (CR-012 · 인용 간선 0) — 판독 B 의 질의 측",
+      "sha256": "ffaf56c2607391370523727ae2fc8c6c2272395e6b02af4f4df4aa6ae62cb201",
+      "license_restricted": true
+    },
+    {
       "file": "sdkb-abox-experts-problems.ttl",
       "source_path": "ontology/sdkb-abox-experts-problems.ttl",
       "role": "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축",
@@ -244,8 +251,8 @@
       "role": "파생: 거절근거 조항 인스턴스(CR-004R · 하위집단 전용 · 원문 0열 · 순위 입력 아님)",
       "sha256": "c0cecac96e8e47958363439213efb8bd578704431d9bd4acfa83ce7f6abbbd21",
       "derived": true,
-      "source_sha256": "1b4c143d3da63bb47b456772d22bc2841f108b0c07db6790d1acbcba40ed4896",
-      "source_bytes": 895257084,
+      "source_sha256": "71e053b80ff545096164b2f3ccd1c4fa0be3c4134346cd43226d43e082163d28",
+      "source_bytes": 899089081,
       "counts": {
         "reasons": 2749,
         "applications": 994,

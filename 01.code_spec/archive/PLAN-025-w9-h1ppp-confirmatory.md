@@ -4,7 +4,7 @@
 > **H1‴ 지지**(T3 단독검출 12/45 · 단측 McNemar b=0·c=14·p=.0001 · 위양성 0/27). 결과 정본은
 > 원고 §6.5.4·표 6.5d(`paper/tables/fault_matrix_v4.md`)다.
 > **이 문서는 사전등록 증거이므로 내용을 수정하지 않는다**(CLAUDE.md §1-3). 다만 C층 재실험이
-> 판정 규칙 문면을 그대로 재사용하므로([PLAN-029 §C층](../plans/PLAN-029-post-remediation-reexperiment.md)),
+> 판정 규칙 문면을 그대로 재사용하므로([PLAN-029 §C층](PLAN-029-post-remediation-reexperiment.md)),
 > **참조는 계속 유효**하다 — 재사용 시에는 새 사전등록 문서에 문면을 복사하고 이 문서를 출처로 적는다.
 >
 > **상태(원문): 🔒 동결 (2026-07-28 · v2).** 상위 원장 = [PLAN-019 §5](PLAN-019-v09-completeness-crosslingual.md).

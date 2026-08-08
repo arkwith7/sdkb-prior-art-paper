@@ -11,6 +11,7 @@ def _corpus(rows):
     # rows: (doc_id, filing_date)
     df = pd.DataFrame(rows, columns=["doc_id", "filing_date"])
     df["is_query"] = True
+    df["query_layer"] = "A"   # PLAN-045 D3: build_split 은 A층만 나눈다
     return df
 
 

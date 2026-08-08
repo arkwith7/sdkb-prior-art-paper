@@ -2,7 +2,7 @@
 
 > **상태: 축 확정(사용자 승인 2026-08-01) · 1단계 착수.**
 > 대상 정본: [paper/논문_v0_9_SDKB_통합초안.md](../../paper/논문_v0_9_SDKB_통합초안.md) (CLAUDE.md 정본 회귀 조항).
-> 상위: [PLAN-029](PLAN-029-post-remediation-reexperiment.md) (재실험 로드맵) ·
+> 상위: [PLAN-029](../archive/PLAN-029-post-remediation-reexperiment.md) (재실험 로드맵) ·
 > [PLAN-031](PLAN-031-b-layer-second-confirmation-split.md) 🔒(B층 사전등록) ·
 > [PLAN-032](../archive/PLAN-032-b-layer-pilot-collection.md)(B층 수집 · 200건 확보 완료).
 >

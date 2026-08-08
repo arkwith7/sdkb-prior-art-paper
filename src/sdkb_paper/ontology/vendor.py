@@ -40,6 +40,13 @@ VENDOR_FILES: list[tuple[str, str]] = [
     ("ontology/sdkb-foresight.ttl", "TBox: 예측 모듈(Scenario/Signal/STEEPVE) — H2 의 기반"),
     ("ontology/sdkb-core-data.ttl", "ABox: 도메인 인스턴스 (공정 20 · 디바이스 31 …)"),
     ("ontology/sdkb-abox-patents.ttl", "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다"),
+    # CR-012(D-27)가 낸 B층 확증분할 질의 200. **인용 간선은 일부러 없다** — 있으면 그 간선이
+    # 곧 봉인 qrel 의 내용이라 하류 봉인이 무의미해진다(CR-008 비목표 ⓐ · CR-011 ⓓ).
+    # 층 구분은 술어가 아니라 **파일과 prov:wasGeneratedBy** 로 한다 → T-Box 델타 0.
+    # PLAN-045 D5: 이 목록과 `baseline.BASELINE_PARTS` 는 **별개다.** 하나만 고치면
+    # 스냅샷에는 들어오고 G₀ 에는 안 들어와 `is_query` 가 1,000 그대로다.
+    ("ontology/sdkb-abox-b-layer-queries.ttl",
+     "ABox: B층 제2 확증분할 질의 200건 (CR-012 · 인용 간선 0) — 판독 B 의 질의 측"),
     ("ontology/sdkb-abox-experts-problems.ttl", "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축"),
     ("ontology/sdkb-abox-vendors.ttl", "ABox: KSIA 회원사 326 — 소부장 벤더 축"),
     ("ontology/sdkb-abox-prior-art.ttl", "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지"),
@@ -76,6 +83,9 @@ SCHEMA_REPORT = "data/schema_report.json"
 LICENSE_RESTRICTED: frozenset[str] = frozenset({
     "sdkb-abox-patents.ttl",      # SIRP 거절특허 1,000건 (청구항·초록 원문)
     "sdkb-abox-prior-art.ttl",    # 심사관 인용 선행기술 3,034 노드
+    # B층 확증분할 질의 200 (CR-012). `abstractText`·`firstClaimText` 원문을 담으므로
+    # 앞의 둘과 같은 등급이다 — 커밋하지 않는다(CLAUDE.md §1-5 · KIPRIS 비재배포).
+    "sdkb-abox-b-layer-queries.ttl",
 })
 
 # --- 파생 스냅샷: 거절근거 법조 (원고 §5.2·§6.4 하위집단 라벨 전용) --------------------

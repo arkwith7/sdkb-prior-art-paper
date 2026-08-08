@@ -1,4 +1,16 @@
-# 상류 대기열 — CR 송부 순서와 상태 (2026-08-08 갱신 · **CR-012·CR-013 종료 · 상류 대기 0**)
+# 상류 대기열 — CR 송부 순서와 상태 (2026-08-08 2차 갱신 · **CR-014 발행 · 상류 대기 1**)
+
+> ## 2026-08-08 · 7차 — **대기열이 다시 찼다. CR-014 하나이고, 그것이 임계경로다.**
+>
+> **하류 PLAN-045 를 5단계까지 관통했다 — S1–S7 전부 통과.** `is_query` 가 실제로
+> 1,000 → **1,200** 이 됐고(D-27 검증기준 ①), A층 분할 경계·봉인 둘·누출 0 이 전부 지켜졌다.
+>
+> **그런데 L1 이 새로 깨졌다** — B층 200 이 `publicationNumber`·`processFamily`·
+> `valueChainStage` 를 갖지 않아 SHACL **600 위반**(200 × 3). A층은 셋 다 1,000/1,000 이다.
+> **"상류가 발행했는데 하류가 소비하지 못한다"의 네 번째 사례**(D-19 · D-26 · D-27 · **D-31**).
+> **하류에서 shape 를 느슨하게 만들지 않았다** — 그것은 결과를 본 뒤 합격선을 고치는 것이다.
+>
+> **다음 행동은 [CR-014](CR-014-b-layer-bibliographic-fields.md) 송부다.**
 
 > ## 2026-08-08 · 6차 — **CR-012 가 끝났다. 상류 대기열이 비었고, 개봉을 막는 것은 이제 하류 코드다.**
 >
@@ -81,7 +93,7 @@
 > **(기록) 2026-08-07 · 4차 — CR-012 를 상류에 송부했다. 상류 회신(2단계 분석 → 3단계 설계 승인 요청) 대기.**
 
 > 송부한 것은 §3 첫 블록의 **정정 반영판** 송부문이고, 상류가 읽을 파일 둘은 커밋된 상태다 —
-> 정본 [CR-012](CR-012-b-layer-query-nodes.md)(§3 정정 포함) · 이관
+> 정본 [CR-012](archive/CR-012-b-layer-query-nodes.md)(§3 정정 포함) · 이관
 > [handoff/CR-012-b-query-ids.txt](handoff/CR-012-b-query-ids.txt).
 > **송부 직전 재검증(2026-08-07):** 이관 파일 200행 · sha256
 > `ef4ad03c2734af4212209516c05064b1550bea478f1f79bc72f3e2f14bac60e5` 일치 · 사전순 정렬 확인 ·
@@ -148,7 +160,17 @@
 > TBox·IRI 변경은 상류에서 다시 승인받는다.
 >
 > **종료된 CR 은 [archive/](archive/) 로 내린다 — 인용은 가능하고 재송부는 금지한다.**
-> 현재 **셋**이다 — CR-007(D-14·D-15·D-16) · **CR-004R**(D-06 · 2026-08-04 종료) · **CR-008**(D-18 · 2026-08-06 종료 — 후속 CR-011 진행 중).
+> 현재 **여섯**이다 — CR-007(D-14·D-15·D-16) · **CR-004R**(D-06 · 2026-08-04 종료) ·
+> **CR-008**(D-18 · 2026-08-06 종료) · **CR-011**(D-26 · 2026-08-07 종료) ·
+> **CR-012**(D-27 · 2026-08-08 **상류** 종료 — 하류 소비 미결 · PLAN-045) ·
+> **CR-013**(D-20 · 2026-08-08 종료). 2026-08-08 에 CR-011·CR-012 를 내렸다.
+>
+> **아카이브는 상류 트랙의 종료를 뜻하지 결함이 닫혔음을 뜻하지 않는다.** CR-012 는 검증기준
+> ①(`is_query` 1,000 → 1,200)·⑤ 가 **하류 몫으로 열려 있고**, D-27 은 대장에서 아직 닫히지
+> 않았다. 대장이 정하지 이 폴더가 정하지 않는다 — [archive/README.md](archive/README.md) 서두.
+>
+> **살아 있는 CR 은 여섯이다** — CR-001A(송부 보류) · CR-002 · CR-003 · CR-005 · CR-006(송부 가능) ·
+> **CR-009**(상류 발행 완료 · **하류 미소비**라서 내리지 않는다).
 
 ## 대기열
 
@@ -156,12 +178,13 @@
 |---|---|---|---|---|---|
 | — | [CR-007](archive/CR-007-concept-linking-rules.md) | D-14·D-15·D-16 | 완료 | ✅ **종료 — 상류 구현 `2839afb`(2026-08-01) · 하류 소비 완료(PLAN-034/035)** | **다시 보내지 않는다.** 종료 기록 [archive/README.md](archive/README.md). 성공기준 ① 27.0 % 미달은 CR-003 이월 · 후속 D-20·D-21 은 CR 미발행 |
 | — | [CR-004R](archive/CR-004-rejection-basis-structure.md) | D-06 | 완료 | ✅ **종료 — 상류 `84ea514` · 검증기준 6항 종결(#1 지표 폐기 · #2 CR-010 분리)** | **다시 보내지 않는다.** 종료 기록 [archive/README.md](archive/README.md) · 회신 판정 §1.1b · **하류 소비(vendor)는 PLAN-040 뒤** |
-| — | [CR-008](archive/CR-008-b-layer-prior-art-abox.md) | D-18 | 완료 | ✅ **종료(2026-08-06) — 상류 `39855bb` · ①③④ 통과 · ② US 0.9608 미달 확정(재시도 1회 실패 · §1.6a) · 하류 소비 완료(PLAN-040 vendor)** | **다시 보내지 않는다.** 종료 기록 [archive/README.md](archive/README.md). 하류 재측정 **482/503 = 0.9583**(상류 값 일치) · `make leakage` 0. **후속은 [CR-011](CR-011-b-layer-claim-features.md)** — 노드는 섰고 청구항 형식이 남았다 |
+| — | [CR-008](archive/CR-008-b-layer-prior-art-abox.md) | D-18 | 완료 | ✅ **종료(2026-08-06) — 상류 `39855bb` · ①③④ 통과 · ② US 0.9608 미달 확정(재시도 1회 실패 · §1.6a) · 하류 소비 완료(PLAN-040 vendor)** | **다시 보내지 않는다.** 종료 기록 [archive/README.md](archive/README.md). 하류 재측정 **482/503 = 0.9583**(상류 값 일치) · `make leakage` 0. **후속은 [CR-011](archive/CR-011-b-layer-claim-features.md)** — 노드는 섰고 청구항 형식이 남았다 |
 | — | [CR-009](CR-009-concept-df-release-meta.md) | **D-23** | 1 완료(2026-08-04 신규) | ✅ **상류 발행 완료 — `39855bb` · 스키마 1.0 → 1.1.** 대기 대상은 상류가 아니라 **하류**다 | **P0 — H2 기각(ΔR₁₀₀ −0.0293)의 자원 측 조치.** 개념별 df·계층깊이·상위어 발행(분모 4,513). **파일은 CR-008과 겹치지 않으나 데이터가 겹친다 — §1.7**. **하류 미소비(2026-08-06 실측)** — `concept_meta`(df·depth·상위어)를 읽는 코드가 0건이라 df 가중은 아직 걸리지 않았다. 소비는 **새 사전등록** 아래 새 방법이다(§2 전체 · CLAUDE.md §2.1 적용 불가) |
-| — | [CR-011](CR-011-b-layer-claim-features.md) | **D-26** | ✅ **종료 (2026-08-07)** | ✅ **①②③ 상류 통과(`993f5e2`) · ④ 하류 통과 — 0.0085 → 1.0000** | **다시 보내지 않는다 — 끝났다.** §2.1 사전등록 [PLAN-042](../01.code_spec/archive/PLAN-042-cr011-central-axis-reprep.md) 아래 `central_axis build` → `make corpus` 로 재측정. **경로는 `make vendor` 가 아니었다**(§1.10). 판정 전문 §1.11. **판독 B 개봉 차단 해제** · 봉인 불변(`127a138f…`) |
-| — | [CR-012](CR-012-b-layer-query-nodes.md) | **D-27** | ✅ **상류 구현 완료 (2026-08-08 · `732b0d9`)** | ✅ **②③④⑥ 통과 · ①⑤ 는 하류 몫** | **다시 보내지 않는다.** 질의 200 이 `ontology/sdkb-abox-b-layer-queries.ttl`(신설 · 트리플 4,204)로 섰다 — **ⓑ 는 별도 파일 · T-Box 델타 0** · 인용 간선 **0**. 청구항 2,618 → feature 5,962(A층과 같은 모델). 독립항 확보율 **1.0000** · A층 불변 산술 증명. 회신 전문 **§1.16**. **하류 후속은 §2.1 이 아니라 §2 전체다** — `VENDOR_FILES` 추가 + `assemble.py` 층 분리 |
+| — | [CR-011](archive/CR-011-b-layer-claim-features.md) | **D-26** | ✅ **종료 (2026-08-07)** | ✅ **①②③ 상류 통과(`993f5e2`) · ④ 하류 통과 — 0.0085 → 1.0000** | **다시 보내지 않는다 — 끝났다.** §2.1 사전등록 [PLAN-042](../01.code_spec/archive/PLAN-042-cr011-central-axis-reprep.md) 아래 `central_axis build` → `make corpus` 로 재측정. **경로는 `make vendor` 가 아니었다**(§1.10). 판정 전문 §1.11. **판독 B 개봉 차단 해제** · 봉인 불변(`127a138f…`) |
+| — | [CR-012](archive/CR-012-b-layer-query-nodes.md) | **D-27** | ✅ **상류 구현 완료 (2026-08-08 · `732b0d9`)** | ✅ **②③④⑥ 통과 · ①⑤ 는 하류 몫** | **다시 보내지 않는다.** 질의 200 이 `ontology/sdkb-abox-b-layer-queries.ttl`(신설 · 트리플 4,204)로 섰다 — **ⓑ 는 별도 파일 · T-Box 델타 0** · 인용 간선 **0**. 청구항 2,618 → feature 5,962(A층과 같은 모델). 독립항 확보율 **1.0000** · A층 불변 산술 증명. 회신 전문 **§1.16**. **하류 후속은 §2.1 이 아니라 §2 전체다** — `VENDOR_FILES` 추가 + `assemble.py` 층 분리 |
 | — | [CR-013](archive/CR-013-element-symbol-alias-precision.md) | **D-20** | ✅ **종료 (2026-08-08)** | ✅ **상류 구현 `4f3dbfb` · 하류 재측정 완료(PLAN-043) — 검증기준 ①–⑥ 전부 통과·예측 일치 · ⑦ 보고(ΔR₁₀₀ = +0.0000)** | **다시 보내지 않는다.** 후속 셋은 전부 **하류 소관** — D-28(대소문자) · **D-29**(G₁/G₂ 동결) · **D-30**(델타 유형 분류기) |
 | 2 | [CR-001A](CR-001-concept-resolution.md) | D-01·D-04 | 1·2·3 완료(결정 4건 확정 2026-07-31) | **송부 보류(2026-08-07)** | **어휘 확장 0** — 전문 재추출만. CR-007·CR-009 제약은 풀렸으나 **D-20 이 앞에 섰다**(§1.14). 보류 이유 둘 — ① 오링크 증폭 ② **하류 한계효과 ≈ 0**(적용기가 이미 `text_main` 에 돈다 · §1.14.4) → **성공기준 ① 재작성 후 송부** · 이관 내용 §1.4 |
+| **1** | **[CR-014](CR-014-b-layer-bibliographic-fields.md)** | **D-31** | ✅ **1단계 완료(2026-08-08) · 송부 가능 · 임계경로** | — (미송부) | **B층 200 이 `publicationNumber`·`processFamily`·`valueChainStage` 를 갖지 않아 하류 L1 SHACL 600 위반 · A층은 셋 다 1,000/1,000.** CR-012 의 직접 후속이며 **되돌리는 것이 아니다** — 질의 노드·인용 간선 0·독립항 1.0000 은 전부 옳았고 하류가 소비했다(PLAN-045 S1–S7 통과). **shape 를 느슨하게 만들지 않았다**(§1-2 · D-30 교훈). 검증기준 ①은 하류에서 센 수(`conforms=True`) |
 | 3 | [CR-005](CR-005-tbox-logical-axioms.md) | D-03·D-09 | 1 완료 | **송부 가능(대기열)** | 아래 §2 |
 | 4 | [CR-006](CR-006-tbox-module-boundaries.md) | D-13 | 1 완료 | **송부 가능(대기열)** | 아래 §2 |
 | 5-b | CR-001B (미발행) | D-01 잔여 | — | **보류** | 어휘 수확 10³(triage 5,222). CR-001A 하류 재검정 후 착수 판단 |
@@ -1006,7 +1029,7 @@ w→tungsten 1,511 · al→aluminum 1,410 · cu→copper 1,064 문서). 다의 �
 하류의 B층 확증분할 개봉이 이 건 때문에 **실행 불가**다 — 정답 문헌은 두 CR 로 다
 채웠는데 **질의 200 건이 그래프에 없다.**
 
-정본 CR:   /home/arkwith/Dev/SKKU/sdkb-prior-art-paper/upstream/CR-012-b-layer-query-nodes.md
+정본 CR:   /home/arkwith/Dev/SKKU/sdkb-prior-art-paper/upstream/archive/CR-012-b-layer-query-nodes.md
 이관 파일: /home/arkwith/Dev/SKKU/sdkb-prior-art-paper/upstream/handoff/CR-012-b-query-ids.txt
            (200행 · 사전순 · KIPRIS 출원번호 13자리 · sha256 ef4ad03c…4bac60e5)
 
@@ -1057,7 +1080,7 @@ hasPriorArtExaminer 간선의 주어여야 한다"고 적었는데 **틀렸다.*
 하류(sdkb-prior-art-paper)에서 CR-011 이 넘어왔다. CR-008 의 직접 후속이고,
 하류의 B층 확증분할 개봉이 이 건 때문에 **보류**돼 있다.
 
-정본 CR: /home/arkwith/Dev/SKKU/sdkb-prior-art-paper/upstream/CR-011-b-layer-claim-features.md
+정본 CR: /home/arkwith/Dev/SKKU/sdkb-prior-art-paper/upstream/archive/CR-011-b-layer-claim-features.md
 
 수집은 이미 성공했다 — 고칠 것은 **발행 형식**이다. 청구항을 ont:claimText 단일
 문자열로만 넣어서 하류가 읽지 못한다. 하류는 사이드카 경로로만 청구항을 만든다

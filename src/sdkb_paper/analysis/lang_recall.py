@@ -36,6 +36,18 @@ LANG_ORDER = ("ko", "en", "ja", "und")
 LANG_LABELS = {"ko": "한국어", "en": "영어", "ja": "일본어", "und": "미상"}
 
 
+
+def _candidates(df):
+    """후보 문서 집합. `~is_query` 가 아니라 **`is_candidate`** 로 센다(PLAN-045 D5).
+
+    둘은 다르다 — A층 질의 1,000 은 후보 코퍼스에도 문서로 들어 있고, B층 신규 192건은
+    질의도 후보도 아니다. `~is_query` 로 세면 후자가 후보로 잘못 잡힌다.
+    """
+    if "is_candidate" in df.columns:
+        return df[df["is_candidate"].astype(bool) & ~df["is_query"].astype(bool)]
+    return df[~df["is_query"].astype(bool)]
+
+
 def doc_lang_map() -> dict[str, str]:
     """doc_id → lang(ko/en/ja). 코퍼스 `lang` 은 스크립트 감지(corpus/text.detect_lang)."""
     import pandas as pd
@@ -97,7 +109,7 @@ def resource_coverage() -> list[dict]:
     df["len_text"] = df["text_main"].fillna("").astype(str).str.len()
 
     rows: list[dict] = []
-    for scope, sub in (("후보 문서(질의 제외)", df[~df["is_query"].astype(bool)]),
+    for scope, sub in (("후보 문서(질의 제외)", _candidates(df)),
                        ("심사관 정답 노드", df[df["is_examiner_positive"].astype(bool)])):
         for lg, g in sub.groupby("lang"):
             rows.append({
@@ -117,7 +129,7 @@ def pool_bias() -> list[dict]:
 
     df = pd.read_parquet(config.IR_CORPUS,
                          columns=["doc_id", "lang", "is_query", "is_examiner_positive"])
-    cand = df[~df["is_query"].astype(bool)]
+    cand = _candidates(df)
     rows = []
     for lg, g in cand.groupby("lang"):
         n_pos = int(g["is_examiner_positive"].astype(bool).sum())

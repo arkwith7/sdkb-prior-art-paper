@@ -7,7 +7,7 @@
 >
 > **개정 (2026-07-31 · 정본 회귀 반영).** v1.0(영문 투고본)·v1.1(국문 정본)은 **`paper/archive/`로
 > 내려갔고 인용 금지**이며, 작업 정본은 다시 [v0.9 통합초안](../paper/논문_v0_9_SDKB_통합초안.md)이다
-> (CLAUDE.md 머리말 · [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md)). 이 개정으로
+> (CLAUDE.md 머리말 · [PLAN-029](archive/PLAN-029-post-remediation-reexperiment.md)). 이 개정으로
 > 바로잡은 것: ① **T-gate·C3 산출물은 "미구현/미산출"이 아니라 구현·산출 완료** ② **기여는 3개가
 > 아니라 4개** ③ **C0(상류 환류) 축 신설** — `upstream/` 대장·CR 7건이 정본 인덱스에 없었다
 > ④ **G₁·G₂는 "세대"가 아니라 후보 모집단**(D-12 실측) ⑤ C2/H5 판정 문구를 CLAUDE.md §0에 정렬.
@@ -25,7 +25,7 @@
 |---|---|---|
 | **논문** | `논문_v0_9_SDKB_통합초안.md` — **v2.0 재구성 1단계 반영(2026-08-01 · PLAN-033)**: §1.4 = **확증가설 H3·H5 두 개** · 기여 **2개** · H1·H2·H4 는 판정 불변·지위 강등 · §7 흡수로 장 번호 8–11 → 7–10 | `paper/` |
 | **작업 규약** | `CLAUDE.md` (v0.9 기조 · C0/C1/C2/C3·T-gate) | 루트 |
-| **상류 환류 (C0)** | `DEFECT-LEDGER.md`(결함 D-01~D-16) · `CR-001~007` · `HANDOFF-QUEUE.md`(송부 순서) | `upstream/` |
+| **상류 환류 (C0)** | `DEFECT-LEDGER.md`(결함 D-01~D-30) · **살아 있는 CR 6건**(CR-001A·002·003·005·006·009) · `archive/`(종료 6건 — CR-004R·007·008·**011**·**012**·013 · 재송부 금지) · `HANDOFF-QUEUE.md`(송부 순서 · **상류 대기 0**) | `upstream/` |
 | **정합 원장(전파 추적)** | `RECONCILIATION-v09.md` (라벨 사전·SoT 델타·배치 B0–B8 완료) | `01.code_spec/` |
 | **baseline 그래프 G₀** | `graph_v0.ttl` (**115,095** 트리플 · 구 105,713 · 105,588) — 게이트 대상 | `data/processed/` (gitignore — MANIFEST §3 이 서명) |
 | **후보 모집단 G₁** | `graph_v1.ttl` (924,814) — **세대가 아니라 방해문서 풀**(D-12) · ⚠ 구 G₀ 위 조립 | `data/processed/` |
@@ -133,7 +133,7 @@
 
 | 주장 | 논문 | 증거 산출물 | 상태 |
 |---|---|---|---|
-| **C0 상류 환류** | 논문 밖 (제품 목적) | [DEFECT-LEDGER](../upstream/DEFECT-LEDGER.md) D-01~D-16 · CR-001~007 · HANDOFF-QUEUE | **상시** — P0 4건(D-01·D-05·D-12·D-14/15) 미해결 |
+| **C0 상류 환류** | 논문 밖 (제품 목적) | [DEFECT-LEDGER](../upstream/DEFECT-LEDGER.md) D-01~D-30 · CR 12건(종료 6 · 살아 있음 6) · HANDOFF-QUEUE | **상시** — **상류 대기 0(2026-08-08)** · 막는 것은 하류 코드(D-27 ① · PLAN-045) |
 | **C1 자원** | §3·§6.1 | 도달성 사다리·CQ 28(측정)·SHACL(L1)·어휘 검증 커버리지 | **지지** (관측 사실) |
 | **C3 진화안전** | §4·§6 (RQ1·H1·H2) | 결함주입 검출 매트릭스(`fault_matrix*.md`)·McNemar·음성대조군·T-gate 판정 | **부분 지지** — H1‴ 홀드아웃 72 확증(§6.5.4) · **H2 미검정**(자격 델타 부재 = D-12) |
 | **C2 핵심증명** | §5–6 (RQ2·H3 · RQ3·H4·H5) | Recall@100·nDCG@20(이진)·MRR·bpref·ablation A1–A8·부트스트랩·하위집단 4축 | **부분 지지 — 깊은 회수 한정** (2026-07-28 산출·원고 반영). 부차 P1 R@100 +0.0534 유의 · **주 구성 비유의** · **nDCG 미개선** · H4 기각 · H5 기각 |
@@ -144,7 +144,7 @@
 - **C2·C3 모두 산출은 끝났고, 남은 것은 자원 교정 후 재실험이다.** IR 하네스(Pyserini BM25 nori +
   FAISS flat Dense + RRF · Titan Embed v2)와 T-gate·결함주입은 구축·확증 완료다. **단 질의 번역은
   구현되지 않았다** — CLAUDE.md 동결 사실대로 `src/`에 번역 모듈이 없으며, 교차언어 실패의 세 원인
-  중 하나로 원고 §6.2f·§9.1에 명시했다. 도입은 [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) §3.2.
+  중 하나로 원고 §6.2f·§9.1에 명시했다. 도입은 [PLAN-029](archive/PLAN-029-post-remediation-reexperiment.md) §3.2.
 - **기각·무효과의 다수는 방법이 아니라 자원의 결함이다**(C0). `w_h=0`은 계층이 11트리플이라 생긴
   구조적 0(D-02), nDCG 악화는 개념 어휘 143개·문서당 1.55개라는 해상도의 귀결(D-01)이다.
   재평가는 상류 교정 후 **새 사전등록 아래 새로 검정**한다 — 기존 판정은 소급 수정하지 않는다.
@@ -174,7 +174,7 @@
 | **CANONICAL (계약)** | `specs/SPEC-001·002·004~008` (§0.2) |
 | **REFERENCE** | `README.md` · `GLOSSARY-{ONTOLOGY,SEMICONDUCTOR,STATISTICS}.md` · `REF-001`(IP-R&D) · `TOOLING.md` |
 | **REPORT (실험 기록)** | `reports/M4-{실험결과-1차,실험파이프라인-설명,검색유용성-서술전략,확증결과-원고반영}.md` — **v0.9 §6 산출의 근거 기록**. "원고 반영"은 v0.9 §6 반영을 뜻한다 |
-| **PLAN — 살아 있는 계획 (7건 · 2026-08-08 갱신)** | **`PLAN-045`(B층 질의 하류 소비 · 🛑 §1 요구정의 승인 대기 — 나머지 넷의 선결 · 상류 CR-012 `732b0d9` 수령분을 코퍼스에 들인다)** · `plans/PLAN-018`(검색·T-gate 하네스 사전등록 🟢 — F1–F18 동결이 현행 코드의 계약) · `PLAN-029`(재실험 로드맵 🛑) · `PLAN-031`(B층 수집 사전등록 **🔒 동결** · 봉인 미개봉) · `PLAN-033`(원고 재구성 — §6.2–6.4 재작성 미완) · `PLAN-038`(C2′ 전달 · 🛑 4단계 승인 대기) · `PLAN-040`(+ `PLAN-040-oprime-snapshot-signatures.json` · 판독 B 미개봉) |
+| **PLAN — 살아 있는 계획 (5건 · 2026-08-08 2차 갱신)** | **`PLAN-045`(B층 질의 하류 소비 · **§1·§2 완료 · 🛑 3단계 설계** — 나머지 넷의 선결)** · `PLAN-031`(B층 수집 사전등록 **🔒 동결** · 봉인 미개봉) · `PLAN-033`(원고 재구성 — §6.2–6.4 재작성 미완) · `PLAN-038`(C2′ 전달 · 🛑 4단계 승인 대기) · `PLAN-040`(+ `PLAN-040-oprime-snapshot-signatures.json` · 판독 B 미개봉).<br>**2026-08-08 `archive/` 이동: `PLAN-018`**(실행 완료 — **F1–F18 동결은 여전히 현행 코드의 계약이다 · 인용은 `archive/` 경로로**) · **`PLAN-029`**(미승인 로드맵 · 실질을 PLAN-030/031/035/040/041/045 가 나눠 가짐 · **§3.2 질의 번역 · §3.3 질의 표현 비교는 아직 미승계**) |
 | **ARCHIVED (인용 금지)** | `archive/CANONICAL-INDEX-v05.md` · `archive/STATUS-v05.md` · `archive/AUDIT-2026-07-18.md`(구 v0.5 원고 감사 · 2026-07-31 이동) · `archive/SPEC-003-competency-questions.md`(2026-07-31 이동) · `archive/CR-004-full-analysis-2026-07-30.md` · **종결 PLAN 33건 → 아래 §3.1** |
 
 #### 3.1 종결 PLAN — 한 줄 요약 (2026-07-30 `plans/` → `archive/` 이동)
@@ -216,7 +216,7 @@
 | PLAN | 한 줄 결론 |
 |---|---|
 | 017 v0.9 IR 벤치마크 데이터셋 | **실행 완료** — M1 조립됨. as-built 정본은 [SPEC-007](specs/SPEC-007-ir-corpus-asbuilt.md)(코퍼스 40,552·qrel 2,321)이며 이 문서는 조립 전 설계 의도만 보존 |
-| 019 v0.9 완성도·교차언어 원장 | **W-시리즈 종결** — W1·W3·W4·W4b·W4c·W5b·W6·W7·W9 완료 · W8 폐기 · W5 구조적 미성립(D-12) · **W2는 [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) §3.2로 이월**. 현행 원장은 STATUS §2.0 |
+| 019 v0.9 완성도·교차언어 원장 | **W-시리즈 종결** — W1·W3·W4·W4b·W4c·W5b·W6·W7·W9 완료 · W8 폐기 · W5 구조적 미성립(D-12) · **W2는 [PLAN-029](archive/PLAN-029-post-remediation-reexperiment.md) §3.2로 이월**. 현행 원장은 STATUS §2.0 |
 | 025 W9 H1‴ 홀드아웃 확증 사전등록 | **판정 완료 — H1‴ 지지**(T3 단독검출 12/45·p=.0001·위양성 0/27). 사전등록 증거라 내용 불변 · C층이 판정 규칙 문면을 재사용(새 문서로 복사·출처 표기) |
 | 027 강한 밀집 기준선 B2′ | **대체됨** — [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) §5가 흡수하고 **B2′=`BAAI/bge-m3`** 로 동결(2026-07-31). test 198 재개봉 방식은 폐기라 이 문서는 실행되지 않는다 |
 
@@ -292,11 +292,15 @@
 `s1_coverage_cli`·`s2_timeseries_cli`로 재라벨되고 `h1`·`h2`는 호환 별칭으로만 남음).
 **IR 하네스·T-gate·결함주입도 구축·실행 완료다.** 남은 것은 실험이 아니라 **자원 교정과 재실험**이다.
 
-- [ ] **상류 교정 (C0 · 임계경로).** 송부 순서는 [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md):
-      ① CR-004R(4단계 착수 가능) ② **CR-007**(D-14·D-15·D-16 · **3단계 결정 4건 확정 2026-07-31 ·
-      4단계 착수 가능** — CR-001의 선행 · `skos:broader` 도입으로 TBox 델타 포함)
-      ③ CR-005 ④ CR-006 ⑤ **CR-001A**(3단계 결정 4건 확정 2026-07-31 · 어휘 확장 0 ·
-      CR-007 구현 후 실행 · IPC 승격 기각) ⑥ CR-002·CR-003 · CR-001B(어휘 수확 · 보류).
+- [x] **상류 교정 (C0) — 임계경로에서 내려왔다 (2026-08-08 갱신 · 아래 구 순서를 대체한다).**
+      **상류 대기열은 0이다.** 종료 여섯은 `upstream/archive/` 에 있다 — CR-004R·CR-007·CR-008·
+      **CR-011**·**CR-012**·CR-013([종료 기록](../upstream/archive/README.md)). 살아 있는 여섯은
+      전부 **임계경로 밖**이다 — CR-001A(송부 보류 · 하류 한계효과 ≈ 0) · CR-002 · CR-003 ·
+      CR-005 · CR-006(송부 가능) · **CR-009**(상류 발행 완료 · 하류 미소비).
+      **막는 것은 이제 상류가 아니라 하류 코드다** — CR-012 검증기준 ①(`is_query` 1,000 → 1,200)이
+      열려 있고 그 일이 [PLAN-045](plans/PLAN-045-b-layer-query-ingestion-downstream.md) 다.
+      송부 순서 정본은 [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md).
+      *(구 순서 ①CR-004R ②CR-007 ③CR-005 ④CR-006 ⑤CR-001A ⑥CR-002·003 은 2026-07-31 기록이다.)*
 - [ ] **재실험 (PLAN-029).** 상류 P0 3건(CR-001·002·003) 교정 → `make vendor` 새 스냅샷 →
       **새 사전등록 아래 H3·H4·H5 재확증**. 제2 확증분할 200건 신규 수집 = [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md)(**🔒 동결 2026-07-31** · IPC 21종·B2′=bge-m3·파일럿 500콜).
 - [ ] **H2 최초 검정의 전제.** D-12가 해소되어 **문서집합 불변·링크만 바뀐 델타 릴리스**가 나오기

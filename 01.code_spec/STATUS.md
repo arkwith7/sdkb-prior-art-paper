@@ -1,7 +1,50 @@
 # 진행 실적 (v0.9)
 
-*최종 갱신: 2026-08-08 3차 (**CR-012 상류 구현 완료 `732b0d9`** · 상류 대기열 0 · 개봉 차단이 상류에서 **하류 코드**로 옮겨졌다 · 판독 B 봉인 유지) · 기조: 설계과학(DSR) — 전환 완료*
+*최종 갱신: 2026-08-08 4차 (**PLAN-045 1–5단계 완주 · `is_query` 1,000 → 1,200** · D-27 검증기준 ① 충족 · **L1 이 새로 깨져 CR-014 발행** · 판독 B 봉인 유지) · 기조: 설계과학(DSR) — 전환 완료*
 
+> ## 🔜 다음 세션이 할 일 — **[CR-014](../upstream/CR-014-b-layer-bibliographic-fields.md) 송부. 남은 차단은 그것 하나다** (2026-08-08 4차 인계)
+>
+> **PLAN-045 를 5단계까지 관통했다 — S1–S7 전부 통과.** B층 질의 200 이 코퍼스에 섰다:
+> `is_query` **1,000 → 1,200**(A 1,000 + B 200) · 코퍼스 41,031 → **41,223** ·
+> G₀ 115,076 → **118,808** · `Patent` 1,000 → **1,200**.
+> **A층은 지켜졌다** — 분할 경계 체크섬 통과(train 600/dev 200/test 200 · 봉인 test 198질의 479엣지) ·
+> 질의밀도 **98.1 %** 불변 · `make leakage` **PASS** · 봉인 둘(`984f8ef3…`·`127a138f…`) **불변**.
+>
+> **막는 것은 이제 상류다 — CR-014 하나.** B층 200 이 `publicationNumber`·`processFamily`·
+> `valueChainStage` 를 갖지 않아 **L1 SHACL 600 위반**(200 × 3). A층은 셋 다 1,000/1,000 이므로
+> 완화 대상이 아니다. **shape 를 느슨하게 만들지 않았고**(§1-2 · D-30 교훈) `test_baseline_passes_shacl`
+> 는 **실패한 채로 뒀다** — 그것이 차단이 보이게 하는 장치다. → **D-31**.
+>
+> **✅ D-32 는 닫혔다 — 사용자 결정 ⓐ(그대로 둔다 · 2026-08-08).** B층 질의로 승격된 기존
+> 후보 8건의 본문이 2배가 된 건은 **결함이 아니라 자원 스냅샷 변경의 정상적 귀결**이다
+> (상류가 그 8건의 청구항을 처음 분해해 줬다 · 되돌리려면 더 나쁜 본문을 인위적으로 유지해야 한다).
+> doc_id 집합은 불변이고 나머지 **41,023건은 바이트 동일**이다(실측).
+>
+> **대가를 승계했다 — 이 코퍼스로 A층 §6 을 재확증하지 않는다.** 이 제약은 **PLAN-031·PLAN-040
+> 머리에 "⚠ 개봉 전 승계 조건"으로 박아 뒀다** — 다음 세션이 개봉할 때 반드시 읽는 자리다.
+> A층 값이 필요하면 재측정이 아니라 **새 사전등록 아래 새 검정**이다(§1-3).
+> **"무해"라고 쓰지 않는다** — 크기는 여전히 미상이다(8/41,031).
+>
+> **먼저 읽을 것:** [PLAN-045 §5′](plans/PLAN-045-b-layer-query-ingestion-downstream.md)(실행 기록) ·
+> [upstream/CR-014](../upstream/CR-014-b-layer-bibliographic-fields.md) ·
+> [DEFECT-LEDGER](../upstream/DEFECT-LEDGER.md) **D-31 · D-32**.
+>
+> **계획 다섯의 순서(갱신).**
+>
+> | 계획 | 잔여 | 종료 조건 |
+> |---|---|---|
+> | **PLAN-045** | **CR-014 회신 → L1 통과 재확인** | SHACL `conforms=True` · 그 뒤 "개봉 가능 상태" |
+> | PLAN-031 🔒 | B층 개봉·판정 | H3·H4·H5 재확증 판정 1회 |
+> | PLAN-040 | 판독 B | 개봉 1회 |
+> | PLAN-038 | B층 확증 **+ T4 마진 동결** | 위 개봉과 **동시** |
+> | PLAN-033 | 2단계 §6.2–6.4 | B층 결과 반영 후 45,700자 |
+>
+> **개봉하지 않았다.** 이 계획의 끝은 "개봉 가능 상태"이고 아직 거기에 못 갔다.
+>
+> ---
+>
+> **아래는 같은 날 3차 인계(PLAN-045 착수 준비)이며 기록으로 남긴다.**
+>
 > ## 🔜 다음 세션이 할 일 — **[PLAN-045](plans/PLAN-045-b-layer-query-ingestion-downstream.md) §1 요구정의 승인부터. 코드는 그 뒤다** (2026-08-08 3차 인계)
 >
 > **첫 행동은 하나다 — [PLAN-045](plans/PLAN-045-b-layer-query-ingestion-downstream.md) 를 열고
@@ -11,7 +54,7 @@
 >
 > **먼저 읽을 것:** [PLAN-045](plans/PLAN-045-b-layer-query-ingestion-downstream.md) →
 > [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md) **§1.16**(CR-012 회신 전문) ·
-> [upstream/CR-012](../upstream/CR-012-b-layer-query-nodes.md) **§8** ·
+> [upstream/CR-012](../upstream/archive/CR-012-b-layer-query-nodes.md) **§8** ·
 > [upstream/DEFECT-LEDGER.md](../upstream/DEFECT-LEDGER.md) **D-27**(갱신).
 >
 > **계획 다섯의 순서가 이제 하나로 정해졌다 — PLAN-045 가 나머지 넷의 선결이다.**
@@ -368,7 +411,7 @@
 - [x] **종속항 분해 Tier 1/2/3** — 거절특허(10,562)·인용 선행기술(30,438)·G₂ 소부장(116,774) 종속항 실체화,
       회수율 1.0 · SHACL 통과 (메모리 `tier1/2/3-...done`).
 
-**IR 하네스 M2–M4 (C2 · 2026-07-26~27)** — 설계 정본 [PLAN-018](plans/PLAN-018-v09-retrieval-tgate-harness.md) §7
+**IR 하네스 M2–M4 (C2 · 2026-07-26~27)** — 설계 정본 [PLAN-018](archive/PLAN-018-v09-retrieval-tgate-harness.md) §7
 - [x] **M2 진입 임계치 통과** — BM25(nori+SDKB 사용자사전 275표층형) 단독 비공허 회수 R@100=0.28. 하류 해금.
       사전 인벤토리 = [SPEC-008](specs/SPEC-008-nori-userdict-inventory.md).
 - [x] **M3 텍스트 기준선** — B0 BM25 · B2 Dense(Titan v2·FAISS flat) · **B3 Hybrid(RRF) = 최강 텍스트 기준선**.
@@ -413,13 +456,14 @@
 > **§2.1 이하의 N 표·W 표는 "원고 마감"까지의 완료 기록이다.** 실험 축은 그 시점에 닫혔지만,
 > **2026-07-29에 국면이 바뀌었다** — v1.0/v1.1 강등·v0.9 회귀 후 프로젝트의 임계경로는
 > **상류 자원 교정(C0)과 그 뒤의 재실험**이다. 로드맵 정본 =
-> [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md).
+> [PLAN-029](archive/PLAN-029-post-remediation-reexperiment.md).
 
 | 순서 | 일 | 상태 | 정본 |
 |---|---|---|---|
 | — | ~~CR-007 상류 이관~~ — 텍스트→개념 매핑 규칙·사전(D-14·D-15·D-16) | ✅ **종료(2026-08-04)** — 상류 구현 `2839afb`(2026-08-01) · 하류 소비 PLAN-034/035 · D-19 해소. 잔여는 정밀도 표본 200건 판정뿐 | [archive/CR-007](../upstream/archive/CR-007-concept-linking-rules.md) · [종료 기록](../upstream/archive/README.md) |
 | — | ~~CR-008~~ — B층 인용 선행기술 A-Box(D-18) | ✅ **종료(2026-08-06)** — 상류 `39855bb` · 하류 소비 완료(PLAN-040 vendor) · **하류 재측정 482/503 = 0.9583**(상류 값 일치) · `make leakage` 0 · **US 청구항 0.9608 은 미달 확정**(재시도 1회 실패 · 임계 불변 · → D-25). **후속 CR-011 진행 중** | [archive/CR-008](../upstream/archive/CR-008-b-layer-prior-art-abox.md) · [종료 기록](../upstream/archive/README.md) |
-| **1** | **CR-011** — B층 청구항 사이드카 발행(D-26) | **송부 가능 · 대기열 1순위** — 판독 B 개봉을 차단 중 | [upstream/CR-011](../upstream/CR-011-b-layer-claim-features.md) · [HANDOFF-QUEUE §1.9](../upstream/HANDOFF-QUEUE.md) |
+| — | ~~CR-011~~ — B층 청구항 사이드카 발행(D-26) | ✅ **종료(2026-08-07)** — 상류 `993f5e2` · ①②③ 상류 통과 · **④ 하류 통과 0.0085 → 1.0000**(PLAN-042). 판독 B 개봉 차단 해제 · 봉인 `127a138f…` 불변. 2026-08-08 `archive/` 이동 | [archive/CR-011](../upstream/archive/CR-011-b-layer-claim-features.md) · [종료 기록](../upstream/archive/README.md) · [HANDOFF-QUEUE §1.11](../upstream/HANDOFF-QUEUE.md) |
+| — | ~~CR-012~~ — B층 질의 노드 발행(D-27) | ✅ **상류 종료(2026-08-08)** — 상류 `732b0d9` · ②③④⑥ 통과 · **①⑤ 는 하류 몫으로 미결**. 2026-08-08 `archive/` 이동 — **아카이브는 상류 트랙 종료이지 D-27 종료가 아니다.** 하류 경로는 §2.1 이 아니라 **§2 전체** | [archive/CR-012](../upstream/archive/CR-012-b-layer-query-nodes.md) · [종료 기록](../upstream/archive/README.md) · [PLAN-045](plans/PLAN-045-b-layer-query-ingestion-downstream.md) |
 | 1-b | **CR-009** — 개념별 df·계층깊이 릴리스 발행(D-23) | **상류 발행 완료 · 스냅샷 반영 · 하류 미소비** — `concept_mapping.json` 스키마 1.1 · 분모 4,513. **`concept_meta` 를 읽는 하류 코드가 0건**(2026-08-06 실측) — 대기 대상은 상류가 아니라 하류이고, 읽게 만드는 것은 **새 방법**이라 §2 전체를 탄다. **CR-008과 분모를 공유한다**(§1.7) | [upstream/CR-009](../upstream/CR-009-concept-df-release-meta.md) · [HANDOFF-QUEUE §1.7](../upstream/HANDOFF-QUEUE.md) |
 | — | ~~CR-004R~~ — 거절근거 조항 단위 구조화(D-06) | ✅ **종료(2026-08-04)** — 상류 `84ea514` · **#6 T3 하락 0** · **#1 은 산출 불가 → 출원 단위로 확정하고 지표 폐기** · #2 는 CR-010 분리. 하류 소비(vendor)는 PLAN-040 뒤 | [archive/CR-004R](../upstream/archive/CR-004-rejection-basis-structure.md) · [HANDOFF-QUEUE §1.1b](../upstream/HANDOFF-QUEUE.md) |
 | 3 | **CR-005·CR-006 송부** — T-Box 논리 공리·SHACL 방향성(D-03·D-09) · 모듈 경계(D-13) | 1단계 완료 · 송부 가능 | CR-005 · CR-006 |
@@ -428,9 +472,32 @@
 | 6 | **PLAN-031 B층 수집 착수** — 제2 확증분할 200건 | **🔒 사전등록 동결(2026-07-31 승인)** → 파일럿 500콜부터. CR-007과 독립 | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
 | — | ~~PLAN-032 수집 드라이버~~ — §3 집행 코드(표집 순서·IPC 21종·패밀리 서로소) | ✅ **5단계 완주(2026-08-02)** — 200건 채택 · 봉인 미개봉. 2026-08-06 `archive/` 이동 | [archive/PLAN-032](archive/PLAN-032-b-layer-pilot-collection.md) |
 | 2 | **PLAN-040 관통** — T-gate 재적용(H2 3회차) + B층 H3 재확증 | **판독 A 종료(2026-08-05) · 판독 B 개봉 보류** — 막는 것은 CR-011 하나다(위 서두 표) | [PLAN-040](plans/PLAN-040-post-remediation-tgate-and-b-layer.md) |
-| 7 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) |
+| 7 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](archive/PLAN-029-post-remediation-reexperiment.md) |
 
-> **문서 정리 (2026-08-06 갱신 — 아래 2026-08-01 문장을 대체한다).** `plans/`에는 **살아 있는
+> **문서 정리 (2026-08-08 갱신 — 아래 2026-08-06 문장을 대체한다).**
+>
+> **상류 `upstream/` 에서 둘을 내렸다 — CR-011 · CR-012 → `archive/`.** 기준은 하나다:
+> **상류에 더 요구할 것이 있는가.** 없으면 내린다. **CR-012 는 하류 소비가 남았는데도 내렸고,
+> 그 이유와 미결 항목(①⑤)을 [archive/README.md](../upstream/archive/README.md) 항목의
+> 하류 소비 행에 적었다** — 아카이브를 "결함이 닫혔다"로 읽지 않기 위해서다. D-27 은 대장에서
+> 열려 있다. **`upstream/` 에 남은 CR 은 여섯**(CR-001A·002·003·005·006·009)이며, **CR-009 는
+> 상류 발행이 끝났지만 하류가 아직 `concept_meta` 를 읽지 않으므로 내리지 않는다.**
+>
+> **`plans/` 에서 둘을 내렸다 — PLAN-018 · PLAN-029 → `archive/` (2026-08-08 2차 · 사용자 지시).**
+> 같은 날 1차에서는 남기자고 적었으나 **사용자가 "오래 진행되지 않는 상위 번호를 내리라"고
+> 지시했고, 그 판단이 이긴다.** 살아 있는 계획은 **다섯**이다 — PLAN-031·033·038·040·**045**.
+>
+> **내리면서 지킨 것 둘.** ① **인용 경로를 전부 고쳤다** — md 링크 20여 곳을 `archive/` 로
+> 재작성했고 저장소 전체 깨진 링크 **0**(구본 `archive/STATUS-v05.md` 1건은 v0.5 유물).
+> **`src/`·테스트는 파일 경로를 인용하지 않고 "PLAN-018 §7" 형식의 텍스트만 쓰므로 코드는
+> 무영향**(실측). ② **두 문서 머리에 아카이브 배너를 넣었다** — 특히 PLAN-018 은
+> **F1–F18 동결이 여전히 현행 코드의 계약**임을 배너가 못 박는다. 아카이브는 "계약 폐기"가
+> 아니라 "진행 단계 없음"이다. **F1–F18 을 바꾸려면 이 문서를 고치지 않고 새 사전등록을 쓴다**(§1-3).
+>
+> **PLAN-029 에서 아직 아무도 안 가져간 것 둘 — §3.2(질의 측 번역) · §3.3(질의 표현 비교).**
+> 되살릴 때는 `archive/` 에서 인용하되 **새 사전등록 아래** 세운다.
+>
+> **(기록) 2026-08-06.** `plans/`에는 **살아 있는
 > 6건만** 둔다 — **PLAN-018**(검색·T-gate 하네스 · F1–F18 동결이 현행 코드의 계약) ·
 > **PLAN-029**(재실험 로드맵) · **PLAN-031**(B층 사전등록 🔒 · 봉인 미개봉) ·
 > **PLAN-033**(원고 재구성 · §6.2–6.4 재작성 미완) · **PLAN-038**(C2′ · 🛑 4단계 승인 대기) ·
@@ -473,7 +540,7 @@
 
 > **개선 계획 = [PLAN-019](archive/PLAN-019-v09-completeness-crosslingual.md) (2026-07-28 신설 ·
 > **2026-08-01 아카이브 — W-시리즈 종결**). W1–W9의 **완료 이력**은 그 문서 §5에 동결돼 있고
-> **더 이상 갱신하지 않는다**; 남은 W2(교차언어 실험)는 [PLAN-029](plans/PLAN-029-post-remediation-reexperiment.md) §3.2로 이월됐다. 아래 N 표는
+> **더 이상 갱신하지 않는다**; 남은 W2(교차언어 실험)는 [PLAN-029](archive/PLAN-029-post-remediation-reexperiment.md) §3.2로 이월됐다. 아래 N 표는
 > 유지하되, W 와 겹치는 항목은 매핑을 병기한다: N4=W3 · N5=W4 · N6=W5 · N11=W2.
 > **W1(교차언어 진단·§6.2f) · W3(T-gate) · W4(결함주입) 완료 — 2026-07-28.**
 > W4 설계·결과 정본 = [PLAN-020](archive/PLAN-020-w4-fault-injection.md) · W4b = [PLAN-021](archive/PLAN-021-w4b-cq-refinement.md).

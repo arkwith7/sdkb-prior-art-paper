@@ -25,6 +25,9 @@ BASELINE_PARTS = [
     "sdkb-foresight.ttl",
     "sdkb-core-data.ttl",
     "sdkb-abox-patents.ttl",   # SIRP 거절특허 1,000건 — H1 의 before
+    # B층 확증분할 질의 200 (CR-012 · D-27 · PLAN-045). 인용 간선 0 이므로 정답지·누출 통제에
+    # 아무것도 더하지 않는다 — 더하는 것은 `RejectedPatent` 200 과 그 본문·개념링크뿐이다.
+    "sdkb-abox-b-layer-queries.ttl",
     # 심사관 인용 선행기술 (CitedPatent 3,034 + 개념링크). 선행기술조사 정답지를
     # 분석 그래프 안에서 개념 도달 가능하게 만든다. 정답지(hasPriorArtExaminer distinct 2,321)
     # 도달성 (재측정 2026-07-23 · graph_v0 전수): 노드(CitedPatent 타입) 0%→95.3% ·
@@ -52,7 +55,12 @@ BASELINE_PARTS = [
 
 # G₀ 의 서명. 스냅샷을 의도적으로 갱신하면 바뀐다 — 그때는 data/MANIFEST.md 와
 # tests/test_baseline_integration.py 를 같은 커밋에서 고친다.
-EXPECTED_PATENTS = 1000
+# 2026-08-08 · PLAN-045: 1,000 → 1,200. A층 SIRP 1,000 + B층 확증분할 200(CR-012).
+# **완화가 아니라 승계다** — 기대값을 없애지 않고 층별 내역으로 쪼갠다. 둘 중 하나라도
+# 어긋나면 여전히 즉시 멈춘다.
+EXPECTED_PATENTS_A = 1000
+EXPECTED_PATENTS_B = 200
+EXPECTED_PATENTS = EXPECTED_PATENTS_A + EXPECTED_PATENTS_B
 
 
 def build_baseline(snapshot: Path = EXTERNAL_SDKB, out: Path = GRAPH_V0) -> Graph:

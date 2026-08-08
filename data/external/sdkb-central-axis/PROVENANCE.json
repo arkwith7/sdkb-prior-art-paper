@@ -1,11 +1,11 @@
 {
   "dataset": "claim-decomposition central axis (분석 그래프 미병합)",
-  "built_utc": "2026-08-07T11:51:41.842359+00:00",
-  "sdkb_commit": "993f5e2aec75cbf5ab76eb29d3f6c042241431a2",
+  "built_utc": "2026-08-08T01:05:29.879789+00:00",
+  "sdkb_commit": "734741034eeba0fdb2bb9a5d85eb1bdaa8d38057",
   "source_files": {
     "sdkb-abox-claim-features.ttl": {
-      "sha256": "1b4c143d3da63bb47b456772d22bc2841f108b0c07db6790d1acbcba40ed4896",
-      "bytes": 895257084
+      "sha256": "71e053b80ff545096164b2f3ccd1c4fa0be3c4134346cd43226d43e082163d28",
+      "bytes": 899089081
     },
     "sdkb-patent.ttl": {
       "sha256": "ebe1c301e5585047900575e577989c26e58b90716f8bc38e78851c40010470e8",
@@ -13,6 +13,6 @@
     }
   },
   "store_path": "data/processed/central_axis.oxstore",
-  "triples": 11718903,
+  "triples": 11770683,
   "loader": "pyoxigraph on-disk (rdflib 금지 — OOM)"
 }

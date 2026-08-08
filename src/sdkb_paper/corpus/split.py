@@ -27,12 +27,19 @@ def build_split(
     """질의 → DataFrame[doc_id, split, family_id, filing_date]. family-disjoint·결정적."""
     if corpus is None:
         corpus = pd.read_parquet(
-            config.IR_CORPUS, columns=["doc_id", "is_query", "filing_date"]
+            config.IR_CORPUS, columns=["doc_id", "is_query", "query_layer", "filing_date"]
         )
     if family is None:
         family = load_family_map()
 
-    q = corpus[corpus["is_query"]].copy()
+    # **A층만 나눈다**(PLAN-045 D3). B층 200 을 함께 넣으면 누적 분위수가 이동해
+    # 동결 경계가 2016-11-21·2021-07-21 → 2018-01-19·2020-11-27 로 표류한다(실측 §2′.4).
+    # 원인은 B층 출원일이 2018-01-02 ~ 2018-02-16 한 자리에 뭉쳐 있는 것이다.
+    # **아래 체크섬은 그 표류를 잡는 방어선이므로 느슨하게 만들지 않는다** — 대신 입력을 A층으로 좁힌다.
+    if "query_layer" in corpus.columns:
+        q = corpus[corpus["query_layer"] == "A"].copy()
+    else:  # 구 코퍼스(층 컬럼 이전) — 질의가 전량 A층이던 시절
+        q = corpus[corpus["is_query"]].copy()
     q["family_id"] = q["doc_id"].map(lambda d: family.get(d, d))
     q["fdate"] = pd.to_datetime(q["filing_date"], errors="coerce")
     if q["fdate"].isna().any():
@@ -72,6 +79,32 @@ def build_split(
     return out
 
 
+def build_split_b(
+    corpus: pd.DataFrame | None = None, family: dict[str, str] | None = None
+) -> pd.DataFrame:
+    """B층 질의 200 → split="test_b". **A층 분할과 섞이지 않는 라벨을 쓴다.**
+
+    B층은 제2 확증분할 전량이므로 시점 분할을 하지 않는다(PLAN-031). 여기서 하는 일은
+    층을 명시적으로 적어 두는 것뿐이고, **판정·개봉은 이 함수의 일이 아니다** —
+    B층 봉인 qrel(`config.B_QREL_SEALED`)은 읽지도 쓰지도 않는다(PLAN-045 §1.5 ⓐ).
+    """
+    if corpus is None:
+        corpus = pd.read_parquet(
+            config.IR_CORPUS, columns=["doc_id", "is_query", "query_layer", "filing_date"]
+        )
+    if family is None:
+        family = load_family_map()
+    if "query_layer" not in corpus.columns:
+        return pd.DataFrame(columns=["doc_id", "split", "family_id", "filing_date"])
+    b = corpus[corpus["query_layer"] == "B"].copy()
+    if b.empty:
+        return pd.DataFrame(columns=["doc_id", "split", "family_id", "filing_date"])
+    b["family_id"] = b["doc_id"].map(lambda d: family.get(d, d))
+    b["split"] = "test_b"
+    return (b[["doc_id", "split", "family_id", "filing_date"]]
+            .sort_values("doc_id").reset_index(drop=True))
+
+
 def seal(split: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """test 질의의 qrel 을 분리 저장(봉인). 반환 = (봉인된 test qrel, 개발용 visible qrel)."""
     qrel = pd.read_parquet(config.QREL_EXAMINER)
@@ -84,15 +117,22 @@ def seal(split: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 
 def main() -> int:
     split = build_split()
+    # A층 봉인은 **A층 분할만** 보고 만든다 — `test_b` 는 `test` 가 아니므로
+    # `seal()` 의 test_qids 에 들어가지 않는다(PLAN-045 D3). A층 봉인 서명 불변의 근거.
+    sealed, visible = seal(split)
+    split_b = build_split_b()
+    if not split_b.empty:
+        split = pd.concat([split, split_b], ignore_index=True)
     config.IR_SPLIT.parent.mkdir(parents=True, exist_ok=True)
     split.to_parquet(config.IR_SPLIT, index=False)
     counts = split["split"].value_counts()
-    n = len(split)
-    sealed, visible = seal(split)
+    n = int(counts.reindex(["train", "dev", "test"]).fillna(0).sum())
     print(f"✓ split {n} 질의 → {config.IR_SPLIT}")
     for s in ("train", "dev", "test"):
         c = int(counts.get(s, 0))
         print(f"  {s:5} {c:4} ({c/n:.1%})")
+    if not split_b.empty:
+        print(f"  test_b {len(split_b):4} (B층 제2 확증분할 · A층 분모에 넣지 않는다 · 봉인 미개봉)")
     print(f"  family-disjoint: 구성상 보장 · 고유 family {split['family_id'].nunique()}")
     print(f"✓ test qrel 봉인 {len(sealed)} 엣지({sealed['query_id'].nunique()} 질의) "
           f"→ {config.IR_QREL_TEST_SEALED} · 개발용 visible {len(visible)} 엣지")

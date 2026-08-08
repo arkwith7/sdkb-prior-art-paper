@@ -93,6 +93,7 @@ def _fake_mask() -> CandidateMask:
     m.pub_int = np.array([0, 20100101, 20990101, 20100101, 0], dtype=np.int64)
     m.family = np.array(["fq", "f1", "f2", "fq", "f3"], dtype=object)
     m.n_pub_missing = 2
+    m.cand_ok = np.ones(len(m.doc_ids), dtype=bool)   # PLAN-045 D2: 전부 후보 자격
     m.q_filing = {"q": 20150101}
     m.q_family = {"q": "fq"}
     return m
@@ -147,6 +148,7 @@ def _fake_mask_all_allowed(doc_ids) -> CandidateMask:
     m.row = {d: i for i, d in enumerate(m.doc_ids)}
     m.pub_int = np.zeros(len(doc_ids), dtype=np.int64)
     m.family = np.array([f"f{i}" for i in range(len(doc_ids))], dtype=object)
+    m.cand_ok = np.ones(len(m.doc_ids), dtype=bool)
     m.q_filing, m.q_family = {"q": 0}, {"q": "fq"}
     return m
 

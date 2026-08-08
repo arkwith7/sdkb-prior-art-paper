@@ -38,7 +38,7 @@
 > 원고에 존재하지 않는다** — PLAN-033 재구성에서 §7이 논의로 재편되며 사라졌다. 없는 절을 가리키던
 > 참조를 실재하는 절로 교정한다.) ② §6의 수치는 **구 자원(교정 전 스냅샷)에서의 관측**으로만 인용하고,
 > **새 실험의 기대치로 인용하지 않는다** — 그 순간 사후 조정이 된다(§1-2·§1-3).
-> 재실험 로드맵은 [01.code_spec/plans/PLAN-029-post-remediation-reexperiment.md]. 투고본은
+> 재실험 로드맵은 [01.code_spec/archive/PLAN-029-post-remediation-reexperiment.md]. 투고본은
 > 재실험 후 **v2.0**으로 새로 쓴다.
 
 > **투고 대상: Advanced Engineering Informatics (AEI).** 요구는 셋 — (1) 명시적 지식 표현(온톨로지·

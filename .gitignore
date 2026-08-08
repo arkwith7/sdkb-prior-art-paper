@@ -17,6 +17,8 @@ data/processed/*
 # 파일 자체는 `make vendor` 로 로컬 재생성한다. 개념 링크·서지 메타데이터는 재수집 가능.
 data/external/sdkb/sdkb-abox-patents.ttl
 data/external/sdkb/sdkb-abox-prior-art.ttl
+# B층 확증분할 질의 200 (CR-012 · PLAN-045) — 초록·청구항 원문 포함
+data/external/sdkb/sdkb-abox-b-layer-queries.ttl
 
 # 게이트 리포트 (make cq 가 그래프별로 매번 재생성)
 paper/figures/cq_report*.md

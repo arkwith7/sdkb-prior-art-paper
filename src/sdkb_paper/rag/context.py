@@ -67,20 +67,29 @@ def build_request(query_claims: str, docs_block: str) -> dict:
 
 
 # ── 적재 ────────────────────────────────────────────────────────────────────────
-def load_texts() -> tuple[dict[str, str], dict[str, str]]:
-    """(문서 본문 `text_main`, 질의 독립항 `claims_independent`)."""
+def load_texts(layer: str = "A") -> tuple[dict[str, str], dict[str, str]]:
+    """(문서 본문 `text_main`, 지정 층 질의의 독립항 `claims_independent`).
+
+    기본은 A층이다(PLAN-045 D5) — C2′ 전달 실험의 확증은 판독 B 사전등록 아래 서고,
+    여기서 층을 바꾸는 것은 **계측기 교체가 아니라 다른 실험**이다.
+    """
     import pandas as pd
 
+    from ..retrieval import layers as lyr
+
     df = pd.read_parquet(
-        config.IR_CORPUS, columns=["doc_id", "is_query", "text_main", "claims_independent"]
+        config.IR_CORPUS,
+        columns=lyr.with_layer_cols(
+            ["doc_id", "is_query", "text_main", "claims_independent"]
+        ),
     )
     doc_text = {
         str(d): ("" if t is None else str(t)) for d, t in zip(df["doc_id"], df["text_main"])
     }
+    q = lyr.queries_of(df, layer)
     q_text = {
         str(d): ("" if t is None else str(t))
-        for d, isq, t in zip(df["doc_id"], df["is_query"], df["claims_independent"])
-        if isq
+        for d, t in zip(q["doc_id"], q["claims_independent"])
     }
     return doc_text, q_text
 

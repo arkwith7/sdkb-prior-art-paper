@@ -23,6 +23,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from .. import config
+from . import layers
 
 # .env → os.environ (boto3 가 환경에서 자격증명·리전을 읽는다).
 try:
@@ -150,6 +151,7 @@ def search(
     run_path: Path | None = None,
     tag: str = "dense_b2",
     workers: int = 16,
+    layer: str = layers.LAYER_A,
 ) -> Path:
     """문서·질의 임베딩 → FAISS flat 검색 → TREC run(qrel 미열람)."""
     import faiss
@@ -160,10 +162,12 @@ def search(
 
     # 컬럼 중복 제거(doc_col==fallback_col 이면 pandas 가 DataFrame 을 돌려줘 반복이 깨진다).
     cols = list(dict.fromkeys(["doc_id", "is_query", doc_col, query_col, fallback_col]))
-    df = pd.read_parquet(config.IR_CORPUS, columns=cols)
-    doc_texts = [str(t or "") for t in df[doc_col]]
+    df = pd.read_parquet(config.IR_CORPUS, columns=layers.with_layer_cols(cols))
+    # 문서 = 후보 자격 있는 행만 (PLAN-045 D2). 질의 = 지정한 층만 (기본 A).
+    docs = layers.candidates(df)
+    doc_texts = [str(t or "") for t in docs[doc_col]]
     nonempty = [i for i, t in enumerate(doc_texts) if t.strip()]
-    doc_ids = df["doc_id"].tolist()
+    doc_ids = docs["doc_id"].tolist()
 
     print(f"① 문서 임베딩 {len(nonempty):,}건(빈 text 제외 {len(df) - len(nonempty)}) …")
     dvecs = embed_texts([doc_texts[i] for i in nonempty], workers=workers)
@@ -172,7 +176,7 @@ def search(
     index.add(xb)
     row_docid = [doc_ids[i] for i in nonempty]
 
-    queries = df[df["is_query"]]
+    queries = layers.queries_of(df, layer)
     q_texts, q_ids = [], []
     for row in queries.itertuples(index=False):
         t = getattr(row, query_col) or getattr(row, fallback_col) or ""

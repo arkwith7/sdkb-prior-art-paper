@@ -36,6 +36,10 @@ from . import concept_link
 from . import text as textmod
 
 ONT = "https://w3id.org/sdkb/ont/"
+PROV = "http://www.w3.org/ns/prov#"
+# B층 질의(CR-012)의 출처 표지. 상류가 A층(`sirp_ingest`)과 다른 activity 로 발행했다 —
+# 하류는 이것으로 층을 가른다(PLAN-045 D1). 새 술어를 만들지 않는 이유가 여기 있다.
+B_LAYER_ACTIVITY = "https://w3id.org/sdkb/data/activity/b_layer_query_ingest"
 GRAPHS = {  # named graph → 원천 TTL
     "urn:g0": config.GRAPH_V0,
     "urn:g1": config.GRAPH_V1,
@@ -128,12 +132,25 @@ def _multi(store: Store) -> dict[str, dict[str, set]]:
 
 
 def _roles(store: Store) -> tuple[set, set, dict[str, set]]:
-    """질의(RejectedPatent)·심사관 정답 대상·그래프 원천 집합."""
+    """질의(RejectedPatent)·심사관 정답 대상·그래프 원천 집합.
+
+    **질의 식별은 인용 간선이 아니라 타입이다**(`?p a ont:RejectedPatent`). 대장 D-27 이
+    간선이라 적었으나 실측은 타입이었다 — PLAN-045 §2′.2. 간선은 아래 `positives`(정답) 용이다.
+    """
     queries, positives = set(), set()
     for r in store.query(
         f"PREFIX ont:<{ONT}> SELECT ?p WHERE {{ GRAPH ?g {{ ?p a ont:RejectedPatent }} }}"
     ):
         queries.add(r["p"].value)
+    # 층 표지(PLAN-045 D1). 상류가 `prov:wasGeneratedBy` 로 A층(`sirp_ingest`)과
+    # B층(`b_layer_query_ingest`)을 갈라 발행했다(CR-012 ⓑ). 술어를 새로 만들지 않고
+    # 이미 있는 출처 표지를 읽는다 — 그래서 T-Box 델타가 0 으로 유지된다.
+    b_queries = set()
+    for r in store.query(
+        f"PREFIX prov:<{PROV}> SELECT ?p WHERE {{ GRAPH ?g "
+        f"{{ ?p prov:wasGeneratedBy <{B_LAYER_ACTIVITY}> }} }}"
+    ):
+        b_queries.add(r["p"].value)
     for r in store.query(
         f"PREFIX ont:<{ONT}> SELECT ?o WHERE {{ GRAPH ?g {{ ?s ont:hasPriorArtExaminer ?o }} }}"
     ):
@@ -149,7 +166,7 @@ def _roles(store: Store) -> tuple[set, set, dict[str, set]]:
         f"VALUES ?c {{ ont:Patent ont:CitedPatent ont:RejectedPatent }} }} }}"
     ):
         src[r["p"].value].add(r["g"].value)
-    return queries, positives, {"cited": cited, "src": src}
+    return queries, positives, {"cited": cited, "src": src, "b_queries": b_queries}
 
 
 def _qrel(store: Store) -> pd.DataFrame:
@@ -185,6 +202,7 @@ def assemble() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     multi = _multi(store)
     queries, positives, extra = _roles(store)
     cited, src = extra["cited"], extra["src"]
+    b_queries = extra["b_queries"]
 
     print("[3/6] sidecar 청구항 재구성…", flush=True)
     recon = claim_join.reconstruct_all()
@@ -206,6 +224,18 @@ def assemble() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         text_main = "\n".join(t for t in (abstract, claims_full) if t).strip()
         graphs = src.get(iri, set())
         is_query = iri in queries
+        # 층 표지 둘 (PLAN-045 D1). 두 축을 한 컬럼에 담지 않는다 —
+        # B층 질의 200 중 8건은 **이미 A층 후보 문서**였고(g1 6 · g2 2), 그 8건은
+        # query_layer="B" 이면서 is_candidate=True 여야 한다. 한 컬럼으로 적으면
+        # A층 후보 8건이 조용히 사라져 A층 결과가 바뀐다.
+        query_layer = ("B" if iri in b_queries else "A") if is_query else None
+        # 후보 자격: B층 질의 TTL 이 **새로 데려온** 문서만 제외한다. 기존 코퍼스에
+        # 이미 있던 문서는(질의든 아니든) 전부 후보로 남는다 → A층 문서집합 불변(S6).
+        # `cited` 도 함께 본다 — B층 질의가 A층 정답 노드이기도 하면 그것은 신규 문서가
+        # 아니라 이미 있던 후보다. 빠뜨리면 A층 정답이 후보 풀에서 사라진다.
+        is_candidate = not (
+            iri in b_queries and iri not in cited and not (graphs - {"urn:g0"})
+        )
         if is_query:
             source = "g0_rej"
         elif iri in cited:
@@ -223,6 +253,8 @@ def assemble() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
             "iri": iri,
             "source": source,
             "is_query": is_query,
+            "query_layer": query_layer,      # "A" | "B" | None (PLAN-045 D1)
+            "is_candidate": is_candidate,    # 색인·후보 풀 포함 자격 (PLAN-045 D2)
             "is_examiner_positive": iri in positives,
             "in_g0": "urn:g0" in graphs,
             "in_g1": "urn:g1" in graphs,
@@ -276,11 +308,17 @@ def _write_profile(corpus: pd.DataFrame, qrel: pd.DataFrame, sigs: dict) -> None
     by_source = corpus["source"].value_counts().to_dict()
     by_lang = corpus["lang"].value_counts().to_dict()
     q = corpus[corpus.is_query]
+    # 분모는 **A층으로 고정한다**(PLAN-045 D4). B층 200 을 분모에 넣으면 아무것도
+    # 나빠지지 않았는데 질의밀도가 98.1 % → 약 81.7 % 로 무너진 것처럼 보인다 —
+    # 지표 정의가 층을 넘는 것이고, 그것은 관측이 아니라 착시다.
+    q_a = corpus[corpus.query_layer == "A"]
+    q_b = corpus[corpus.query_layer == "B"]
+    n_cand = int(corpus.is_candidate.sum())
     pos = corpus[corpus.is_examiner_positive]
     raw_edges = sigs.get("qrel_raw_edges", len(qrel))
     raw_nodes = sigs.get("qrel_raw_nodes", qrel.doc_id.nunique())
-    # 질의밀도: 코퍼스 내 검색가능 정답이 ≥1 인 질의 비율 (원질의 1,000 대비)
-    density = qrel.query_id.nunique() / len(q) if len(q) else 0.0
+    # 질의밀도: 코퍼스 내 검색가능 정답이 ≥1 인 A층 질의 비율 (분모 = A층 1,000)
+    density = qrel.query_id.nunique() / len(q_a) if len(q_a) else 0.0
 
     def _cov(col):
         return (corpus[col].astype(str).str.len() > 0).mean()
@@ -310,6 +348,8 @@ def _write_profile(corpus: pd.DataFrame, qrel: pd.DataFrame, sigs: dict) -> None
         "| doc_id·iri | 문서 식별자(IRI 지역명) |",
         "| source | g0_rej(질의)·g0_cited(정답)·g1·g2(후보) |",
         "| is_query·is_examiner_positive·in_g0/1/2 | 역할·원천 플래그 |",
+        "| query_layer | 질의의 층: A(주분석 1,000) · B(제2 확증분할 200) · null(후보) |",
+        "| is_candidate | 색인·후보 풀 포함 자격 — B층 신규 문서만 False |",
         "| lang | 스크립트 감지(ko/ja/en) — 다국어 하위집단 T2 |",
         "| title·abstract·first_claim_original | 서지·초록·G₀ 원문 청구항1 |",
         "| claims_independent·claims_full | sidecar 재구성 청구항(정본) |",
@@ -323,7 +363,11 @@ def _write_profile(corpus: pd.DataFrame, qrel: pd.DataFrame, sigs: dict) -> None
         f"- 총 문서: **{n:,}**",
         "- source 분포: " + " · ".join(f"{k}={v:,}" for k, v in sorted(by_source.items())),
         "- 언어 분포(전체): " + " · ".join(f"{k}={v:,}" for k, v in sorted(by_lang.items())),
-        f"- 질의(is_query): {len(q):,} · 심사관 정답 노드(is_examiner_positive): {len(pos):,}",
+        f"- 질의(is_query): {len(q):,} = **A층 {len(q_a):,} + B층 {len(q_b):,}** "
+        f"(B층 = CR-012 · 판독 B 용 · A층 주분석에 섞이지 않는다) "
+        f"· 심사관 정답 노드(is_examiner_positive): {len(pos):,}",
+        f"- 후보 자격(is_candidate): {n_cand:,} — B층 질의가 새로 데려온 문서는 후보에서 "
+        f"제외한다(PLAN-045 D2 · 질의는 후보가 아니다). A층 문서집합 불변의 근거.",
         "- 정답 노드 언어: " + " · ".join(
             f"{k}={v:,}" for k, v in sorted(pos["lang"].value_counts().to_dict().items())),
         f"- 텍스트 커버리지: 초록={_cov('abstract'):.1%} · 청구항전체={_cov('claims_full'):.1%} · "
@@ -418,18 +462,33 @@ def check(corpus=None, qrel=None) -> bool:
     if qrel is None:
         qrel = pd.read_parquet(config.QREL_EXAMINER)
     corp_ids = set(corpus.doc_id)
-    q = corpus[corpus.is_query]
+    # 분모는 층별로 나눈다(PLAN-045 D4). 합산 분모는 착시를 만든다 — §2′.3.
+    q_a = corpus[corpus.query_layer == "A"]
+    q_b = corpus[corpus.query_layer == "B"]
     ok = True
-    # 1) 질의 1,000 전량이 독립항 텍스트 + filingDate 보유
-    q_claims = (q.claims_full.str.len() > 0).sum()
-    q_filing = q.filing_date.notna().sum()
-    c1 = len(q) == 1000 and q_claims == 1000 and q_filing == 1000
-    print(f"[성공기준1] 질의={len(q)} 청구항보유={q_claims} filingDate={q_filing} → {'OK' if c1 else 'FAIL'}")
+    # 1) A층 질의 1,000 전량이 독립항 텍스트 + filingDate 보유
+    q_claims = (q_a.claims_full.str.len() > 0).sum()
+    q_filing = q_a.filing_date.notna().sum()
+    c1 = len(q_a) == 1000 and q_claims == 1000 and q_filing == 1000
+    print(f"[성공기준1] A층 질의={len(q_a)} 청구항보유={q_claims} filingDate={q_filing} → {'OK' if c1 else 'FAIL'}")
     ok &= c1
-    # 2) 질의밀도 ≥97% (코퍼스 내 정답 ≥1 인 질의 / 원질의 1,000)
-    density = qrel.query_id.nunique() / len(q)
+    # 1b) B층 질의 200 (CR-012 검증기준 ① · PLAN-045 S1·S2). A층과 **합산하지 않는다**.
+    b_claims = (q_b.claims_full.str.len() > 0).sum()
+    b_filing = q_b.filing_date.notna().sum()
+    c1b = len(q_b) == 200 and b_claims == 200 and b_filing == 200
+    print(f"[성공기준1b] B층 질의={len(q_b)} 청구항보유={b_claims} filingDate={b_filing} → {'OK' if c1b else 'FAIL'}")
+    ok &= c1b
+    # 1c) 후보 자격(PLAN-045 S6·S7). B층이 새로 데려온 문서는 후보에서 빠져 있어야 한다.
+    n_cand = int(corpus.is_candidate.sum())
+    b_noncand = int((~corpus.is_candidate).sum())
+    c1c = b_noncand == len(corpus) - n_cand and (~corpus.loc[~corpus.is_candidate, "is_candidate"]).all()
+    print(f"[성공기준1c] 후보 자격={n_cand:,} · 후보 제외={b_noncand} (전부 B층 신규 문서) "
+          f"→ {'OK' if c1c else 'FAIL'}")
+    ok &= c1c
+    # 2) 질의밀도 ≥97% (코퍼스 내 정답 ≥1 인 질의 / **A층** 원질의 1,000)
+    density = qrel.query_id.nunique() / len(q_a) if len(q_a) else 0.0
     c2 = density >= 0.97
-    print(f"[성공기준2] 질의밀도(코퍼스 내 정답 ≥1)={density:.1%} → {'OK' if c2 else 'FAIL'}")
+    print(f"[성공기준2] A층 질의밀도(코퍼스 내 정답 ≥1)={density:.1%} → {'OK' if c2 else 'FAIL'}")
     ok &= c2
     # 3) 누출: 코퍼스 컬럼에 금지 술어 파생 피처 없음(구조적 — 컬럼명 검사)
     leak = [c for c in corpus.columns if any(f.lower() in c.lower() for f in FORBIDDEN)]

@@ -35,9 +35,13 @@ class CandidateMask:
     def __init__(self) -> None:
         import pandas as pd
 
+        from . import layers
+
         df = pd.read_parquet(
             config.IR_CORPUS,
-            columns=["doc_id", "is_query", "filing_date", "publication_date"],
+            columns=layers.with_layer_cols(
+                ["doc_id", "is_query", "filing_date", "publication_date"]
+            ),
         )
         fam = pd.read_parquet(config.IR_FAMILY_MAP, columns=["doc_id", "family_id"])
         fmap = dict(zip(fam["doc_id"].astype(str), fam["family_id"].astype(str)))
@@ -46,6 +50,14 @@ class CandidateMask:
         self.row: dict[str, int] = {d: i for i, d in enumerate(self.doc_ids)}
         # 후보 판정용 배열(코퍼스 순서 정렬)
         self.pub_int = np.array([_to_int(x) for x in df["publication_date"]], dtype=np.int64)
+        # 후보 자격 배열(PLAN-045 D2). B층 질의가 새로 데려온 문서는 **공개일이 없어**
+        # `pub_int = 0 < cutoff` 로 시점 조건을 항상 통과한다 — 시점 필터로는 못 막는다.
+        # 그래서 자격 자체를 배열로 들고 `allowed_array` 에서 곱한다.
+        self.cand_ok = (
+            df["is_candidate"].to_numpy().astype(bool)
+            if "is_candidate" in df.columns
+            else np.ones(len(df), dtype=bool)
+        )
         self.family = np.array([fmap.get(d, d) for d in self.doc_ids], dtype=object)
         self.n_pub_missing = int((self.pub_int == 0).sum())
 
@@ -66,7 +78,7 @@ class CandidateMask:
         time_ok = (self.pub_int < cutoff) if cutoff else np.ones(len(self.doc_ids), dtype=bool)
         fam_ok = self.family != qfam
         self_ok = np.array([d != qid for d in self.doc_ids])
-        return time_ok & fam_ok & self_ok
+        return time_ok & fam_ok & self_ok & self.cand_ok
 
     def is_allowed(self, qid: str, doc_id: str) -> bool:
         if doc_id == qid:

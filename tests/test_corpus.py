@@ -103,17 +103,44 @@ def qrel():
     return pd.read_parquet(config.QREL_EXAMINER)
 
 
+def _layer(corpus, name):
+    """층별 질의. 층 컬럼이 없는 구 코퍼스면 전량이 A층이다(PLAN-045 D1)."""
+    if "query_layer" not in corpus.columns:
+        return corpus[corpus.is_query] if name == "A" else corpus.iloc[:0]
+    return corpus[corpus.query_layer == name]
+
+
 def test_queries_have_claims_and_dates(corpus):
-    q = corpus[corpus.is_query]
-    assert len(q) == 1000
-    assert (q.claims_full.str.len() > 0).all()
-    assert q.filing_date.notna().all()
+    """A층 1,000 · B층 200 — **합산 분모를 쓰지 않는다**(PLAN-045 D4)."""
+    q_a = _layer(corpus, "A")
+    assert len(q_a) == 1000
+    assert (q_a.claims_full.str.len() > 0).all()
+    assert q_a.filing_date.notna().all()
+    q_b = _layer(corpus, "B")
+    if len(q_b):                     # B층 미반입 코퍼스에서는 건너뛴다
+        assert len(q_b) == 200
+        assert (q_b.claims_full.str.len() > 0).all()
+        assert q_b.filing_date.notna().all()
 
 
 def test_query_density_ge_97(corpus, qrel):
-    q = corpus[corpus.is_query]
-    density = qrel.query_id.nunique() / len(q)
-    assert density >= 0.97, f"질의밀도 {density:.1%} < 97%"
+    q_a = _layer(corpus, "A")
+    density = qrel.query_id.nunique() / len(q_a)
+    assert density >= 0.97, f"A층 질의밀도 {density:.1%} < 97%"
+
+
+def test_b_layer_queries_are_not_candidates(corpus):
+    """위험 ④ 의 회귀 테스트 — B층이 새로 데려온 문서는 후보 풀에 없어야 한다.
+
+    이것이 깨지면 A층 run 의 검색 대상이 늘어나 원고 §6 수치가 오염된다(PLAN-045 §2′.3).
+    시점 필터로는 못 막는다 — B층에는 `publicationDate` 가 없어 `pub_int=0 < cutoff` 로
+    항상 통과하기 때문이다.
+    """
+    if "is_candidate" not in corpus.columns:
+        return
+    noncand = corpus[~corpus.is_candidate]
+    assert (noncand.query_layer == "B").all(), "후보 제외는 B층 질의에만 적용된다"
+    assert noncand.publication_date.isna().all()
 
 
 def test_qrel_targets_all_in_corpus(corpus, qrel):

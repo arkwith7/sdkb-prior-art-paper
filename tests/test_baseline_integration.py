@@ -74,11 +74,17 @@ SNAPSHOT_OBSERVATIONS = {
     # 상류 39855bb(CR-008 반영 · PLAN-040) — 보존용.
     "post_cr008": {"triples": 115095, "process": 12, "subprocess": 38, "device": 34,
                    "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
-    # 현행 스냅샷(상류 4f3dbfb · CR-013 반영 · PLAN-043) — 아래 EXPECTED_* 의 원천.
+    # 상류 4f3dbfb(CR-013 반영 · PLAN-043) — 보존용.
     # 트리플이 19 줄어든 것은 상류가 `involvesMaterial → hf_acid` 오링크 34 → 15 로 정리한
     # 결과다(회신 §3 · patents −6 · prior-art −13). 어휘·T-Box·클래스는 불변이므로
     # process·subprocess·device·steps·covered 는 그대로다.
-    "current": {"triples": 115076, "process": 12, "subprocess": 38, "device": 34,
+    "post_cr013": {"triples": 115076, "process": 12, "subprocess": 38, "device": 34,
+                   "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
+    # 현행 스냅샷(상류 7347410 · CR-012 반영 · PLAN-045) — 아래 EXPECTED_* 의 원천.
+    # +3,732 는 B층 확증분할 질의 200 의 A-Box 다(TTL 4,204 트리플 중 IPC 심볼 등 472 는
+    # 기존 노드와 겹쳐 흡수됐다). **T-Box 는 건드리지 않았으므로** process·subprocess·
+    # device·steps·covered·mapping_rules 는 전부 불변이다 — 그 불변이 "층을 파일로 갈랐다"의 증거다.
+    "current": {"triples": 118808, "process": 12, "subprocess": 38, "device": 34,
                 "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
 }
 _CURRENT = SNAPSHOT_OBSERVATIONS["current"]
@@ -123,7 +129,9 @@ EXPECTED_PROCESS = _CURRENT["process"]      # 구 11 (SemiKong Table 7 의 L1 �
                             # 이 리소/식각 둘로 갈림) + plasma_processing 1 = 12
 EXPECTED_SUBPROCESS = _CURRENT["subprocess"]  # Table 7 의 L2 모듈 + SDKB 고유 유닛
 EXPECTED_DEVICE = _CURRENT["device"]        # H2 의 개념 축은 Process ∪ Device (HBM·GAA 는 Device 다)
-EXPECTED_PATENTS = 1000     # SIRP 거절특허 — G₀ 는 "현행 SDKB" 다 (특허 0건이 아니다)
+EXPECTED_PATENTS = 1200     # A층 SIRP 거절특허 1,000 + B층 확증분할 질의 200(CR-012 · PLAN-045).
+                            # **완화가 아니라 승계다** — 둘 중 하나라도 어긋나면 여전히 깨진다.
+                            # G₀ 는 "현행 SDKB" 다 (특허 0건이 아니다)
                             # 인용문헌 3,763건은 ont:Patent 로 타입하지 않는다 (서지가 없다)
 
 # H1 의 before: 49개 공정 단계 중 **20개**가 커버되어 있고 29개가 공백이다.
@@ -190,6 +198,9 @@ EXPECTED_GATE_CLASSES = (30, 30)      # 100% — 아무도 안 보는 클래스 
 
 # G₀ 의 IP-R&D CQ before 값 (§4.2 의 G₀ 열). G₁ 과 비교되는 수치이므로 여기서 고정한다.
 EXPECTED_IPRD_ROWS = {
+    # CQ26 은 1,249 → 1,324(+75). B층 질의 200 중 75건이 수출통제 대상 개념에 링크돼
+    # 노출 집계에 들어온 것이다(B층 개념링크 보유 117/200 의 부분집합). 자원이 바뀐 것이
+    # 아니라 **모집단이 커진 것**이므로 승계한다 — 상류 T-Box·통제 인스턴스는 불변이다.
     "CQ09_rejection_prior_art": 414,             # 거절 근거가 기록된 특허
     "CQ10_prior_art_candidates_by_concept": 8,   # plasma_etch · 2015 이전 출원
     "CQ11_experts_for_process_skill": 66,
@@ -215,7 +226,7 @@ EXPECTED_IPRD_ROWS = {
     "CQ23_concept_export_control": 37,           # 개념↔통제 링크 전량
     "CQ24_national_core_technology": 12,         # 국가핵심기술(NCT) 지정 개념
     "CQ25_critical_control_concepts": 7,         # CRITICAL 수준 통제 개념
-    "CQ26_patent_export_control_exposure": 1249, # 수출통제 대상 공정·소자를 구현하는 거절특허
+    "CQ26_patent_export_control_exposure": 1324, # 수출통제 대상 공정·소자를 구현하는 거절특허
 }
 CQ_MUST_ANSWER |= set(EXPECTED_IPRD_ROWS)
 

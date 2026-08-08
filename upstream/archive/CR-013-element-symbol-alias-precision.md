@@ -1,9 +1,9 @@
 # CR-013 — 원소 기호 별칭이 틀린 물질에 붙는다: 단독 `hf` 제거와 `high k` 분리
 
 > **1단계 요구정의 (하류 작성) · 상류 2단계부터 시작한다.**
-> 결함: [DEFECT-LEDGER.md](DEFECT-LEDGER.md) **D-20** · 우선순위 **P1**
+> 결함: [DEFECT-LEDGER.md](../DEFECT-LEDGER.md) **D-20** · 우선순위 **P1**
 > 발행: 2026-08-07 · 선행: CR-007(`2839afb` · 종료) · **후행: CR-001A**(이 CR 이 먼저다 · 순서 제약
-> 설계 [HANDOFF-QUEUE §1.14](HANDOFF-QUEUE.md))
+> 설계 [HANDOFF-QUEUE §1.14](../HANDOFF-QUEUE.md))
 > **관련 · 이번 범위 밖:** 하류 적용기의 대소문자 소실(**D-28** · 하류 소관 · CR 없음 · §3.2)
 
 ---

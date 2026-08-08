@@ -2,15 +2,15 @@
 
 > 코드 생성물. 재생성: `make corpus`. 원천 TTL 서명은 §서명. 특허 전문은 license_restricted(gitignore) — 이 프로파일의 집계만 커밋된다(CLAUDE.md §1.4·§4).
 
-- 생성(UTC): 2026-08-07T20:10:30.623560+00:00
+- 생성(UTC): 2026-08-08T01:07:26.894200+00:00
 - 지지 주장: **C2 핵심증명**(선행기술 검색)의 입력 · 논문 §5–6(RQ2·RQ3·T1·T2)
 
 ## 1. 서명 (원천·산출)
 | 자원 | 값 | sha256(앞16) |
 |---|---:|---|
-| ir_corpus_v09.parquet | 41,031 행 | `55e38161ef99e7f3` |
+| ir_corpus_v09.parquet | 41,223 행 | `3a5afe224ab106c5` |
 | qrel_examiner.parquet | 2,416 엣지 | `10ab67f21cc1328d` |
-| graph_v0.ttl | — | `0edf68f84211f56b` |
+| graph_v0.ttl | — | `90d599677b16b98f` |
 | graph_v1.ttl | — | `41094e9f053d6b4c` |
 | graph_v2.ttl | — | `16b4f3223e049762` |
 
@@ -20,6 +20,8 @@
 | doc_id·iri | 문서 식별자(IRI 지역명) |
 | source | g0_rej(질의)·g0_cited(정답)·g1·g2(후보) |
 | is_query·is_examiner_positive·in_g0/1/2 | 역할·원천 플래그 |
+| query_layer | 질의의 층: A(주분석 1,000) · B(제2 확증분할 200) · null(후보) |
+| is_candidate | 색인·후보 풀 포함 자격 — B층 신규 문서만 False |
 | lang | 스크립트 감지(ko/ja/en) — 다국어 하위집단 T2 |
 | title·abstract·first_claim_original | 서지·초록·G₀ 원문 청구항1 |
 | claims_independent·claims_full | sidecar 재구성 청구항(정본) |
@@ -30,13 +32,14 @@
 | n_claims·n_independent | 청구항 통계 |
 
 ## 3. 형태·기술통계
-- 총 문서: **41,031**
-- source 분포: g0_cited=3,513 · g0_rej=1,000 · g1=24,179 · g2=12,339
-- 언어 분포(전체): en=1,412 · ja=140 · ko=39,479
-- 질의(is_query): 1,000 · 심사관 정답 노드(is_examiner_positive): 2,211
+- 총 문서: **41,223**
+- source 분포: g0_cited=3,513 · g0_rej=1,200 · g1=24,173 · g2=12,337
+- 언어 분포(전체): en=1,412 · ja=140 · ko=39,671
+- 질의(is_query): 1,200 = **A층 1,000 + B층 200** (B층 = CR-012 · 판독 B 용 · A층 주분석에 섞이지 않는다) · 심사관 정답 노드(is_examiner_positive): 2,211
+- 후보 자격(is_candidate): 41,031 — B층 질의가 새로 데려온 문서는 후보에서 제외한다(PLAN-045 D2 · 질의는 후보가 아니다). A층 문서집합 불변의 근거.
 - 정답 노드 언어: en=862 · ja=83 · ko=1,266
 - 텍스트 커버리지: 초록=99.8% · 청구항전체=97.5% · text_main=99.8%
-- 청구항 보유 문서: 39,995 · 독립항 보유: 39,993
+- 청구항 보유 문서: 40,187 · 독립항 보유: 40,185
 
 ## 4. qrel (심사관 인용 · 등급1)
 - 원엣지(hasPriorArtExaminer): 2,534 · 원 고유정답 노드: 2,321

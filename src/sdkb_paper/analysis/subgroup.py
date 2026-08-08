@@ -69,10 +69,18 @@ def query_labels(qrel: dict[str, set[str]], split: str | None = None) -> dict[st
 
     from ..ontology.concept_axis import load_axis
     axis = load_axis()
-    df = pd.read_parquet(config.IR_CORPUS, columns=["doc_id", "lang", "concepts", "is_query"])
+    from ..retrieval import layers
+
+    df = pd.read_parquet(
+        config.IR_CORPUS,
+        columns=layers.with_layer_cols(["doc_id", "lang", "concepts", "is_query"]),
+    )
     doc_lang = dict(zip(df["doc_id"].astype(str), df["lang"].astype(str)))
+    # T2 하위집단은 **A층 판정 전용**이다(PLAN-045 D5). B층 질의를 섞으면 δ 판정의
+    # 표본이 사전등록과 달라진다 — 그것은 재측정이 아니라 다른 검정이다.
+    q_a = layers.queries_of(df, layers.LAYER_A)
     qconcepts = {str(d): (list(c) if c is not None else [])
-                 for d, c, isq in zip(df["doc_id"], df["concepts"], df["is_query"]) if isq}
+                 for d, c in zip(q_a["doc_id"], q_a["concepts"])}
 
     def proc_group(qid: str) -> str:
         axes = [axis.get(c, "") for c in qconcepts.get(qid, [])]

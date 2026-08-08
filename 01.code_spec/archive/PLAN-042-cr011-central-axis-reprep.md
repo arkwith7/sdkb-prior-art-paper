@@ -4,8 +4,8 @@
 > 근거 절차: [CLAUDE.md §2.1](../../CLAUDE.md) "자원 버전이 바뀌면 — 정지 게이트 1개로 전량 재측정".
 > **이 커밋이 그 유일한 정지점이고, 이후 §6 은 중간 승인 없이 관통한다.**
 >
-> **선행:** [PLAN-040](PLAN-040-post-remediation-tgate-and-b-layer.md)(판독 A 종료 · 판독 B **개봉 보류**) ·
-> [PLAN-031](PLAN-031-b-layer-second-confirmation-split.md)(B층 200 · 봉인 미개봉) ·
+> **선행:** [PLAN-040](../plans/PLAN-040-post-remediation-tgate-and-b-layer.md)(판독 A 종료 · 판독 B **개봉 보류**) ·
+> [PLAN-031](../plans/PLAN-031-b-layer-second-confirmation-split.md)(B층 200 · 봉인 미개봉) ·
 > 상류 CR-011 `993f5e2`(2026-08-06 · 성공기준 ①②③ 통과 · ④ 하류 몫).
 >
 > **이 사전등록이 새로 고르는 것은 하나도 없다.** ε·δ·주지표·분할 경계·판정식·봉인 해시는
