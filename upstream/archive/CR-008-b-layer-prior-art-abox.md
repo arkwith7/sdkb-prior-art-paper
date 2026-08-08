@@ -1,7 +1,7 @@
 # CR-008 · B층 확증분할의 인용 선행기술 A-Box 실체화 (D-18)
 
 > 제출처: `~/Dev/sdkb` · 양식: 상류 CLAUDE.md §2 **1단계 요구정의**
-> 근거: `upstream/DEFECT-LEDGER.md` §1.11(D-18) · `01.code_spec/plans/PLAN-031...md` §10.3·§10.5
+> 근거: `upstream/DEFECT-LEDGER.md` §1.11(D-18) · `01.code_spec/archive/PLAN-031...md` §10.3·§10.5
 > 우선순위: **P0 · C2 재확증의 물리적 전제** — 이것 없이는 B층 개봉이 무의미하다.
 > 선행 관계: CR-001·CR-007과 **독립**이다(어휘·매핑을 건드리지 않는다). 동시 진행 가능.
 

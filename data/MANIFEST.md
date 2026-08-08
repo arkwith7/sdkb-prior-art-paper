@@ -513,7 +513,7 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
   단일성 87 · 청구항형식 52 · Patent 미연결 0). 원본 `sdkb-abox-claim-features.ttl` 은
   vendor 하지 않고 서명만 남긴다 — sha256 `9f75836fe2409972…` (888,298,833 B)
 - 대조군 O′ 스냅샷(상류 `2839afb` · 18파일)은 덮이기 전에 복사·서명 동결 →
-  `01.code_spec/plans/PLAN-040-oprime-snapshot-signatures.json`
+  `01.code_spec/archive/PLAN-040-oprime-snapshot-signatures.json`
 - 반영: PLAN-040 판독 A(T-gate 재적용) · 판독 B(B층 H3 재확증)의 입력 · C2·C2′·C3
 
 ## 2026-08-05 · G₀ baseline 재조립 (스냅샷 39855bb 반영)

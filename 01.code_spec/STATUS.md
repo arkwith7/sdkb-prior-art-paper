@@ -1,6 +1,63 @@
 # 진행 실적 (v0.9)
 
-*최종 갱신: 2026-08-08 7차 (**PLAN-047 🔒 동결 커밋 `67568c8`** — 게이트 7/7 통과 · B층 run 7종 산출 · **봉인 열람 0회 · 개봉만 남았다**) · 기조: 설계과학(DSR) — 전환 완료*
+*최종 갱신: 2026-08-08 8차 (**판독 B 개봉·판정 완료 — H3 미지지 · A층 패턴 재현** · PLAN-031·040 아카이브 · 잔여 트랙 셋) · 기조: 설계과학(DSR) — 전환 완료*
+
+> ## 🔜 다음 세션이 할 일 — **트랙 셋으로 갈라졌다. 셋은 서로 독립이며 각각 새 세션에서 시작한다** (2026-08-08 8차 인계)
+>
+> **판독 B 가 끝났다.** 봉인 `127a138f…` 개봉 · 판정 1회 · 결과 커밋 `ff93456`(사전등록 `67568c8` 과 분리).
+> **H3 는 미지지다** — R@100 은 개선(P1 **+0.0343** · CI [+0.0094, +0.0615] · *p*=.004)됐으나
+> **nDCG@20 이 두 구성 모두 음의 방향**(P1 −0.0136 · P0★ −0.0218)이고, 사전등록은 **둘 다 개선**을
+> 요구한다. 전문은 [PLAN-047 §16](plans/PLAN-047-readout-b-unsealing-preregistration.md).
+>
+> **그러나 A층 패턴이 독립 표본에서 그대로 재현됐다 — 그것이 이 판독의 소득이다.**
+> *"깊은 회수에서만 이득 · 상위 정렬은 이득 없음"* · *"주 구성 P0★ 비유의 · 부차 P1 만 유의"*
+> (P0★ A *p*=.181 → B *p*=.147 · P1 A +0.0534 → B +0.0343).
+>
+> **가설과 반대되는 것 둘.** ① **H5 의 A층 관측이 재현되지 않았다** — 음성 대조군 A8 이 A층에선
+> −0.0316(Holm 통과)인데 **B층에선 0.0000(n.s.)**. **DP3 의 근거 하나가 갈렸다**(§16.4).
+> ② **하위집단이 서사와 반대다** — 이득은 **어휘가 이미 겹치는** 질의(+0.0461 *p*=.008)와
+> **정답이 전량 한국어**인 질의(+0.1019 *p*=.005)에서 나왔다.
+>
+> **개봉 원장은 5행이고 줄여 적지 않았다**(§16.5) — 앞의 둘은 크래시로 판정 0건. 세 명령이 각각
+> 봉인을 여는 구조 자체가 결함이라 **D-35** 등재.
+>
+> ---
+>
+> ### 트랙 A · C2′ B층 유상 실행 (PLAN-038 잔여 · 🛑 비용 결정)
+>
+> **첫 행동:** *"H3 미지지 상황에서 1,200 호출($40 규모)을 쓸 것인가"* 를 사용자와 확정.
+> **찬성 근거** — 판정식·마진이 **이미 동결돼 있고**(PLAN-047 §4 · ε_T4=0.02 · η=0.01) 배관도 섰다
+> (`make rag SPLIT=test_b` · `rageval --split test_b`). 검색이 미지지인 채로 전달을 재면 **어긋남의
+> 두 번째 사례**가 되어 DRQ3·DP1 을 강화한다. **반대 근거** — DP6 승격에만 쓰이고 N3 는 이미 확보.
+> **함정:** 계측기 상수 9종은 손대지 않는다(테스트 R8 이 sha256 로 고정).
+>
+> ### 트랙 B · 원고 §6.2–6.4 재작성 (PLAN-033 2단계)
+>
+> **첫 행동:** [PLAN-033](plans/PLAN-033-v2-manuscript-restructure.md) §6 을 열고 **B층 결과를 어디에
+> 싣는지**부터 정한다. **⚠ 함정 하나** — **B층은 A층 §6.2–6.4 를 대체하지 않는다.** D-32 승계 조건상
+> 이 코퍼스로 A층 수치를 재산출하지 않으므로, B층은 **새 절(§6.2b 등)** 로 들어가고 A층 표는 구
+> 스냅샷 관측으로 남는다. §2.2(기조 변경 절차)를 탈지 여부를 먼저 판단할 것.
+> **입력:** `paper/tables/ir_{performance,subgroup}_test_b.md` · `data/processed/ir/ir_ablation_test_b.csv`.
+>
+> ### 트랙 C · 실패 유형 분류표 (신규 계획 필요 · C4 의 빈 칸)
+>
+> **첫 행동:** CLAUDE.md §7 C4 산출물 3종 중 **유일하게 없는 것**이므로 **새 PLAN 을 세운다**(§2 1단계).
+> 원고에 §8.1 설계원리표·§8.2 경쟁 설명표는 **이미 있다**.
+> **재료는 이번 판독이 만들었다** — 온톨로지 팔이 **악화시킨** 질의(P1 대 B3 패 9건 · B층) +
+> A층 패 사례 + §16.6 하위집단(어휘중첩·정답언어)이 1순위 입력이다.
+> **요건:** 시스템명·순위를 가린 **2인 독립 코딩 + κ와 합의율**(§1-12 · κ<0.4 면 본문 제외 후 부록) ·
+> [원고 §5.5](../paper/논문_v0_9_SDKB_통합초안.md) 프로토콜을 **재사용**하고 새로 만들지 않는다.
+>
+> ---
+>
+> **셋의 의존 관계.** A·C 는 서로 독립이고 **B 는 둘의 결과를 받아 쓰는 자리**다(§6.8 승격 여부 ·
+> §5.5 표). 그래서 권고 순서는 **A 결정 → C 착수 → B 집필**이며, A 를 미루면 B 가 §6.8 을
+> 두 번 고쳐야 한다.
+>
+> **상류 대기열은 0 그대로다.** `upstream/` CR 여섯(CR-001A·002·003·005·006·009)은 **논문 임계경로
+> 밖 · C0 트랙**이며 투고 후로 미룬다.
+>
+> **아래는 같은 날 7차 인계(배관 구현·게이트)이며 기록으로 남긴다.**
 
 > ## 🔜 다음 세션이 할 일 — **`make retrieve-b`. 봉인은 그 다음이고, 그것은 별도 승인이다** (2026-08-08 7차 인계)
 >
@@ -71,9 +128,9 @@
 > **G7**(배관 검증 · B층 run 200/200 산출 · **봉인 열람 0회**를 감사 훅으로 증명).
 >
 > **먼저 읽을 것:** [PLAN-047](plans/PLAN-047-readout-b-unsealing-preregistration.md) §1·§7 →
-> [PLAN-031 §4](plans/PLAN-031-b-layer-second-confirmation-split.md) ·
+> [PLAN-031 §4](archive/PLAN-031-b-layer-second-confirmation-split.md) ·
 > [PLAN-038 §16.6](plans/PLAN-038-c2prime-transfer-requirements.md) ·
-> [PLAN-040 §4](plans/PLAN-040-post-remediation-tgate-and-b-layer.md).
+> [PLAN-040 §4](archive/PLAN-040-post-remediation-tgate-and-b-layer.md).
 >
 > **계획 다섯의 순서.**
 >
@@ -118,7 +175,7 @@
 > 링크 전량 재지정(깨진 링크 0).
 >
 > **먼저 읽을 것:** [PLAN-046 §7](archive/PLAN-046-d33-corpus-rebuild-preregistration.md)(실행 기록) ·
-> [PLAN-040 §4](plans/PLAN-040-post-remediation-tgate-and-b-layer.md) ·
+> [PLAN-040 §4](archive/PLAN-040-post-remediation-tgate-and-b-layer.md) ·
 > [PLAN-038 §16.6-2](plans/PLAN-038-c2prime-transfer-requirements.md) ·
 > [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md) **9차**.
 >
@@ -377,7 +434,7 @@
 >
 > ## (기록) 🔜 다음 세션이 할 일 — **CR-011 을 상류에 보낸다. 그 전에 개봉하지 않는다** (2026-08-05 인계)
 >
-> **먼저 읽을 것:** [PLAN-040](plans/PLAN-040-post-remediation-tgate-and-b-layer.md) **§3.4(판독 A
+> **먼저 읽을 것:** [PLAN-040](archive/PLAN-040-post-remediation-tgate-and-b-layer.md) **§3.4(판독 A
 > 결과)·§4.3(개봉 게이트 실측)** · [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md) **§1.9**.
 >
 > **PLAN-040 을 관통했다. 사전등록은 `2314689` 로 완성됐고 그 뒤 조건을 고치지 않았다.**
@@ -427,7 +484,7 @@
 > 수치는 바뀌지 않는다. 바뀌는 것은 **원인의 이름**이고, 그것이 다음 CR 의 범위를 정한다.
 >
 > **vendor 준비는 끝났다(§7 (0)·(0-b)·(1) 완료).** ① O′ 스냅샷을 덮이기 전에 복사·서명 동결
-> ([PLAN-040-oprime-snapshot-signatures.json](plans/PLAN-040-oprime-snapshot-signatures.json) · 18파일 · 상류 `2839afb`) ·
+> ([PLAN-040-oprime-snapshot-signatures.json](archive/PLAN-040-oprime-snapshot-signatures.json) · 18파일 · 상류 `2839afb`) ·
 > ② `VENDOR_FILES += abox_term_aliases.json` · ③ **claim-features(888MB)는 통째로 vendor 하지
 > 않고 파생으로 얼린다** — `_derive_rejection_reasons()` 실측 **2,749건 · 출원 994 · 미연결 0 ·
 > 3.5초 · 재실행 sha256 동일**(상류 회신값과 전부 일치). lint 통과 · 신규 단위테스트 4건 통과.
@@ -448,7 +505,7 @@
 >
 > ## (기록) 상류 회신 접수 → `make vendor` → PLAN-040 관통 (2026-08-04 인계)
 >
-> **먼저 읽을 것:** [PLAN-040](plans/PLAN-040-post-remediation-tgate-and-b-layer.md)(**조건 동결 ·
+> **먼저 읽을 것:** [PLAN-040](archive/PLAN-040-post-remediation-tgate-and-b-layer.md)(**조건 동결 ·
 > 서명 미기입**) · [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md) §1.6·§1.7·§1.8.
 >
 > **상류 교정 4건이 전부 구현됐다.** CR-004R `84ea514`(RejectionReason 2,749 · **종료**) ·
@@ -473,7 +530,7 @@
 >
 > **아래는 2026-08-01 시점의 인계이며 기록으로 남긴다.**
 >
-> **먼저 읽을 것:** [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) **§10.3–10.4
+> **먼저 읽을 것:** [PLAN-031](archive/PLAN-031-b-layer-second-confirmation-split.md) **§10.3–10.4
 > (새 차단 · 🛑 승인 대기)** · §9(개정 사전등록 · 동결) · [PLAN-033](plans/PLAN-033-v2-manuscript-restructure.md) §11.
 >
 > **지난 차단은 해소됐다.** 표집 창을 **2005 → 2018-01-01~2020-12-31**로 개정(승인 2026-08-01 ·
@@ -612,9 +669,9 @@
 | 3 | **CR-005·CR-006 송부** — T-Box 논리 공리·SHACL 방향성(D-03·D-09) · 모듈 경계(D-13) | 1단계 완료 · 송부 가능 | CR-005 · CR-006 |
 | 4 | **CR-001A** — 개념 해상도 즉시분(P0 · 어휘 확장 0 · 전문 재추출) | 1·2·3단계 완료 → **선행조건 전부 해소(2026-08-04) · 송부 가능** | [upstream/CR-001](../upstream/CR-001-concept-resolution.md) · [HANDOFF-QUEUE §1.4](../upstream/HANDOFF-QUEUE.md) |
 | 5 | **CR-002·003 · CR-001B** — 계층(P0)·다국어(P0·**D-21 편입 필요**)·어휘 수확 | **보류** — CR-001A 재검정 후 (`skos:broader`는 CR-007이 이미 선착수·완료) | CR-002·003 |
-| 6 | **PLAN-031 B층 수집 착수** — 제2 확증분할 200건 | **🔒 사전등록 동결(2026-07-31 승인)** → 파일럿 500콜부터. CR-007과 독립 | [PLAN-031](plans/PLAN-031-b-layer-second-confirmation-split.md) |
+| 6 | **PLAN-031 B층 수집 착수** — 제2 확증분할 200건 | **🔒 사전등록 동결(2026-07-31 승인)** → 파일럿 500콜부터. CR-007과 독립 | [PLAN-031](archive/PLAN-031-b-layer-second-confirmation-split.md) |
 | — | ~~PLAN-032 수집 드라이버~~ — §3 집행 코드(표집 순서·IPC 21종·패밀리 서로소) | ✅ **5단계 완주(2026-08-02)** — 200건 채택 · 봉인 미개봉. 2026-08-06 `archive/` 이동 | [archive/PLAN-032](archive/PLAN-032-b-layer-pilot-collection.md) |
-| 2 | **PLAN-040 관통** — T-gate 재적용(H2 3회차) + B층 H3 재확증 | **판독 A 종료(2026-08-05) · 판독 B 개봉 보류** — 막는 것은 CR-011 하나다(위 서두 표) | [PLAN-040](plans/PLAN-040-post-remediation-tgate-and-b-layer.md) |
+| 2 | **PLAN-040 관통** — T-gate 재적용(H2 3회차) + B층 H3 재확증 | **판독 A 종료(2026-08-05) · 판독 B 개봉 보류** — 막는 것은 CR-011 하나다(위 서두 표) | [PLAN-040](archive/PLAN-040-post-remediation-tgate-and-b-layer.md) |
 | 7 | **재실험 → 투고본 v2.0** | 상류 P0 교정 + `make vendor` 후 착수 | [PLAN-029](archive/PLAN-029-post-remediation-reexperiment.md) |
 
 > **문서 정리 (2026-08-08 갱신 — 아래 2026-08-06 문장을 대체한다).**

@@ -1,7 +1,7 @@
 # PLAN-027 — 강한 밀집 기준선 추가 (B2′) · 확증분할 재개봉 사전등록 (C2 · RQ2/H3)
 
 > **📦 아카이브 (2026-08-01) — 대체됨(superseded).** 목적·설계는 전량
-> [PLAN-031](../plans/PLAN-031-b-layer-second-confirmation-split.md) §5에 흡수됐고, 거기서 **B2′ = `BAAI/bge-m3`**
+> [PLAN-031](../archive/PLAN-031-b-layer-second-confirmation-split.md) §5에 흡수됐고, 거기서 **B2′ = `BAAI/bge-m3`**
 > 로 확정·동결됐다(2026-07-31). **이 문서는 실행되지 않는다** — 기존 test 198 재개봉 방식이 폐기됐기
 > 때문이다. 원안으로만 보존한다.
 >
