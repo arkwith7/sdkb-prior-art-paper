@@ -73,13 +73,18 @@ def jaccard(a: set, b: set) -> float:
 
 
 def compute(split: str | None = None, n: int = NGRAM_N, agg: str = AGG,
-            morph: bool = False) -> dict[str, float]:
-    """질의 → 정답들과의 어휘 중첩 점수. split=None 이면 전체."""
+            morph: bool = False, qrel: dict[str, set[str]] | None = None) -> dict[str, float]:
+    """질의 → 정답들과의 어휘 중첩 점수. split=None 이면 전체.
+
+    `qrel` 을 주면 그것을 쓴다 — B층(`test_b`)은 정답지가 다른 파일이고, 기본 examiner qrel 로는
+    이 분할의 질의가 한 건도 잡히지 않는다(D-34). **임계는 여전히 dev 에서 동결한 값을 쓴다** —
+    바뀌는 것은 점수를 매길 대상이지 합격선이 아니다.
+    """
     import pandas as pd
 
     from .metrics import load_qrel
 
-    qrel = load_qrel()
+    qrel = load_qrel() if qrel is None else dict(qrel)
     if split:
         sp = pd.read_parquet(config.IR_SPLIT)
         keep = set(sp.loc[sp["split"] == split, "doc_id"])
@@ -136,11 +141,11 @@ def freeze_threshold(force: bool = False) -> dict:
     return rec
 
 
-def labels(split: str) -> dict[str, str]:
+def labels(split: str, qrel: dict[str, set[str]] | None = None) -> dict[str, str]:
     """질의 → 'low_overlap' | 'high_overlap' (동결 임계 적용)."""
     thr = freeze_threshold()["q1_threshold"]
     return {q: ("low_overlap" if v <= thr else "high_overlap")
-            for q, v in compute(split).items()}
+            for q, v in compute(split, qrel=qrel).items()}
 
 
 def main() -> None:

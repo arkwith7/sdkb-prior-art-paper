@@ -64,7 +64,8 @@ def rejection_labels() -> dict[str, str]:
     return out
 
 
-def query_labels(qrel: dict[str, set[str]], split: str | None = None) -> dict[str, dict[str, str]]:
+def query_labels(qrel: dict[str, set[str]], split: str | None = None,
+                 lex_qrel: dict[str, set[str]] | None = None) -> dict[str, dict[str, str]]:
     """질의 → {'pos_lang', 'proc_group', 'rejection', 'lex_overlap'}.
 
     split 을 주면 F11 어휘중첩 라벨(동결 임계)까지 붙인다 — 임계는 dev 에서만 산출된다.
@@ -101,7 +102,8 @@ def query_labels(qrel: dict[str, set[str]], split: str | None = None) -> dict[st
     lex: dict[str, str] = {}
     if split:
         from .overlap import labels as overlap_labels
-        lex = overlap_labels(split)
+        # B층은 정답지가 다른 파일이라 명시적으로 넘긴다(D-34). 임계는 dev 동결값 그대로.
+        lex = overlap_labels(split, qrel=lex_qrel)
 
     out = {}
     for qid, pos in qrel.items():
@@ -245,7 +247,8 @@ def main() -> None:
             sp = pd.read_parquet(config.IR_SPLIT)
             keep = set(sp.loc[sp["split"] == args.split, "doc_id"])
             qrel = {q: pos for q, pos in qrel.items() if q in keep}
-    labels = query_labels(qrel, split=args.split if args.table else None)
+    labels = query_labels(qrel, split=args.split if args.table else None,
+                          lex_qrel=qrel if args.split == SPLIT_B else None)
     pa = args.a or run_path("P1", args.split)
     pb = args.b or run_path("B3_rrf", args.split)
     run_a, run_b = load_run(pa), load_run(pb)

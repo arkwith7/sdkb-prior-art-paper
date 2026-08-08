@@ -335,10 +335,15 @@ def main() -> None:
                for m in ("recall", "ndcg", "mrr", "bpref")}
         for name, _ in SYSTEM_LABELS if name != "B3_rrf"
     }
-    n_qrel = sum(len(qrel[q]) for q in qids)
+    # 표에 적는 질의 수는 **정답 ≥1 질의**다(주지표 정의 · PLAN-031 §4). A층은 qid 원천이
+    # qrel 이라 둘이 같았지만, B층은 qid 가 분할에서 오므로 정답 0인 질의가 섞인다
+    # (실측 200 중 2건). `evaluate()` 는 이미 정답 보유 질의만 평균하므로 **판정은 그대로**이고,
+    # 바뀌는 것은 표에 적히는 분모의 정직함뿐이다.
+    eval_qids = [q for q in qids if qrel.get(q)]
+    n_qrel = sum(len(qrel[q]) for q in eval_qids)
     lat = measure_latency(args.split) if args.latency else None
 
-    md = render(args.split, rows, boot, len(qids), n_qrel, lat)
+    md = render(args.split, rows, boot, len(eval_qids), n_qrel, lat)
     print(md)
     if args.write:
         config.TABLES.mkdir(parents=True, exist_ok=True)

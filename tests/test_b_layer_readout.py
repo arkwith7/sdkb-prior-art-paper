@@ -189,6 +189,50 @@ def test_r7_b_layer_queries_get_no_label():
     assert labels[qids[0]]["rejection"] == subgroup.NO_LABEL
 
 
+# --- R9 · 수집 형식 → IR 형식 변환 (D-34 · PLAN-047 §15.2) --------------------
+
+def test_r9_norm_key_matches_g1_rule():
+    """식별자 정규화는 G1 재측정에 쓴 규칙 그대로다 — 새 규칙을 만들지 않는다."""
+    from sdkb_paper.corpus import qrel_b
+
+    assert qrel_b.norm_key("KR 10-2015-0012345 A") == "KR1020150012345A"
+    assert qrel_b.norm_key(None) == ""
+    idx = {"1020180000414": "kr_1020180000414", "CN103665048A": "cn_CN103665048A"}
+    # 국가코드가 붙은 형태와 벗은 형태를 둘 다 찾는다
+    assert qrel_b._resolve("CN103665048A", idx) == "cn_CN103665048A"
+    assert qrel_b._resolve("KR1020180000414", idx) == "kr_1020180000414"
+    assert qrel_b._resolve("ZZ9999999", idx) is None
+
+
+def test_r9_converted_qrel_is_structurally_sound():
+    from sdkb_paper.corpus import qrel_b
+
+    if not Path(config.B_QREL_SEALED).exists() or not Path(config.IR_CORPUS).exists():
+        pytest.skip("봉인 qrel 또는 코퍼스 없음")
+    import pandas as pd
+
+    df = qrel_b.to_ir_qrel(verbose=False)
+    assert list(df.columns) == ["query_id", "doc_id", "relevance"]
+    assert set(df["relevance"].unique()) == {1}
+    sp = pd.read_parquet(config.IR_SPLIT)
+    tb = set(sp.loc[sp["split"] == "test_b", "doc_id"].astype(str))
+    assert set(df["query_id"]) <= tb, "B층 qrel 의 질의는 test_b 분할의 부분집합이어야 한다"
+    corpus_ids = set(pd.read_parquet(config.IR_CORPUS, columns=["doc_id"])["doc_id"].astype(str))
+    assert set(df["doc_id"]) <= corpus_ids, "코퍼스 밖 정답은 남아 있으면 안 된다"
+
+
+def test_r9_conversion_is_deterministic_and_seal_is_read_only():
+    from sdkb_paper.corpus import qrel_b
+
+    if not Path(config.B_QREL_SEALED).exists() or not Path(config.IR_CORPUS).exists():
+        pytest.skip("봉인 qrel 또는 코퍼스 없음")
+    before = seal_audit.sha256_file(config.B_QREL_SEALED)
+    a = qrel_b.to_ir_qrel(verbose=False)
+    b = qrel_b.to_ir_qrel(verbose=False)
+    assert a.equals(b), "같은 입력에 두 번 돌리면 같은 qrel 이어야 한다"
+    assert seal_audit.sha256_file(config.B_QREL_SEALED) == before, "봉인 파일은 읽기 전용이다"
+
+
 # --- R8 · 계측기 서명 ---------------------------------------------------------
 
 def test_r8_rag_instrument_signature_frozen():

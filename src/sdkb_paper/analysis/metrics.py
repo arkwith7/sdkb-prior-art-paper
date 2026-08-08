@@ -61,10 +61,15 @@ def load_qrel_for_split(split: str, *, unseal: bool = False, reason: str = "") -
     """
     path = qrel_path_for_split(split)
     if split == SPLIT_B:
+        from ..corpus import qrel_b
         from ..validate.seal_audit import open_sealed
 
         path = open_sealed(path, reason=reason or f"판독 B 평가(split={split})", allow=unseal)
-    qrel = load_qrel(path)
+        # B층 봉인은 **수집 형식**이라 그대로 못 읽는다(D-34). 변환은 파일을 만들지 않고
+        # 메모리에서만 한다 — 파생본을 디스크에 남기면 봉인과 어긋날 자리가 생긴다.
+        qrel = qrel_b.load_as_dict(path)
+    else:
+        qrel = load_qrel(path)
     if split in ("all", None):
         return qrel
     import pandas as pd
