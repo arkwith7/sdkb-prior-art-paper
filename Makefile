@@ -1,4 +1,4 @@
-.PHONY: rag ragcount rageval t4 faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -104,6 +104,23 @@ rageval:
 # 산출: paper/tables/rag_t4_verdict_test_b.md + data/processed/ir/rag/scores/rag_t4_verdict_test_b.json
 t4:
 	uv run python -m sdkb_paper.rag.t4 --split test_b --unseal --reason "$(REASON)" --write
+
+# 실패 유형 분류 (PLAN-048 · C4) — 코딩 시트 생성. 결정적·무료·생성 호출 0.
+# B층은 봉인 열람이므로 UNSEAL=1 REASON="..." 이 필요하다. 산출은 특허 본문을 포함하므로
+# data/processed/ir/typology/ 아래에만 쓴다(§1-5 · gitignore).
+TSPLIT ?= test
+typology-sheet:
+	uv run python -m sdkb_paper.analysis.failure_typology --split $(TSPLIT) \
+	  $(if $(UNSEAL),--unseal --reason "$(REASON)",)
+
+# 로컬 LLM 2종 × 반복 2회 전수 코딩. **순차 전용**(LLM_WORKERS=1) — 병렬은 VRAM 이 넘친다.
+# 유료 API 호출 0. 프롬프트·모델·시드는 동결이며 결과를 본 뒤 고치지 않는다(§1-11).
+typology-code:
+	LLM_WORKERS=1 uv run python -m sdkb_paper.analysis.failure_typology --split $(TSPLIT) --code
+
+# κ·합의율·유형 빈도표 → paper/tables/failure_typology.md
+typology-table:
+	uv run python -m sdkb_paper.analysis.failure_typology --table
 
 # 논문 §6.2·§6.4 표 전량 재생성 (동결 run 재평가 · 새 검색 없음 · 수기 기입 금지 CLAUDE §1-7).
 # 산출: paper/tables/ir_{performance,subgroup,increment}_{dev,test}.md + viz 입력 CSV.
