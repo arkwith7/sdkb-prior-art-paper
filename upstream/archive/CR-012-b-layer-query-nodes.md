@@ -71,7 +71,7 @@ B층 200 을 `ont:RejectedPatent` 인스턴스로 발행한다. 청구항은 **A
 **식별자는 하류가 제공한다** — 출원번호 200개는 봉인의 **질의 목록**이며 **질의–문헌 대응이
 아니다.** 인용 식별자는 넘기지 않는다(CR-008 §11.6 결정 그대로).
 
-**이관 파일 (2026-08-07 발행).** [handoff/CR-012-b-query-ids.txt](handoff/CR-012-b-query-ids.txt) —
+**이관 파일 (2026-08-07 발행).** [handoff/CR-012-b-query-ids.txt](../handoff/CR-012-b-query-ids.txt) —
 200행 · 사전순 · KIPRIS 출원번호 13자리 · sha256 `ef4ad03c2734af4212209516c05064b1550bea478f1f79bc72f3e2f14bac60e5`.
 출원일 범위 20180102–20180216 · 하류 `accepted.parquet` 에서 `claim1` 보유 **200/200**.
 

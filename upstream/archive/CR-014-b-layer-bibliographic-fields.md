@@ -3,9 +3,9 @@
 > 상태: ✅ **종료 (2026-08-08) — 상류 구현 `212fe62` · 하류 반영 · `make gate` 완주**
 > 회신 **§7** · 하류 조치와 판정 **§8**. 셋 중 **둘을 채웠고 둘은 원천이 없어 채우지 않았다** —
 > 그래서 shape 를 **회신 뒤에** 출처 조건부로 열었다(§8.1). 우선순위 **P0**(해소)
-> 결함: [DEFECT-LEDGER.md](DEFECT-LEDGER.md) **D-31**
-> 선행: [CR-012](archive/CR-012-b-layer-query-nodes.md)(질의 노드 발행 · 상류 `732b0d9`)의 **직접 후속**
-> **차단 대상:** 하류 L1(SHACL) → `make gate` → 판독 B 개봉. 하류 [PLAN-045](../01.code_spec/plans/PLAN-045-b-layer-query-ingestion-downstream.md) 5단계.
+> 결함: [DEFECT-LEDGER.md](../DEFECT-LEDGER.md) **D-31**
+> 선행: [CR-012](CR-012-b-layer-query-nodes.md)(질의 노드 발행 · 상류 `732b0d9`)의 **직접 후속**
+> **차단 대상:** 하류 L1(SHACL) → `make gate` → 판독 B 개봉. 하류 [PLAN-045](../../01.code_spec/archive/PLAN-045-b-layer-query-ingestion-downstream.md) 5단계.
 
 ---
 

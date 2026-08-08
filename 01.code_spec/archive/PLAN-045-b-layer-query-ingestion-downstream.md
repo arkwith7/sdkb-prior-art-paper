@@ -407,7 +407,7 @@ B층 질의이자 A층 후보인 8건 중 **6건의 `publication_date` 가 결�
 
 **shape 를 고치지 않았다.** 고칠 수 있는 자리는 `targetClass` 를 좁히거나 `minCount` 를
 낮추는 것뿐이고 **그것은 결과를 본 뒤 합격선을 고치는 것**이다(§1-2 · D-30 의 교훈).
-→ [upstream/CR-014](../../upstream/CR-014-b-layer-bibliographic-fields.md) · 대장 **D-31**.
+→ [upstream/CR-014](../../upstream/archive/CR-014-b-layer-bibliographic-fields.md) · 대장 **D-31**.
 `test_baseline_passes_shacl` 는 **실패한 채로 둔다** — 그것이 차단이 보이게 하는 장치다.
 
 ### 5′.4 ⚠ 관측 — **후보 8건의 본문이 2배가 됐다 → D-32 · 🛑 사용자 판단**

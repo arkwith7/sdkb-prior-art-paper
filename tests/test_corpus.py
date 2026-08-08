@@ -133,14 +133,16 @@ def test_b_layer_queries_are_not_candidates(corpus):
     """위험 ④ 의 회귀 테스트 — B층이 새로 데려온 문서는 후보 풀에 없어야 한다.
 
     이것이 깨지면 A층 run 의 검색 대상이 늘어나 원고 §6 수치가 오염된다(PLAN-045 §2′.3).
-    시점 필터로는 못 막는다 — B층에는 `publicationDate` 가 없어 `pub_int=0 < cutoff` 로
-    항상 통과하기 때문이다.
+    **시점 필터로는 못 막는다** — 이 사실은 CR-014 이후에도 그대로다. 공개일이 채워졌어도
+    (D-33 · PLAN-046) B층 문서의 공개일이 A층 질의의 출원일보다 앞서면 시점 조건을 통과하고,
+    실제로 그런 조합이 있다. 그래서 배제는 `is_candidate` 배열이 지고, 이 테스트가 그것을 지킨다.
     """
     if "is_candidate" not in corpus.columns:
         return
     noncand = corpus[~corpus.is_candidate]
     assert (noncand.query_layer == "B").all(), "후보 제외는 B층 질의에만 적용된다"
-    assert noncand.publication_date.isna().all()
+    assert noncand.is_query.all(), "후보 제외는 질의 노드에만 적용된다"
+    assert len(noncand) == 192, "B층 200 중 A층에 이미 있던 8건을 뺀 신규 192건"
 
 
 def test_qrel_targets_all_in_corpus(corpus, qrel):

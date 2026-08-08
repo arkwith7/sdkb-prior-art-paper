@@ -62,7 +62,7 @@
             ② **US 청구항 분해율** — B층 US 49건 중 청구항 보유분의 **≥ 0.95**.
                 US 2건(`US-P-03517643`·`US-P-03530092`)은 **본문 자체가 없으므로 분모에서
                 뺀다** — 재시도 1회가 실패했고 원천에 OCR 전문이 없다(2026-08-05 ·
-                [handoff/CR-008-us-retry-evidence.json](handoff/CR-008-us-retry-evidence.json)).
+                [handoff/CR-008-us-retry-evidence.json](../handoff/CR-008-us-retry-evidence.json)).
             ③ **A층 불변** — 기존 `Claim` 586,567 · `ClaimFeature` 1,289,512 가 **전량 존속**하고
                 사라진 트리플 0. (CR-008 성공기준 ③ 과 같은 형식)
             ④ **하류 재 vendor 후 비대칭 해소** — 하류가 코퍼스를 재조립해
