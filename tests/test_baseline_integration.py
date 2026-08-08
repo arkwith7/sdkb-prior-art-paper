@@ -20,7 +20,7 @@ import subprocess
 import sys
 
 import pytest
-from rdflib import RDF, URIRef
+from rdflib import RDF, Graph, URIRef
 
 from sdkb_paper.config import EXTERNAL_SDKB, ONT, QUERIES_CQ
 from sdkb_paper.ontology.baseline import build_baseline, summarize
@@ -84,7 +84,14 @@ SNAPSHOT_OBSERVATIONS = {
     # +3,732 는 B층 확증분할 질의 200 의 A-Box 다(TTL 4,204 트리플 중 IPC 심볼 등 472 는
     # 기존 노드와 겹쳐 흡수됐다). **T-Box 는 건드리지 않았으므로** process·subprocess·
     # device·steps·covered·mapping_rules 는 전부 불변이다 — 그 불변이 "층을 파일로 갈랐다"의 증거다.
-    "current": {"triples": 118808, "process": 12, "subprocess": 38, "device": 34,
+    "post_cr012": {"triples": 118808, "process": 12, "subprocess": 38, "device": 34,
+                   "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
+    # 현행 스냅샷(상류 212fe62 · CR-014 반영) — 아래 EXPECTED_* 의 원천.
+    # +400 = B층 질의 200 × (publicationNumber + publicationDate). **그것뿐이다** —
+    # CR-014 는 서지 두 칸만 채웠고 노드·타입·개념링크·T-Box 를 건드리지 않았다.
+    # 공정군·가치사슬 두 칸은 상류에 원천이 없어 **채우지 않았고**(회신), 그래서 트리플이
+    # 600 이 아니라 400 늘었다. 이 숫자가 "추정으로 채우지 않았다"의 증거다.
+    "current": {"triples": 119208, "process": 12, "subprocess": 38, "device": 34,
                 "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
 }
 _CURRENT = SNAPSHOT_OBSERVATIONS["current"]
@@ -303,6 +310,79 @@ def test_baseline_passes_shacl(graph_v0):
     """L1: 실물 baseline 이 SHACL 제약을 통과한다."""
     _, path = graph_v0
     conforms, report = validate_graph(path)
+    assert conforms, report
+
+
+# --- CR-014 면제의 경계 -----------------------------------------------------
+# 2026-08-08. `RejectedPatentContentShape` 의 공정군·가치사슬 요구를 **B층 적재 활동을 출처로
+# 가진 노드만** 면제했다(CR-014 회신 반영). 면제는 두 방향으로 조용히 깨진다 —
+# ① 서지 전체로 번진다(공개번호까지 면제되면 CR-014 로 채운 200 이 다시 없어져도 통과한다).
+# ② A층으로 샌다(출처 없는 거절특허가 두 칸 없이 통과한다).
+# 둘 다 "게이트가 통과한다"는 겉모습이 같으므로 **실패해야 할 입력으로** 고정한다.
+_NEG_PREFIXES = """@prefix ont:  <https://w3id.org/sdkb/ont/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+"""
+
+
+def _neg_graph(body: str) -> Graph:
+    return Graph().parse(data=_NEG_PREFIXES + body, format="turtle")
+
+
+def test_process_family_exemption_does_not_leak_to_a_layer():
+    """출처 표지가 없는 거절특허는 공정군 없이 **여전히 거부**되어야 한다."""
+    g = _neg_graph("""
+<https://w3id.org/sdkb/data/patent/kr_9999999999999> a ont:Patent, ont:RejectedPatent ;
+    skos:prefLabel "음성 대조군 · 출처 없음"@ko ;
+    ont:patentOffice "KR" ;
+    ont:applicationNumber "9999999999999"^^xsd:string ;
+    ont:abstractText "초록"^^xsd:string ;
+    ont:firstClaimText "제1항"^^xsd:string ;
+    ont:examinationStatus "거절결정(일반)"^^xsd:string ;
+    ont:publicationNumber "10-2019-0000001"^^xsd:string .
+""")
+    conforms, report = validate_graph(g)
+    assert not conforms, "출처 없는 거절특허가 공정군 없이 통과했다 — 면제가 A층으로 샜다"
+    assert "processFamily" in report
+
+
+def test_b_layer_exemption_does_not_cover_publication_number():
+    """면제는 두 칸에만 걸린다. B층이라도 공개번호가 없으면 **거부**되어야 한다.
+
+    CR-014 가 채운 200/200 이 나중에 조용히 사라져도 게이트가 잡아야 한다.
+    """
+    g = _neg_graph("""
+<https://w3id.org/sdkb/data/patent/kr_9999999999998> a ont:Patent, ont:RejectedPatent ;
+    skos:prefLabel "음성 대조군 · B층인데 공개번호 없음"@ko ;
+    ont:patentOffice "KR" ;
+    ont:applicationNumber "9999999999998"^^xsd:string ;
+    ont:abstractText "초록"^^xsd:string ;
+    ont:firstClaimText "제1항"^^xsd:string ;
+    ont:examinationStatus "거절결정(일반)"^^xsd:string ;
+    prov:wasGeneratedBy <https://w3id.org/sdkb/data/activity/b_layer_query_ingest> .
+""")
+    conforms, report = validate_graph(g)
+    assert not conforms, "면제가 서지 전체로 번졌다 — 공개번호 요구까지 풀렸다"
+    assert "publicationNumber" in report
+
+
+def test_b_layer_node_passes_without_process_family():
+    """반대 방향도 고정한다 — 면제가 실제로 작동해야 L1 이 다시 막히지 않는다."""
+    g = _neg_graph("""
+<https://w3id.org/sdkb/data/patent/kr_9999999999997> a ont:Patent, ont:RejectedPatent ;
+    skos:prefLabel "B층 정상 노드"@ko ;
+    ont:patentOffice "KR" ;
+    ont:applicationNumber "9999999999997"^^xsd:string ;
+    ont:abstractText "초록"^^xsd:string ;
+    ont:firstClaimText "제1항"^^xsd:string ;
+    ont:examinationStatus "거절결정(일반)"^^xsd:string ;
+    ont:publicationNumber "10-2019-0000002"^^xsd:string ;
+    ont:publicationDate "2019-07-11"^^xsd:date ;
+    ont:filingDate "2018-01-02"^^xsd:date ;
+    prov:wasGeneratedBy <https://w3id.org/sdkb/data/activity/b_layer_query_ingest> .
+""")
+    conforms, report = validate_graph(g)
     assert conforms, report
 
 

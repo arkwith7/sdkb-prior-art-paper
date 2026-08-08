@@ -14,6 +14,7 @@
 @prefix ont:     <https://w3id.org/sdkb/ont/> .
 @prefix pat:     <https://w3id.org/sdkb/data/patent/> .
 @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
@@ -52,8 +53,30 @@ pat:RejectedPatentContentShape a sh:NodeShape ;
     sh:property [ sh:path ont:firstClaimText     ; sh:minCount 1 ; sh:datatype xsd:string ] ;
     sh:property [ sh:path ont:examinationStatus  ; sh:minCount 1 ; sh:datatype xsd:string ] ;
     sh:property [ sh:path ont:publicationNumber  ; sh:minCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path ont:processFamily      ; sh:minCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path ont:valueChainStage    ; sh:minCount 1 ; sh:datatype xsd:string ] .
+    # ── 공정군·가치사슬은 **A층 코호트에만** 요구한다 (2026-08-08 · CR-014 회신 반영) ──
+    #
+    # 왜 푸는가. 이 두 값은 특허의 속성이 아니라 **A층 SIRP 코호트의 수집 출처**다 — 원천은
+    # KIPRIS 가 아니라 "어느 검색 전략(키워드 게이트+IPC)이 그 특허를 건졌는가"이고, B층 질의
+    # 200 은 다른 절차(IPC 스트림 스크리닝)로 뽑혀 그 라벨이 **존재하지 않는다**. 상류가
+    # 회신으로 그 사실을 확정했다(`abox_b_layer_queries_report.json` → `cr014_bibliographic`).
+    # **먼저 회신, 그다음 shape** 이라는 순서를 지킨 것이다 — 반대면 결과를 본 뒤 합격선을
+    # 고치는 것이 된다(CLAUDE.md §1-2·§1-3 · CR-014 §3).
+    #
+    # 왜 minCount 를 낮추지 않는가. 낮추면 **A층 1,000 에 걸린 계약까지 함께 풀린다** — 앞으로
+    # 두 칸이 빈 A층 특허가 들어와도 게이트가 잡지 못한다. 그래서 상류 CR-012 가 인용 요구에
+    # 쓴 패턴을 그대로 쓴다: **출처가 B층 적재 활동인 노드만** 면제한다. 그 출처는 상류
+    # 생성기 하나만 붙일 수 있어 손으로 얻을 수 없다.
+    #
+    # ⚠ 이 면제는 두 칸에만 걸린다. 초록·제1항·심사상태·공개번호는 B층도 **그대로 요구**받는다
+    #   (위 네 줄 · CR-014 로 200/200 충전됨). 면제가 서지 전체로 번지면 그건 게이트가 아니다.
+    sh:or (
+        [ sh:property [
+            sh:path prov:wasGeneratedBy ;
+            sh:hasValue <https://w3id.org/sdkb/data/activity/b_layer_query_ingest> ;
+        ] ]
+        [ sh:property [ sh:path ont:processFamily   ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+          sh:property [ sh:path ont:valueChainStage ; sh:minCount 1 ; sh:datatype xsd:string ] ]
+    ) .
 
 # ── 분류코드 ───────────────────────────────────────────────────────────
 # IPCSymbol 은 prefLabel 이 아니라 notation 으로 식별된다 (코드는 이름이 아니라 표기다).

@@ -15,8 +15,8 @@
 | CQ01_patents_per_process_step | 20 | `Patent` · `Process` · `SubProcess` · `realizesProcess` |
 | CQ02_recent_patents_by_step | 365 | `Patent` · `filingDate` · `realizesProcess` |
 | CQ03_uncovered_process_steps | 30 | `Patent` · `Process` · `SubProcess` · `realizesProcess` |
-| CQ04_concept_annual_series | 304 | `Device` · `Patent` · `Process` · `SubProcess` · `concernsDevice` · `filingDate` · `realizesProcess` |
-| CQ05_concept_vs_ipc_series | 1959 | `Patent` · `filingDate` · `hasIPC` |
+| CQ04_concept_annual_series | 312 | `Device` · `Patent` · `Process` · `SubProcess` · `concernsDevice` · `filingDate` · `realizesProcess` |
+| CQ05_concept_vs_ipc_series | 2339 | `Patent` · `filingDate` · `hasIPC` |
 | CQ06_concepts_without_recent_patents | 59 | `Device` · `Patent` · `Process` · `SubProcess` · `concernsDevice` · `filingDate` · `realizesProcess` |
 | CQ07_device_process_crosswalk | 55 | `Patent` · `concernsDevice` · `realizesProcess` |
 | CQ08_applicant_process_portfolio | 316 | `Patent` · `assignedTo` · `realizesProcess` |
@@ -37,9 +37,9 @@
 | CQ23_concept_export_control | 37 | — |
 | CQ24_national_core_technology | 12 | — |
 | CQ25_critical_control_concepts | 7 | — |
-| CQ26_patent_export_control_exposure | 1249 | `Patent` · `concernsDevice` · `realizesProcess` |
+| CQ26_patent_export_control_exposure | 1324 | `Patent` · `concernsDevice` · `realizesProcess` |
 | CQ27_fto_claim_readiness | 0 | — |
-| CQ28_patent_failuremode_expert | 40 | `Expert` · `Patent` · `caseFailureMode` · `exhibitsFailureMode` · `hasCaseExperience` |
+| CQ28_patent_failuremode_expert | 84 | `Expert` · `Patent` · `caseFailureMode` · `exhibitsFailureMode` · `hasCaseExperience` |
 | CQ29_claim_level_rejection_judgment | 0 | — |
 | CQ30_independent_claim_features | 0 | — |
 | CQ31_dependent_claim_hierarchy | 0 | — |
@@ -53,15 +53,15 @@
 | 술어 | 사용 | | 클래스 | 사용 |
 |---|---:|---|---|---:|
 | `hasCPC` | 10592 | | `CPCSymbol` | 4234 |
-| `abstractText` | 4438 | | `CitedPatent` | 3513 |
-| `claimText` | 2479 | | `IPCSymbol` | 3273 |
-| `applicationNumber` | 1000 | | `Organization` | 351 |
-| `examinationStatus` | 1000 | | `ExpertCase` | 163 |
-| `firstClaimText` | 1000 | | `EquipmentModel` | 29 |
-| `patentOffice` | 1000 | | `RejectionType` | 12 |
-| `processFamily` | 1000 | | `TechnologyReadinessLevel` | 9 |
-| `publicationDate` | 1000 | | `STEEPVEDimension` | 7 |
-| `publicationNumber` | 1000 | | `OptionType` | 5 |
+| `abstractText` | 4638 | | `CitedPatent` | 3513 |
+| `claimText` | 2479 | | `IPCSymbol` | 3446 |
+| `applicationNumber` | 1200 | | `Organization` | 351 |
+| `examinationStatus` | 1200 | | `ExpertCase` | 163 |
+| `firstClaimText` | 1200 | | `EquipmentModel` | 29 |
+| `patentOffice` | 1200 | | `RejectionType` | 12 |
+| `publicationDate` | 1200 | | `TechnologyReadinessLevel` | 9 |
+| `publicationNumber` | 1200 | | `STEEPVEDimension` | 7 |
+| `processFamily` | 1000 | | `OptionType` | 5 |
 | `valueChainStage` | 1000 | | `ConstraintType` | 2 |
 | `interpretationType` | 927 | | `Semiconductor` | 1 |
 | `hasCertification` | 395 | |  |  |

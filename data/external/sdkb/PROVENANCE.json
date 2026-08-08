@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "734741034eeba0fdb2bb9a5d85eb1bdaa8d38057",
-  "source_commit_date": "2026-08-08T08:56:50+09:00",
+  "source_commit": "212fe622e2d3eebc1d39d7ff67d40ca5878e8682",
+  "source_commit_date": "2026-08-08T19:41:30+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-08-08T01:04:46+00:00",
+  "vendored_at": "2026-08-08T10:41:46+00:00",
   "baseline_counts": {
     "nodes": 274,
     "edges": 312,
@@ -14,7 +14,7 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-08-08T01:04:43+00:00",
+    "checked_at": "2026-08-08T10:41:42+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -151,7 +151,7 @@
       "file": "sdkb-abox-b-layer-queries.ttl",
       "source_path": "ontology/sdkb-abox-b-layer-queries.ttl",
       "role": "ABox: B층 제2 확증분할 질의 200건 (CR-012 · 인용 간선 0) — 판독 B 의 질의 측",
-      "sha256": "ffaf56c2607391370523727ae2fc8c6c2272395e6b02af4f4df4aa6ae62cb201",
+      "sha256": "5581e9b508fcd2c1c83ee98281291c110478706c06fc5e5a0b9f44546ea1b64a",
       "license_restricted": true
     },
     {

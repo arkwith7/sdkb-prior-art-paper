@@ -588,3 +588,18 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 - qrel_examiner.parquet: 2,416 엣지 · sha256 `10ab67f21cc1328d`
 - 원천: graph_v0/v1/v2.ttl + central_axis.oxstore(sidecar 청구항 재구성) + concept_mapping.json(적용기 링크 129,126건)
 - 반영: C2 입력 · 논문 §5–6
+
+## 2026-08-08 · SDKB 스냅샷 갱신 (상류 `212fe62` · CR-014)
+- 명령: `uv run python -m sdkb_paper.ontology.vendor --sdkb-home ~/Dev/sdkb` → `make baseline`
+- 상류 커밋: `734741034eeb` → **`212fe622e2d3`** (dirty=false)
+- 바뀐 파일 **1개 / 21개**: `sdkb-abox-b-layer-queries.ttl`
+  sha256 `ffaf56c260739137…` → **`5581e9b508fcd2c1…`** (트리플 4,204 → 4,604 · +400)
+- 델타 내용: B층 질의 200 × (`ont:publicationNumber` + `ont:publicationDate`). **그것뿐이다** —
+  노드·타입·개념링크·T-Box·A층 1,000 전부 불변. `processFamily`·`valueChainStage` 는 상류에
+  원천이 없어 **채우지 않았다**(CR-014 §7.3) — 그래서 +600 이 아니라 **+400** 이다.
+- G₀ `graph_v0.ttl`: 118,808 → **119,208** 트리플 · Patent **1,200** 불변
+- 게이트: SHACL 600 → 400(충전) → **0**(shape 출처 조건부 개정 · CR-014 §8.1) ·
+  `make gate` **Accept=1** · `make leakage` PASS · 봉인 `984f8ef3…`·`127a138f…` 불변
+- 코퍼스: **재조립하지 않았다** — `ir_corpus` sha `3a5afe224ab106c5` 불변 ·
+  `is_query` 1,200 · `is_candidate` 41,031 유지. 재조립 시 후보 6건의 공개일이 채워진다(**D-33**)
+- 반영: C3 게이트 · 판독 B 개봉의 선결
