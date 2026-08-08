@@ -38,7 +38,7 @@ PAIRS = [
 ]
 
 
-def load_or_build(split: str):
+def load_or_build(split: str, *, unseal: bool = False, reason: str = ""):
     """기록된 run 을 읽고, 없으면 조립한다. 반환 (runs, qrel, fam)."""
     from ..collect.bq_family_ir import load_family_map
     from .results_table import _split_qrel
@@ -46,8 +46,8 @@ def load_or_build(split: str):
     names = [n for n, _ in STEPS]
     if all(run_path(n, split).exists() for n in names):
         return ({n: load_run(run_path(n, split)) for n in names},
-                _split_qrel(split), load_family_map())
-    runs, qrel, fam, _ = build_runs(split)
+                _split_qrel(split, unseal=unseal, reason=reason), load_family_map())
+    runs, qrel, fam, _ = build_runs(split, unseal=unseal, reason=reason)
     return {n: runs[n] for n in names}, qrel, fam
 
 
@@ -75,11 +75,13 @@ def render(split: str, r100: dict, deltas: list[dict], n_q: int) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="test")
+    ap.add_argument("--split", choices=["train", "dev", "test", "test_b", "all"], default="test")
+    ap.add_argument("--unseal", action="store_true", help="B층 봉인 개봉(원장 기록)")
+    ap.add_argument("--reason", default="", help="개봉 사유(원장에 기록)")
     ap.add_argument("--write", action="store_true")
     args = ap.parse_args()
 
-    runs, qrel, fam = load_or_build(args.split)
+    runs, qrel, fam = load_or_build(args.split, unseal=args.unseal, reason=args.reason)
     n_q = sum(1 for q, p in qrel.items() if p)
     r100 = {n: evaluate(runs[n], qrel, ks=(100,), family=fam)["recall"][100] for n, _ in STEPS}
     deltas = []

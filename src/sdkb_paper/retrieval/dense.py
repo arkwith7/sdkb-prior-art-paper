@@ -157,7 +157,8 @@ def search(
     import faiss
     import pandas as pd
 
-    run_path = run_path or RUN_B2
+    run_path = run_path or layers.run_path_for_layer(RUN_B2, layer)
+    layers.guard_run_target(run_path, layer, RUN_B2)
     run_path.parent.mkdir(parents=True, exist_ok=True)
 
     # 컬럼 중복 제거(doc_col==fallback_col 이면 pandas 가 DataFrame 을 돌려줘 반복이 깨진다).
@@ -209,8 +210,15 @@ def search(
 
 
 def main() -> None:
-    print(f"Dense B2 · {MODEL} · dim={DIM}")
-    search(k=1000)
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--layer", choices=[layers.LAYER_A, layers.LAYER_B], default=layers.LAYER_A,
+                    help="질의 층. B 는 판독 B 전용 · run 은 `_B` 접미")
+    args = ap.parse_args()
+    # 문서 임베딩은 텍스트 해시 키로 캐시에 있다 — B층 실행의 신규 유료 호출은 **질의 200건**뿐이다.
+    print(f"Dense B2 · {MODEL} · dim={DIM} · layer={args.layer}")
+    search(k=1000, layer=args.layer)
     print("✓ Dense B2 run 완료 — 평가는 `python -m sdkb_paper.analysis.metrics --run ...`")
 
 

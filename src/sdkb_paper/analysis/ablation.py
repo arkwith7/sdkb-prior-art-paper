@@ -29,7 +29,7 @@ from ..retrieval.candidate import CandidateMask
 from ..retrieval.hybrid import RUN_B3
 from ..retrieval.ontology_rerank import OntologyFeatures
 from .bootstrap import paired_bootstrap
-from .metrics import evaluate, load_qrel, load_run
+from .metrics import SPLIT_B, evaluate, load_qrel, load_qrel_for_split, load_run
 from .ontology_eval import component_cache, rerank_from_cache
 
 # (id, 설명, ablation 인자) — component_cache 를 각 구성으로 재계산(6종만)
@@ -56,23 +56,35 @@ def holm(pairs: list[tuple[str, float]], alpha: float = 0.05) -> dict[str, bool]
     return out
 
 
-def run_ablation(split: str = "dev", alpha: float = 0.5,
-                 w: tuple[float, float, float] = (0.5, 0.0, 0.5), k: int = 100) -> dict:
-    """선택된 P0★(alpha,w)에서 A1–A8 제거손실. 반환: full R@100 + 각 ablation Δ·CI."""
+def _qrel_qids_run(split: str, *, unseal: bool, reason: str):
+    """분할별 (qrel, qids, B3 run 경로). B층은 봉인이라 `unseal` 이 필요하다(PLAN-047 §13)."""
     import pandas as pd
 
-    from ..collect.bq_family_ir import load_family_map
-    fam = load_family_map()
+    from ..retrieval import layers
+
+    if split == SPLIT_B:
+        qrel = load_qrel_for_split(split, unseal=unseal, reason=reason)
+        qids = [q for q in layers.split_qids(split) if qrel.get(q)]
+        return qrel, qids, layers.run_path_for_layer(RUN_B3, layers.LAYER_B)
     qrel = load_qrel()
-    sp = pd.read_parquet(config.IR_SPLIT)
     if split != "all":
+        sp = pd.read_parquet(config.IR_SPLIT)
         keep = set(sp.loc[sp["split"] == split, "doc_id"])
         qrel = {q: pos for q, pos in qrel.items() if q in keep}
-    qids = [q for q, pos in qrel.items() if pos]
+    return qrel, [q for q, pos in qrel.items() if pos], RUN_B3
+
+
+def run_ablation(split: str = "dev", alpha: float = 0.5,
+                 w: tuple[float, float, float] = (0.5, 0.0, 0.5), k: int = 100,
+                 *, unseal: bool = False, reason: str = "") -> dict:
+    """선택된 P0★(alpha,w)에서 A1–A8 제거손실. 반환: full R@100 + 각 ablation Δ·CI."""
+    from ..collect.bq_family_ir import load_family_map
+    fam = load_family_map()
+    qrel, qids, b3_path = _qrel_qids_run(split, unseal=unseal, reason=reason)
 
     feats = OntologyFeatures()
     mask = CandidateMask()
-    b3 = load_run(RUN_B3)
+    b3 = load_run(b3_path)
 
     # full P0★ (모든 축·경로·IPC)
     cache_full = component_cache(feats, mask, b3, qids)
@@ -116,31 +128,24 @@ def _fmt(res: dict) -> str:
     return "\n".join(lines)
 
 
-def run_ablation_p1(split: str, tau: float, alpha: float, w4: tuple, k: int = 100) -> dict:
+def run_ablation_p1(split: str, tau: float, alpha: float, w4: tuple, k: int = 100,
+                    *, unseal: bool = False, reason: str = "") -> dict:
     """P1(FeatureCoverage 포함) 기저에서 A1–A8 완비(A4=−FC·A5=−GroundCompat) + Holm. H4 검정.
 
     w4=(w_c,w_h,w_i,w_f). A5(GroundCompat)는 oracle-free 주모드서 항이 0 → 구조적 Δ=0(P-5).
     """
-    import pandas as pd
-
     from ..collect.bq_family_ir import load_family_map
     from ..retrieval.candidate import CandidateMask
     from ..retrieval.feature_coverage import FeatureCoverageIndex
-    from ..retrieval.hybrid import RUN_B3
     from ..retrieval.ontology_rerank import OntologyFeatures
     from .ontology_eval import TAUS, component_cache_p1, rerank_p1
     fam = load_family_map()
-    qrel = load_qrel()
-    if split != "all":
-        sp = pd.read_parquet(config.IR_SPLIT)
-        keep = set(sp.loc[sp["split"] == split, "doc_id"])
-        qrel = {q: pos for q, pos in qrel.items() if q in keep}
-    qids = [q for q, pos in qrel.items() if pos]
+    qrel, qids, b3_path = _qrel_qids_run(split, unseal=unseal, reason=reason)
     ti = list(TAUS).index(tau)
 
     feats = OntologyFeatures()
     mask = CandidateMask()
-    b3 = load_run(RUN_B3)
+    b3 = load_run(b3_path)
     # FC 인덱스: 풀 후보 + 질의만 적재(메모리 절약)
     pool_docs = set(qids)
     for qid in qids:
@@ -187,7 +192,7 @@ def run_ablation_p1(split: str, tau: float, alpha: float, w4: tuple, k: int = 10
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
+    ap.add_argument("--split", choices=["train", "dev", "test", SPLIT_B, "all"], default="dev")
     ap.add_argument("--p1", action="store_true", help="P1(FeatureCoverage) 기저 A1–A8(H4)")
     ap.add_argument("--tau", type=float, help="P1 선택 τ")
     ap.add_argument("--alpha", type=float, required=True, help="선택된 α")
@@ -195,13 +200,17 @@ def main() -> None:
                     metavar="W", help="P0★=Wc Wh Wi · P1=Wc Wh Wi Wf")
     ap.add_argument("--k", type=int, default=100)
     ap.add_argument("--write", action="store_true", help="§6.4 ablation 표·그림 입력 CSV 기록")
+    ap.add_argument("--unseal", action="store_true", help="B층 봉인 개봉(원장 기록)")
+    ap.add_argument("--reason", default="", help="개봉 사유(원장에 기록)")
     args = ap.parse_args()
     if args.split == "test":
         print("⚠️  test 개봉 — 사전등록 위반 가능(F9)")
     if args.p1:
-        res = run_ablation_p1(args.split, args.tau, args.alpha, tuple(args.w), args.k)
+        res = run_ablation_p1(args.split, args.tau, args.alpha, tuple(args.w), args.k,
+                              unseal=args.unseal, reason=args.reason)
     else:
-        res = run_ablation(args.split, args.alpha, tuple(args.w), args.k)
+        res = run_ablation(args.split, args.alpha, tuple(args.w), args.k,
+                           unseal=args.unseal, reason=args.reason)
     print(_fmt(res))
     if args.write:
         import pandas as pd

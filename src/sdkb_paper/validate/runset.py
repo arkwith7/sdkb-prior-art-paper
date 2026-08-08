@@ -89,7 +89,11 @@ def pipeline_signature() -> dict:
 def qrel_signature() -> dict:
     """봉인 qrel 해시 — 두 run 세트가 **같은 정답지**를 봤는지 확인하는 재료."""
     out: dict[str, str | None] = {}
-    for key, attr in (("examiner", "QREL_EXAMINER"), ("test_sealed", "IR_QREL_TEST_SEALED")):
+    for key, attr in (("examiner", "QREL_EXAMINER"),
+                      ("test_sealed", "IR_QREL_TEST_SEALED"),
+                      # B층 봉인은 **열지 않고 해시만** 잰다 — 두 run 세트가 같은 정답지를
+                      # 겨냥했는지는 바이트로 확인되고, 그것으로 충분하다(PLAN-047 §13.4).
+                      ("b_sealed", "B_QREL_SEALED")):
         path = Path(getattr(config, attr))
         out[key] = sha256_file(path) if path.exists() else None
     return out
@@ -337,7 +341,8 @@ def format_eligibility(res: dict) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--freeze", metavar="LABEL", help="현 run 세트를 이 라벨로 동결")
-    ap.add_argument("--split", default="test", choices=["train", "dev", "test", "all"])
+    ap.add_argument("--split", default="test",
+                    choices=["train", "dev", "test", "test_b", "all"])
     ap.add_argument("--note", default=None, help="매니페스트에 남길 메모(예: CR-007 적용 전)")
     ap.add_argument("--list", action="store_true", help="동결된 run 세트 목록")
     args = ap.parse_args()

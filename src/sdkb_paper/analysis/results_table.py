@@ -22,7 +22,14 @@ from pathlib import Path
 
 from .. import config
 from ..retrieval import systems as S
-from .metrics import NDCG_K, evaluate, load_qrel, load_run
+from .metrics import (
+    NDCG_K,
+    SPLIT_B,
+    evaluate,
+    load_qrel,
+    load_qrel_for_split,
+    load_run,
+)
 
 # 표에 실을 시스템 (원고 §4.6 비교 시스템 표기 → 코드 라벨)
 SYSTEM_LABELS: list[tuple[str, str]] = [
@@ -39,9 +46,12 @@ P1_TAU, P1_ALPHA, P1_W4 = 0.7, 0.75, (0.25, 0.0, 0.25, 0.5)
 KS = (50, 100, 500)
 
 
-def _split_qrel(split: str) -> dict[str, set[str]]:
+def _split_qrel(split: str, *, unseal: bool = False, reason: str = "") -> dict[str, set[str]]:
+    """분할별 정답지. `test_b` 는 **봉인**이라 `unseal=True` 없이는 열리지 않는다(§13.3)."""
     import pandas as pd
 
+    if split == SPLIT_B:
+        return load_qrel_for_split(split, unseal=unseal, reason=reason)
     qrel = load_qrel()
     if split == "all":
         return qrel
@@ -64,9 +74,16 @@ def run_path(name: str, split: str) -> Path:
     return config.IR_RUNS_DIR / f"sys_{name}_{split}.txt"
 
 
-def build_runs(split: str, write: bool = True) -> tuple[dict, dict, dict, list[str]]:
-    """전 시스템 run 을 같은 조건으로 조립. 반환 (runs, qrel, family_map, qids)."""
+def build_runs(split: str, write: bool = True, *, unseal: bool = False,
+               reason: str = "", runs_only: bool = False) -> tuple[dict, dict, dict, list[str]]:
+    """전 시스템 run 을 같은 조건으로 조립. 반환 (runs, qrel, family_map, qids).
+
+    **B층(`test_b`)에서는 qid 를 분할 표에서 뽑고 qrel 을 읽지 않는다**(PLAN-047 §13.1) —
+    그래야 "run 을 먼저 만들고 봉인을 연다"(G7)가 성립한다. `unseal=False` 면 qrel 은
+    빈 사전으로 두고 run 만 만든다. 그 밖의 분할은 **현행 그대로**(qrel 기반)다.
+    """
     from ..collect.bq_family_ir import load_family_map
+    from ..retrieval import layers
     from ..retrieval.bm25 import RUN_B0
     from ..retrieval.candidate import CandidateMask
     from ..retrieval.dense import RUN_B2
@@ -83,8 +100,20 @@ def build_runs(split: str, write: bool = True) -> tuple[dict, dict, dict, list[s
     )
 
     fam = load_family_map()
-    qrel = _split_qrel(split)
-    qids = [q for q, p in qrel.items() if p]
+    if split == SPLIT_B:
+        # qid 원천 = 분할 표(봉인 미열람). qrel 은 개봉이 허가된 경우에만 적재한다.
+        qids = layers.split_qids(split)
+        # 개봉 없이 **평가**하려는 시도는 여기서 막힌다 — `_split_qrel` 이 봉인 통로를 타고
+        # 거부한다. run 만 만드는 경로(`runs_only`)에서만 정답지 없이 통과한다.
+        qrel = {} if runs_only else _split_qrel(split, unseal=unseal, reason=reason)
+        layer = layers.LAYER_B
+    else:
+        qrel = _split_qrel(split)
+        qids = [q for q, p in qrel.items() if p]
+        layer = layers.LAYER_A
+    RUN_B0 = layers.run_path_for_layer(RUN_B0, layer)
+    RUN_B2 = layers.run_path_for_layer(RUN_B2, layer)
+    RUN_B3 = layers.run_path_for_layer(RUN_B3, layer)
     mask = CandidateMask()
 
     def masked(path: Path) -> dict[str, list[str]]:
@@ -277,16 +306,29 @@ def render(split: str, rows: dict, boot: dict, n_q: int, n_qrel: int,
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
+    ap.add_argument("--split", choices=["train", "dev", "test", SPLIT_B, "all"], default="dev")
     ap.add_argument("--latency", action="store_true", help="단계별 지연 측정(JVM 필요)")
     ap.add_argument("--write", action="store_true", help="paper/tables/ 에 표 기록")
+    ap.add_argument("--runs-only", action="store_true",
+                    help="run 만 만들고 평가하지 않는다(판독 B 의 개봉 전 단계 · G7)")
+    ap.add_argument("--unseal", action="store_true",
+                    help="B층 봉인 개봉(PLAN-047 동결 커밋 이후 1회) — 원장에 기록된다")
+    ap.add_argument("--reason", default="", help="개봉 사유(원장에 기록)")
     args = ap.parse_args()
     if args.split == "test":
         print("⚠️  test 분할 — 봉인 개봉(최종 비교 후 재평가만 허용 · 재선택 금지)")
 
     from .bootstrap import paired_bootstrap
 
-    runs, qrel, fam, qids = build_runs(args.split)
+    if args.runs_only:
+        # 개봉 전 단계: run 만 만든다. 봉인은 열지 않는다(§8 (2) · G7 증거).
+        runs, _qrel, _fam, qids = build_runs(args.split, unseal=False, runs_only=True)
+        for name, _ in SYSTEM_LABELS:
+            print(f"  {name:<12} {len(runs[name])} 질의 → {run_path(name, args.split)}")
+        print(f"✓ run 산출 완료 (질의 {len(qids)}건) — 평가하지 않았다(봉인 미열람)")
+        return
+
+    runs, qrel, fam, qids = build_runs(args.split, unseal=args.unseal, reason=args.reason)
     rows = {name: metric_row(runs[name], qrel, fam) for name, _ in SYSTEM_LABELS}
     boot = {
         name: {m: paired_bootstrap(runs[name], runs["B3_rrf"], qrel, k=100, family=fam, metric=m)

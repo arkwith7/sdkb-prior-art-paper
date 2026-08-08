@@ -155,7 +155,7 @@ def format_report(res: dict) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
+    ap.add_argument("--split", choices=["train", "dev", "test", "test_b", "all"], default="dev")
     ap.add_argument("--mode", choices=["system", "resource"], default="system",
                     help="system=시스템 대 시스템(기본) · resource=O 대 O′(H2 는 이쪽만)")
     ap.add_argument("--old-runset", default=None, help="resource 모드의 구 자원 run 세트 라벨")
@@ -171,6 +171,15 @@ def main() -> None:
     ap.add_argument("--skip-leakage", action="store_true", help="누출 감사 생략(진단 전용)")
     ap.add_argument("--out", type=Path, default=None, help="판정 JSON 경로")
     args = ap.parse_args()
+    if args.split == "test_b":
+        # T2 하위집단 판정은 A층 전용이다(PLAN-045 D5 · PLAN-047 §13.4). B층에는 공정군·
+        # 거절근거 라벨의 원천이 없고, 그 상태로 δ 를 적용하면 사전등록이 정한 것과 **다른
+        # 표본으로 같은 이름의 판정**을 내게 된다. 선택지로 받아 두고 **여기서 거부**하는
+        # 이유는, 조용히 빠지는 것보다 시끄럽게 막히는 편이 안전하기 때문이다.
+        raise SystemExit(
+            "[t-gate] split=test_b 는 T-gate 대상이 아니다 — T1·T2 는 A층 판정 전용이다"
+            "(PLAN-047 §13.4). 판독 B 는 results_table/ablation 으로 판정한다."
+        )
 
     res = run_tgate(args.split, args.new, args.old, args.graph, args.baseline,
                     l0_l3=(args.l0_l3 == "pass"), k=args.k, skip_leakage=args.skip_leakage,

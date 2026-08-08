@@ -274,7 +274,9 @@ def format_report(res: dict) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
+    # test_b: 판독 B 의 run 도 같은 감사를 받는다 — qrel 은 읽지 않으므로 개봉과 무관하다
+    # (L-4 는 봉인 파일의 **해시만** 본다 · PLAN-047 §5 G3).
+    ap.add_argument("--split", choices=["train", "dev", "test", "test_b", "all"], default="dev")
     ap.add_argument("--k", type=int, default=100)
     args = ap.parse_args()
     res = run_audit(args.split, args.k)

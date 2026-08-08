@@ -172,7 +172,13 @@ B_ACCEPTED = B_LAYER_DIR / "accepted.parquet"          # claim1 원문 포함 �
 # 내용(콜 회계·r·사유 분포)은 프로파일과 MANIFEST 로 전사해 커밋한다.
 B_BUDGET_REPORT = B_LAYER_DIR / "call_budget.json"
 # 봉인 qrel. 파일럿 단계에서 **어떤 코드도 읽지 않는다**(PLAN-032 §1 성공기준 ⑤).
+# **개봉 이후에도 아무나 읽지 않는다** — 이 파일을 여는 유일한 통로는
+# `validate.seal_audit.open_sealed()` 이고 기본은 거부다(PLAN-047 §13.3).
 B_QREL_SEALED = IR_DIR / "qrel_b_sealed.parquet"
+# 봉인 열람 원장(추가전용). 여기 0행이면 "봉인을 열지 않았다"가 증명된다 — PLAN-047 G7 의
+# 증거다. 집계·해시뿐이라 커밋 가능하나 data/processed 아래라 실제로는 gitignore 이며,
+# 내용은 계획 문서에 전사한다(B_BUDGET_REPORT 와 같은 규율).
+SEAL_ACCESS_LOG = IR_DIR / "seal_access.jsonl"
 B_LAYER_PROFILE = DATA / "profiles" / "ir_split_b_pilot.md"   # §4 데이터 프로파일(커밋)
 # KR 출원번호 → DOCDB family 지도. BigQuery 스캔은 **쿼리당 5.22 GB 고정**이고 파라미터
 # 개수와 무관하다(2026-08-01 dry-run 실측) — 후보 1건마다 조회하면 같은 5.22 GB 를 수백 번

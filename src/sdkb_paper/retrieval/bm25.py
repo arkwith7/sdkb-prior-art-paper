@@ -102,12 +102,17 @@ def search(
     exclude_self: 질의 특허 자신(코퍼스 내 g0_rej 노드)을 결과에서 제외(자기 선행기술 아님).
     """
     import pandas as pd
+
+    # JVM 부팅 전 JAVA_HOME 확정(PLAN-018 E1). 색인 단계를 건너뛰고 검색만 할 때
+    # (`--search-only`) `build_index()` 를 지나지 않으므로 여기서도 불러야 한다.
+    config.java_home()
     from pyserini.pyclass import autoclass
     from pyserini.search.lucene import LuceneSearcher
 
     from .tokenize import pretokenize
 
-    run_path = run_path or RUN_B0
+    run_path = run_path or layers.run_path_for_layer(RUN_B0, layer)
+    layers.guard_run_target(run_path, layer, RUN_B0)
     run_path.parent.mkdir(parents=True, exist_ok=True)
 
     df = pd.read_parquet(
@@ -144,14 +149,24 @@ def search(
 
 
 def main() -> None:
-    print("① 사전토큰화(text_main) …")
-    n = pretokenize_corpus()
-    print(f"   문서 {n:,}건 → {PRETOK_DIR}/docs.jsonl")
-    print("② 색인(-pretokenized) …")
-    build_index()
-    print(f"   색인 → {BM25_INDEX_DIR}")
-    print("③ 검색(B0 · 질의=독립항, k=1000) …")
-    search(k=1000)   # Recall@{50,100,500,1000} 를 지지할 run 깊이
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--layer", choices=[layers.LAYER_A, layers.LAYER_B], default=layers.LAYER_A,
+                    help="질의 층. B 는 판독 B 전용이며 run 은 `_B` 접미로 따로 쓴다")
+    ap.add_argument("--search-only", action="store_true",
+                    help="색인 재사용(색인은 후보 문서만 담아 층과 무관 · PLAN-047 §12.0-3)")
+    args = ap.parse_args()
+
+    if not args.search_only:
+        print("① 사전토큰화(text_main) …")
+        n = pretokenize_corpus()
+        print(f"   문서 {n:,}건 → {PRETOK_DIR}/docs.jsonl")
+        print("② 색인(-pretokenized) …")
+        build_index()
+        print(f"   색인 → {BM25_INDEX_DIR}")
+    print(f"③ 검색(B0 · 질의=독립항, k=1000 · layer={args.layer}) …")
+    search(k=1000, layer=args.layer)   # Recall@{50,100,500,1000} 를 지지할 run 깊이
     print("✓ BM25 B0 run 완료 — 평가는 `python -m sdkb_paper.analysis.metrics`")
 
 

@@ -44,6 +44,36 @@ def load_qrel(path: Path | None = None) -> dict[str, set[str]]:
     return qrel
 
 
+# --- 분할별 정답지 (PLAN-047 §13.3) -------------------------------------------
+SPLIT_B = "test_b"
+
+
+def qrel_path_for_split(split: str) -> Path:
+    """분할 → qrel 경로. `test_b` 만 **B층 봉인**을 가리킨다."""
+    return Path(config.B_QREL_SEALED) if split == SPLIT_B else Path(config.QREL_EXAMINER)
+
+
+def load_qrel_for_split(split: str, *, unseal: bool = False, reason: str = "") -> dict[str, set[str]]:
+    """분할에 맞는 qrel 을 적재한다. **봉인 분할은 `unseal=True` 없이는 열리지 않는다.**
+
+    봉인 경로가 소비자에게 도달하는 통로는 이 함수 하나이며, 그 안에서 반드시
+    `validate.seal_audit.open_sealed()` 를 지난다(PLAN-047 §13.3 · G7).
+    """
+    path = qrel_path_for_split(split)
+    if split == SPLIT_B:
+        from ..validate.seal_audit import open_sealed
+
+        path = open_sealed(path, reason=reason or f"판독 B 평가(split={split})", allow=unseal)
+    qrel = load_qrel(path)
+    if split in ("all", None):
+        return qrel
+    import pandas as pd
+
+    sp = pd.read_parquet(config.IR_SPLIT, columns=["doc_id", "split"])
+    keep = set(sp.loc[sp["split"] == split, "doc_id"].astype(str))
+    return {q: pos for q, pos in qrel.items() if q in keep}
+
+
 def _fold(ranked: list[str], fam: dict[str, str]) -> list[str]:
     """문서 순위 → family 순위. 각 family 의 **첫 등장**만 남긴다(fold-then-cut).
 
@@ -174,21 +204,28 @@ def main() -> None:
     ap.add_argument("--k", type=int, nargs="+", default=[50, 100, 500])
     ap.add_argument("--family", action="store_true",
                     help="family 수준(F1 주지표)으로 평가 — ir_family_map 필요")
-    ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="all",
-                    help="평가할 시점 분할(F9). 기본 all. test 는 최종 비교 전 봉인 — 명시해야 열림")
+    ap.add_argument("--split", choices=["train", "dev", "test", SPLIT_B, "all"], default="all",
+                    help="평가할 시점 분할(F9). 기본 all. test 는 최종 비교 전 봉인 — 명시해야 열림. "
+                         "test_b 는 B층 확증분할이며 --unseal 없이는 열리지 않는다")
+    ap.add_argument("--unseal", action="store_true",
+                    help="B층 봉인 개봉(PLAN-047 동결 커밋 이후 1회) — 원장에 기록된다")
+    ap.add_argument("--reason", default="", help="개봉 사유(원장에 기록)")
     args = ap.parse_args()
 
     from ..retrieval.bm25 import RUN_B0
 
     run = load_run(args.run or RUN_B0)
-    qrel = load_qrel(args.qrel)
-    if args.split != "all":
-        import pandas as pd
-        sp = pd.read_parquet(config.IR_SPLIT)
-        keep = set(sp.loc[sp["split"] == args.split, "doc_id"])
-        qrel = {q: pos for q, pos in qrel.items() if q in keep}
-        if args.split == "test":
-            print("⚠️  test 분할 평가 — 봉인 해제(최종 비교 전이면 사전등록 위반)")
+    if args.qrel is not None:
+        qrel = load_qrel(args.qrel)
+        if args.split != "all":
+            import pandas as pd
+            sp = pd.read_parquet(config.IR_SPLIT)
+            keep = set(sp.loc[sp["split"] == args.split, "doc_id"])
+            qrel = {q: pos for q, pos in qrel.items() if q in keep}
+    else:
+        qrel = load_qrel_for_split(args.split, unseal=args.unseal, reason=args.reason)
+    if args.split == "test":
+        print("⚠️  test 분할 평가 — 봉인 해제(최종 비교 전이면 사전등록 위반)")
     fam = None
     if args.family:
         from ..collect.bq_family_ir import load_family_map

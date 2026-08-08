@@ -48,16 +48,28 @@ def write_run(fused: dict[str, list[str]], run_path: Path, tag: str = "hybrid_b3
 
 
 def main() -> None:
+    import argparse
+
+    from . import layers
     from .bm25 import RUN_B0
     from .dense import RUN_B2
 
-    for p in (RUN_B0, RUN_B2):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--layer", choices=[layers.LAYER_A, layers.LAYER_B], default=layers.LAYER_A,
+                    help="질의 층. B 는 판독 B 전용 · run 은 `_B` 접미")
+    args = ap.parse_args()
+
+    b0 = layers.run_path_for_layer(RUN_B0, args.layer)
+    b2 = layers.run_path_for_layer(RUN_B2, args.layer)
+    out = layers.run_path_for_layer(RUN_B3, args.layer)
+    layers.guard_run_target(out, args.layer, RUN_B3)
+    for p in (b0, b2):
         if not Path(p).exists():
-            raise SystemExit(f"[hybrid] 입력 run 없음: {p} — 먼저 B0·B2 생성")
-    runs = [load_run(RUN_B0), load_run(RUN_B2)]
+            raise SystemExit(f"[hybrid] 입력 run 없음: {p} — 먼저 B0·B2 생성(layer={args.layer})")
+    runs = [load_run(b0), load_run(b2)]
     fused = rrf(runs, k=1000)
-    write_run(fused, RUN_B3)
-    print(f"✓ Hybrid B3(RRF c={RRF_C}) run → {RUN_B3}  ({len(fused)} 질의)")
+    write_run(fused, out)
+    print(f"✓ Hybrid B3(RRF c={RRF_C}) run → {out}  ({len(fused)} 질의)")
 
 
 if __name__ == "__main__":

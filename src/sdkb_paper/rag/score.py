@@ -184,21 +184,27 @@ def load_jsonl(path: Path) -> tuple[dict, list[dict]]:
     return header, recs
 
 
-def score_all(gen_dir: Path | None = None) -> dict:
+def score_all(gen_dir: Path | None = None, *, split: str = frozen.SPLIT,
+              runset: str | None = None, status: str | None = None,
+              unseal: bool = False, reason: str = "") -> dict:
     """생성 JSONL 전량 → 결정적 채점 보고. 시각·경로 절대값을 넣지 않는다."""
     import pandas as pd
 
-    from ..analysis.metrics import load_qrel
+    from ..analysis.metrics import load_qrel, load_qrel_for_split
 
     gen_dir = gen_dir or config.RAG_GEN_DIR
-    qrel = load_qrel(config.IR_QREL_TEST_SEALED)
+    if split == frozen.SPLIT_B:
+        qrel = load_qrel_for_split(split, unseal=unseal, reason=reason or "C2′ 판독 B 채점")
+    else:
+        qrel = load_qrel(config.IR_QREL_TEST_SEALED)
     corpus = pd.read_parquet(config.IR_CORPUS, columns=["doc_id", "text_main"])
     doc_text = {str(d): ("" if t is None else str(t)) for d, t in zip(corpus["doc_id"], corpus["text_main"])}
 
-    report: dict = {"frozen": frozen.frozen_manifest(), "arms": {}, "inputs": {}}
+    report: dict = {"frozen": frozen.frozen_manifest(runset=runset, split=split, status=status),
+                    "arms": {}, "inputs": {}}
     for arm in frozen.ARMS:
         per_rep = []
-        for path in sorted(gen_dir.glob(f"gen_*_{arm}_rep*.jsonl")):
+        for path in sorted(gen_dir.glob(f"gen_*_{split}_{arm}_rep*.jsonl")):
             header, recs = load_jsonl(path)
             scored = [score_one(r, qrel.get(r.get("qid", ""), set()), doc_text) for r in recs]
             agg = aggregate(scored)
@@ -212,10 +218,15 @@ def score_all(gen_dir: Path | None = None) -> dict:
 
 def to_markdown(report: dict) -> str:
     """원고 §6.8 탐색적 표. **A층은 확증이 아니다** — 표 머리에 그 사실을 박는다."""
+    fr = report.get("frozen") or frozen.frozen_manifest()
+    is_b = fr.get("split") == frozen.SPLIT_B
     lines = [
-        "# C2′ 전달 실험 — A층 탐색적 판독 (PLAN-038 §12 · RQ5)",
+        ("# C2′ 전달 실험 — B층 확증 판독 (PLAN-047 §4 · RQ5)" if is_b else
+         "# C2′ 전달 실험 — A층 탐색적 판독 (PLAN-038 §12 · RQ5)"),
         "",
-        "**확증이 아니다.** A층의 목적은 계측기 동결이며(§7 결정 \"다\"), 확증은 B층에서 한다.",
+        ("**확증이다.** 판정식·마진은 PLAN-047 §4 에서 결과를 보기 전에 동결했다 "
+         "(ε_T4=0.02 · η=0.01)." if is_b else
+         "**확증이 아니다.** A층의 목적은 계측기 동결이며(§7 결정 \"다\"), 확증은 B층에서 한다."),
         f"모델 `{frozen.MODEL_ID}` · K={frozen.K} · 온도 {frozen.TEMPERATURE} · "
         f"반복 {frozen.N_REPEATS}회 · 프롬프트 sha256 `{frozen.PROMPT_SHA256[:16]}…`",
         "",
@@ -249,9 +260,16 @@ def to_markdown(report: dict) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description="C2′ 전달 실험 — 결정적 채점 (PLAN-038 §12.1-9)")
     ap.add_argument("--write", action="store_true", help="JSON·표를 파일로 쓴다")
+    ap.add_argument("--split", choices=[frozen.SPLIT, frozen.SPLIT_B], default=frozen.SPLIT)
+    ap.add_argument("--unseal", action="store_true", help="B층 봉인 개봉(원장 기록)")
+    ap.add_argument("--reason", default="", help="개봉 사유(원장에 기록)")
     a = ap.parse_args()
+    is_b = a.split == frozen.SPLIT_B
 
-    report = score_all()
+    report = score_all(split=a.split,
+                       runset=frozen.RUNSET_B if is_b else frozen.RUNSET,
+                       status=frozen.STATUS_B if is_b else frozen.STATUS,
+                       unseal=a.unseal, reason=a.reason)
     if not report["inputs"]:
         print(f"[없음] 생성 산출물이 없다: {config.RAG_GEN_DIR} — 먼저 `make rag` 를 돌린다.")
         return 1
@@ -259,10 +277,14 @@ def main() -> int:
     print(to_markdown(report))
     if a.write:
         config.RAG_SCORE_DIR.mkdir(parents=True, exist_ok=True)
-        (config.RAG_SCORE_DIR / "rag_transfer_score.json").write_text(text + "\n", encoding="utf-8")
-        config.RAG_TABLE.parent.mkdir(parents=True, exist_ok=True)
-        config.RAG_TABLE.write_text(to_markdown(report), encoding="utf-8")
-        print(f"[기록] {config.RAG_TABLE.relative_to(config.ROOT)}")
+        # A층 산출물 이름은 바꾸지 않는다(§13.0-1) — B층만 접미를 붙인다.
+        score_json = config.RAG_SCORE_DIR / (
+            "rag_transfer_score_test_b.json" if is_b else "rag_transfer_score.json")
+        score_json.write_text(text + "\n", encoding="utf-8")
+        table = (config.TABLES / "rag_transfer_test_b.md") if is_b else config.RAG_TABLE
+        table.parent.mkdir(parents=True, exist_ok=True)
+        table.write_text(to_markdown(report), encoding="utf-8")
+        print(f"[기록] {table.relative_to(config.ROOT)}")
     return 0
 
 

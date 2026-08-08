@@ -43,8 +43,9 @@ def _client():
     return _CLIENT
 
 
-def gen_path(arm: str, rep: int) -> Path:
-    return config.RAG_GEN_DIR / f"gen_{frozen.RUNSET}_{frozen.SPLIT}_{arm}_rep{rep}.jsonl"
+def gen_path(arm: str, rep: int, runset: str = frozen.RUNSET,
+             split: str = frozen.SPLIT) -> Path:
+    return config.RAG_GEN_DIR / f"gen_{runset}_{split}_{arm}_rep{rep}.jsonl"
 
 
 def call_once(qc: ctx.QueryContext) -> dict:
@@ -82,14 +83,18 @@ def call_once(qc: ctx.QueryContext) -> dict:
     return {"ok": False, "error": last_err, "attempts": 6}
 
 
-def run(execute: bool, limit: int, repeats: int) -> int:
-    doc_text, q_text = ctx.load_texts()
+def run(execute: bool, limit: int, repeats: int, *, split: str = frozen.SPLIT,
+        runset: str = frozen.RUNSET, layer: str = "A", status: str = frozen.STATUS,
+        unseal: bool = False, reason: str = "") -> int:
+    doc_text, q_text = ctx.load_texts(layer)
     mask = CandidateMask()
-    qids = ctx.test_qids()
+    qids = ctx.test_qids(split, unseal=unseal, reason=reason)
     if limit:
         qids = qids[:limit]
 
-    contexts = {arm: ctx.build_arm_contexts(arm, doc_text, q_text, mask, qids) for arm in frozen.ARMS}
+    contexts = {arm: ctx.build_arm_contexts(arm, doc_text, q_text, mask, qids,
+                                            split=split, runset=runset)
+                for arm in frozen.ARMS}
     n_masked = {arm: sum(c.n_masked for c in contexts[arm].values()) for arm in frozen.ARMS}
     chars = {
         arm: sum(len(c.query_claims) + len(c.docs_block()) for c in contexts[arm].values())
@@ -97,10 +102,11 @@ def run(execute: bool, limit: int, repeats: int) -> int:
     }
     n_calls = len(qids) * len(frozen.ARMS) * repeats
 
-    print(f"[동결] {json.dumps(frozen.frozen_manifest(), ensure_ascii=False)}")
+    manifest = frozen.frozen_manifest(runset=runset, split=split, status=status)
+    print(f"[동결] {json.dumps(manifest, ensure_ascii=False)}")
     for arm in frozen.ARMS:
         print(
-            f"[팔 {arm}] run sha256={ctx.run_sha256(arm)[:16]}… · 질의 {len(qids)} · "
+            f"[팔 {arm}] run sha256={ctx.run_sha256(arm, split, runset)[:16]}… · 질의 {len(qids)} · "
             f"마스크 제외 {n_masked[arm]}건 · 입력 {chars[arm]:,}자"
         )
     print(f"[규모] 호출 {n_calls}건 · 입력 합계 {sum(chars.values()) * repeats:,}자 "
@@ -114,10 +120,10 @@ def run(execute: bool, limit: int, repeats: int) -> int:
     n_fail = 0
     for rep in range(repeats):
         for arm in frozen.ARMS:
-            out = gen_path(arm, rep)
+            out = gen_path(arm, rep, runset, split)
             with out.open("w", encoding="utf-8") as f:
                 header = {"_header": True, "arm": arm, "rep": rep, "n_queries": len(qids),
-                          "run_sha256": ctx.run_sha256(arm), **frozen.frozen_manifest()}
+                          "run_sha256": ctx.run_sha256(arm, split, runset), **manifest}
                 f.write(json.dumps(header, ensure_ascii=False, sort_keys=True) + "\n")
                 for qid in qids:
                     qc = contexts[arm][qid]
@@ -137,11 +143,21 @@ def main() -> int:
     ap.add_argument("--execute", action="store_true", help="실제 호출(과금). 없으면 dry-run")
     ap.add_argument("--limit", type=int, default=0, help="스모크: 앞 N질의만")
     ap.add_argument("--repeats", type=int, default=frozen.N_REPEATS, help="반복 회차(동결값 3)")
+    # 판독 B (PLAN-047 §13.5) — 계측기는 그대로, 읽는 대상만 바꾼다.
+    ap.add_argument("--split", choices=[frozen.SPLIT, frozen.SPLIT_B], default=frozen.SPLIT)
+    ap.add_argument("--runset", default=None, help="동결 run 세트 라벨(기본은 층에 맞춰 자동)")
+    ap.add_argument("--unseal", action="store_true", help="B층 봉인 개봉(원장 기록)")
+    ap.add_argument("--reason", default="", help="개봉 사유(원장에 기록)")
     a = ap.parse_args()
+    is_b = a.split == frozen.SPLIT_B
+    runset = a.runset or (frozen.RUNSET_B if is_b else frozen.RUNSET)
+    layer = "B" if is_b else "A"
+    status = frozen.STATUS_B if is_b else frozen.STATUS
     if a.repeats != frozen.N_REPEATS:
         print(f"[주의] 반복이 동결값({frozen.N_REPEATS})과 다르다 — 스모크 전용이며 "
               f"이 산출물은 §6.8 표에 싣지 않는다.")
-    return run(a.execute, a.limit, a.repeats)
+    return run(a.execute, a.limit, a.repeats, split=a.split, runset=runset, layer=layer,
+               status=status, unseal=a.unseal, reason=a.reason)
 
 
 if __name__ == "__main__":

@@ -84,8 +84,14 @@ PROMPT_SHA256 = hashlib.sha256(
 ).hexdigest()
 
 
-def frozen_manifest() -> dict:
-    """동결값 전량을 한 dict 로 — 생성 산출물의 머리글과 채점 산출물에 그대로 박힌다."""
+def frozen_manifest(runset: str | None = None, split: str | None = None,
+                    status: str | None = None) -> dict:
+    """동결값 전량을 한 dict 로 — 생성 산출물의 머리글과 채점 산출물에 그대로 박힌다.
+
+    **계측기 상수는 인자로 받지 않는다**(모델·프롬프트·K·온도·max_tokens·회차·팔·고장 임계).
+    받는 셋은 *무엇을 읽고 어떤 지위로 싣는가*이며 계측기가 아니다 — 판독 B 는 같은 계측기로
+    다른 분할을 읽는다(PLAN-047 §13.5).
+    """
     return {
         "model_id": MODEL_ID,
         "call_region": CALL_REGION,
@@ -94,9 +100,15 @@ def frozen_manifest() -> dict:
         "n_repeats": N_REPEATS,
         "max_tokens": MAX_TOKENS,
         "arms": list(ARMS),
-        "runset": RUNSET,
-        "split": SPLIT,
-        "status": STATUS,
+        "runset": runset or RUNSET,
+        "split": split or SPLIT,
+        "status": status or STATUS,
         "prompt_sha256": PROMPT_SHA256,
         "plan": "PLAN-038 §12",
     }
+
+
+# ── 판독 B (PLAN-047 §13.5) — 계측기는 그대로, 읽는 대상만 다르다 ──────────────
+SPLIT_B = "test_b"
+RUNSET_B = "B_layer_readout"
+STATUS_B = "confirmatory"

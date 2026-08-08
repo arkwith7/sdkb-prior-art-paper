@@ -26,9 +26,13 @@ from pathlib import Path
 
 from .. import config
 from .bootstrap import per_query_recall
-from .metrics import load_qrel, load_run
+from .metrics import SPLIT_B, load_qrel, load_qrel_for_split, load_run
 
 MIN_N = 20   # 하위집단 최소 질의수(미달 = 확정결론 금지)
+# B층 질의에는 공정군·거절근거 라벨의 **원천이 없다**(PLAN-047 §12.3). A층 공정군은 파생값이
+# 아니라 SIRP 코호트의 수집 출처이고, 거절근거 CSV 도 A층 산출이다. IPC 로 추정해 채우면
+# 빌드는 성공하고 하위집단 분석만 거짓이 된다 — 그래서 없는 것은 없다고 적는다.
+NO_LABEL = "라벨없음"
 
 
 def positive_lang_label(pos_docs: set[str], doc_lang: dict[str, str]) -> str:
@@ -81,6 +85,7 @@ def query_labels(qrel: dict[str, set[str]], split: str | None = None) -> dict[st
     q_a = layers.queries_of(df, layers.LAYER_A)
     qconcepts = {str(d): (list(c) if c is not None else [])
                  for d, c in zip(q_a["doc_id"], q_a["concepts"])}
+    a_layer_qids = set(qconcepts)
 
     def proc_group(qid: str) -> str:
         axes = [axis.get(c, "") for c in qconcepts.get(qid, [])]
@@ -102,9 +107,12 @@ def query_labels(qrel: dict[str, set[str]], split: str | None = None) -> dict[st
     for qid, pos in qrel.items():
         if not pos:
             continue
+        in_a = qid in a_layer_qids
         out[qid] = {"pos_lang": positive_lang_label(pos, doc_lang),
-                    "proc_group": proc_group(qid),
-                    "rejection": rej.get(qid, "unlabeled"),
+                    # A층 밖(=B층) 질의는 두 축의 라벨 원천이 없다 — "other"·"unlabeled" 로
+                    # 뭉뚱그리면 없는 집단이 있는 것처럼 보인다.
+                    "proc_group": proc_group(qid) if in_a else NO_LABEL,
+                    "rejection": rej.get(qid, "unlabeled") if in_a else NO_LABEL,
                     "lex_overlap": lex.get(qid, "unknown")}
     return out
 
@@ -212,10 +220,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--a", type=Path, default=None, help="새 시스템 run(기본 P1)")
     ap.add_argument("--b", type=Path, default=None, help="기준 run(기본 B3)")
-    ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
+    ap.add_argument("--split", choices=["train", "dev", "test", SPLIT_B, "all"], default="dev")
     ap.add_argument("--k", type=int, default=100)
     ap.add_argument("--delta", type=float, default=0.05, help="T2 마진 δ(F3)")
     ap.add_argument("--table", action="store_true", help="§6.4 표 생성(paper/tables 기록)")
+    ap.add_argument("--unseal", action="store_true", help="B층 봉인 개봉(원장 기록)")
+    ap.add_argument("--reason", default="", help="개봉 사유(원장에 기록)")
     args = ap.parse_args()
     if args.split == "test":
         print("⚠️  test 개봉 — 사전등록 위반 가능(F9)")
@@ -225,19 +235,27 @@ def main() -> None:
     from ..collect.bq_family_ir import load_family_map
     from .results_table import run_path
     fam = load_family_map()
-    qrel = load_qrel()
-    if args.split != "all":
-        sp = pd.read_parquet(config.IR_SPLIT)
-        keep = set(sp.loc[sp["split"] == args.split, "doc_id"])
-        qrel = {q: pos for q, pos in qrel.items() if q in keep}
+    if args.split == SPLIT_B:
+        # B층은 층화 라벨의 원천이 둘뿐이다(PLAN-047 §12.3) — 공정군·거절근거는 "라벨없음"이고
+        # **δ 판정을 내지 않는다.** T2 는 A층 판정 전용이다(PLAN-045 D5).
+        qrel = load_qrel_for_split(args.split, unseal=args.unseal, reason=args.reason)
+    else:
+        qrel = load_qrel()
+        if args.split != "all":
+            sp = pd.read_parquet(config.IR_SPLIT)
+            keep = set(sp.loc[sp["split"] == args.split, "doc_id"])
+            qrel = {q: pos for q, pos in qrel.items() if q in keep}
     labels = query_labels(qrel, split=args.split if args.table else None)
     pa = args.a or run_path("P1", args.split)
     pb = args.b or run_path("B3_rrf", args.split)
     run_a, run_b = load_run(pa), load_run(pb)
 
     if args.table:
+        # B층은 산출 가능한 축이 둘뿐이다(§12.3). 없는 축을 빈 표로 싣지 않는다.
+        dim_names = (("lex_overlap", "pos_lang") if args.split == SPLIT_B
+                     else ("rejection", "lex_overlap", "pos_lang", "proc_group"))
         dims = {d: table_rows(run_a, run_b, qrel, fam, labels, d, args.k)
-                for d in ("rejection", "lex_overlap", "pos_lang", "proc_group")}
+                for d in dim_names}
         md = render_table(args.split, dims, args.k, "P1 (제안)", "B3 (텍스트 기준선)")
         print(md)
         config.TABLES.mkdir(parents=True, exist_ok=True)
@@ -247,6 +265,16 @@ def main() -> None:
         import pandas as pd     # viz 입력 (viz 는 계산하지 않는다 · CLAUDE.md §3)
         pd.DataFrame([{"dim": d, **r} for d, rs in dims.items() for r in rs]).to_csv(
             config.PROCESSED / "ir" / f"ir_subgroup_{args.split}.csv", index=False)
+        return
+
+    if args.split == SPLIT_B:
+        # T2 δ 판정은 A층 전용이다(PLAN-045 D5 · PLAN-047 §13.4). B층에서 δ 를 적용하면
+        # 사전등록이 정한 것과 다른 표본으로 같은 이름의 판정을 내게 된다.
+        print(f"[B층 층화 · {args.split} · family R@{args.k} · **δ 판정 없음**] "
+              f"new={pa.name} old={pb.name}")
+        for dim in ("pos_lang", "lex_overlap"):
+            res = compare(run_a, run_b, qrel, fam, labels, dim, args.k)
+            print(_fmt(res, float("inf")).replace("(< δ 안전)", "(판정 없음)"))
         return
 
     print(f"[하위집단 T2 · {args.split} · family R@{args.k} · δ={args.delta}]  new={pa.name} old={pb.name}")

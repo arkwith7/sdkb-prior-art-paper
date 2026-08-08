@@ -113,6 +113,28 @@ tables:
 		--tau 0.7 --alpha 0.75 --w 0.25 0.0 0.25 0.5 --write
 	uv run python -m sdkb_paper.analysis.lang_recall --split $(SPLIT) --write
 
+# --- 판독 B (PLAN-047 §8) -----------------------------------------------------
+# 순서가 이 두 타깃의 존재 이유다. `retrieve-b` 는 **정답 없이** run 만 만들고(봉인 미열람),
+# `tables-b` 는 개봉이라 `UNSEAL=1` 과 사유를 요구한다. 봉인 열람은 원장에 남는다.
+#   make retrieve-b                       ← 개봉 전 · 몇 번 돌려도 된다
+#   make tables-b UNSEAL=1 REASON="..."   ← 개봉 1회 · 되돌릴 수 없다
+retrieve-b:
+	uv run python -m sdkb_paper.retrieval.bm25 --layer B --search-only
+	uv run python -m sdkb_paper.retrieval.dense --layer B
+	uv run python -m sdkb_paper.retrieval.hybrid --layer B
+	uv run python -m sdkb_paper.analysis.results_table --split test_b --runs-only
+
+tables-b:
+	@test -n "$(UNSEAL)" || { echo "[판독 B] 개봉은 UNSEAL=1 과 REASON 이 있어야 한다 (PLAN-047 §13.3)"; exit 2; }
+	@test -n "$(REASON)" || { echo "[판독 B] REASON 이 비어 있다 — 사유 없는 개봉은 하지 않는다"; exit 2; }
+	uv run python -m sdkb_paper.analysis.results_table --split test_b --write \
+		--unseal --reason "$(REASON)"
+	uv run python -m sdkb_paper.analysis.subgroup --table --split test_b \
+		--unseal --reason "$(REASON)"
+	uv run python -m sdkb_paper.analysis.ablation --split test_b --p1 \
+		--tau 0.7 --alpha 0.75 --w 0.25 0.0 0.25 0.5 --write \
+		--unseal --reason "$(REASON)"
+
 # 논문 §6.2f 교차언어 진단 (PLAN-019 W1) — 정답 언어별 회수·자원 커버리지·후보 풀 편향.
 # 동결 run 재집계(새 검색 0). 산출: paper/tables/ir_crosslingual_$(SPLIT).md + CSV.
 crosslingual:

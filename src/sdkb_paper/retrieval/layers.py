@@ -37,3 +37,52 @@ def queries_of(df, layer: str = LAYER_A):
     if "query_layer" in df.columns:
         return df[df["query_layer"] == layer]
     return df[df["is_query"]]
+
+
+# --- 판독 B 배관 (PLAN-047 §13.1·§13.2) --------------------------------------
+SPLIT_B = "test_b"
+
+
+def split_qids(split: str) -> list[str]:
+    """분할 표에서 질의 id 를 **사전순**으로 돌려준다. **qrel 을 읽지 않는다.**
+
+    왜 이 함수가 필요한가(PLAN-047 §12.0-1): 기존 `build_runs` 는 평가할 질의를 qrel 에서
+    뽑았다. 그대로 B층에 쓰면 **run 을 만들기 위해 봉인을 먼저 열어야 하고**, 그 순간
+    "run 을 먼저 만들고 봉인을 연다"는 순서가 원리적으로 불가능해진다.
+
+    판정식은 이 변경에 영향받지 않는다 — 정답 ≥1 질의만 매크로 평균하는 필터는
+    `analysis.metrics.evaluate()` 안에 그대로 있다.
+    """
+    import pandas as pd
+
+    from .. import config
+
+    sp = pd.read_parquet(config.IR_SPLIT, columns=["doc_id", "split"])
+    return sorted(sp.loc[sp["split"] == split, "doc_id"].astype(str))
+
+
+def run_path_for_layer(base, layer: str = LAYER_A):
+    """A층은 기존 경로 그대로, B층은 `_B` 접미. **A층 파일은 바이트 불변이어야 한다.**"""
+    from pathlib import Path
+
+    base = Path(base)
+    if layer == LAYER_A:
+        return base
+    return base.with_name(f"{base.stem}_{layer}{base.suffix}")
+
+
+def guard_run_target(path, layer: str, protected) -> None:
+    """B층 검색이 A층 상수 경로를 목적지로 받으면 **거부한다**(PLAN-047 §13.2 쓰기 가드).
+
+    "조심하겠다"로 두지 않는 이유는 하나다 — A층 동결 run 을 덮어쓰면 되돌릴 수 없고,
+    그것이 원고 §6 의 재현 팔이다(메모리 `disk-resource-is-oprime-manuscript-is-o-arm`).
+    """
+    from pathlib import Path
+
+    if layer == LAYER_A:
+        return
+    if Path(path).resolve() == Path(protected).resolve():
+        raise ValueError(
+            f"[layers] layer={layer} 인데 목적지가 A층 run 경로다: {path} — "
+            "A층 동결 run 덮어쓰기 차단(PLAN-047 §13.2)"
+        )

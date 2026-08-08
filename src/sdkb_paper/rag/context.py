@@ -24,8 +24,13 @@ from . import frozen
 ARM_DIR = config.IR_RUNSETS_DIR / frozen.RUNSET
 
 
-def run_path(arm: str, split: str = frozen.SPLIT) -> Path:
-    return ARM_DIR / f"sys_{arm}_{split}.txt"
+def arm_dir(runset: str = frozen.RUNSET) -> Path:
+    # 기본 팔은 모듈 상수를 그대로 돌려준다 — 테스트가 `ARM_DIR` 을 갈아끼워 쓰기 때문이다.
+    return ARM_DIR if runset == frozen.RUNSET else config.IR_RUNSETS_DIR / runset
+
+
+def run_path(arm: str, split: str = frozen.SPLIT, runset: str = frozen.RUNSET) -> Path:
+    return arm_dir(runset) / f"sys_{arm}_{split}.txt"
 
 
 @dataclass(frozen=True)
@@ -102,9 +107,10 @@ def build_arm_contexts(
     qids: list[str],
     k: int = frozen.K,
     split: str = frozen.SPLIT,
+    runset: str = frozen.RUNSET,
 ) -> dict[str, QueryContext]:
     """동결 run → 질의별 상위 K 컨텍스트. 마스크 위반 문서는 제외하고 다음 순위로 채운다."""
-    path = run_path(arm, split)
+    path = run_path(arm, split, runset)
     if not path.exists():
         raise FileNotFoundError(f"동결 팔의 run 이 없다: {path}")
     run = load_run(path)
@@ -130,13 +136,19 @@ def build_arm_contexts(
     return out
 
 
-def run_sha256(arm: str, split: str = frozen.SPLIT) -> str:
-    return hashlib.sha256(run_path(arm, split).read_bytes()).hexdigest()
+def run_sha256(arm: str, split: str = frozen.SPLIT, runset: str = frozen.RUNSET) -> str:
+    return hashlib.sha256(run_path(arm, split, runset).read_bytes()).hexdigest()
 
 
-def test_qids() -> list[str]:
-    """봉인 qrel 의 정답 ≥1 질의(분모 규율 §0). 문서 단위 — family 와 섞지 않는다(§11.4-②)."""
-    from ..analysis.metrics import load_qrel
+def test_qids(split: str = frozen.SPLIT, *, unseal: bool = False, reason: str = "") -> list[str]:
+    """봉인 qrel 의 정답 ≥1 질의(분모 규율 §0). 문서 단위 — family 와 섞지 않는다(§11.4-②).
 
-    qrel = load_qrel(config.IR_QREL_TEST_SEALED)
+    B층(`test_b`)은 **봉인 열람이므로 `unseal=True` 없이는 실패한다**(PLAN-047 §13.3).
+    """
+    from ..analysis.metrics import load_qrel, load_qrel_for_split
+
+    if split == frozen.SPLIT_B:
+        qrel = load_qrel_for_split(split, unseal=unseal, reason=reason or "C2′ 판독 B 채점")
+    else:
+        qrel = load_qrel(config.IR_QREL_TEST_SEALED)
     return sorted(q for q, pos in qrel.items() if pos)
