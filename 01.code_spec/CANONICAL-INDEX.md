@@ -174,7 +174,7 @@
 | **CANONICAL (계약)** | `specs/SPEC-001·002·004~008` (§0.2) |
 | **REFERENCE** | `README.md` · `GLOSSARY-{ONTOLOGY,SEMICONDUCTOR,STATISTICS}.md` · `REF-001`(IP-R&D) · `TOOLING.md` |
 | **REPORT (실험 기록)** | `reports/M4-{실험결과-1차,실험파이프라인-설명,검색유용성-서술전략,확증결과-원고반영}.md` — **v0.9 §6 산출의 근거 기록**. "원고 반영"은 v0.9 §6 반영을 뜻한다 |
-| **PLAN — 살아 있는 계획 (6건 · 2026-08-06 정리)** | `plans/PLAN-018`(검색·T-gate 하네스 사전등록 🟢 — F1–F18 동결이 현행 코드의 계약) · `PLAN-029`(재실험 로드맵 🛑) · `PLAN-031`(B층 수집 사전등록 **🔒 동결** · 봉인 미개봉) · `PLAN-033`(원고 재구성 — §6.2–6.4 재작성 미완) · `PLAN-038`(C2′ 전달 · 🛑 4단계 승인 대기) · `PLAN-040`(+ `PLAN-040-oprime-snapshot-signatures.json` · 판독 B 미개봉) |
+| **PLAN — 살아 있는 계획 (7건 · 2026-08-08 갱신)** | **`PLAN-045`(B층 질의 하류 소비 · 🛑 §1 요구정의 승인 대기 — 나머지 넷의 선결 · 상류 CR-012 `732b0d9` 수령분을 코퍼스에 들인다)** · `plans/PLAN-018`(검색·T-gate 하네스 사전등록 🟢 — F1–F18 동결이 현행 코드의 계약) · `PLAN-029`(재실험 로드맵 🛑) · `PLAN-031`(B층 수집 사전등록 **🔒 동결** · 봉인 미개봉) · `PLAN-033`(원고 재구성 — §6.2–6.4 재작성 미완) · `PLAN-038`(C2′ 전달 · 🛑 4단계 승인 대기) · `PLAN-040`(+ `PLAN-040-oprime-snapshot-signatures.json` · 판독 B 미개봉) |
 | **ARCHIVED (인용 금지)** | `archive/CANONICAL-INDEX-v05.md` · `archive/STATUS-v05.md` · `archive/AUDIT-2026-07-18.md`(구 v0.5 원고 감사 · 2026-07-31 이동) · `archive/SPEC-003-competency-questions.md`(2026-07-31 이동) · `archive/CR-004-full-analysis-2026-07-30.md` · **종결 PLAN 33건 → 아래 §3.1** |
 
 #### 3.1 종결 PLAN — 한 줄 요약 (2026-07-30 `plans/` → `archive/` 이동)

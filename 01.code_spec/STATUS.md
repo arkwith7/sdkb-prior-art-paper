@@ -2,10 +2,35 @@
 
 *최종 갱신: 2026-08-08 3차 (**CR-012 상류 구현 완료 `732b0d9`** · 상류 대기열 0 · 개봉 차단이 상류에서 **하류 코드**로 옮겨졌다 · 판독 B 봉인 유지) · 기조: 설계과학(DSR) — 전환 완료*
 
-> ## 🔜 다음 세션이 할 일 — **기다릴 상류가 없다. 이제 막는 것은 우리 코드다** (2026-08-08 3차 인계)
+> ## 🔜 다음 세션이 할 일 — **[PLAN-045](plans/PLAN-045-b-layer-query-ingestion-downstream.md) §1 요구정의 승인부터. 코드는 그 뒤다** (2026-08-08 3차 인계)
 >
-> **먼저 읽을 것:** [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md) **§1.16**(CR-012 회신
-> 전문) · [upstream/DEFECT-LEDGER.md](../upstream/DEFECT-LEDGER.md) **D-27**(갱신).
+> **첫 행동은 하나다 — [PLAN-045](plans/PLAN-045-b-layer-query-ingestion-downstream.md) 를 열고
+> §1 요구정의를 사용자에게 제시해 승인받는다(🛑).** 그 전에는 코드를 한 줄도 쓰지 않는다.
+> 계획서에 실측 재료가 전부 들어 있다 — 바꿔야 할 코드 4곳 · 위험 셋 · `is_query` 소비자
+> **8곳 목록** · 성공기준 S1–S7 · 상류 파일 sha256.
+>
+> **먼저 읽을 것:** [PLAN-045](plans/PLAN-045-b-layer-query-ingestion-downstream.md) →
+> [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md) **§1.16**(CR-012 회신 전문) ·
+> [upstream/CR-012](../upstream/CR-012-b-layer-query-nodes.md) **§8** ·
+> [upstream/DEFECT-LEDGER.md](../upstream/DEFECT-LEDGER.md) **D-27**(갱신).
+>
+> **계획 다섯의 순서가 이제 하나로 정해졌다 — PLAN-045 가 나머지 넷의 선결이다.**
+>
+> | 계획 | 잔여 | 종료 조건 |
+> |---|---|---|
+> | **PLAN-045 🛑** | **§1 요구정의 승인 → §2 전체** | **코퍼스 `is_query` 1,000 → 1,200 · A층 분할 불변** |
+> | PLAN-031 🔒 | B층 개봉·판정 | H3·H4·H5 재확증 판정 1회 |
+> | PLAN-040 | 판독 B | 개봉 1회 |
+> | PLAN-038 | B층 확증 **+ T4 마진 동결** | 위 개봉과 **동시** |
+> | PLAN-033 | 2단계 §6.2–6.4 | B층 결과 반영 후 45,700자 |
+>
+> **⚠ 가장 위험한 것은 `VENDOR_FILES` 가 아니라 분할 경계다.** `corpus/split.py:35` 가
+> `is_query` **전량**을 받아 60/80 % 로 자르므로, 질의가 1,200 이 되면 **A층 test 198질의의
+> 구성이 바뀔 수 있다** — 사전등록 동결 항목이고(§1-3) 깨지면 원고 §6 이 통째로 무효다.
+> **다행히 조용히 깨지지 않는다** — `split.py:60-68` 의 동결 경계 체크섬
+> (`2016-11-21`·`2021-07-21`)이 어긋나면 `SystemExit` 으로 즉시 멈춘다. **아무 조치 없이
+> `make corpus` 를 돌리면 그 자리에서 선다. 그것은 버그가 아니라 방어선이다 — 느슨하게
+> 만들어 통과시키지 마라.**
 >
 > **CR-012 를 상류에서 구현했다(`732b0d9`).** 이 세션이 상류 역할을 맡았고(§0.1 예외 ·
 > 메모리 `session-may-act-as-upstream-sdkb`) 상류 §2 의 5단계 게이트를 그대로 탔다.
