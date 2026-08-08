@@ -47,16 +47,24 @@ def strip_code_fence(text: str) -> str:
     펜스로 감싸 100 % 파싱 실패가 났다. 이것은 **내용이 아니라 포장**의 문제이므로 판독값과
     무관하며, 수리 전후를 기록하고 A층을 전량 재실행한다.
 
-    §13.3-2("정규식으로 JSON 을 파내지 않는다")의 단서로만 작동한다 — 펜스 **밖에 다른 글자가
-    있으면 벗기지 않고** 그대로 넘긴다. 즉 설명 문장을 덧붙인 출력은 여전히 파싱 실패로 센다.
+    §13.3-2("정규식으로 JSON 을 파내지 않는다")의 단서로만 작동한다 — 중괄호를 긁지 않고,
+    **펜스로 시작하지 않는 출력은 그대로 실패로 센다.**
+
+    §12.4 고장 수리 2 (2026-08-09 · PLAN-047 §17.2 · B층 파싱 실패율 0.0960·0.1010). 모델이
+    펜스 안에 스키마를 지킨 JSON 을 내고 **그 뒤에 한국어 설명을 덧붙였다.** 이전 판은 "문자열
+    전체가 펜스일 때만" 벗겼으므로 이 형태가 실패로 계수됐다 — 역시 **내용이 아니라 포장**이다.
+    넓어진 것은 *"닫는 펜스가 있고 그 뒤에 내용이 있는"* 한 경우뿐이며, **닫는 펜스가 없는
+    출력(절단 등)은 수리 후에도 실패**다.
     """
     s = text.strip()
-    if not s.startswith("```") or not s.endswith("```"):
+    if not s.startswith("```"):
         return s
-    body = s[3:-3]
-    head, _, rest = body.partition("\n")
+    head, _, rest = s[3:].partition("\n")
     # 여는 펜스의 언어 태그(json 등)만 허용한다. 그 줄에 다른 내용이 있으면 언랩하지 않는다.
-    return rest.strip() if head.strip().lower() in ("", "json") else s
+    if head.strip().lower() not in ("", "json"):
+        return s
+    close = rest.find("```")
+    return s if close < 0 else rest[:close].strip()
 
 
 def parse_answer(text: str) -> dict | None:

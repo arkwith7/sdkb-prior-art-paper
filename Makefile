@@ -1,4 +1,4 @@
-.PHONY: rag ragcount rageval faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: rag ragcount rageval t4 faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
 
 setup:
 	uv sync --all-extras
@@ -99,6 +99,11 @@ ragcount:
 # 산출: paper/tables/rag_transfer_test.md + data/processed/ir/rag/scores/*.json
 rageval:
 	uv run python -m sdkb_paper.rag.score --write
+
+# T4 판정 — 하류 생성 층 비열등 (PLAN-047 §4.2 동결식 · B층 전용 · 봉인 열람이므로 사유 필수).
+# 산출: paper/tables/rag_t4_verdict_test_b.md + data/processed/ir/rag/scores/rag_t4_verdict_test_b.json
+t4:
+	uv run python -m sdkb_paper.rag.t4 --split test_b --unseal --reason "$(REASON)" --write
 
 # 논문 §6.2·§6.4 표 전량 재생성 (동결 run 재평가 · 새 검색 없음 · 수기 기입 금지 CLAUDE §1-7).
 # 산출: paper/tables/ir_{performance,subgroup,increment}_{dev,test}.md + viz 입력 CSV.

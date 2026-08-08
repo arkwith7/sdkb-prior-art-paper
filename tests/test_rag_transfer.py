@@ -205,6 +205,24 @@ def test_code_fence_is_unwrapped_but_only_the_shell():
     )["parse_fail"] is True
 
 
+def test_prose_after_closing_fence_is_dropped():
+    """§12.4 수리 2 (PLAN-047 §17.2) — 닫는 펜스 **뒤**의 설명은 버리고 읽는다.
+
+    B층 1,188 호출에서 실패 39건이 전부 이 형태였다(전부 `insufficient: true`).
+    포장의 문제이므로 판독값과 무관하다 — 넓어지는 것은 이 한 경우뿐이다.
+    """
+    body = json.dumps({"cited": ["d1"], "evidence": [], "insufficient": False}, ensure_ascii=False)
+    scored = score.score_one(
+        dict(_REC, text=f"```json\n{body}\n```\n\n**설명:** 후보 문헌에는 …"), {"d1"}, _DOCS
+    )
+    assert scored["parse_fail"] is False
+    assert scored["n_cited"] == 1 and scored["n_cited_correct"] == 1
+    # 닫는 펜스가 없으면(절단 등) 수리 후에도 실패다 — 완화의 범위를 여기서 못박는다.
+    assert score.score_one(
+        dict(_REC, text=f"```json\n{body}"), {"d1"}, _DOCS
+    )["parse_fail"] is True
+
+
 def test_aggregate_reports_conditional_and_denominators():
     """§11.4-① — 전체와 '근거 존재 질의 조건부' 를 함께 낸다."""
     no_ev = dict(_REC, qid="q2", context_doc_ids=["d2", "d3"],
