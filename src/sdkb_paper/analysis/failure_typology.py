@@ -408,6 +408,98 @@ def code_with_llm(split: str, *, models=MODELS, reps: int = REPS,
     return out_path
 
 
+# --- 5b. 사람 코더 작업지 --------------------------------------------------
+def build_worksheet(splits: tuple[str, ...] = ("test", "test_b")) -> tuple[Path, Path]:
+    """사람 표본 40쌍을 **읽는 문서**로 렌더링하고 빈 라벨 서식을 함께 낸다.
+
+    **이 함수는 무엇도 동결값을 바꾸지 않는다** — 표본도 유형 정의도 프롬프트도 그대로이고,
+    바뀌는 것은 *보여주는 방식*뿐이다. 사람에게 JSONL 을 직접 읽히면 코딩 품질이 재료가 아니라
+    가독성에 좌우된다.
+    """
+    ids = json.loads((TYPOLOGY_DIR / "human_sample.json").read_text(encoding="utf-8"))
+    want = set(ids)
+    units: dict[str, dict] = {}
+    for split in splits:
+        p = TYPOLOGY_DIR / f"sheet_{split}.jsonl"
+        if not p.exists():
+            continue
+        for line in p.read_text(encoding="utf-8").splitlines():
+            if line:
+                u = json.loads(line)
+                if u["unit_id"] in want:
+                    units[u["unit_id"]] = u
+
+    out = [
+        "# 실패 유형 코딩 작업지 — 사람 코더용 (PLAN-048)", "",
+        f"**{len(units)}건**입니다. 각 건마다 `primary` 하나를 고르고 근거를 한 문장 적으십시오.", "",
+        "## 무엇을 판단하는가", "",
+        "어떤 검색 시스템이 본문 점수에 **온톨로지 신호**(개념 겹침 · IPC 분류 유사도 · 청구항 특징",
+        "커버리지)를 섞어 순위를 다시 매겼습니다. 그 결과 **정답 문헌 하나가 아래로 밀렸습니다.**",
+        "각 건의 `밀려난 문서`가 그것입니다. **왜 밀렸는지의 유형**을 고르는 것이 당신의 일입니다.", "",
+        "어느 항이 밀었는지는 이미 계산돼 있습니다(각 건의 `무엇이 밀어냈는가`). 당신이 답하는 것은",
+        "**그 항이 왜 그렇게 나왔는가**입니다.", "",
+        "## 유형", "",
+    ]
+    out += [f"- **{c}** — {d}" for c, d in TYPES.items()]
+    out += [
+        "", "**F7 을 피하려 억지로 고르지 마십시오.** 재료가 부족하면 F7 이 맞는 답입니다.", "",
+        "## 적는 방법", "",
+        "`data/processed/ir/typology/labels_human.jsonl` 에 한 줄씩 적습니다",
+        "(빈 서식이 `labels_human_template.jsonl` 로 나와 있으니 `primary` 와 `evidence` 만 채우면 됩니다).", "",
+        '```json',
+        '{"unit_id": "test:kr_1020210107301:42826412", "primary": "F5", "evidence": "세 경쟁 문서 모두 IPC만으로 앞섰고 개념·본문에서는 뒤졌다"}',
+        '```', "",
+        "> **LLM 이 매긴 라벨을 보기 전에** 하십시오(`labels_llm_*.jsonl` 을 열지 마십시오).",
+        "> 먼저 보면 사람–모델 일치도가 검증이 아니라 따라 적기가 됩니다.", "",
+        "---", "",
+    ]
+
+    for i, uid in enumerate(sorted(units), 1):
+        u = units[uid]
+        q = u["query"]
+        out += [f"## {i}. `{uid}`", "",
+                f"**밀려난 문서: {u['focus_slot']}**", "",
+                "### 질의 특허", "",
+                f"- 언어 `{q['lang']}` · IPC `{', '.join(q['ipc'][:6]) or '없음'}`",
+                f"- 붙은 개념: `{', '.join(q['concepts']) or '없음'}`", ""]
+        if q["links"]:
+            out.append("- 개념이 붙은 근거(표층어 → 개념):")
+            seen = set()
+            for lk in q["links"]:
+                sig = (lk["slug"], lk["surface"])
+                if sig in seen:
+                    continue
+                seen.add(sig)
+                amb = " ⚠모호" if lk["ambiguous"] else ""
+                out.append(f"  - `{lk['surface']}` → `{lk['slug']}` "
+                           f"(규칙 {lk['rule_id']} · 확신 {lk['confidence']:.2f}{amb})")
+            out.append("")
+        out += ["- 독립항:", "", "> " + (q["claims"][:700].replace("\n", " ") or "(없음)"), ""]
+
+        out += ["### 후보 문헌", ""]
+        for d in u["documents"]:
+            mark = " ← **밀려난 문서**" if d["slot"] == u["focus_slot"] else ""
+            out += [f"**{d['slot']}**{mark}", "",
+                    f"- 언어 `{d['lang']}` · IPC `{', '.join(d['ipc'][:6]) or '없음'}`",
+                    f"- 개념: `{', '.join(d['concepts']) or '없음'}`",
+                    "- 본문: " + (d["text"][:500].replace("\n", " ") or "(없음)"), ""]
+
+        out += ["### 무엇이 밀어냈는가 (계산된 것 · 판단 아님)", ""]
+        out += [f"- {x['요약']}" for x in u["decomposition"]]
+        out += ["", "### 당신의 판단", "",
+                "```json",
+                f'{{"unit_id": "{uid}", "primary": "F_", "evidence": ""}}',
+                "```", "", "---", ""]
+
+    ws = TYPOLOGY_DIR / "worksheet_human.md"
+    ws.write_text("\n".join(out) + "\n", encoding="utf-8")
+    tpl = TYPOLOGY_DIR / "labels_human_template.jsonl"
+    tpl.write_text("\n".join(
+        json.dumps({"unit_id": uid, "primary": "", "evidence": ""}, ensure_ascii=False)
+        for uid in sorted(units)) + "\n", encoding="utf-8")
+    return ws, tpl
+
+
 # --- 6. 집계 표 (수기 기입 금지 · §1-7) --------------------------------------
 HUMAN_LABELS = TYPOLOGY_DIR / "labels_human.jsonl"
 TABLE_PATH = config.TABLES / "failure_typology.md"
@@ -534,7 +626,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--code", action="store_true", help="로컬 LLM 코딩 실행(시트가 이미 있어야 한다)")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--table", action="store_true", help="κ·빈도표 산출")
+    ap.add_argument("--worksheet", action="store_true", help="사람 코더 작업지 생성")
     a = ap.parse_args(argv)
+    if a.worksheet:
+        ws, tpl = build_worksheet()
+        print(f"작업지 → {ws}\n빈 서식 → {tpl}")
+        return 0
     if a.table:
         print(f"표 → {build_table()}")
         return 0
