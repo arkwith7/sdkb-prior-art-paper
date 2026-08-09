@@ -325,6 +325,17 @@ def agreement(a: list[str], b: list[str]) -> float:
 MODELS = ("gemma3:27b", "qwen3-coder:30b")
 REPS = 2
 TEMPERATURE = 0.0
+NUM_PREDICT = 512
+OLLAMA_URL = "http://localhost:11434/api/generate"
+
+# **태그가 아니라 다이제스트가 버전이다**(§1-11 넷째). `gemma3:27b` 는 나중에 다른 가중치를
+# 가리킬 수 있으므로, 재현 명세에는 다이제스트·아키텍처·파라미터 수·양자화를 함께 적는다.
+MODEL_SPEC: dict[str, dict[str, str]] = {
+    "gemma3:27b": {"digest": "a418f5838eaf", "arch": "gemma3", "params": "27.4B",
+                   "quant": "Q4_K_M", "ctx": "131072"},
+    "qwen3-coder:30b": {"digest": "06c1097efce0", "arch": "qwen3moe", "params": "30.5B",
+                        "quant": "Q4_K_M", "ctx": "262144"},
+}
 
 # 사례 **뒤에** 다시 붙이는 지시. 긴 입력에서 앞쪽 지시는 묻힌다 — 실측으로 확인했다.
 CLOSING = ("위 사례에서 `focus_slot` 문서가 밀려난 이유의 유형을 하나 고르십시오. "
@@ -353,9 +364,9 @@ def _ollama(model: str, prompt: str, seed: int) -> str:
     body = json.dumps({
         "model": model, "prompt": prompt, "stream": False,
         "format": OUTPUT_SCHEMA,
-        "options": {"temperature": TEMPERATURE, "seed": seed, "num_predict": 512},
+        "options": {"temperature": TEMPERATURE, "seed": seed, "num_predict": NUM_PREDICT},
     }).encode("utf-8")
-    req = urllib.request.Request("http://localhost:11434/api/generate", data=body,
+    req = urllib.request.Request(OLLAMA_URL, data=body,
                                  headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=600) as r:
         return json.loads(r.read().decode("utf-8")).get("response", "")
@@ -587,9 +598,33 @@ def build_table(splits: tuple[str, ...] = ("test", "test_b")) -> Path:
              "> **LLM 보조 코딩 + 사람 표본 검증**이며 2인 전문가 독립 코딩이 아니다(§5.3).",
              "> 가림은 팔 소속과 정답 여부에 대한 것이고, 기계 분해를 보여주므로 **완전 가림이",
              "> 아니다**(§10.4). 코드가 생성한다 — 수기 기입 없음.", ""]
+    # --- 계측기 재현 명세 (§1-11 첫째·넷째) ---------------------------------
+    lines += ["## 계측기 명세 (동결 · 결과를 본 뒤 고치지 않았다)", "",
+              "| 코더 | 다이제스트 | 아키텍처 | 파라미터 | 양자화 | 문맥 길이 |",
+              "|---|---|---|---|---|---|"]
+    for m in MODELS:
+        s = MODEL_SPEC.get(m, {})
+        lines.append(f"| `{m}` | `{s.get('digest', '?')}` | {s.get('arch', '?')} | "
+                     f"{s.get('params', '?')} | {s.get('quant', '?')} | {s.get('ctx', '?')} |")
+    lines += ["",
+              "**태그가 아니라 다이제스트가 버전이다** — 태그는 나중에 다른 가중치를 가리킬 수 있다.", "",
+              "| 항목 | 값 |", "|---|---|",
+              f"| 실행 | 로컬 ollama (`{OLLAMA_URL}`) · **순차**(`LLM_WORKERS=1`) · 유료 호출 0 |",
+              f"| 온도 | {TEMPERATURE} |",
+              f"| 시드 | {SEED} (반복 r 에서 {SEED}+r) |",
+              f"| 반복 | {REPS} 회 (자기일치율 보고용) |",
+              f"| 최대 생성 토큰 | {NUM_PREDICT} |",
+              "| 출력 강제 | ollama `format` 에 JSON Schema — `primary` 는 F1–F7 **enum** |",
+              f"| 컨텍스트 구성 | 질의 독립항 + 밀려난 정답 + 경쟁 문서 **{N_COMPETITORS}건** · "
+              f"본문 발췌 각 **{EXCERPT_CHARS}자** · 기계 분해(항별 델타 + 한국어 요약) |",
+              "| 문서 제시 | 슬롯 익명화 + 질의별 셔플(시드 동결) · 팔 이름·순위·정답 여부 제거 |"]
     if PROMPT_PATH.exists():
-        lines += [f"프롬프트 sha256 `{sha256_text(PROMPT_PATH.read_text(encoding='utf-8'))[:16]}…` · "
-                  f"모델 {' · '.join(MODELS)} · 온도 {TEMPERATURE} · 시드 {SEED} · 반복 {REPS}", ""]
+        pt = PROMPT_PATH.read_text(encoding="utf-8")
+        lines += [f"| 프롬프트 | `src/sdkb_paper/analysis/typology_prompt.txt` "
+                  f"({len(pt)}자) · sha256 `{sha256_text(pt)}` |",
+                  "| 지시 위치 | 사례 **앞**(유형 정의·판단 재료) + 사례 **뒤**(1문장 재지시) |"]
+    lines += ["", "> 프롬프트 전문은 저장소에 커밋돼 있고 sha256 이 위 값과 일치해야 한다.",
+              "> 모델·프롬프트·파라미터가 바뀌면 재측정이 아니라 **새 실험**이다(§1-11 넷째).", ""]
 
     for split in splits:
         rows = _load_labels(split)

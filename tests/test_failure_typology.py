@@ -22,6 +22,22 @@ def test_frozen_constants():
     assert list(ft.TYPES) == ["F1", "F2", "F3", "F4", "F5", "F6", "F7"]
 
 
+def test_frozen_instrument_spec():
+    """계측기는 동결이다 — 모델·다이제스트·파라미터가 바뀌면 재측정이 아니라 새 실험이다(§1-11 넷째)."""
+    assert ft.MODELS == ("gemma3:27b", "qwen3-coder:30b")
+    assert ft.MODEL_SPEC["gemma3:27b"]["digest"] == "a418f5838eaf"
+    assert ft.MODEL_SPEC["qwen3-coder:30b"]["digest"] == "06c1097efce0"
+    assert set(ft.MODELS) == set(ft.MODEL_SPEC)
+    assert (ft.TEMPERATURE, ft.REPS, ft.NUM_PREDICT) == (0.0, 2, 512)
+    assert ft.EXCERPT_CHARS == 1200
+    assert ft.OUTPUT_SCHEMA["properties"]["primary"]["enum"] == list(ft.TYPES)
+
+
+def test_frozen_prompt_hash():
+    """프롬프트 sha256 을 값으로 고정한다 — 결과를 본 뒤 프롬프트를 고치면 여기서 깨진다."""
+    assert ft.sha256_text(ft.PROMPT_PATH.read_text(encoding="utf-8")).startswith("c372dff1530046d6")
+
+
 def test_frozen_scoring_weights_match_p1():
     """분해는 P1 이 실제로 쓴 가중치를 써야 한다 — 다른 값을 쓰면 분해가 거짓이 된다."""
     from sdkb_paper.analysis.results_table import P1_ALPHA, P1_TAU, P1_W4
