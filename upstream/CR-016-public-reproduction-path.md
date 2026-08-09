@@ -4,7 +4,7 @@
 > 근거: `upstream/DEFECT-LEDGER.md` D-37·**D-38** · 원고 **§10.1·§10.2·§10.3** · 상류 Makefile·`.gitignore`
 > 우선순위: **P0 — 투고 게이트**
 > 작성 2026-08-09 · **2026-08-09 개정 — D-38(자산 흡수) 편입 · §4 신설**
-> 상태: **1단계 요구정의 · 🛑 상류 승인 대기**
+> 상태: **상류 구현 완료(2026-08-09 · `7ef8bcf`·`835e4be`·`4ea089e`) — ①③ 통과 · ②④⑥ 대기**
 > 짝: [CR-015](CR-015-public-release-boundary.md)(경계) — 이 문서는 **채우는 쪽**이다
 
 ---
@@ -153,7 +153,8 @@
 
 | 남기는 것 | 이유 |
 |---|---|
-| 레거시 에칭 PoC 계보 — `collect_etching_dataset.py` · `build_etching_corpus.py` · `enrich_unresolved.py` · `resolve_citations.py` · `build_manifest.py` · `prototype_rejection_decision_rest.py` | 현 데이터셋의 **전신**이지 재현 경로가 아니다. 계보는 `merge_legacy_etch_*` 한 파일이 잇는다 |
+| 레거시 에칭 PoC 계보 — `collect_etching_dataset.py` · `build_etching_corpus.py` · `resolve_citations.py` · `build_manifest.py` · `prototype_rejection_decision_rest.py` | 현 데이터셋의 **전신**이지 재현 경로가 아니다. 계보는 `merge_legacy_etch_*` 한 파일이 잇는다 |
+| ~~`enrich_unresolved.py`~~ → **이관했다(2026-08-09 실행 중 정정)** | 이 표는 이 파일을 레거시로 분류했는데 **실물이 그 분류를 반박했다** — sdkb 의 `collect_b_layer_queries.py`(CR-012 수집기)가 `sys.path` 에 paper_data 를 끼워 넣고 이 모듈의 `_biblio`·`_extract_*` 를 임포트하고 있었다. 즉 **커밋된 스크립트가 커밋되지 않은 파일에 의존**했고, 그대로 공개했으면 외부에서 `ImportError` 로 죽는다. 982행 전부 옮겼다 |
 | PTAB·PatentsView — `src/ptab_dataset/`(4) · 노트북 00·04·05·06 | 논문·SDKB 어느 쪽 산출물도 아니다 |
 | **`freeze_eval_splits.py` · `eval_recall_baseline.py` · `eval_splits_v1.json`** | **평가 자산이라 sdkb 로 가면 안 된다** — 원고 §10.3(하네스 비공개)과 충돌한다. 다만 이것들은 paper_data 에도 있을 자리가 아니다(논문 리포 소관). 현 논문의 분할은 `split.parquet` 이며 **이 구 v1 분할과 다르다** — 이관하지 않되 **그 사실을 양쪽 README 에 명시**한다 |
 | `data/` 291 MB 전량 | gitignore 유지 |
