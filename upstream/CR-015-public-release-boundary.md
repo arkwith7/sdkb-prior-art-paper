@@ -3,7 +3,8 @@
 > 제출처: `~/Dev/sdkb` · 양식: 상류 CLAUDE.md §2 **1단계 요구정의**
 > 근거: `upstream/DEFECT-LEDGER.md` D-36 · 원고 **§10.1·§10.3** · 상류 `docs/dataset_rejected_patents_card.md` §6
 > 우선순위: **P0 — 투고 게이트**
-> 작성 2026-08-09 · 상태: **1단계 요구정의 · 🛑 상류 승인 대기**
+> 작성 2026-08-09 · **2026-08-09 개정 — 2단계 분석 결과 반영(§3 범위 확대 · §4 확정)**
+> 상태: **2단계 분석 완료 · 3단계 설계 진행**
 
 ---
 
@@ -54,16 +55,31 @@ Link-Only 로 내리고, 그 자리에 재인출 스크립트를 놓는다 — �
             경로를 그 자리에 남긴다. 재현성을 줄이지 않으면서 재배포만 끊는다.
 
 입력      : data/patents/raw/semiconductor_industry_rejected_patents.jsonl
-              — 1,000행 · 9.7 MB · 커밋 2개
+              — 1,000행 · 9.7 MB · 커밋 2개(b3969b8 · 4be52e1)
               — 각 행: target_patent{application_number, title, abstract(전문),
-                ipc, date, claim1(전문)} + 인용/정답 필드
+                ipc, date, claim1(전문), claims_full[](전문)} + 인용/정답 필드
+              — **2026-08-09 2단계 실측 · 원문 필드는 셋이다**
+                claims_full 13,685항 **2,029,307자**(원문 총량의 77 %) ·
+                abstract 318,434자 · claim1 290,605자 · title 25,424자
+                ← 초판은 claims_full 을 열거하지 않았다. **범위에 편입한다**(사용자 결정)
+            notebooks/07_sparql_prior_art_ontology.ipynb
+              — 셀 출력 1건이 초록 발췌를 인쇄한다(9셀 중 출력 보유 4)
+                ← 초판이 몰랐던 **두 번째 노출 경로**. 지문 3,132개로 커밋 전량을
+                  훑어 나온 유일한 추가 적중이다
             docs/dataset_rejected_patents_card.md §6
             .gitignore:41 의 자인 주석
             LICENSE.txt (CDLA-Permissive-2.0)
 
-출력      : (1) 공개본 jsonl — abstract·claim1 을 **값 없이** 두고
+출력      : (1) 공개본 jsonl — **abstract · claim1 · claims_full[].text** 를 **값 없이** 두고
                 (application_number, title, ipc, date, family, ground_truth_*, kipris_url)
                 만 남긴다. 스키마는 유지하고 값만 비운다 — 소비자 코드가 안 깨지도록.
+                **claims_full 은 항 자체를 지우지 않는다** — `claim_no`·`depends_on` 은
+                서지 구조이고, ingest_rejected_patents.py:216-259 가 항수와 보유
+                플래그를 읽는다. 지우면 소비자가 깨진다. **title 은 남긴다** —
+                서지이고 이미 kipris_biblio.parquet(커밋)에 있다.
+            (1-b) 노트북 셀 출력 제거 — 07(그리고 출력 보유 셀 전량).
+                이미 같은 정책이 실행된 전례가 있다(브랜치 docs/reorg-dataset-vs-project
+                의 노트북 08 출력 제거).
             (2) scripts/refetch_rejected_patents.py — KIPRIS 키 보유자가
                 공개본 + 키로 원본 jsonl 을 **바이트 단위로 복원**한다.
                 복원 성공은 sha256 대조로 확인한다.
@@ -84,10 +100,12 @@ Link-Only 로 내리고, 그 자리에 재인출 스크립트를 놓는다 — �
             바뀌는 것: 공개 자산의 경계. **T-Box·A-Box 내용·트리플 수는 불변.**
 
 성공 기준 : 게이트 통과 형태로 —
-            ① 공개본 전체에서 abstract·claim1 **값 문자열 0건**
-               (하류가 깨끗한 체크아웃에서 grep 으로 센다)
-            ② 이력 어느 커밋에도 위 두 필드의 값이 남아 있지 않다
-               (git log -p --all | grep 으로 센다)
+            ① 공개본 전체에서 abstract·claim1·**claims_full[].text** 값 문자열 **0건**
+               (비공개 정본에서 뽑은 지문 3,132개로 공개 트리 전량을 훑는다 —
+                grep 한 번이 아니라 **검사기 스크립트**다. 노트북 출력도 같이 걸린다)
+            ② **공개 리포**의 이력 어느 커밋에도 위 값이 없다
+               ← orphan 루트 1개이므로 커밋이 하나다. **비공개 개발 리포의 이력은
+                 대상이 아니다**(§4 에서 확정된 경계)
             ③ **공개본 메타 + 재인출만으로 조립한 하류 코퍼스의 sha256 이
                `83eef760…` 과 일치한다** ← 하류 태스크 지표(§0.1 요구)
             ④ 원고 §10.1 의 공개 목록과 리포 실물이 항목 단위로 대응한다
@@ -121,7 +139,31 @@ Link-Only 로 내리고, 그 자리에 재인출 스크립트를 놓는다 — �
 원고 §10.1 이 이미 *"논문이 명시한 릴리스 태그를 체크아웃해야 한다"* 고 쓰고 있으므로 서술도
 그대로 맞는다.
 
-**🛑 이 결정은 상류 3단계(설계)에서 확정한다.** 여기서는 권고까지다.
+### 4.1 확정 — ⓑ orphan · 그리고 **공개본은 새 리포다** (2026-08-09 · 사용자 결정)
+
+**2단계 분석이 초판이 몰랐던 사실을 하나 찾았다 — 이력은 이미 원격에 있다.**
+
+```
+refs/heads/main                                  da745ef   ← b3969b8·4be52e1 포함
+refs/heads/feat/prior-art-claim-feature-ontology 212fe62   ← 하류가 핀한 커밋
+refs/heads/docs/reorg-dataset-vs-project         786218c
+refs/heads/feat/sparql-ontology-matching         4cdd4a6
+refs/pull/1/head                                 4cdd4a6
+```
+
+원문을 담은 커밋 둘은 **네 브랜치 전부**에 있고 전부 푸시돼 있다. 따라서 **기존 리포를 공개로
+전환하면 orphan 브랜치를 만들어도 과거 커밋에서 원문을 받을 수 있다** — 성공기준 ②가 원리적으로
+닫히지 않는다. `refs/pull/1/head` 는 일반적인 방법으로 지워지지도 않는다.
+
+**결정: 공개본은 새 GitHub 리포에 orphan 루트 커밋 1개로 만든다.**
+`arkwith7/semiconductor-knowledge-base`(현 origin)는 **개발용 비공개**로 남는다.
+
+| | 귀결 |
+|---|---|
+| 커밋 해시 | **전량 불변** — 하류 `PROVENANCE.json`·원고 §6.7(`39855bb`)·§9.1(`2839afb`)·스냅샷(`212fe62`) 인용이 전부 살아 있다. ⓑ 를 택한 이유 그대로다 |
+| 원고 §10.1 | **URL 을 새 리포로 교정해야 한다.** §10 은 태그·DOI 가 아직 `[최종 릴리스 후 기입]` 이므로 같은 편집에서 함께 닫는다 |
+| 공개본 내용 기준 | **`212fe62` 트리**(사용자 결정) — 하류가 실제로 vendor 했고 원고가 인용하는 상태. main 은 14커밋 뒤에 있다 |
+| 비공개 리포 | 정본 jsonl 을 **계속 추적한다**. 재배포하지 않으므로 문제가 아니고, 공개 트리는 생성기가 따로 만든다(§3 출력 (1)) |
 
 ---
 

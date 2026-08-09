@@ -85,10 +85,14 @@
                (공유 T-Box · SHACL shapes · CQ 스위트와 실행 결과 · 그래프별 계수 리포트 ·
                 태스크–클래스–관계–CQ 매트릭스 · 공개 가능한 A-Box 메타와 provenance)
             ⑤ make validate · make test 통과
-            ⑥ **세 리포 사이에 동일 basename 사본 0건** ·
+            ⑥ **재현 경로 자산의 교차 리포 사본 0건** ·
                sync_paper_data_assets.sh 부재 ·
                sdkb 단독 체크아웃에서 재생성한 어휘가 34키이고 device:eprom 을 포함한다
                (← D-38 검증기준 ①③)
+               **2026-08-09 교정**: 초판은 "동일 basename 사본 0건"이라 썼는데 그것은
+               문자 그대로는 **달성 불가**다 — 실측 결과 basename 일치 31쌍 중 27쌍이
+               `README.md`·`__init__.py`·`pyproject.toml` 류의 **우연한 이름 충돌**이고,
+               실제 사본은 D-38 이 지목한 **넷**뿐이었다. 대상은 그 넷이다.
 
 비목표    : 온톨로지 품질 개선 · 어휘 확장 · 성능 주장.
             KIPRIS 원문의 공개 여부는 이 CR 이 정하지 않는다 — CR-015 소관.
@@ -155,6 +159,19 @@
 | `data/` 291 MB 전량 | gitignore 유지 |
 
 ### 4.3 순서 — 사본을 먼저 없애고 옮긴다
+
+> **2026-08-09 2단계 실측 셋 — 셋 다 이 절을 더 쉽게 만든다.**
+> ⓐ `device_alias_table.json` 의 **공통 31키는 값이 완전히 같다** — 갈린 것은 누락 3키뿐이다.
+>   따라서 sdkb 판 채택은 값을 바꾸지 않는다. 위험은 반대로 덮어쓰는 경우 하나뿐이다.
+> ⓑ `citation_norm.py` 두 판의 차이는 **docstring 참조 한 줄**이고 코드는 동일하다 —
+>   정본 통합이 `cited_doc_id` 정규화를 바꾸지 않는다(하류 qrel 매칭에 무영향).
+> ⓒ paper_data 는 canonical jsonl 을 **커밋하고 있지 않다**(원격도 404) —
+>   **공개 노출 경로는 sdkb 하나뿐**이다. 흡수는 노출을 늘리지 않는다.
+>
+> **그리고 CR-016 §4 가 CR-015 보다 먼저다.** CR-015 §3 출력 (2)의 재인출 스크립트가
+> 흡수 대상 수집기(`expand_dataset_via_api.py` = abstract·claim1 ·
+> `enrich_targets_b3_b5.py:127` = claims_full)를 호출하기 때문이다. 대기열 표의
+> 번호(1=CR-015, 2=CR-016)는 우선순위이지 실행 순서가 아니다.
 
 1. **갈라진 사본 정리 먼저.** `device_alias_table.json` 은 **sdkb 판(34키)이 정본**이다 —
    paper_data 판(31키)은 `device:diode`·`device:eprom`·`device:feram` 이 빠져 있고, `eprom` 은
