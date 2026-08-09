@@ -5,8 +5,8 @@
 > 바뀌지 않는다.** 봉인 `127a138f…` 는 이 커밋 시점에 **닫혀 있다**(원장 0행).
 > **사전등록 커밋과 결과 커밋을 분리한다** — 개봉은 별도 승인이며 되돌릴 수 없다.
 >
-> 상위: [PLAN-031](../archive/PLAN-031-b-layer-second-confirmation-split.md)(수집·프로토콜 동결) ·
-> [PLAN-040 §4](../archive/PLAN-040-post-remediation-tgate-and-b-layer.md)(판독 B 차단 게이트) ·
+> 상위: [PLAN-031](PLAN-031-b-layer-second-confirmation-split.md)(수집·프로토콜 동결) ·
+> [PLAN-040 §4](PLAN-040-post-remediation-tgate-and-b-layer.md)(판독 B 차단 게이트) ·
 > [PLAN-038 §16.6](PLAN-038-c2prime-transfer-requirements.md)(B층 확증 + T4 마진)
 > 근거: [STATUS.md](../STATUS.md) 9차 인계 · [HANDOFF-QUEUE.md](../../upstream/HANDOFF-QUEUE.md) 9차
 > 주장: **C2**(핵심증명 재확증) · **C2′**(전달) · **C3**(T4 발효 자격) · **C4**(DP6 승격 판정)

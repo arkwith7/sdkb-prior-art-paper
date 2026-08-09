@@ -2,7 +2,7 @@
 
 > ## 2026-08-08 · 11차 — **판독 B 가 끝났다. 상류에 보낼 것은 이번에도 없다.**
 >
-> 봉인 개봉·판정 1회 완료([PLAN-047 §16](../01.code_spec/plans/PLAN-047-readout-b-unsealing-preregistration.md) ·
+> 봉인 개봉·판정 1회 완료([PLAN-047 §16](../01.code_spec/archive/PLAN-047-readout-b-unsealing-preregistration.md) ·
 > 결과 커밋 `ff93456`). **H3 미지지**(R@100 개선 · nDCG@20 두 구성 모두 음의 방향) ·
 > **A층 패턴은 독립 표본에서 재현**. 하류 결함 둘 등재 — **D-34**(봉인 qrel 이 수집 형식 ·
 > 해소) · **D-35**(세 명령이 각각 봉인을 열어 "1회 개봉"을 셀 수 없다 · P2).
@@ -18,7 +18,7 @@
 
 > ## 2026-08-08 · 10차 — **상류에 보낼 것은 여전히 없다. 하류가 개봉 사전등록을 세웠다.**
 >
-> [PLAN-047](../01.code_spec/plans/PLAN-047-readout-b-unsealing-preregistration.md) 작성 ·
+> [PLAN-047](../01.code_spec/archive/PLAN-047-readout-b-unsealing-preregistration.md) 작성 ·
 > 🛑 §1 요구정의와 결정 3건 승인 대기. **봉인 둘 불변 · 코드 변경 0 · 지표 산출 0.**
 > 판정식(PLAN-031 §4 승계)과 **T4 마진**(ε_T4 = 0.02 · η = 0.01 · §6.8 판독값 미참조)을 동결
 > 대상으로 적었고, 개봉 전 게이트에 **G6**(B층 독립항 확보율)·**G7**(배관 검증 · 봉인 열람 0)을

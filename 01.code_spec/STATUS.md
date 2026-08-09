@@ -61,7 +61,7 @@
 
 > ## 🔜 다음 세션이 할 일 — **LLM 코딩 결과를 읽고, 사람 40쌍을 코딩한다** (2026-08-09 10차 인계)
 >
-> **트랙 C 의 배관이 섰고 정의가 동결됐다.** [PLAN-048](plans/PLAN-048-failure-typology-requirements.md)
+> **트랙 C 의 배관이 섰고 정의가 동결됐다.** [PLAN-048](archive/PLAN-048-failure-typology-requirements.md)
 > 이 1~4단계 전 과정의 기록이다. 사용자 승인으로 **코더 구성이 바뀌었다** — 사람 2인이 아니라
 > **로컬 LLM 2종(gemma3:27b · qwen3-coder:30b) 전수 + 사람 표본 40쌍 검증**이다(§5).
 >
@@ -132,7 +132,7 @@
 
 > ## 🔜 다음 세션이 할 일 — **트랙 A 가 끝났다. 남은 것은 C(정성)와 B(집필) 둘이다** (2026-08-09 9차 인계)
 >
-> **C2′ B층 확증이 완주했다.** 1,188 호출 · API 실패 0 · $40 규모 · [PLAN-047 §17–19](plans/PLAN-047-readout-b-unsealing-preregistration.md).
+> **C2′ B층 확증이 완주했다.** 1,188 호출 · API 실패 0 · $40 규모 · [PLAN-047 §17–19](archive/PLAN-047-readout-b-unsealing-preregistration.md).
 >
 > **T4 = 실패다. 그러나 실패의 모양을 정확히 읽어야 한다.**
 > 인용 정확도 **점추정은 P1 이 앞선다**(+0.0236)는데 `LB₉₅ = −0.0205` 로 임계 `−0.0200` 을
@@ -169,7 +169,7 @@
 > **판독 B 가 끝났다.** 봉인 `127a138f…` 개봉 · 판정 1회 · 결과 커밋 `ff93456`(사전등록 `67568c8` 과 분리).
 > **H3 는 미지지다** — R@100 은 개선(P1 **+0.0343** · CI [+0.0094, +0.0615] · *p*=.004)됐으나
 > **nDCG@20 이 두 구성 모두 음의 방향**(P1 −0.0136 · P0★ −0.0218)이고, 사전등록은 **둘 다 개선**을
-> 요구한다. 전문은 [PLAN-047 §16](plans/PLAN-047-readout-b-unsealing-preregistration.md).
+> 요구한다. 전문은 [PLAN-047 §16](archive/PLAN-047-readout-b-unsealing-preregistration.md).
 >
 > **그러나 A층 패턴이 독립 표본에서 그대로 재현됐다 — 그것이 이 판독의 소득이다.**
 > *"깊은 회수에서만 이득 · 상위 정렬은 이득 없음"* · *"주 구성 P0★ 비유의 · 부차 P1 만 유의"*
@@ -224,7 +224,7 @@
 > ## 🔜 다음 세션이 할 일 — **`make retrieve-b`. 봉인은 그 다음이고, 그것은 별도 승인이다** (2026-08-08 7차 인계)
 >
 > **판독 B 배관이 섰다 — 그리고 그중 셋은 "거부하는 코드"다.**
-> [PLAN-047 §14](plans/PLAN-047-readout-b-unsealing-preregistration.md) 가 실행 기록이다.
+> [PLAN-047 §14](archive/PLAN-047-readout-b-unsealing-preregistration.md) 가 실행 기록이다.
 > 봉인 기본 거부(`validate/seal_audit.py` 신설) · A층 run 덮어쓰기 거부(`layers.guard_run_target`) ·
 > `t_gate --split test_b` 거부. **막는 쪽이 기본값이다.**
 >
@@ -254,7 +254,7 @@
 > **아래는 같은 날 6차 인계(사전등록 작성)이며 기록으로 남긴다.**
 
 
-> ## 🔜 다음 세션이 할 일 — **[PLAN-047](plans/PLAN-047-readout-b-unsealing-preregistration.md) §1 요구정의와 결정 3건 승인부터. 코드는 그 뒤다** (2026-08-08 6차 인계)
+> ## 🔜 다음 세션이 할 일 — **[PLAN-047](archive/PLAN-047-readout-b-unsealing-preregistration.md) §1 요구정의와 결정 3건 승인부터. 코드는 그 뒤다** (2026-08-08 6차 인계)
 >
 > **이 세션이 한 것 하나 — 개봉 사전등록을 세웠다. 봉인은 열지 않았고 코드는 한 줄도 바꾸지 않았다.**
 > 5차 인계가 "다음 행동은 개봉이고 그것은 사전등록부터다"라고 적은 그 문서다.
@@ -289,9 +289,9 @@
 > **개봉 전 게이트에 둘을 더했다** — **G6**(B층 독립항 확보율 = 1.0000 · CR-011 반영 후) ·
 > **G7**(배관 검증 · B층 run 200/200 산출 · **봉인 열람 0회**를 감사 훅으로 증명).
 >
-> **먼저 읽을 것:** [PLAN-047](plans/PLAN-047-readout-b-unsealing-preregistration.md) §1·§7 →
+> **먼저 읽을 것:** [PLAN-047](archive/PLAN-047-readout-b-unsealing-preregistration.md) §1·§7 →
 > [PLAN-031 §4](archive/PLAN-031-b-layer-second-confirmation-split.md) ·
-> [PLAN-038 §16.6](plans/PLAN-038-c2prime-transfer-requirements.md) ·
+> [PLAN-038 §16.6](archive/PLAN-038-c2prime-transfer-requirements.md) ·
 > [PLAN-040 §4](archive/PLAN-040-post-remediation-tgate-and-b-layer.md).
 >
 > **계획 다섯의 순서.**
@@ -338,7 +338,7 @@
 >
 > **먼저 읽을 것:** [PLAN-046 §7](archive/PLAN-046-d33-corpus-rebuild-preregistration.md)(실행 기록) ·
 > [PLAN-040 §4](archive/PLAN-040-post-remediation-tgate-and-b-layer.md) ·
-> [PLAN-038 §16.6-2](plans/PLAN-038-c2prime-transfer-requirements.md) ·
+> [PLAN-038 §16.6-2](archive/PLAN-038-c2prime-transfer-requirements.md) ·
 > [upstream/HANDOFF-QUEUE.md](../upstream/HANDOFF-QUEUE.md) **9차**.
 >
 > **계획 넷의 순서(갱신 · PLAN-045 는 종료·아카이브).**
