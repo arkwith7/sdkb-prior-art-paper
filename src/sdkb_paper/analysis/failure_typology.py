@@ -539,6 +539,39 @@ def self_consistency(rows: list[dict]) -> dict[str, float]:
     return {m: (sum(v) / len(v) if v else 0.0) for m, v in out.items()}
 
 
+def f3_eligible(split: str) -> dict[str, bool]:
+    """단위별 **F3 자격**(밀려난 문헌에 개념이 없거나 질의와 공유 0) — 기계가 계산한다.
+
+    F3 은 *밀려난 문헌의 상태*로 정의되고 F1·F4·F5 는 *역전의 메커니즘*으로 정의된다. 두 축이
+    섞여 있어 한 사례가 양쪽에 해당할 수 있으므로, 겹침을 **표에 드러낸다** — 라벨을 고치지 않고.
+    """
+    import pandas as pd
+
+    from ..collect.bq_family_ir import load_family_map
+
+    key_path = TYPOLOGY_DIR / f"key_{split}.jsonl"
+    if not key_path.exists():
+        return {}
+    df = pd.read_parquet(config.IR_CORPUS, columns=["doc_id", "concepts"])
+    con = {r.doc_id: (set(r.concepts) if r.concepts is not None and len(r.concepts) else set())
+           for r in df.itertuples()}
+    fam = load_family_map()
+    famcon: dict[str, set] = {}
+    for d, s in con.items():
+        famcon.setdefault(fam.get(d, d), set()).update(s)
+
+    def cs(x: str) -> set:
+        return famcon.get(x) or con.get(x) or set()
+
+    out = {}
+    for line in key_path.read_text(encoding="utf-8").splitlines():
+        if not line:
+            continue
+        k = json.loads(line)
+        out[k["unit_id"]] = len(cs(k["qid"]) & cs(k["lost_fam"])) == 0
+    return out
+
+
 def build_table(splits: tuple[str, ...] = ("test", "test_b")) -> Path:
     """κ·합의율·유형 빈도 → 논문 표. 사람 라벨이 없으면 **그 사실을 표에 적는다**."""
     from collections import Counter
@@ -611,6 +644,34 @@ def build_table(splits: tuple[str, ...] = ("test", "test_b")) -> Path:
             lines.append(f"| {code} | {desc} | {freq.get(code, 0)} | {freq.get(code, 0) / tot:.3f} |")
         undecided = sum(1 for v in cons.values() if not v)
         lines += ["", f"두 모델이 갈려 합의가 서지 않은 단위 **{undecided}** — 다수결로 만들지 않는다.", ""]
+
+        # --- 사람 라벨 (표본) — LLM 합의가 무너진 이상 **유일한 유효 신호**다 ---
+        hs = {u: v for u, v in human.items() if u.startswith(split + ":")}
+        if not hs:
+            continue
+        keys = {}
+        kp = TYPOLOGY_DIR / f"key_{split}.jsonl"
+        if kp.exists():
+            for line in kp.read_text(encoding="utf-8").splitlines():
+                if line:
+                    k = json.loads(line)
+                    keys[k["unit_id"]] = k
+        elig = f3_eligible(split)
+        lines += [f"### 사람 표본 라벨 (n={len(hs)} · 단독 코더 · LLM 출력 열람 전)", "",
+                  "| 유형 | 빈도 | 비율 | 그중 **F3 자격**(개념 공유 0) |", "|---|---:|---:|---:|"]
+        hf = Counter(hs.values())
+        for code in TYPES:
+            n = hf.get(code, 0)
+            e = sum(1 for u, v in hs.items() if v == code and elig.get(u))
+            lines.append(f"| {code} | {n} | {n / len(hs):.3f} | {e} |")
+        drv = Counter((keys.get(u, {}).get("driver"), v) for u, v in hs.items())
+        lines += ["", "기계 주도항 × 사람 라벨: "
+                  + " · ".join(f"{d}→{lab} {n}" for (d, lab), n in sorted(drv.items(), key=lambda x: -x[1])),
+                  "",
+                  "> **F3 자격 열이 유형 축의 겹침을 드러낸다.** F3 은 *밀려난 문헌의 상태*로, "
+                  "F1·F4·F5 는 *역전의 메커니즘*으로 정의돼 있어 한 사례가 양쪽에 해당할 수 있다. "
+                  "코더는 지배적 원인을 골랐고, 겹침은 κ 를 구조적으로 낮춘다. "
+                  "**정의는 동결돼 있으므로 고치지 않고 드러낸다.**", ""]
 
     TABLE_PATH.parent.mkdir(parents=True, exist_ok=True)
     TABLE_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
