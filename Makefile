@@ -1,4 +1,4 @@
-.PHONY: rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-check
+.PHONY: rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check
 
 setup:
 	uv sync --all-extras
@@ -20,6 +20,13 @@ sig-check:
 # PLAN-048 3단계다. 3단계 종료 시 --warn 을 떼어 차단으로 승격한다 (§2.3).
 verdicts:
 	uv run python scripts/check_verdicts.py --warn
+
+# 투고 파생본을 정본에서 기계로 생성 (PLAN-048 1단계 · 순수 이관).
+# 정본은 읽기만 한다 — 파생본의 모든 문장이 정본에 있는지 스크립트가 검증한다.
+# `--check` 는 **1단계 동안만** 유효하다: 2단계(구조 리팩터)부터 파생본을 직접 편집하므로
+# 그 뒤에는 재생성 정합이 성립하지 않는다. 그때 이 타깃은 이력용으로만 남는다.
+submission-build:
+	uv run python scripts/build_submission.py
 
 # 투고 파생본의 데스크 리젝 요인 — 플레이스홀더·영문 초록·표/그림 상한·분량·내부 링크.
 # 파생본(paper/submission/)이 없으면 대상 부재로 통과한다.
