@@ -1,4 +1,4 @@
-.PHONY: rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check
+.PHONY: rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-check
 
 setup:
 	uv sync --all-extras
@@ -12,6 +12,19 @@ lint:
 # → 직전 세대를 scripts/check_signatures.py 의 HISTORICAL_SIGNATURES 로 이동.
 sig-check:
 	uv run python scripts/check_signatures.py
+
+# 판정 문구 정합 — 원고(정본·투고 파생본)가 paper/verdicts.yaml(판정 SSOT)의 금지 문구를
+# 쓰지 않는가. CLAUDE.md §0.8 문구 사전의 기계 정본이다. 서명 검사(sig-check)가 **수치**의
+# 표류를 막듯 이것은 **판정 강도**의 표류를 막는다 — 재구성마다 재발한 실패 모드다.
+# 지금은 경고 모드(--warn, 종료코드 0): 정본에 이미 위반이 있고 그것을 없애는 작업이
+# PLAN-048 3단계다. 3단계 종료 시 --warn 을 떼어 차단으로 승격한다 (§2.3).
+verdicts:
+	uv run python scripts/check_verdicts.py --warn
+
+# 투고 파생본의 데스크 리젝 요인 — 플레이스홀더·영문 초록·표/그림 상한·분량·내부 링크.
+# 파생본(paper/submission/)이 없으면 대상 부재로 통과한다.
+submission-check:
+	uv run python scripts/submission_check.py --warn
 
 test:
 	uv run pytest -q

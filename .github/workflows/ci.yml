@@ -29,6 +29,18 @@ jobs:
       - name: Signature drift check (docs vs CANONICAL-INDEX)
         run: uv run python scripts/check_signatures.py
 
+      # 판정 문구 정합: 원고가 paper/verdicts.yaml(판정 SSOT)의 금지 문구를 쓰지 않는가.
+      # 수치의 표류를 sig-check 가 막듯 판정 강도의 표류를 이것이 막는다 (CLAUDE.md §0.8).
+      # 지금은 경고 모드 — 정본의 잔여 위반(제목·서지 플레이스홀더)을 없애는 것이
+      # PLAN-048 3단계이고, 1단계는 "순수 이관·문장 수정 0"이라 여기서 고칠 수 없다.
+      # 3단계 종료 시 --warn 을 떼어 차단으로 승격한다 (CLAUDE.md §2.3).
+      - name: Verdict wording check (manuscript vs verdicts.yaml) — warn only
+        run: uv run python scripts/check_verdicts.py --warn
+
+      # 투고 파생본의 데스크 리젝 요인. 파생본이 아직 없으면 대상 부재로 통과.
+      - name: Submission readiness check — warn only
+        run: uv run python scripts/submission_check.py --warn
+
       # 단위 + 통합 테스트. 통합 테스트가 커밋된 스냅샷에서 baseline 을 재조립해
       # 관측 단위 수(Process 8 / SubProcess 12)·특허 0건·결정성·CQ 서명을 검증한다.
       - name: Unit + integration tests

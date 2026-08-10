@@ -1,0 +1,72 @@
+# paper/verdicts.yaml — 판정 단일 정본 (SSOT)
+# 수정은 §1-2와 동급: 사용자 승인 커밋으로만. scripts/check_verdicts.py 가 이 파일을 읽어
+# 원고(정본·파생본)의 판정 문구를 검사한다. PLAN-048 §0.8 문구 사전의 기계 정본.
+
+meta:
+  plan: PLAN-048
+  frozen_date: "2026-08-10"
+  scan_targets:
+    - paper/논문_v0_9_SDKB_통합초안.md
+    - paper/submission/**/*.md
+  # 헤더에 이 키워드가 있는 표는 통째로 면제한다. 두 표는 금지 문구와 경쟁 가설을
+  # **나열하는 것이 임무**이므로(§0.4·§7.6 결론 규칙 표 · §7 경쟁 설명 분석표),
+  # 검사기가 그 표의 내용을 위반으로 세면 표를 지우라는 요구가 된다.
+  exempt_tables_with_header:
+    - "금지되는 결론"
+    - "가를 실험"
+
+verdicts:
+  H3:
+    record:
+      - { registration: PLAN-031, split: A, verdict: 부분지지 }
+      - { registration: PLAN-047, split: B, verdict: 미지지 }
+    composite_allowed:
+      - "동시 충족은 두 분할에서 확인되지 않"
+      - "깊은 회수.*(반복 관측|두 분할)"
+    forbidden:
+      - 'H3[는은]?\s*(전면\s*)?지지되'          # 합성으로 "지지" 단정 금지
+      - '두 분할 모두.*부분\s*지지'              # A판정을 B에 전파 금지
+  H2:
+    record:
+      - { registration: v0.9, verdict: 미검정 }
+      - { registration: PLAN-035, verdict: 기각(실검정 1회, 별도) }
+    forbidden:
+      - '게이트가.*안전(을|성을)\s*보장'
+      - 'H2[는은]?\s*지지'
+  H5:
+    record:
+      - { registration: PLAN-031, split: A, verdict: 기각 }
+      - { registration: PLAN-047, split: B, verdict: 재현되지 않음 }
+    forbidden:
+      - '동적\s*(태스크\s*)?결합의?\s*발견'      # PLAN-049 실측 전 승격 금지
+      - '태스크\s*결합\(entanglement\)'          # 인과 표현 — "의존성"으로 완화(기존 결정)
+  T4:
+    record:
+      - { registration: PLAN-047, verdict: 판정 1회 실패(미확증) }
+    forbidden:
+      - '전달되지\s*않는다'                      # 허용형: "전달을 확증하지 못했다"
+      - 'RAG\s*성능'
+    exempt_line:
+      # §6.2f 교차언어 진단의 "전달"은 T4(검색→생성)가 아니라 B5 의 비교우위가 융합
+      # 시스템으로 옮겨가는지의 이야기다 — 같은 낱말, 다른 층. 동음이의 오탐.
+      - '교차언어|영어 정답|영어 회수|비교우위'
+  P0:
+    record:
+      - { registration: PLAN-031/047, verdict: 양 분할 비유의 }
+    forbidden:
+      - '주\s*시스템.*유의(하|미)?\s*개선'
+  CLAIM_STRENGTH:            # 주장 강도 전역 규칙 (§0.3 · §0.8)
+    forbidden:
+      - '자원\s*지표는\s*태스크\s*성능을\s*대표하지\s*않는다(?!,?\s*그럴 수)'  # 무조건 일반형
+      - '효과가?\s*확실'                          # §0.3 5조건 미충족(현재 2/5)
+      - 'FTO\s*위험을\s*줄'
+      - '(조사|검토)\s*시간.*%\s*절감'
+  PLACEHOLDERS:              # 데스크 리젝 요인 (submission-check와 중복 방어)
+    # 이 라벨만 마스킹을 우회한다(원문 검사): 플레이스홀더는 백틱 안에 적히는 것이
+    # **정상 표기**라, 언급 면제를 적용하면 전량이 보이지 않게 된다.
+    scan_raw: true
+    forbidden:
+      - '\[서지 재확인 필요\]'
+      - '\[실험 후 기입\]'
+      - '\[최종 릴리스 후 기입\]'
+      - '\[미확정 서지\]'
