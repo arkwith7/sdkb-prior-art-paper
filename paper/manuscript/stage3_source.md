@@ -140,11 +140,7 @@ DRQ 는 설계 질문이고, 그 **안에서 결과를 보기 전에 동결한 �
 
 **표 1. 사전등록된 평가 점검과 그 판정 — 근거와 전문은 6장·supplementary [S5](../supplementary/S5-submission-full-v2.md).**
 
-| 연구질문 | 점검 (라벨) | 결과를 보기 전에 동결한 예측 | 판정 · 첫 확증 분할(A) | 판정 · 두 번째 확증 분할(B) | 근거 |
-|---|---|---|---|---|---|
-| **RQ2** 검색 유용성 | **H3** 하이브리드 효과 | 온톨로지 보강 검색은 최강 텍스트 기준선보다 **Recall@100 과 nDCG@20 이 모두** 높고, 그 개선폭은 질의–정답의 어휘 중첩이 **낮은** 집단에서 더 크다 | **부분 지지 — 주 지표에 한정** (R@100 은 P1 에서 유의 개선 · nDCG 조항 미충족 · 사전 지정 주 구성 비유의 · 저중첩 조건 반증) | **미지지** (R@100 은 개선되나 nDCG 조항이 깨졌다 · 주 구성 비유의) | §6.4.1 · §6.4.2 |
-| **RQ3** 계층 특이성 | **H5** 음성 대조군 | 게이트 태스크와 무관한 전문가 매칭 전용 계층(`Skill`·`ExpertCase`·`Mitigation`)의 제거는 검색 성능을 **유의하게 바꾸지 않는다** | **기각 → 교차 태스크 의존성 관측** (제거가 검색을 유의하게 악화) | **재현되지 않음 — 판정 불가** (같은 절제의 값이 0.0000 · "영향 없음"과 "뺄 것이 없음"을 가르지 못한다) | §6.4.3 · §6.4.6 · §7.3 |
-| **RQ5** 전달 | **T4** 하류 생성 층 비회귀 *(H 라벨 없음)* | 검색팔만 바꾸고 생성기를 고정했을 때 **인용 정확도가 떨어지지 않고 환각률이 오르지 않는다**(마진 동결) | *(탐색적 판독 — 계측기 동결이 목적 · 판정 없음)* | **판정 1회 = 실패 — 전달을 확증하지 못했다** (점추정은 제안 팔이 앞서나 신뢰구간 하한이 마진을 넘겼다 · 원인 미구분) | 부록 A |
+{{COPY:**표 1.4a. 사전등록된 평가 점검과 그 판정|table}}
 
 **강등된 세 가설의 판정도 바뀌지 않았고 싣는 자리만 바뀌었다** — **H1**(게이트 판별력) → §4.5·§6.2 ·
 **H2**(승인 안전성) → §8.1 · **H4**(계층 기여) → §6.4.3 절제 표의 A4·A5 행. RQ 번호도 사전등록의 것을
@@ -307,12 +303,7 @@ T1·T2·T3를 얹은 병합 전 승인식이며 T4는 승인식 밖의 설계다
 
 **표 3. 평가 에피소드 — EP 는 새 라벨이며 사전등록 라벨(RQ·H·T)과 겹치지 않는다.**
 
-| | 에피소드 | 묻는 것 | 판정 방식 | 지위 | 결과 |
-|---|---|---|---|---|---|
-| **EP1** | **표현 감사** | 세 태스크의 어휘·관계·CQ가 자원에 **실재하는가** | 계수와 CQ 통과 여부 (결정론적) | 관측 사실 | §6.1 |
-| **EP2** | **게이트 판별력** | 일부러 심은 결함을 게이트가 **잡아내는가**, 멀쩡한 변경을 **거부하지는 않는가** | 아직 판정한 적 없는 홀드아웃 결함 · 사전 지정한 세 조건 | 확증 | §6.2 |
-| **EP3** | **통제된 자원 교체** | 문서집합·설정을 고정하고 **자원만 갈아 끼웠을 때** 게이트는 무엇을 하는가 | 사전등록된 승인식(T1·T2·T3)의 적용 | 별도 사전등록 아래의 판정 | §6.3 |
-| **EP4** | **검색 효용과 경계** | 온톨로지 보강이 강한 텍스트 기준선을 **개선하는가, 어디까지인가** | 봉인 분할 1회 개봉 × 두 번 (독립 확증 분할 둘) | 확증 + 탐색적 진단 | §6.4 |
+{{COPY:섞어 읽지 않도록 라벨을 붙여 결과 장을 그대로 이 순서로 싣는다.|table}}
 
 ## 3.3 설계지식의 승격 기준 — 무엇을 원리로 싣는가
 
@@ -338,11 +329,7 @@ SDKB의 T-Box는 선행기술 검색을 위해 만든 단일목적 스키마가 
 
 **표 4. 세 태스크 뷰와 본 논문에서의 지위.**
 
-| 뷰 | 주요 클래스 | 대표 CQ | ABox 근거 | 본 논문의 지위 |
-|---|---|---|---|---|
-| 전문가 매칭 | `Problem`·`RootCause`·`FailureMode`·`Mitigation`·`Skill`·`Expert`·`ExpertCase` | 11·12·15–18·20·28 | 비식별·생성 인스턴스 | 표현 타당성 + **음성 대조군**(§5.12) · 성능 미평가 |
-| 선행기술조사 | `Patent`·`Claim`·`ClaimFeature`·`PriorArtJudgment`·`Rejection`·`ClassificationSymbol` | 09·10·22·27 (+29–31 측정) | 거절특허 1,000 · 심사관 인용 2,534 · claim sidecar | **주 정량 검증** (Recall@K·nDCG·게이트) |
-| 기술예측 | `TechnologyNode`·`Scenario`·`STEEPVEFactor`·`RealOption`·`TRL` | 01–08·23–26 | G1·G2 시계열 | 2차 재사용 증거 (§7.4) |
+{{COPY:각 \(V_t=(C_t,R_t,Q_t)\)는 태스크별 클래스·관계·CQ의 논리적 뷰이며|table}}
 
 나머지 CQ13·14·19·21은 공급망·규제처럼 둘 이상의 뷰를 잇는 성격이어서 **공유 코어(CQ-CORE)** 로
 귀속한다. 세 뷰 가운데 선행기술조사만 제도적으로 기준점이 되는 약한 qrel을 가지므로 정량 검증이
@@ -386,14 +373,7 @@ SDKB는 단일 파일이 아니라 목적과 코퍼스가 다른 버전 계보�
 
 **표 5. 도달성 사다리 — 하나의 숫자 대신 해상도별로 층층이 적는다.**
 
-| 해상도 | 정의 | 도달성 |
-|---|---|---:|
-| 노드 도달성 | `hasPriorArtExaminer`의 고유 대상이 그래프 노드로 존재 | 2,211/2,321 = 95.3% |
-| Process∪Device 의미 도달성 | 인용문헌이 공정 또는 소자 개념으로 연결 | 54.6% |
-| +Material 의미 도달성 | 위 관계에 재료 개념 추가 | 63.4% |
-| +전체 의미 링크 | 역량·고장·장비 등 도메인 의미 관계 추가 | 70.5% |
-| +CPC/IPC 분류 도달성 | 의미 링크에 분류코드 연결 추가 | 95.3% |
-| ClaimFeature 도달성 | 판단 연결이 있는 표본에서 선행기술이 한정요소 수준으로 연결 | 402/584 = 68.8% |
+{{COPY:정답 자원이 그래프에 **얼마나 닿아 있는지**는 보는 해상도에 따라 크게 달라진다.|table}}
 
 심사관 인용은 전부 2,534건이고 그중 30건이 비특허문헌이다. 2,321은 `hasPriorArtExaminer`가 가리키는
 **고유 특허**의 수다. **2,534 · 2,321 · 2,211 · 584는 서로 다른 분모이므로 하나의 "정답 수"로 섞어
@@ -447,12 +427,7 @@ Accept(\Delta G)=
 
 **표 6. 승인식의 각 항 — 어긋나면 무엇이 일어나는가.**
 
-| 항 | 말로 풀면 | 어긋나면 |
-|---|---|---|
-| L0–L3 | 최신인가 · 구조가 맞는가 · 논리가 모순되지 않는가 · 필수 질문에 답하는가 | 즉시 거부 |
-| **T1** | 바꾼 뒤에도 **검색 성능이 떨어지지 않았는가** | 허용 폭 \(\epsilon\) 을 넘겨 떨어지면 거부 |
-| **T2** | 전체 평균은 괜찮아도 **특정 집단만 나빠지지 않았는가** | 한 집단이라도 \(\delta\) 이상 떨어지면 거부 |
-| **T3** | **다른 갈래**가 답하던 질문을 여전히 답하는가 | 통과율이 하나라도 뒷걸음치면 거부 |
+{{COPY:식이 **곱**이라는 것이 요점이다|table}}
 
 \(\Delta R_{100}\)은 기준 버전 대비 Recall@100 차이, \(LB_{95\%}\)는 질의 단위 paired bootstrap
 신뢰구간의 하한이다. \(s\)는 미리 정해 둔 거절근거·공정·언어 하위집단, \(f\)는 다른 태스크와 공유
@@ -713,12 +688,7 @@ b=19, c=0으로 방향이 가설의 반대 · 위양성 0/18). 원인은 게이�
 
 **표 7. 자원만 교체했을 때의 검색 성능 (test 198질의 · family Recall@100).**
 
-| 시스템 (test 198질의 · family R@100) | O (교정 전) | O′ (교정 후) | Δ |
-|---|---:|---:|---:|
-| B0·B2·B3 텍스트 · B4 분류 | 불변 | 불변 | 0 (텍스트를 손대지 않았으므로) |
-| **B5 온톨로지 단독** | 0.1800 | **0.2282** | **+0.0482 (+27%)** |
-| P0★ | 0.4635 | 0.4543 | −0.0092 |
-| **P1 (주 시스템)** | 0.4849 | 0.4556 | **−0.0293** · 95% CI [−0.0542, −0.0053] |
+{{COPY:**자원 측 지표는 전부 좋아졌다.**|table}}
 
 **판정: T1 실패 → 승인 거부(Accept = 0).** ΔR@100의 신뢰구간 하한이 비열등 마진 −ε = −0.02를
 넘어섰다. T2(하위집단 최대 하락 +0.0401 < δ = 0.05)와 T3(em·tf·core 통과율 1.000 유지)는 통과했고
@@ -754,22 +724,7 @@ b=19, c=0으로 방향이 가설의 반대 · 위양성 0/18). 원인은 게이�
 
 **표 8. 두 확증 분할의 검색 성능 (2-panel) — 기준선은 각 패널의 Text Hybrid(B3)이고, Δ·CI·*p*·승/패/동은 질의 단위 paired bootstrap 10,000회다.**
 
-| | 시스템 | R@100 | Δ vs B3 | 95% CI | *p* | 승/패/동 | Δ nDCG@20 | *p* |
-|---|---|---:|---:|---|---:|---|---:|---:|
-| **A** | BM25-Claim (B0) | 0.4126 | −0.0189 | [−0.0535, +0.0152] | .279 | 15/22/161 | — | — |
-| **A** | Dense (B2 · Titan v2) | 0.3031 | −0.1285 | [−0.1691, −0.0895] | .000 | 6/57/135 | — | — |
-| **A** | **Text Hybrid (B3 = B0⊕B2 RRF)** | **0.4315** | — | — | — | — | — | — |
-| **A** | CPC/IPC only (B4) | 0.1860 | −0.2455 | [−0.3018, −0.1895] | .000 | 14/89/95 | — | — |
-| **A** | Ontology-only (B5) | 0.1800 | −0.2515 | [−0.3163, −0.1863] | .000 | 25/96/77 | — | — |
-| **A** | Text+Ontology (P0★ · 사전지정 주) | 0.4635 | +0.0319 | [−0.0139, +0.0785] | **.181** | 41/22/135 | **−0.0395** | **.029** |
-| **A** | **+ClaimFeature (P1)** | **0.4849** | **+0.0534** | **[+0.0145, +0.0926]** | **.008** | 37/11/150 | −0.0176 | .227 |
-| **B** | BM25-Claim (B0) | 0.3254 | −0.0848 | [−0.1229, −0.0489] | .000 | 9/40/149 | −0.0240 | .028 |
-| **B** | Dense (B2 · Titan v2) | 0.3646 | −0.0456 | [−0.0831, −0.0090] | .016 | 17/32/149 | −0.0513 | .000 |
-| **B** | **Text Hybrid (B3 = B0⊕B2 RRF)** | **0.4102** | — | — | — | — | — | — |
-| **B** | CPC/IPC only (B4) | 0.3012 | −0.1090 | [−0.1745, −0.0458] | .001 | 35/73/90 | −0.0763 | .000 |
-| **B** | Ontology-only (B5) | 0.1470 | −0.2633 | [−0.3249, −0.2012] | .000 | 20/104/74 | −0.1756 | .000 |
-| **B** | Text+Ontology (P0★ · 사전지정 주) | 0.4344 | +0.0242 | [−0.0084, +0.0574] | **.147** | 25/18/155 | −0.0218 | .210 |
-| **B** | **+ClaimFeature (P1)** | **0.4445** | **+0.0343** | **[+0.0094, +0.0615]** | **.004** | 19/9/170 | −0.0136 | .390 |
+{{COPY:**표 6.4.1a. 두 확증 분할의 검색 성능 (2-panel)|table}}
 
 패널 A의 기준선 네 행에 Δ nDCG@20이 비어 있는 것은 **그 값을 보고하지 않았기 때문**이다 — 첫 분할의
 보조 지표 비교는 사전등록된 두 제안 구성에 대해서만 산출했다. 빈칸을 뒤에 채우지 않는다.
@@ -838,25 +793,7 @@ P0★의 우월성 미달과 이 통과는 모순되지 않으며, 유리한 델
 10,000회 · 절제 행의 `차이`는 **제거 손실**(full − ablated · 양수 = 계층 기여) · Holm m=8 ·
 ⚠ 표시 집단은 n<20으로 확정 결론을 내지 않는다).
 
-| 집단/제거 계층 | 질의 수 | qrel 수 | Text Hybrid R@100 | 제안법 R@100 | 차이 | 95% CI |
-|---|---:|---:|---:|---:|---:|---|
-| 진보성만 (제29조 제2항) | 70 | 182 | 0.3802 | 0.4112 | +0.0310 | [−0.0479,+0.1107] (p=0.440) |
-| 신규성+진보성 (제1·2항) ⚠ | 3 | 5 | 0.3333 | 0.3333 | +0.0000 | (n<20 · 확정 결론 금지) |
-| 거절근거 구조화 라벨 없음 | 125 | 292 | 0.4627 | 0.5299 | +0.0672 | [+0.0256,+0.1104] (p=0.002) |
-| **low lexical overlap** | 27 | 59 | 0.1975 | 0.1389 | **−0.0586** | [−0.2099,+0.0741] (p=0.448) |
-| **high lexical overlap** | 171 | 420 | 0.4685 | 0.5396 | **+0.0711** | [+0.0330,+0.1104] (p=0.000) |
-| 정답 전량 한국어 | 98 | 207 | 0.6023 | 0.6959 | +0.0936 | [+0.0295,+0.1579] (p=0.004) |
-| 정답에 외국어 포함 | 100 | 272 | 0.2642 | 0.2782 | +0.0140 | [−0.0313,+0.0578] (p=0.518) |
-| 공정군 process | 181 | 432 | 0.4426 | 0.5010 | +0.0584 | [+0.0161,+0.1006] (p=0.006) |
-| 공정군 device ⚠ | 13 | 36 | 0.3590 | 0.3846 | +0.0256 | (n<20 · 확정 결론 금지) |
-| -CPC/IPC (A1) | 198 | 479 | — | 0.4824 | +0.0025 | [−0.0259,+0.0300] (p=0.844) |
-| -공정·소자 (A2) | 198 | 479 | — | 0.4997 | −0.0147 | [−0.0396,+0.0101] (p=0.253) |
-| -재료·장비·고장 (A3) | 198 | 479 | — | 0.4930 | −0.0081 | [−0.0271,+0.0076] (p=0.392) |
-| -ClaimFeature (A4) | 198 | 479 | — | 0.4779 | +0.0070 | [−0.0038,+0.0215] (p=0.271) |
-| -Rejection ground (A5) | 198 | 479 | — | 0.4849 | +0.0000 | (oracle-free 구조적 0) |
-| -계층 경로 (A6) | 198 | 479 | — | 0.4849 | +0.0000 | (선택 가중 w_h=0 → 구조적 0) |
-| -전체 온톨로지 (A7 = 텍스트 전용) | 198 | 479 | — | 0.4315 | +0.0534 | [+0.0145,+0.0926] (p=0.008 · Holm 후 n.s.) |
-| **-Expert layer (A8, 음성 대조군)** | 198 | 479 | — | 0.4534 | **+0.0316** | **[+0.0105,+0.0560]** (p=0.002·Holm 유의) |
+{{COPY:### 6.4.3 하위집단과 절제|table}}
 
 **절제 표를 읽을 때의 두 주의점.** 첫째, A2·A3의 제거 손실이 **음수**다 — 개별 개념 축이 독립적으로
 기여한다는 그림은 자료가 지지하지 않으며, 이득은 축의 합이 아니라 개념 겹침이라는 **하나의 결합
@@ -1078,12 +1015,7 @@ A-Box가 비식별·생성 성격이라 실인물 매칭 정확도를 검정하�
 **표 10. 코어 설계원리 DP1–DP4.** (표의 §4.9·§4.9.1 참조는 축약 전 전문
 [S5](../supplementary/S5-submission-full-v2.md)의 절 번호이며, 이 투고본에서는 각각 §4.5·§4.5.1이다.)
 
-| | 설계원리 | 근거 (실측) | 설계 시점 | 확인 시점 | 등급 |
-|---|---|---|---|---|---|
-| **DP1** | **층별 검증** — 온톨로지 내부 품질과 하류 태스크 성능은 **별도 층에서** 평가한다 | §6.3 — 문서당 개념 1.545 → 3.779(2.4배)인데 주 시스템 Recall@100 은 −0.0293 | 확인이 먼저 | 2026-08-01 | **확립** |
-| **DP2** | **한 층 아래 승인** — 자원 변경은 자원 지표가 아니라 **다음 사용 층의 비회귀 결과**로 승인한다 | §6.3 — 형식 검증 L0–L3 를 **전부 통과한** 델타를 성능 조건 T1 이 거부(Accept = 0) | **§4.9 설계 시점** | 2026-08-01 | **확립** |
-| **DP3** | **교차 태스크 감시** — 공유 T-Box 에서는 **주 태스크 성능만으로** 변경을 승인하지 않는다 | §6.2 — 교차 결함을 T3 만 단독 검출(12/45 · 단측 *p*=.0001) · §6.4.3 — 음성 대조군(A8) 제거가 검색을 −0.0316 악화, 다만 **§6.4.6 두 번째 분할에서는 0.0000 으로 갈렸다** | **§4.9 설계 시점**(T3) | 2026-07 | **확립** — 근거는 결함주입 T3 단독 검출이 진다. A8 근거는 **두 표본에서 갈렸음을 그대로 적는다**(경쟁 설명 §7.9) |
-| **DP4** | **통제된 자원 교체** — 문서집합·모델·가중치를 고정하고 **자원만 교체**해야 온톨로지의 효과가 판별된다 | §8.1.1 — T-Box 가 한 번도 바뀌지 않아 H2 를 **원리적으로 잴 수 없었다** · §8.1.2 — 두 팔이 처음 성립한 뒤에야 판정이 나왔다 | 확인이 먼저 | 2026-08-01 | **확립** |
+{{COPY:등급은 아래 표에 그대로 적혀 있고 이 분류로 바뀌지|table}}
 
 **설계 시점 열이 이 표의 정직성 장치다.** DP2·DP3은 게이트를 설계할 때 이미 그 형태로 적혀 있었고,
 나머지 둘은 **관측이 먼저였다.** 관측이 먼저인 원리를 "처음부터 그렇게 설계했다"고 쓰면 그것이
@@ -1097,10 +1029,7 @@ A-Box가 비식별·생성 성격이라 실인물 매칭 정확도를 검정하�
 
 **표 11. 범위 설계원리 DP5–DP6 — 등급은 §3.3의 문턱이 정한 그대로다.**
 
-| | 설계원리 | 근거 (실측) | 설계 시점 | 확인 시점 | 등급 |
-|---|---|---|---|---|---|
-| **DP5** | **후보생성 분리** — 재순위화는 후보 풀 **밖**의 문헌을 복구할 수 없으므로, 후보생성과 **구분해** 평가한다 | §6.4.5 — 상한이 없을 때 세 시스템의 미도달 질의 비율이 **완전히 동일**(26.8 % · 55.1 %) | 확인이 먼저 | 2026-08-02 | **확립** |
-| **DP6** | **전달 검증** — 검색 지표의 개선을 검토 효율이나 생성 답변 품질로 **자동 일반화하지 않는다** | §6.4.5 — Recall@100 이 +0.0534 인데 Candidate Reduction 중앙값 **0.0 %** · 부록 A — 검색 층에서 유의하게 개선된 팔이 **생성 층 비열등 판정을 통과하지 못했다**(T4 실패 · 하한 −0.0205 대 마진 −0.02) | §4.9.1(T4 설계) | 2026-08-09 (확증 판정 1회) | **제안** |
+{{COPY:**등급은 §3.3의 문턱이 정한 그대로다**|table}}
 
 **DP6이 제안에 머무는 이유를 적는다.** 문턱 ②(경쟁 설명 배제)가 미달이다 — 판정 자체는 DP6을
 **지지하는 방향**이지만, 실패의 원인이 **전달의 부재인지 검정력의 부족인지 가르지 못했다.** 신뢰구간
@@ -1310,81 +1239,4 @@ low-overlap 0.0079 · \(\epsilon_{T4}\)=0.02 · \(\eta\)=0.01) · 게이트 규�
 
 # 참고문헌
 
-Alcácer, J., & Gittelman, M. (2006). Patent citations as a measure of knowledge flows: The influence of examiner citations. *The Review of Economics and Statistics, 88*(4), 774–779. https://doi.org/10.1162/rest.88.4.774
-
-Bekamiri, H., Hain, D. S., & Jurowetzki, R. (2024). PatentSBERTa: A deep NLP based hybrid model for patent distance and classification using augmented SBERT. *Technological Forecasting and Social Change, 206*, 123536. https://doi.org/10.1016/j.techfore.2024.123536
-
-Brank, J., Grobelnik, M., & Mladenić, D. (2005). A survey of ontology evaluation techniques. In *Proceedings of the Conference on Data Mining and Data Warehouses (SiKDD 2005)* (pp. 166–170). Ljubljana, Slovenia. https://aile3.ijs.si/dunja/SiKDD2005/Papers/BrankEvaluationSiKDD2005.pdf
-
-Buckley, C., & Voorhees, E. M. (2004). Retrieval evaluation with incomplete information. In *Proceedings of the 27th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval* (pp. 25–32). https://doi.org/10.1145/1008992.1009000
-
-Büttcher, S., Clarke, C. L. A., Yeung, P. C. K., & Soboroff, I. (2007). Reliable information retrieval evaluation with incomplete and biased judgements. In *Proceedings of the 30th Annual International ACM SIGIR Conference* (pp. 63–70). https://doi.org/10.1145/1277741.1277755
-
-Chiu, B., Korhonen, A., & Pyysalo, S. (2016). Intrinsic evaluation of word vectors fails to predict extrinsic performance. In *Proceedings of the 1st Workshop on Evaluating Vector-Space Representations for NLP (RepEval)* (pp. 1–6). https://aclanthology.org/W16-2501/
-
-Daniell, K., Buzhinsky, I., & Björkqvist, S. (2025). Efficient patent searching using graph transformers. In *Proceedings of the PatentSemTech Workshop at SIGIR 2025*. https://doi.org/10.48550/arXiv.2508.10496
-
-Faruqui, M., Tsvetkov, Y., Rastogi, P., & Dyer, C. (2016). Problems with evaluation of word embeddings using word similarity tasks. In *Proceedings of the 1st Workshop on Evaluating Vector-Space Representations for NLP (RepEval)* (pp. 30–35). https://aclanthology.org/W16-2506/
-
-Flouris, G., Manakanatas, D., Kondylakis, H., Plexousakis, D., & Antoniou, G. (2008). Ontology change: Classification and survey. *The Knowledge Engineering Review, 23*(2), 117–152. https://doi.org/10.1017/S0269888908001367
-
-Ghosh, M., Rose, M. E., Erhardt, S., Buunk, E., & Harhoff, D. (2024). PaECTER: Patent-level representation learning using citation-informed transformers. *arXiv*. https://doi.org/10.48550/arXiv.2402.19411
-
-Gruber, T. R. (1993). A translation approach to portable ontology specifications. *Knowledge Acquisition, 5*(2), 199–220. https://doi.org/10.1006/knac.1993.1008
-
-Gregor, S., & Hevner, A. R. (2013). Positioning and presenting design science research for maximum impact. *MIS Quarterly, 37*(2), 337–355. https://doi.org/10.25300/MISQ/2013/37.2.01
-
-Grüninger, M., & Fox, M. S. (1995). Methodology for the design and evaluation of ontologies. In *Proceedings of the IJCAI-95 Workshop on Basic Ontological Issues in Knowledge Sharing*.
-
-Heist, N., Hertling, S., & Paulheim, H. (2023). KGrEaT: A framework to evaluate knowledge graphs via downstream tasks. In *Proceedings of the 32nd ACM International Conference on Information and Knowledge Management* (pp. 3938–3942). https://doi.org/10.1145/3583780.3615241
-
-Hevner, A. R., March, S. T., Park, J., & Ram, S. (2004). Design science in information systems research. *MIS Quarterly, 28*(1), 75–105. https://doi.org/10.2307/25148625
-
-Hogan, A., Blomqvist, E., Cochez, M., d'Amato, C., Melo, G. de, Gutierrez, C., Kirrane, S., Gayo, J. E. L., Navigli, R., Neumaier, S., Ngomo, A.-C. N., Polleres, A., Rashid, S. M., Rula, A., Schmelzeisen, L., Sequeda, J., Staab, S., & Zimmermann, A. (2021). Knowledge graphs. *ACM Computing Surveys, 54*(4), Article 71. https://doi.org/10.1145/3447772
-
-Keet, C. M., & Ławrynowicz, A. (2016). Test-driven development of ontologies. In *The Semantic Web: Latest Advances and New Domains (ESWC 2016)* (LNCS Vol. 9678, pp. 642–657). Springer. https://doi.org/10.1007/978-3-319-34129-3_39
-
-Kontokostas, D., Westphal, P., Auer, S., Hellmann, S., Lehmann, J., Cornelissen, R., & Zaveri, A. (2014). Test-driven evaluation of linked data quality. In *Proceedings of the 23rd International Conference on World Wide Web* (pp. 747–758). https://doi.org/10.1145/2566486.2568002
-
-Krestel, R., Chikkamath, R., Hewel, C., & Risch, J. (2021). A survey on deep learning for patent analysis. *World Patent Information, 65*, 102035. https://doi.org/10.1016/j.wpi.2021.102035
-
-Lee, J., & Choi, H. (2023). A quality assessment of Korean–English patent machine translation: Automatic and human evaluations of K2E-PAT, Patent Translate and WIPO Translate translations. *FORUM: International Journal of Interpretation and Translation, 21*(2), 236–257. https://doi.org/10.1075/forum.00030.lee
-
-Lupu, M., & Hanbury, A. (2013). Patent retrieval. *Foundations and Trends in Information Retrieval, 7*(1), 1–97. https://doi.org/10.1561/1500000027
-
-Magdy, W., & Jones, G. J. F. (2014). Studying machine translation technologies for large-data CLIR tasks: A patent prior-art search case study. *Information Retrieval, 17*(5–6), 492–519. https://doi.org/10.1007/s10791-013-9231-6
-
-Mahdabi, P., & Crestani, F. (2014). Query-driven mining of citation networks for patent citation retrieval and recommendation. In *Proceedings of the 23rd ACM International Conference on Information and Knowledge Management* (pp. 1659–1668). https://doi.org/10.1145/2661829.2661899
-
-Piroi, F., & Hanbury, A. (2019). Multilingual patent text retrieval evaluation: CLEF–IP. In *Information Retrieval Evaluation in a Changing World* (The Information Retrieval Series, pp. 365–387). Springer. https://doi.org/10.1007/978-3-030-22948-1_15
-
-Pauwels, P., Van Den Bersselaar, E., & Verhelst, L. (2024). Validation of technical requirements for a BIM model using semantic web technologies. *Advanced Engineering Informatics, 60*, 102426. https://doi.org/10.1016/j.aei.2024.102426
-
-Porzel, R., & Malaka, R. (2004). A task-based approach for ontology evaluation. In *Proceedings of the ECAI-2004 Workshop on Ontology Learning and Population*. Valencia, Spain.
-
-Risch, J., Alder, N., Hewel, C., & Krestel, R. (2020). PatentMatch: A dataset for matching patent claims and prior art. *arXiv*. https://doi.org/10.48550/arXiv.2012.13919
-
-Samuel, S., Martin, A., Yang, E., Yates, A., Lawrie, D., Soboroff, I., Dietz, L., & Van Durme, B. (2026). Beyond relevance: On the relationship between retrieval and RAG information coverage. *arXiv*. https://doi.org/10.48550/arXiv.2603.08819
-
-Shalaby, W., & Zadrozny, W. (2019). Patent retrieval: A literature review. *Knowledge and Information Systems, 61*, 631–660. https://doi.org/10.1007/s10115-018-1322-7
-
-Shomee, H. H., Wang, Z., Ravi, S. N., & Medya, S. (2025). A survey on patent analysis: From NLP to multimodal AI. In *Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)* (pp. 8545–8561). https://doi.org/10.18653/v1/2025.acl-long.419
-
-Siddharth, L., Li, Y., & Luo, J. (2022). Retrieving technologically distant patents using a knowledge graph approach. *Journal of Engineering Design, 33*(8–9), 670–683. https://doi.org/10.1080/09544828.2022.2144714
-
-Solihin, W., Eastman, C., & Lee, Y.-C. (2015). Toward robust and quantifiable automated IFC quality validation. *Advanced Engineering Informatics, 29*(3), 739–756. https://doi.org/10.1016/j.aei.2015.07.006
-
-Thomas, R., & Uminsky, D. (2020). The problem with metrics is a fundamental problem for AI. *arXiv*. https://doi.org/10.48550/arXiv.2002.08512
-
-United States Patent and Trademark Office. (2023). *Manual of Patent Examining Procedure § 904: How to search*. https://www.uspto.gov/web/offices/pac/mpep/s904.html
-
-Venable, J., Pries-Heje, J., & Baskerville, R. (2016). FEDS: A framework for evaluation in design science research. *European Journal of Information Systems, 25*(1), 77–89. https://doi.org/10.1057/ejis.2014.36
-
-W3C. (2017). *Shapes Constraint Language (SHACL)*. W3C Recommendation. https://www.w3.org/TR/shacl/
-
-Wilkinson, M. D., Dumontier, M., Aalbersberg, I. J., et al. (2016). The FAIR Guiding Principles for scientific data management and stewardship. *Scientific Data, 3*, 160018. https://doi.org/10.1038/sdata.2016.18
-
-Zaveri, A., Rula, A., Maurino, A., Pietrobon, R., Lehmann, J., & Auer, S. (2016). Quality assessment for linked data: A survey. *Semantic Web, 7*(1), 63–93. https://doi.org/10.3233/SW-150175
-
-Zhang, X., Thakur, N., Ogundepo, O., Kamalloo, E., Alfonso-Hermelo, D., Li, X., Liu, Q., Rezagholizadeh, M., & Lin, J. (2023). MIRACL: A multilingual retrieval dataset covering 18 diverse languages. *Transactions of the Association for Computational Linguistics, 11*, 1114–1131. https://doi.org/10.1162/tacl_a_00595
-
+{{BIB}}

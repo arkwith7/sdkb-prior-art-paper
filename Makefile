@@ -16,10 +16,11 @@ sig-check:
 # 판정 문구 정합 — 원고(정본·투고 파생본)가 paper/verdicts.yaml(판정 SSOT)의 금지 문구를
 # 쓰지 않는가. CLAUDE.md §0.8 문구 사전의 기계 정본이다. 서명 검사(sig-check)가 **수치**의
 # 표류를 막듯 이것은 **판정 강도**의 표류를 막는다 — 재구성마다 재발한 실패 모드다.
-# 지금은 경고 모드(--warn, 종료코드 0): 정본에 이미 위반이 있고 그것을 없애는 작업이
-# PLAN-048 3단계다. 3단계 종료 시 --warn 을 떼어 차단으로 승격한다 (§2.3).
+# **차단 모드** (2026-08-12 · PLAN-048 3단계 종료 시 승격 · §2.3). 승격 시점의 실측은
+# 정본·파생본 모두 위반 0이다 — 경고 모드로 시작한 이유(정본의 제목·서지 플레이스홀더)가
+# 3단계에서 해소됐다. 이제 위반은 곧 CI 실패다.
 verdicts:
-	uv run python scripts/check_verdicts.py --warn
+	uv run python scripts/check_verdicts.py
 
 # 투고 파생본을 정본에서 기계로 생성 (PLAN-048 1단계 · 순수 이관).
 # 정본은 읽기만 한다 — 파생본의 모든 문장이 정본에 있는지 스크립트가 검증한다.
@@ -30,8 +31,14 @@ submission-build:
 
 # 투고 파생본의 데스크 리젝 요인 — 플레이스홀더·영문 초록·표/그림 상한·분량·내부 링크.
 # 파생본(paper/submission/)이 없으면 대상 부재로 통과한다.
+# **차단 모드** (2026-08-12 · PLAN-048 3단계 종료 시 승격 · §2.3).
 submission-check:
-	uv run python scripts/submission_check.py --warn
+	uv run python scripts/submission_check.py
+
+# 투고 파생본을 산문 소스 + 동결 표에서 기계로 조립 (PLAN-048 3단계).
+# 표의 수치는 축약 전 전문(S5)에서 문자 단위로 복사한다 — 손으로 옮겨 적지 않는다(§1-1).
+submission-stage3:
+	uv run python scripts/build_submission_stage3.py
 
 test:
 	uv run pytest -q
