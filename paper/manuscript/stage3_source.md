@@ -16,13 +16,13 @@
 
 이 평가에서 층별 검증, 한 층 아래 승인, 교차 태스크 보존, 통제된 교체라는 이전 가능한 설계원리를 도출한다. 한계도 분명하다 — 단일 도메인이며, 승인 거부의 실질 사례는 1회이고 그 원인이 자원 쪽인지 점수 계산식 쪽인지는 가르지 못했으며, 질의가 **이미 온톨로지에 등재된 특허**에 한정된다(자유 텍스트 질의를 받는 텍스트→개념 매핑 단계는 후속 과제다).
 
-**주제어:** 반도체 도메인 온톨로지 데이터셋, 태스크 확장형 온톨로지, 온톨로지 진화, 승인 게이트, 대리지표의 어긋남, 교차 태스크 비회귀, 선행기술 검색, 심사관 인용, SHACL, 누출 통제 평가
+**주제어:** 반도체 도메인 온톨로지 데이터셋, 온톨로지 진화, 태스크 인식 승인 게이트, 교차 태스크 비회귀, 대리지표의 어긋남, 선행기술 검색, 설계과학연구
 
 ## Abstract
 
-Engineering-domain ontologies keep changing after they are built. Whether a change that passes structural and logical checks also preserves task performance is a separate question, and most ontology-evaluation work stops at post-hoc, resource-level quality. The problem grows when several tasks share one vocabulary: a change approved on one task's score can silently break another task's query paths. Following a design science research (DSR) approach, we present two artifacts. The first is SDKB (Semiconductor Domain Knowledge Base), a semiconductor-domain ontology dataset that carries expert matching, prior-art search and technology foresight as task views on one shared schema (T-Box). The second is a task-aware release gate that adds three task conditions to four layers of formal validation (L0–L3): retrieval non-inferiority (T1), subgroup safety (T2), and non-regression of the other tasks' competency questions (T3). Evaluation proceeds in four episodes: a representation audit (SHACL, 31 competency questions); leakage-controlled retrieval comparison anchored on 1,000 rejected patents and examiner citations over two non-overlapping confirmatory splits (198 queries each); holdout fault injection on 45 previously unjudged faults; and a controlled resource swap in which documents, code and settings are frozen and only the ontology is replaced. In the swap, a real change that raised concepts per document 2.4-fold and passed all four formal layers *reduced* retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]), and T1 rejected it. In holdout fault injection, T3 alone detected 12 of 45 cross-task faults with 0 of 27 false alarms. Retrieval utility appears with an explicit boundary: deep recall improved in both splits (+0.0534, +0.0343), while the pre-specified primary configuration did not reach significance and top-rank ordering (nDCG@20) did not improve. We derive four core and two scope design principles, and state the limits: a single domain; one refusal case whose cause (resource versus scoring function) remains undistinguished; and queries restricted to patents already represented in the ontology, since the pipeline has no text-to-concept mapping stage for free-text queries.
+Engineering ontologies keep changing after release, and whether a change that passes structural and logical checks preserves task performance is a separate question that most ontology evaluation, stopping at resource-level quality, leaves open. The problem grows when tasks share a vocabulary: a change approved on one task's score can break another's query paths. Following design science research, we present two artifacts: SDKB (Semiconductor Domain Knowledge Base), an ontology dataset carrying expert matching, prior-art search and technology foresight as task views on one shared schema (T-Box); and a task-aware release gate adding three conditions to four layers of formal validation (L0–L3) — retrieval non-inferiority (T1), subgroup safety (T2), and non-regression of other tasks' competency questions (T3). Evaluation runs in four episodes: a representation audit (SHACL, 31 competency questions); a leakage-controlled retrieval comparison over two non-overlapping confirmatory splits (198 queries each), anchored on 1,000 rejected patents and examiner citations; holdout fault injection on 45 unjudged faults; and a controlled resource swap with documents, code and settings frozen. In the swap, a change raising concepts per document 2.4-fold and passing all four formal layers *reduced* retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]), and T1 rejected it. T3 alone detected 12 of 45 cross-task faults, with 0 of 27 false alarms. Retrieval utility carries an explicit boundary: deep recall improved in both splits (+0.0534, +0.0343), while the pre-specified primary configuration reached no significance and nDCG@20 did not improve. We derive four core and two scope design principles, and state the limits: one domain, one refusal whose cause stays undistinguished, and queries confined to patents already in the graph.
 
-**Keywords:** semiconductor domain ontology dataset; task-extensible ontology; ontology evolution; release approval gate; proxy-metric mismatch; cross-task non-regression; prior-art search; examiner citations; SHACL; leakage-controlled evaluation
+**Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
 ## 약어표 (Nomenclature)
 
@@ -49,7 +49,7 @@ Engineering-domain ontologies keep changing after they are built. Whether a chan
 | T1–T4 | 과제 조건 — 검색 비열등성 · 하위집단 안전성 · 교차 태스크 CQ 비회귀 · 하류 생성 층 비회귀 (§4.5) |
 | B0–B5 / P0–P2 | 비교 시스템 — 기준선 / 제안 시스템 (§5.5) |
 | A1–A8 | 절제(ablation) 조건 · A8은 음성 대조군 (§5.12) |
-| \(\epsilon\), \(\delta\) | 비열등 허용한계 0.02, 하위집단 하락 한계 0.05 (§4.9) |
+| \(\epsilon\), \(\delta\) | 비열등 허용한계 0.02, 하위집단 하락 한계 0.05 (§4.5) |
 
 ---
 
@@ -122,14 +122,12 @@ regression)** 이며, 그래서 게이트에는 "검색이 나빠지지 않았�
 - **DRQ1** — 세 태스크를 하나의 공유 T-Box로 표현하면서 태스크별 확장이 가능한 온톨로지 데이터셋은
   **어떻게 설계할 수 있는가?** (§4.1–4.7 · EP1)
 - **DRQ2** — 형식적으로 유효한 변경이 하류 태스크 성능과 **다른 태스크의 기능**을 훼손하지 않도록
-  릴리스 전에 평가하는 게이트는 **어떻게 설계할 수 있는가?** (§4.8–4.9 · EP2 · EP3)
+  릴리스 전에 평가하는 게이트는 **어떻게 설계할 수 있는가?** (§4.4–4.5 · EP2 · EP3)
 - **DRQ3′** — 산출물 평가에서 **어떤 효용과 실패 경계, 그리고 층 사이의 지표 불일치가 관측되며**,
   거기서 어떤 이전 가능한 설계원리가 나오는가? (EP3 · EP4 · §7)
 
 **DRQ3′ 이 이 원고의 중심 질문이다.** 층마다 지표가 어긋난 관측이 세 번 나왔고(§7.5), 그 셋이
-설계원리 DP1–DP6(§7.7·§7.8)으로 일반화된다. 앞선 판의 DRQ3(어긋남과 실패 패턴)과 DRQ4(온톨로지
-신호가 기여하는 조건)는 같은 증거 위에 서 있어 DRQ3′ 로 합쳤고, **번호 4는 결번으로 남긴다** —
-재사용하면 사전등록 기록과의 추적성이 끊긴다.
+설계원리 DP1–DP6(§7.7·§7.8)으로 일반화된다.
 
 ## 1.4 사전등록된 평가 점검 (RQ2·RQ3·RQ5 · H3·H5)
 
@@ -289,7 +287,7 @@ Malaka, 2004), 평가 방법 분류에서도 금표준 기반·코퍼스 기반�
 
 산출물은 셋이고 서로를 전제한다. **A1 · SDKB 온톨로지 데이터셋** — 하나의 공유 T-Box 위에 세 태스크
 뷰를 얹은 반도체 도메인 자원(§4.1–4.7). **A2 · 릴리스 승인 게이트** — 형식 검증 L0–L3 위에 과제 조건
-T1·T2·T3를 얹은 병합 전 승인식이며 T4는 승인식 밖의 설계다(§4.8–4.9). **A3 · 다층 평가 벤치마크** —
+T1·T2·T3를 얹은 병합 전 승인식이며 T4는 승인식 밖의 설계다(§4.4–4.5). **A3 · 다층 평가 벤치마크** —
 누출을 차단한 심사관 정박 검색 평가와 그 아래 생성 층 판독까지를 잇는 계측 장치(§5).
 
 설계와 평가는 번갈아 돈다 — 자원을 고치면 게이트가 그것을 심사하고, 게이트가 무엇을 놓치는지는
@@ -492,7 +490,7 @@ family(q)\}\)이고 \(t_{\mathrm{cutoff}}\)는 질의 특허의 출원일이다.
 
 ## 5.4 누출 차단 규칙
 
-**(a) Oracle-free 주 시스템** — 질의 특허의 인용 간선(`hasPriorArtExaminer`·`hasPriorArt`·
+**(a) Oracle-free 주 분석 모드** — 질의 특허의 인용 간선(`hasPriorArtExaminer`·`hasPriorArt`·
 `overPriorArt`)을 색인과 특징에서 지우고, qrel에서 파생된 개념 링크·한정요소 정렬과 정답 파생 지표를
 배제한다. **(b) Citation-assisted 보조**와 **(c) GT-assisted 상한**은 주 결론과 분리해 저장하며 성능
 주장에 쓰지 않는다. **본 논문의 모든 판정은 (a)에서만 나온다.**
@@ -502,8 +500,15 @@ family(q)\}\)이고 \(t_{\mathrm{cutoff}}\)는 질의 특허의 출원일이다.
 기준선은 여섯이다 — **B0** BM25-Claim(청구항 어휘) · **B1** BM25-Fielded(제목·초록·청구항) · **B2**
 Dense(문서 임베딩) · **B3** Text Hybrid(BM25 ⊕ Dense RRF · **가장 강한 텍스트 기준선**) · **B4**
 CPC/IPC(분류 신호 단독) · **B5** Ontology-only(개념 경로 단독). 제안 시스템은 셋이다 — **P0**
-Text+Ontology(B3 + 개념 겹침·경로 · **사전 지정 주 시스템**) · **P1** +ClaimFeature(P0 + 한정요소
-포괄) · **P2** +Ground-aware. 밀집 기준선 B2는 Titan Embed v2이며, 특허 특화 인코더(PatentSBERTa·
+Text+Ontology(B3 + 개념 겹침·경로 · **사전 지정 주 구성**) · **P1** +ClaimFeature(P0 + 한정요소
+포괄) · **P2** +Ground-aware.
+
+**B1과 P2는 설계했으나 실행하지 않았다 — 결과표에 없는 이유가 이것이다.** 두 구성은 구현되지
+않았고 따라서 순위도 지표도 산출된 적이 없다(`src/`에 해당 모듈이 없다). 결과가 불리해서 뺀 것이
+아니라 **재 본 적이 없어 실을 값이 없다.** 판정에 쓰인 비교는 표 8에 실린 일곱(B0·B2·B3·B4·B5와
+P0★·P1)뿐이며, 둘의 실행은 후속 과제로 남긴다.
+
+밀집 기준선 B2는 Titan Embed v2이며, 특허 특화 인코더(PatentSBERTa·
 PaECTER)는 영어 전용·짧은 입력이라 한국어 장문 질의와 문서(2,255자)를 자르지 않고 넣을 수 없어 쓰지
 않았다. 모델은 개발셋을 열기 전에 고정했다.
 
@@ -707,8 +712,9 @@ b=19, c=0으로 방향이 가설의 반대 · 위양성 0/18). 원인은 게이�
 
 ## 6.4 EP4 · 검색 효용과 그 경계
 
-이 에피소드는 **봉인 분할을 1회 개봉해 두 번** 수행했다 — 겹치지 않는 두 확증 분할이고 각각의
-사전등록 아래 따로 판정한다.
+이 에피소드는 봉인 분할에 대해 **사전등록된 확증 평가를 두 번** 수행했다 — 겹치지 않는 두 확증
+분할이고 각각의 사전등록 아래 따로 판정하며, **봉인에 대한 모든 접근은 열람 원장에 기록했다**
+(원장과 중단된 시도의 경위는 §6.4.6).
 
 ### 6.4.1 검색 성능 — 두 확증 분할
 
@@ -764,7 +770,8 @@ P1에서 개선되고(두 번 다 신뢰구간 하한 > 0) nDCG@20은 두 번 �
 **낮은** 집단에서 더 클 것을 요구했다. 첫 분할에서 R@100은 P1에서 유의하게 개선됐으나(+0.0534,
 *p* = .008) **nDCG 조항이 충족되지 않았고**(P1 −0.0176 *p* = .227 · P0★ −0.0395 *p* = .029로 유의
 악화) 주 구성 P0★는 유의에 이르지 못했으며(*p* = .181) **저중첩 조건은 반증됐다**(low Δ −0.0586,
-n=27 대 high Δ +0.0711, n=171). 판정은 **부분 지지 — 주 지표에 한정**이다. 두 번째 분할에서는 같은
+n=27 대 high Δ +0.0711, n=171). **첫 사전등록 아래의 판정 기록은 "부분 지지 — 주 지표에 한정"이다**
+— 이는 그 사전등록이 그 분할에 내린 판정이지 H3 전체의 판정이 아니다. 두 번째 분할에서는 같은
 구조가 재현됐으나(R@100 +0.0343 *p* = .004 · nDCG 두 구성 모두 음의 방향 · P0★ *p* = .147) 사전등록이
 두 지표의 **동시 개선**을 요구하므로 판정은 **미지지**다. **어느 쪽도 취소하지 않는다.** 두 판정을
 합성해 적을 수 있는 문장은 하나다 —
@@ -915,8 +922,8 @@ CQ와 검색 평가는 서로를 대체하지 않으며, 동시에 CQ는 진화 
 
 ## 7.3 태스크 결합 — 음성 대조군이 무너진 자리 (H5)
 
-> **이 절의 관측에는 경계가 셋 붙어 있다.** 판정(H5 기각)은 확정적이지만 **인과는 미구분**이고, 확증
-> 분할 1회 개봉의 결과이며, 이 릴리스의 모듈 배치에 조건부다. 그러므로 이 관측을 논문의 가장 일반적인
+> **이 절의 관측에는 경계가 셋 붙어 있다.** 판정(H5 기각)은 확정적이지만 **인과는 미구분**이고,
+> 한 확증 분할에서 나온 결과이며, 이 릴리스의 모듈 배치에 조건부다. 그러므로 이 관측을 논문의 가장 일반적인
 > 결론으로 쓰지 않는다.
 
 검색과 이론적으로 무관하도록 설계해 음성 대조군으로 삼은 전문가 매칭 전용 계층을 제거하자 검색이
@@ -965,7 +972,7 @@ A-Box가 비식별·생성 성격이라 실인물 매칭 정확도를 검정하�
 어긋남이 서로 다른 세 층위에서 세 번 나타났다.
 
 **① 자원 층 → 검색 층.** 문서당 개념이 2.4배가 되고 자원 품질 지표가 모두 좋아진 변경을 같은
-파이프라인에 갈아 끼우자 주 시스템의 회수가 **떨어졌고**(−0.0293 · 95% CI [−0.0542, −0.0053]), 형식
+파이프라인에 갈아 끼우자 교체 대상 구성(P1)의 회수가 **떨어졌고**(−0.0293 · 95% CI [−0.0542, −0.0053]), 형식
 검증 L0–L3를 전부 통과한 그 변경을 **성능 조건 T1이 거부했다**(§6.3).
 
 **② 검색 층 → 운용 단위.** 주 지표에서 유의하게 개선된 이득을 "몇 건을 검토해야 하는가"로 바꿔 읽으면
@@ -1012,8 +1019,7 @@ A-Box가 비식별·생성 성격이라 실인물 매칭 정확도를 검정하�
 본체를 이루고, 다음 절의 **범위 원리 둘**은 그렇게 얻은 결과를 어디까지 밀어도 되는가의 경계를 정한다.
 **이 구분은 등급이 아니라 자리다.**
 
-**표 10. 코어 설계원리 DP1–DP4.** (표의 §4.9·§4.9.1 참조는 축약 전 전문
-[S5](../supplementary/S5-submission-full-v2.md)의 절 번호이며, 이 투고본에서는 각각 §4.5·§4.5.1이다.)
+**표 10. 코어 설계원리 DP1–DP4.**
 
 {{COPY:등급은 아래 표에 그대로 적혀 있고 이 분류로 바뀌지|table}}
 
@@ -1098,7 +1104,7 @@ A-Box가 비식별·생성 성격이라 실인물 매칭 정확도를 검정하�
 실험**이며 새 사전등록 아래 서고 본 논문의 어떤 판정도 바꾸지 않는다. 상류 교정이 연구 최초의 T-Box
 술어 델타를 만들어 **H2 자격이 생겼고**, 하류에 텍스트→개념 적용기를 구현하자 문서집합은 그대로 두고
 온톨로지만 갈아 끼운 두 팔이 처음으로 성립했다. 실측과 판정의 전문은 §6.3에 있다 — 자원은 좋아졌고
-주 시스템의 회수는 떨어졌으며 **T1 실패로 승인이 거부됐다(Accept = 0).** 따라서 최종 진술은 다음과
+교체 대상 구성(P1)의 회수는 떨어졌으며 **T1 실패로 승인이 거부됐다(Accept = 0).** 따라서 최종 진술은 다음과
 같다. **승인된 변경의 안전성은 본 논문에서 미검정이고, 자격 있는 델타가 처음 생겼을 때의 1회 검정에서는
 지지되지 않았다.** 다만 그 거부가 **자원의 결함 때문인지 하류 점수식의 결함 때문인지는 가르지 못했다.**
 
@@ -1214,7 +1220,7 @@ low-overlap 0.0079 · \(\epsilon_{T4}\)=0.02 · \(\eta\)=0.01) · 게이트 규�
 음성 대조군이 아니라 **결함주입 실험이 진다.** 승인된 변경의 안전성은 본 논문에서 미검정이다.
 
 **설계지식과 한계.** 이 연구가 가장 일반화 가능한 결과로 내세우는 것은 **층 사이의 어긋남**이다. 자원
-지표를 2.4배 개선하고 형식 검증 네 층을 전부 통과한 델타에서 주 시스템의 회수가 떨어져 성능 조건이
+지표를 2.4배 개선하고 형식 검증 네 층을 전부 통과한 델타에서 교체 대상 구성의 회수가 떨어져 성능 조건이
 승인을 거부했고, 반대로 주 지표에서 유의했던 이득은 검토 건수라는 실무 단위로 옮기면 중앙값 0.0%로
 사라졌다. 두 관측의 방향은 반대지만 말하는 바는 같다 — **어느 층의 지표도 그 아래 층의 성능을 보장하지
 않으므로, 온톨로지 변경의 승인 조건은 한 층 아래의 실제 태스크에서 확인되어야 한다.** 여기서 층별 검증·

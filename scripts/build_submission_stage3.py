@@ -18,6 +18,12 @@
     {{COPY:<앵커 문자열>|table}}     앵커 행 다음에 오는 마크다운 표 블록을 그대로 넣는다
     {{BIB}}                          참고문헌 목록을 그대로 넣되, 아래 BIB_FIXES 만 교체한다
 
+**표 안의 문구도 규약을 따라야 한다 — 그러나 표를 다시 타자하지는 않는다(CELL_FIXES).**
+절 번호가 바뀌거나(§4.9 → §4.5) §0.8 문구 사전이 늘면 표 셀도 따라가야 하는데, 그 이유로
+표를 손으로 옮겨 적으면 이 파일의 존재 이유가 사라진다. 그래서 셀 치환은 **앵커가 정확히
+한 번 매치되는 목록으로만** 허용하고, **수치가 하나라도 달라지면 실패**시킨다(rc 2).
+수치를 정말 바꿔야 하면 사유를 적어 명시적으로 예외 처리하며, 그 사유는 빌드 로그에 남는다.
+
 **서지 확정도 손이 아니라 목록으로 한다.** 3단계는 플레이스홀더 6건을 없애는 단계인데(D2),
 목록 전체를 다시 타자하면 어느 줄이 왜 바뀌었는지 보이지 않는다. 그래서 **바뀐 줄만** 아래
 BIB_FIXES 에 적고, 각 항목이 원문에서 정확히 한 번 매치되지 않으면 실패한다(rc 2).
@@ -111,6 +117,74 @@ BIB_INSERTS: list[tuple[str, str]] = [
 ]
 
 
+# ── 표 셀 치환 (2026-08-13) ─────────────────────────────────────────────────
+# (앵커, 치환할 행 전체, 수치 변경 사유 · None 이면 수치 불변을 강제한다)
+# 왜 필요한가 — 2단계에서 장 구성을 접으며 §4.8·§4.9·§4.9.1 이 §4.4·§4.5·§4.5.1 이 됐는데
+# 표 안의 참조는 동결본을 그대로 복사하느라 옛 번호로 남았다(submission-check D9). 명칭
+# 규칙(§0.8 SYSTEM_LABELS·SEAL)도 같은 이유로 표에만 남는다.
+NUMERIC = re.compile(r"\d+(?:[.,]\d+)*")
+SECTION_TOKEN = re.compile(r"§\s?\d+(?:\.\d+)*")
+
+
+def measurements(text: str) -> list[str]:
+    """수치 토큰 — 단, 절 번호는 뺀다(§4.9 → §4.5 는 재번호이지 수치 변경이 아니다)."""
+    return NUMERIC.findall(SECTION_TOKEN.sub("§", text))
+
+CELL_FIXES: list[tuple[str, str, str | None]] = [
+    # EP4 행 — "1회 개봉" 단정 대신 열람 원장을 밝힌다(§0.8 SEAL).
+    (
+        "| **EP4** | **검색 효용과 경계** |",
+        "| **EP4** | **검색 효용과 경계** | 온톨로지 보강이 강한 텍스트 기준선을 "
+        "**개선하는가, 어디까지인가** | 봉인 분할에 대한 사전등록된 확증 평가 — 모든 접근을 "
+        "열람 원장에 기록 (독립 확증 분할 둘) | 확증 + 탐색적 진단 | §6.4 |",
+        "\"1회\" 를 뺀 자리에 회수 단정이 남지 않는다 — 개봉 횟수는 원장이 말한다(§0.3 조건 ⑤)",
+    ),
+    # 자원 교체 표 — P1 은 사전 지정 주 구성이 아니라 **교체 대상 구성**이다(§0.8 SYSTEM_LABELS).
+    (
+        "| **P1 (주 시스템)** |",
+        "| **P1 (교체 대상 구성)** | 0.4849 | 0.4556 | **−0.0293** · 95% CI [−0.0542, −0.0053] |",
+        None,
+    ),
+    # 표 1 머리글 — 두 칸은 합성 판정이 아니라 **사전등록별 기록**임을 열 이름이 말하게 한다.
+    (
+        "| 연구질문 | 점검 (라벨) |",
+        "| 연구질문 | 점검 (라벨) | 결과를 보기 전에 동결한 예측 | 사전등록별 판정 기록 · "
+        "첫 확증 분할(A) | 사전등록별 판정 기록 · 두 번째 확증 분할(B) | 근거 |",
+        None,
+    ),
+    ("| **DP2** |", None, None),      # 아래 SECTION_RENUMBER 로 처리 (§4.9 → §4.5)
+    ("| **DP3** |", None, None),
+    ("| **DP6** |", None, None),
+]
+
+# 2단계 재구성으로 바뀐 절 번호. 표 안의 참조에만 적용한다 — 산문은 사람이 소스에서 고친다.
+SECTION_RENUMBER = [("§4.9.1", "§4.5.1"), ("§4.8–4.9", "§4.4–4.5"), ("§4.9", "§4.5"), ("§4.8", "§4.4")]
+
+
+def apply_cell_fixes(lines: list[str]) -> None:
+    """동결본 행을 제자리에서 고친다. 앵커가 1건이 아니거나 수치가 바뀌면 실패한다."""
+    for probe, new, reason in CELL_FIXES:
+        hits = [k for k, line in enumerate(lines) if probe in line]
+        if len(hits) != 1:
+            fail(f"셀 치환 앵커가 {len(hits)}건 — {probe!r}")
+        k = hits[0]
+        old = lines[k]
+        text = old if new is None else new
+        for a, b in SECTION_RENUMBER:
+            text = text.replace(a, b)
+        if text == old:
+            fail(f"셀 치환이 아무것도 바꾸지 않았다 — {probe!r} (규칙이 이미 반영됐으면 목록에서 뺀다)")
+        if measurements(old) != measurements(text):
+            if reason is None:
+                fail(
+                    f"셀 치환이 수치를 바꿨다 — {probe!r}\n"
+                    f"  이전: {measurements(old)}\n  이후: {measurements(text)}"
+                )
+            print(f"셀 치환 · 수치 변경 허용 — {probe!r}: {reason}")
+        lines[k] = text
+    print(f"셀 치환 {len(CELL_FIXES)}건 (수치 불변 검사 통과)")
+
+
 def fail(msg: str) -> None:
     print(f"실패: {msg}", file=sys.stderr)
     raise SystemExit(2)
@@ -176,6 +250,7 @@ def build() -> str:
     if not FROZEN.exists():
         fail(f"복사 원본 부재 — {FROZEN}")
     frozen = FROZEN.read_text(encoding="utf-8").split("\n")
+    apply_cell_fixes(frozen)         # 동결본은 디스크에서 불변 — 메모리 사본만 고친다
     prose = PROSE.read_text(encoding="utf-8")
 
     used: list[str] = []
