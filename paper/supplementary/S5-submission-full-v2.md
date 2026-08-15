@@ -1791,7 +1791,7 @@ CQ 스위트의 해상도도 미확정이다. 결함 주입에서 T3의 검출�
 
 ### 8.6.1 데이터셋 — 공개 · 지속 개선
 
-SDKB 데이터셋은 [https://github.com/arkwith7/semiconductor-knowledge-base](https://github.com/arkwith7/semiconductor-knowledge-base)
+SDKB 데이터셋은 [https://github.com/arkwith7/sdkb-dataset](https://github.com/arkwith7/sdkb-dataset)
 에서 **CDLA-Permissive-2.0** 으로 공개되며, `CITATION.cff` 와 버전·CHANGELOG 를 함께 관리한다.
 공개 대상은 공유 T-Box(전문가 매칭·선행기술조사·기술예측 뷰), SHACL shapes, CQ 스위트와 실행 결과,
 그래프별 자동 계수 보고서, 태스크–클래스–관계–CQ 요구사항 매트릭스, 공개 가능한 A-Box 메타데이터와

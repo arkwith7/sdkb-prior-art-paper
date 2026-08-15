@@ -1179,7 +1179,7 @@ Recall은 다국어 선행기술 전체가 아니라 사실상 한국어 하위�
 
 ## 8.6 데이터 및 코드 가용성
 
-SDKB 데이터셋은 [https://github.com/arkwith7/semiconductor-knowledge-base](https://github.com/arkwith7/semiconductor-knowledge-base)
+SDKB 데이터셋은 [https://github.com/arkwith7/sdkb-dataset](https://github.com/arkwith7/sdkb-dataset)
 에서 **CDLA-Permissive-2.0** 으로 공개되며 `CITATION.cff` 와 버전·CHANGELOG를 함께 관리한다. 공개
 대상은 공유 T-Box, SHACL shapes, CQ 스위트와 실행 결과, 그래프별 자동 계수 보고서, 요구사항 매트릭스,
 공개 가능한 A-Box 메타데이터와 provenance다. **본 논문이 사용한 것은 상류 스냅샷 `d578bf3` 에 대응하는
