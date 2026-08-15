@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "212fe622e2d3eebc1d39d7ff67d40ca5878e8682",
-  "source_commit_date": "2026-08-08T19:41:30+09:00",
+  "source_commit": "0a7ff1537850264a06f9c31af0305efa86b3beb9",
+  "source_commit_date": "2026-08-15T20:28:58+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-08-08T10:41:46+00:00",
+  "vendored_at": "2026-08-15T11:46:44+00:00",
   "baseline_counts": {
     "nodes": 274,
     "edges": 312,
@@ -14,12 +14,12 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-08-08T10:41:42+00:00",
+    "checked_at": "2026-08-15T11:46:39+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
           "input": "scripts/build_owl.py",
-          "sha256": "e58bf44342a0ef67e5144e3867cc5a95d23ff61a5208b7b5caa4b5b1449ea378"
+          "sha256": "ccb57a3fdf84286e7e72b9eaaf116e4de131e75d06045fcdc2ccca8bccbac01c"
         }
       ],
       "ontology/sdkb-core-data.ttl": [
@@ -120,19 +120,19 @@
       "file": "sdkb-core.ttl",
       "source_path": "ontology/sdkb-core.ttl",
       "role": "TBox: 제조 코어(Process/SubProcess/Equipment/Material/Device/FailureMode)",
-      "sha256": "256346fcb83bcf286e1cc66d49e131e36d3e0095701d46d1612a3e5694097f1f"
+      "sha256": "b33f0eb775818d2e1dd472083c01adcfdd967175ab5e9a3338bf8fefcf4eea72"
     },
     {
       "file": "sdkb-patent.ttl",
       "source_path": "ontology/sdkb-patent.ttl",
       "role": "TBox: 특허 모듈(Patent/IPC/realizesProcess/concernsDevice)",
-      "sha256": "ebe1c301e5585047900575e577989c26e58b90716f8bc38e78851c40010470e8"
+      "sha256": "0a3173891462a1938df65eb50aa917340ac2fa57fcf3ff68c63aeb81dcd59829"
     },
     {
       "file": "sdkb-foresight.ttl",
       "source_path": "ontology/sdkb-foresight.ttl",
       "role": "TBox: 예측 모듈(Scenario/Signal/STEEPVE) — H2 의 기반",
-      "sha256": "1a85936074e6f00c89e9e6ecbed5b03ebd8b4abc2d78a43d87ac95fd6445164a"
+      "sha256": "ba0386e9f9061b07d59edb96a9bc71a179dc6d443c4370b5dc42893e1432c626"
     },
     {
       "file": "sdkb-core-data.ttl",
@@ -177,13 +177,13 @@
       "file": "sdkb-commercialization.ttl",
       "source_path": "ontology/sdkb-commercialization.ttl",
       "role": "TBox+ABox: 상용화 축(TRL·라이선싱·spinoff)",
-      "sha256": "763a4b0ed0386890ce6ec7f548d70ad313e102bddbacad60730f652c171d67aa"
+      "sha256": "9eaa371472df858c6ee01db5ff431951d3dd00ba79c7753b4981caefd1016455"
     },
     {
       "file": "sdkb-rbv.ttl",
       "source_path": "ontology/sdkb-rbv.ttl",
       "role": "TBox: 자원기반관점(VRIO·역량·진입장벽) — 핵심자원조합 축",
-      "sha256": "c2a260792d47d8356cde20ba6c4dacecb51c231d4cb1b2cb390f0422d0624486"
+      "sha256": "09f8bfaf05073a5d4ed6b091bc61b1ca376e6df10d75ed76ec86fc390c6ba6dd"
     },
     {
       "file": "sdkb-governance.ttl",
@@ -195,7 +195,7 @@
       "file": "sdkb-governance-kr.ttl",
       "source_path": "ontology/sdkb-governance-kr.ttl",
       "role": "TBox: KR 규제(NationalCoreTechnology·designatedAsNCT·산업기술보호법)",
-      "sha256": "193136804bc7fa90bdb1f1ed4f56aa427841dfbfa83f598748cd3a3598c4c4dd"
+      "sha256": "800b471717a4949d3ab0b3a9e7e39e9aa6e2013c057a3e0dca8ca77b66f8011e"
     },
     {
       "file": "sdkb-governance-us-instances.ttl",
@@ -220,6 +220,12 @@
       "source_path": "mappings/abox_term_aliases.json",
       "role": "매핑: A-Box 별칭 사전 — 상류 개념 링크 생성의 표층형 원천(재현용)",
       "sha256": "9c8bbeb2067beab4a0f592e54e6103906c2d95a47b6f14f0825d6b954d17030b"
+    },
+    {
+      "file": "claim_features.parquet",
+      "source_path": "mappings/claim_features.parquet",
+      "role": "매핑: 청구항 한정요소 투영 1,306,191행 (CR-017 · 원문 0 · featureConcept 529,151)",
+      "sha256": "2b21465cdad52a370e4c35a7653d6da9fad12559412feb14e0cf31f4eef9452c"
     },
     {
       "file": "semiconductor_v0_3.json",

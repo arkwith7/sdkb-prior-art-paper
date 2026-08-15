@@ -11,6 +11,12 @@ data/processed/*
 !data/processed/README.md
 *.parquet
 *.sqlite
+# CR-017 투영만 예외다. 규칙(§1-5)이 막는 것은 **원문**이고 이 파일에는 원문이 0열이다 —
+# 구조와 개념 IRI 뿐이라 5.6 MB 이고, 커밋되지 않으면 이 자산의 존재 이유 둘이 사라진다:
+# 신선한 클론의 재현(899 MB TTL 은 상류에서도 gitignore 라 oxstore 를 만들 수 없다)과
+# 스냅샷 단독 조인. 원문 열이 다시 들어오면 이 예외를 되돌린다 — 상류 테스트
+# `test_claim_feature_projection.py::test_no_full_text_column` 이 그것을 감시한다.
+!data/external/sdkb/claim_features.parquet
 
 # 특허 전문(abstract/claim) 을 담은 스냅샷 — KIPRIS 학술 이용·비재배포 조건 (CLAUDE.md §1.4 · 논문 §8).
 # 얼린 스냅샷이라도 이 두 파일은 커밋하지 않는다. PROVENANCE.json 의 sha256·집계만 커밋하고,

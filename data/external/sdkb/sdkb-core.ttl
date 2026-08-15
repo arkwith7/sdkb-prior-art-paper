@@ -20,8 +20,9 @@ sdkb:ont a owl:Ontology ;
     dcterms:modified "2026-05-12"^^xsd:date ;
     dcterms:references <http://qudt.org/schema/qudt/>,
         <http://w3id.org/SemicONTO/0.2/> ;
-    rdfs:comment "Provenance-grounded curation ontology for semiconductor manufacturing, covering process, equipment, materials, FMEA, and regulatory governance layers. SDKB-centric architecture: external ontologies (SemicONTO, QUDT, etc.) are REFERENCED via SKOS mappings and class-level skos:exactMatch back-links, NOT imported. See docs/project/architecture_amendment_sdkb_centric.md."@en ;
-    rdfs:seeAlso <https://github.com/arkwith7/semiconductor-knowledge-base/blob/main/docs/project/architecture_amendment_sdkb_centric.md>,
+    rdfs:comment "Provenance-grounded curation ontology for semiconductor manufacturing, covering process, equipment, materials, FMEA, and regulatory governance layers. SDKB-centric architecture: external ontologies (SemicONTO, QUDT, etc.) are REFERENCED via SKOS mappings and class-level skos:exactMatch back-links, NOT imported. See docs/ontology_guide.md (section 3.1) for the reasoning, and docs/project/architecture_amendment_sdkb_centric.md for the decision record."@en ;
+    rdfs:seeAlso <https://github.com/arkwith7/sdkb-dataset/blob/main/docs/ontology_guide.md>,
+        <https://github.com/arkwith7/sdkb-dataset/blob/main/docs/project/architecture_amendment_sdkb_centric.md>,
         <https://w3id.org/sdkb/alignment/semiconto> ;
     owl:imports <http://www.w3.org/ns/prov-o#> ;
     owl:versionInfo "1.1.0-dev" .

@@ -91,7 +91,18 @@ SNAPSHOT_OBSERVATIONS = {
     # CR-014 는 서지 두 칸만 채웠고 노드·타입·개념링크·T-Box 를 건드리지 않았다.
     # 공정군·가치사슬 두 칸은 상류에 원천이 없어 **채우지 않았고**(회신), 그래서 트리플이
     # 600 이 아니라 400 늘었다. 이 숫자가 "추정으로 채우지 않았다"의 증거다.
-    "current": {"triples": 119208, "process": 12, "subprocess": 38, "device": 34,
+    "post_cr014": {"triples": 119208, "process": 12, "subprocess": 38, "device": 34,
+                   "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
+    # 현행 스냅샷(상류 0a7ff15 · PLAN-050) — 아래 EXPECTED_* 의 원천.
+    # **+43 은 전부 주석이다.** 상류가 T-Box 6파일의 rdfs:comment·라벨을 갱신했고(공리 0 ·
+    # owl:Class·ObjectProperty·DatatypeProperty 수 6파일 전부 불변), 그 주석이 graph_v0 에
+    # 들어와 43 트리플이 됐다. 그래서 process·subprocess·device·steps·covered·mapping_rules 가
+    # 하나도 안 움직인다 — 그 불변이 "공리가 아니라 주석이었다"의 증거다.
+    #
+    # **이 +43 이 이번 델타의 유일한 가시 지점이다.** 같은 교체가 코퍼스 sha(83eef760…)도
+    # 파이프라인 서명(9745a7d9…)도 바꾸지 않았다 — 즉 자원 층에서는 보이고 태스크 층에서는
+    # 보이지 않는다. 게이트가 그것을 판정할 수단이 없다는 것이 D-43 이다.
+    "current": {"triples": 119251, "process": 12, "subprocess": 38, "device": 34,
                 "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
 }
 _CURRENT = SNAPSHOT_OBSERVATIONS["current"]
