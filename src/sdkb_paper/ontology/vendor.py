@@ -65,6 +65,13 @@ VENDOR_FILES: list[tuple[str, str]] = [
     # (하류 `mappings/term_aliases.csv` 와 이름이 비슷하나 다른 자산이다 — 그쪽은 구 패러다임.)
     ("mappings/abox_term_aliases.json",
      "매핑: A-Box 별칭 사전 — 상류 개념 링크 생성의 표층형 원천(재현용)"),
+    # CR-017 이 낸 청구항 한정요소 투영. 899 MB TTL 은 벤더 대상이 될 수 없어(§1-5) 하류는
+    # `central_axis` oxstore 우회로로 feature 를 읽어 왔는데, 그 sidecar 에는 **개념 열이 없고**
+    # 원문 때문에 커밋되지 않으며 신선한 클론은 재현하지 못한다(상류에서도 TTL 이 gitignore).
+    # 이 파일은 원문 0 · 5.6 MB · 개념 링크 529,151 이라 셋을 한꺼번에 푼다.
+    # **읽는 코드는 아직 없다** — 편입은 스냅샷까지이고 소비는 새 방법이다(§2 전체).
+    ("mappings/claim_features.parquet",
+     "매핑: 청구항 한정요소 투영 1,306,191행 (CR-017 · 원문 0 · featureConcept 529,151)"),
     ("data/semiconductor_v0_3.json", "ABox 의 커밋된 원천(=재현 기준점)"),
     ("data/schema_report.json", "원천의 sha256 + 노드/엣지 카운트"),
 ]
