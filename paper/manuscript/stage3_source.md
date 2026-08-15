@@ -1180,9 +1180,10 @@ Recall은 다국어 선행기술 전체가 아니라 사실상 한국어 하위�
 ## 8.6 데이터 및 코드 가용성
 
 SDKB 데이터셋은 [https://github.com/arkwith7/sdkb-dataset](https://github.com/arkwith7/sdkb-dataset)
-에서 **CDLA-Permissive-2.0** 으로 공개되며 `CITATION.cff` 와 버전·CHANGELOG를 함께 관리한다. 공개
-대상은 공유 T-Box, SHACL shapes, CQ 스위트와 실행 결과, 그래프별 자동 계수 보고서, 요구사항 매트릭스,
-공개 가능한 A-Box 메타데이터와 provenance다. **본 논문이 사용한 것은 상류 스냅샷 `d578bf3` 에 대응하는
+에서 **CDLA-Permissive-2.0** 으로 공개되며 `CITATION.cff` 와 버전·CHANGELOG를 함께 관리한다. **공개 대상은 파일로 실리는 것과 재구축하는 것으로 나뉜다.**
+공유 T-Box·SHACL shapes·CQ 스위트와 실행 결과·자동 계수 보고서·요구사항 매트릭스·규제 인스턴스·
+전문가 매칭 A-Box·provenance 는 파일로 있고, 원문을 담은 특허 A-Box·인용 선행기술·확증분할 질의·
+청구항 한정요소는 재인출로 대신한다. 재인출로 특허 A-Box 를 재생성하면 트리플 33,934 대 33,931(0.009 %)로 일치한다. 청구항 한정요소 층은 분해 입력이 원문이라 재현되지 않는다. **본 논문이 사용한 것은 상류 스냅샷 `d578bf3` 에 대응하는
 고정 릴리스이며 파일별 sha256은 스냅샷의 `PROVENANCE.json` 에 있다.** 데이터셋은 이후에도 버전을 올려
 개선되므로, 재현하려면 최신 릴리스가 아니라 논문이 명시한 스냅샷 서명을 대조해야 한다.
 
