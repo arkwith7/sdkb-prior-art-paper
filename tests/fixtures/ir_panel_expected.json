@@ -83,5 +83,33 @@
     "mean_p0": 0.4054,
     "n_queries": 197,
     "pipeline_sig": "6eb4ca6da0152363a7e56e6fb6102e83f80a96ca7961cb5cea1f35c0cdaae01c"
+  },
+  "9745a7d932c9": {
+    "arm": "B_layer_readout",
+    "example": {
+      "gold": {
+        "jp_JP07091636B2": {
+          "n_shared_concepts": 0,
+          "rank_b3": null,
+          "rank_p0": null
+        },
+        "kr_KR100208898B1": {
+          "n_shared_concepts": 2,
+          "rank_b3": 82,
+          "rank_p0": 163
+        },
+        "kr_KR1020040035486A": {
+          "n_shared_concepts": 8,
+          "rank_b3": 148,
+          "rank_p0": 75
+        }
+      },
+      "n_gold": 3,
+      "qid": "kr_1020170018545"
+    },
+    "mean_b3": 0.377,
+    "mean_p0": 0.4054,
+    "n_queries": 197,
+    "pipeline_sig": "9745a7d932c9dd0e7ace91df7d5b8e5433134afa77b6054f2cd74ae304f407ec"
   }
 }
