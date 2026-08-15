@@ -17,6 +17,11 @@ T1·T2·T3 를 한 번에 돌려 판정과 근거를 JSON 으로 남기고 실�
 (`runset.eligibility`)를 통과하지 못하면 T1·T2 를 **돌리지 않고** 미검정으로 끝낸다 — 부적격
 비교의 수치는 남기지 않는다. 종료코드: 0 승인 · 1 게이트 불통과 · **2 미검정**.
 
+**자원 델타 가시성(D-43 · PLAN-051).** 모드와 무관하게 `resource_visibility` 를 기록한다 —
+`system` 모드에는 비교할 짝이 없어 E6 이 돌지 않으므로, 스냅샷이 움직였는데 파이프라인이 읽지
+않은 상태에서도 `Accept = 1` 이 나온다. 이 필드는 **판정에 관여하지 않고** 그 승인이 무엇을 본
+승인인지만 적는다. `accept`·종료코드·T1·T2·T3 는 이 필드의 값에 따라 달라지지 않는다.
+
 CLI: `python -m sdkb_paper.validate.t_gate [--split dev] [--graph PATH] [--baseline g0]`
      `python -m sdkb_paper.validate.t_gate --mode resource --old-runset O --new-runset O_prime
       --system P1 --split test`
@@ -47,6 +52,13 @@ def run_tgate(split: str = "dev", new: Path | None = None, old: Path | None = No
     """
     out: dict = {"mode": mode, "split": split, "k": k,
                  "epsilon": config.T_EPSILON, "delta": config.T_DELTA}
+
+    # 자원 델타 가시성 (D-43 · PLAN-051) — **판정에 들어가지 않는 기록이다.**
+    # 적격심사보다 앞에 두는 이유: 미검정으로 조기 반환하는 경로에서도 "어느 자원 상태 위에서
+    # 돌았는가"는 남아야 한다. 이 값은 accept 에도 종료코드에도 관여하지 않는다.
+    from . import runset as _RS
+
+    out["resource_visibility"] = _RS.resource_visibility()
 
     # 적격심사가 **가장 먼저다** — 검색·평가 모듈을 적재하기 전에 끝낸다. 자격 없는 비교의
     # T1·T2 수치는 아예 만들지 않는다(남으면 언젠가 인용된다).
@@ -124,6 +136,30 @@ def run_tgate(split: str = "dev", new: Path | None = None, old: Path | None = No
     return out
 
 
+def _visibility_lines(res: dict) -> list[str]:
+    """자원 델타 가시성을 `Accept` 줄 **위**에 놓는다 (D-43 · PLAN-051).
+
+    승인을 읽기 전에 그 승인이 무엇을 본 승인인지 읽게 하는 것이 이 줄의 존재 이유다.
+    """
+    from .runset import VIS_INVISIBLE, VIS_NO_EVIDENCE
+
+    v = res.get("resource_visibility")
+    if not v:
+        return []
+    note = v.get("note")
+    mark = {VIS_INVISIBLE: "⚠", VIS_NO_EVIDENCE: "·"}.get(note, "?")
+    lines = [f"  {mark} 자원 델타 가시성 = {note} "
+             f"(pipeline={v.get('pipeline_short')} · snapshot={v.get('snapshot_short')})"]
+    if v.get("detail"):
+        lines.append(f"       {v['detail']}")
+    if v.get("error"):
+        lines.append(f"       ERROR: {v['error']}")
+    if note == VIS_INVISIBLE:
+        lines.append("       ⇒ 이 게이트로는 보이지 않는 델타다 — 결과를 '통과했다'로 적지 "
+                     "않는다(CLAUDE.md §2.1).")
+    return lines + [""]
+
+
 def format_report(res: dict) -> str:
     from .leakage_check import format_report as leak_fmt
     from .t1_noninferiority import format_report as t1_fmt
@@ -138,6 +174,7 @@ def format_report(res: dict) -> str:
     if mode == "resource":
         lines += [format_eligibility(res["eligibility"]), ""]
         if res.get("untested"):
+            lines += _visibility_lines(res)
             lines += [f"  ⇒ H2 미검정 ({res['verdict']}) — T1·T2 를 돌리지 않았다.",
                       "     자격 없는 비교로 '지지'를 만들지 않는다(CLAUDE.md §1-2).",
                       "  ⇒ Accept(ΔG) = 0  미검정"]
@@ -149,6 +186,8 @@ def format_report(res: dict) -> str:
     flags = [("L0–L3", res["l0_l3"]), ("누출감사", res["leakage_pass"]),
              ("T1", res["t1"]["pass"]), ("T2", res["t2"]["pass"]), ("T3", res["t3"]["pass"])]
     lines.append("  " + " · ".join(f"{n}={'✅' if v else '❌'}" for n, v in flags))
+    lines.append("")
+    lines += _visibility_lines(res)
     lines.append(f"  ⇒ Accept(ΔG) = {'1  승인' if res['accept'] else '0  거부'}")
     return "\n".join(lines)
 

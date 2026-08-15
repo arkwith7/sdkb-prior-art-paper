@@ -307,3 +307,180 @@ def test_accept_is_still_a_product():
     for flags in ((False, True, True, True), (True, False, True, True),
                   (True, True, False, True), (True, True, True, False)):
         assert accept(*flags) is False
+
+
+# --- 자원 델타 가시성 (D-43 · PLAN-051) ---------------------------------
+#
+# 적격심사(E1–E7)와 **다른 질문**이다. 적격심사는 두 팔을 놓고 "비교할 자격이 있는가"를 묻고,
+# 여기서는 팔이 하나뿐인 `system` 모드에서 "이 승인은 무엇을 본 승인인가"를 묻는다.
+# `make gate` 의 기본 경로가 `system` 이므로, 이 절이 비면 D-43 은 다시 조용해진다.
+
+# 실측 서명 (2026-08-15 · PLAN-051 §7). 축약형을 그대로 쓴다 — 값이 무엇이었는지가 증거다.
+_SIG_PIPE_NOW = "9745a7d932c9"          # 현 트리 파이프라인 서명
+_SIG_SNAP_NOW = "665c27d1c774"          # 현 트리 스냅샷 서명 (상류 0a7ff153)
+_SIG_SNAP_BLAYER = "9b7f79ef06a6"       # B_layer_readout 이 동결한 스냅샷
+_SIG_PIPE_LINKER = "156c0ccd36f5"       # O_pre_linker ↔ O_d578bf3_linkercode 공유 (D-19)
+_SIG_SNAP_PRELINKER = "b98ad787d1fe"
+_SIG_SNAP_LINKERCODE = "6cfb743d3d88"
+
+
+def _write_manifests(tmp_path, monkeypatch, *manifests: dict) -> None:
+    d = tmp_path / "runsets"
+    d.mkdir(parents=True, exist_ok=True)
+    for mf in manifests:
+        (d / f"{mf['label']}.json").write_text(json.dumps(mf, ensure_ascii=False),
+                                               encoding="utf-8")
+    monkeypatch.setattr(config, "RUNSET_DIR", d)
+
+
+def _pipe(sig: str, *, parts: dict | None = None) -> dict:
+    return {"sig": sig, "short": sig[:12],
+            "parts": parts if parts is not None else {"ir_corpus": "c", "concept_axis": "a",
+                                                      "graph_v1": "g"}}
+
+
+def _snap(sig: str) -> dict:
+    return {"sig": sig, "short": sig[:12], "upstream_commit": "u1", "n_files": 22, "files": {}}
+
+
+def test_visibility_flags_the_live_tree_state(tmp_path, monkeypatch):
+    """V1 — 2026-08-15 실측 상태가 `invisible` 로 잡혀야 한다.
+
+    스냅샷은 665c27d1 로 움직였는데 파이프라인 서명은 B_layer_readout 이 동결한 9745a7d9 그대로다.
+    이 상태의 ΔR₁₀₀ 은 측정된 0 이 아니라 **구성상 0** 이다(D-43).
+    """
+    _write_manifests(tmp_path, monkeypatch,
+                     _mf("B_layer_readout", snap_sig=_SIG_SNAP_BLAYER, pipe_sig=_SIG_PIPE_NOW))
+    v = RS.resource_visibility(pipeline=_pipe(_SIG_PIPE_NOW), snapshot=_snap(_SIG_SNAP_NOW))
+    assert v["note"] == RS.VIS_INVISIBLE
+    assert v["basis"] == ["B_layer_readout"]
+    assert v["error"] is None
+
+
+def test_visibility_catches_the_historical_d19_pair(tmp_path, monkeypatch):
+    """V2 — 과거에 실제로 일어난 상태를 이 검사가 잡는가.
+
+    O_pre_linker(snap b98ad787)와 O_d578bf3_linkercode(snap 6cfb743d)는 파이프라인 서명
+    156c0ccd 를 공유한다. 스냅샷이 두 번 움직이는 동안 파이프라인은 한 번도 움직이지 않았다.
+    """
+    _write_manifests(
+        tmp_path, monkeypatch,
+        _mf("O_pre_linker", snap_sig=_SIG_SNAP_PRELINKER, pipe_sig=_SIG_PIPE_LINKER),
+        _mf("O_d578bf3_linkercode", snap_sig=_SIG_SNAP_LINKERCODE, pipe_sig=_SIG_PIPE_LINKER))
+    v = RS.resource_visibility(pipeline=_pipe(_SIG_PIPE_LINKER),
+                               snapshot=_snap(_SIG_SNAP_LINKERCODE))
+    assert v["note"] == RS.VIS_INVISIBLE
+    assert v["basis"] == ["O_pre_linker"]          # 스냅샷이 다른 쪽만 근거가 된다
+    assert v["matched"] == ["O_d578bf3_linkercode", "O_pre_linker"]
+
+
+def test_visibility_without_matching_manifest_is_unknown(tmp_path, monkeypatch):
+    """V3a — 대조할 매니페스트가 없으면 `unknown` 이다. 근거 없음은 통과가 아니다."""
+    _write_manifests(tmp_path, monkeypatch,
+                     _mf("O_other", snap_sig="zzz", pipe_sig="다른파이프라인"))
+    v = RS.resource_visibility(pipeline=_pipe(_SIG_PIPE_NOW), snapshot=_snap(_SIG_SNAP_NOW))
+    assert v["note"] == RS.VIS_UNKNOWN
+    assert v["matched"] == [] and v["basis"] == []
+
+
+def test_visibility_without_runset_dir_is_unknown(tmp_path, monkeypatch):
+    """V3b — 매니페스트 디렉터리 자체가 없어도 죽지 않고 `unknown` 을 낸다."""
+    monkeypatch.setattr(config, "RUNSET_DIR", tmp_path / "없음")
+    v = RS.resource_visibility(pipeline=_pipe(_SIG_PIPE_NOW), snapshot=_snap(_SIG_SNAP_NOW))
+    assert v["note"] == RS.VIS_UNKNOWN
+
+
+def test_no_evidence_does_not_bleed_into_invisible(tmp_path, monkeypatch):
+    """V4 — 파이프라인·스냅샷이 함께 일치하면 `no_evidence` 다.
+
+    **`visible` 이라고 쓰지 않는다** — 확인된 것은 "비가시라는 증거가 없다"이지 "델타가
+    보였다"가 아니다(PLAN-051 §8 A).
+    """
+    _write_manifests(tmp_path, monkeypatch,
+                     _mf("O_same", snap_sig=_SIG_SNAP_NOW, pipe_sig=_SIG_PIPE_NOW))
+    v = RS.resource_visibility(pipeline=_pipe(_SIG_PIPE_NOW), snapshot=_snap(_SIG_SNAP_NOW))
+    assert v["note"] == RS.VIS_NO_EVIDENCE
+    assert v["basis"] == [] and v["matched"] == ["O_same"]
+
+
+def test_invisible_wins_over_no_evidence(tmp_path, monkeypatch):
+    """V4b — 같은 스냅샷 매니페스트가 함께 있어도 비가시의 증거는 흡수되지 않는다.
+
+    `classify_delta` 가 A-Box 오염을 우선하는 것과 같은 원칙이다.
+    """
+    _write_manifests(tmp_path, monkeypatch,
+                     _mf("O_same", snap_sig=_SIG_SNAP_NOW, pipe_sig=_SIG_PIPE_NOW),
+                     _mf("O_older", snap_sig=_SIG_SNAP_BLAYER, pipe_sig=_SIG_PIPE_NOW))
+    v = RS.resource_visibility(pipeline=_pipe(_SIG_PIPE_NOW), snapshot=_snap(_SIG_SNAP_NOW))
+    assert v["note"] == RS.VIS_INVISIBLE
+    assert v["basis"] == ["O_older"]
+
+
+def test_missing_pipeline_part_is_unknown_not_a_guess(tmp_path, monkeypatch):
+    """V5 — 구성요소가 없으면 서명은 계산되지만 비교할 의미가 없다. 모르는 것을 안다고 적지 않는다."""
+    _write_manifests(tmp_path, monkeypatch,
+                     _mf("B_layer_readout", snap_sig=_SIG_SNAP_BLAYER, pipe_sig=_SIG_PIPE_NOW))
+    v = RS.resource_visibility(
+        pipeline=_pipe(_SIG_PIPE_NOW, parts={"ir_corpus": "c", "concept_axis": None,
+                                             "graph_v1": "g"}),
+        snapshot=_snap(_SIG_SNAP_NOW))
+    assert v["note"] == RS.VIS_UNKNOWN
+    assert "concept_axis" in v["detail"]
+
+
+def test_missing_provenance_is_reported_not_raised_and_not_silent(tmp_path, monkeypatch):
+    """V6 — PROVENANCE 부재는 게이트를 죽이지 않는다. **그러나 조용하지도 않다.**
+
+    D-42 의 교훈은 "검사기가 눈을 감는 방식은 늘 예외를 삼키는 것이었다"이고, 그것을 지키는
+    방식은 예외를 올리는 것이 아니라 사유를 남기는 것이다.
+    """
+    monkeypatch.setattr(config, "RUNSET_DIR", tmp_path / "runsets")
+    monkeypatch.setattr(RS, "snapshot_signature",
+                        lambda *a, **k: (_ for _ in ()).throw(FileNotFoundError("PROVENANCE 없음")))
+    v = RS.resource_visibility(pipeline=_pipe(_SIG_PIPE_NOW))
+    assert v["note"] == RS.VIS_UNKNOWN
+    assert v["error"] and "PROVENANCE" in v["error"]
+
+
+def test_visibility_is_deterministic(tmp_path, monkeypatch):
+    """V8 — 같은 입력에 두 번 부르면 바이트 단위로 같다(시각·난수 없음)."""
+    _write_manifests(tmp_path, monkeypatch,
+                     _mf("B_layer_readout", snap_sig=_SIG_SNAP_BLAYER, pipe_sig=_SIG_PIPE_NOW))
+    a = RS.resource_visibility(pipeline=_pipe(_SIG_PIPE_NOW), snapshot=_snap(_SIG_SNAP_NOW))
+    b = RS.resource_visibility(pipeline=_pipe(_SIG_PIPE_NOW), snapshot=_snap(_SIG_SNAP_NOW))
+    assert json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
+
+
+def test_visibility_is_recorded_without_touching_the_verdict(monkeypatch):
+    """V7 — `system` 모드에서 기록은 남되 **승인식은 그대로다**(PLAN-051 S4 의 단위 형태)."""
+    from sdkb_paper.validate import t_gate as TG
+    from sdkb_paper.validate import t1_noninferiority as T1
+    from sdkb_paper.validate import t2_subgroup as T2
+    from sdkb_paper.validate import t3_cross_task_cq as T3
+
+    sentinel = {"note": RS.VIS_INVISIBLE, "pipeline_short": "p", "snapshot_short": "s",
+                "matched": ["M"], "basis": ["M"], "detail": "d", "error": None}
+    monkeypatch.setattr(RS, "resource_visibility", lambda *a, **k: sentinel)
+    monkeypatch.setattr(T1, "t1_gate", lambda *a, **k: {"pass": True})
+    monkeypatch.setattr(T2, "t2_gate", lambda *a, **k: {"pass": True})
+    monkeypatch.setattr(T3, "t3_gate", lambda *a, **k: {"pass": True, "waived": False})
+    # 판정 dict 를 얇게 두는 대신 **출력기를 막는다** — 이 테스트가 묻는 것은 서식이 아니라
+    # "가시성 기록이 승인식에 새어 들어가는가"이다.
+    for mod in (T1, T2, T3):
+        monkeypatch.setattr(mod, "format_report", lambda r: "(stub)")
+    monkeypatch.setattr(T3, "run_cqs", lambda *a, **k: {})
+    monkeypatch.setattr(T3, "suite_pass_rates", lambda *a, **k: {})
+    monkeypatch.setattr(T3, "load_generation", lambda *a, **k: {"suites": {}, "generation": "g0"})
+    monkeypatch.setattr(T3, "commit_waiver", lambda *a, **k: None)
+    monkeypatch.setattr("sdkb_paper.analysis.metrics.load_run", lambda p: {})
+    monkeypatch.setattr("sdkb_paper.analysis.results_table._split_qrel", lambda s: {})
+    monkeypatch.setattr("sdkb_paper.analysis.results_table.run_path",
+                        lambda n, s: __import__("pathlib").Path(f"sys_{n}_{s}.txt"))
+    monkeypatch.setattr("sdkb_paper.analysis.subgroup.query_labels", lambda q: {})
+    monkeypatch.setattr("sdkb_paper.collect.bq_family_ir.load_family_map", lambda: {})
+
+    res = TG.run_tgate(split="dev", skip_leakage=True)
+    # 비가시여도 승인은 T1·T2·T3·L0–L3 의 곱 그대로다 — 기록은 판정에 관여하지 않는다.
+    assert res["accept"] is True
+    assert res["resource_visibility"]["note"] == RS.VIS_INVISIBLE
+    assert "이 게이트로는 보이지 않는 델타다" in TG.format_report(res)

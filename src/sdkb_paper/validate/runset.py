@@ -39,6 +39,13 @@ VERDICT_VACUOUS = "vacuous"              # 스냅샷 서명 동일 → Δ 는 �
 VERDICT_UNREACHED = "unreached"          # 스냅샷은 바뀌었으나 파이프라인이 읽지 않음 (D-19)
 VERDICT_INELIGIBLE = "ineligible"        # 비교 자체가 성립하지 않음
 
+# 자원 델타 가시성 (D-43 · PLAN-051). 적격심사(E1–E7)와 **다른 질문**이다 — 적격심사는 두 팔을
+# 놓고 "비교할 자격이 있는가"를 묻고, 이것은 팔이 하나뿐인 `system` 모드에서 "지금 이 실행이
+# 어떤 자원 상태 위에 서 있는가"를 묻는다.
+VIS_INVISIBLE = "invisible"        # 스냅샷이 움직였는데 파이프라인이 읽지 않았다
+VIS_NO_EVIDENCE = "no_evidence"    # 비가시라는 **증거가 없다** (≠ 델타가 보였다)
+VIS_UNKNOWN = "unknown"            # 판단 근거가 없다
+
 
 # --- 서명 ---------------------------------------------------------------
 
@@ -212,6 +219,90 @@ def arm_label(pipeline_sig: str | None = None) -> str | None:
         if d.get("pipeline", {}).get("sig") == sig:
             return str(d.get("label") or mf.stem)
     return None
+
+
+def _iter_manifests() -> list[tuple[str, dict]]:
+    """읽을 수 있는 동결 매니페스트를 (라벨, 문서) 로 정렬해 돌려준다.
+
+    `arm_label()` 이 같은 순회를 갖고 있으나 **합치지 않는다** — 그 함수는 원고 표
+    (`results_table`)가 부르는 경로라 동작을 건드릴 이유가 없다(CLAUDE.md §1-10).
+    """
+    if not config.RUNSET_DIR.exists():
+        return []
+    out: list[tuple[str, dict]] = []
+    for mf in sorted(config.RUNSET_DIR.glob("*.json")):
+        try:
+            d = json.loads(mf.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        out.append((str(d.get("label") or mf.stem), d))
+    return sorted(out, key=lambda t: t[0])
+
+
+def resource_visibility(pipeline: dict | None = None,
+                        snapshot: dict | None = None) -> dict:
+    """지금 이 실행의 자원 델타가 **게이트에 보이는 상태인가**를 판정한다 (D-43 · PLAN-051).
+
+    `system` 모드에는 비교할 짝이 없어 적격심사 E6 이 돌지 않는다. 그래서 스냅샷이 움직였는데
+    파이프라인이 그것을 읽지 않은 상태에서도 `Accept = 1` 이 나오고, 리포트는 그 사실을 적지
+    않았다. 판정을 바꾸지는 않되 **승인이 무엇을 근거로 한 승인인지**는 남긴다.
+
+    근거는 동결 매니페스트다: 파이프라인 서명이 같은데 **스냅샷 서명이 다른** 매니페스트가
+    있으면, 그 스냅샷 차이는 파이프라인에 도달하지 않은 것이다.
+
+    **예외를 올리지 않는다. 그러나 삼키지도 않는다** — 사유는 `error` 에 남고 리포트가 찍는다.
+    """
+    out: dict = {"note": VIS_UNKNOWN, "pipeline_sig": None, "pipeline_short": None,
+                 "snapshot_sig": None, "snapshot_short": None,
+                 "matched": [], "basis": [], "detail": "", "error": None}
+    try:
+        pipe = pipeline or pipeline_signature()
+    except (FileNotFoundError, OSError) as e:            # noqa: BLE001 - 사유를 남기고 계속한다
+        out["error"] = f"파이프라인 서명 계산 실패: {e}"
+        out["detail"] = "판단 근거 없음 — 파이프라인 서명을 구하지 못했다"
+        return out
+    out["pipeline_sig"], out["pipeline_short"] = pipe.get("sig"), pipe.get("short")
+
+    # 규칙 1 — 구성요소가 하나라도 없으면 서명은 계산되지만 **비교할 의미가 없다.**
+    missing = sorted(k for k, v in (pipe.get("parts") or {}).items() if v is None)
+    if missing:
+        out["detail"] = f"파이프라인 구성요소 결측: {', '.join(missing)} — 가시성을 판단하지 않는다"
+        return out
+
+    # 규칙 2 — 스냅샷 서명이 없으면(PROVENANCE 부재 등) 근거가 없다.
+    try:
+        snap = snapshot or snapshot_signature()
+    except (FileNotFoundError, OSError) as e:            # noqa: BLE001 - 위와 같은 이유
+        out["error"] = f"스냅샷 서명 계산 실패: {e}"
+        out["detail"] = "판단 근거 없음 — 스냅샷 서명을 구하지 못했다"
+        return out
+    out["snapshot_sig"], out["snapshot_short"] = snap.get("sig"), snap.get("short")
+
+    matched = [lab for lab, d in _iter_manifests()
+               if (d.get("pipeline") or {}).get("sig") == pipe.get("sig")]
+    basis = [lab for lab, d in _iter_manifests()
+             if (d.get("pipeline") or {}).get("sig") == pipe.get("sig")
+             and (d.get("snapshot") or {}).get("sig") != snap.get("sig")]
+    out["matched"], out["basis"] = matched, basis
+
+    # 규칙 3 — 비가시의 증거는 흡수되지 않는다(`classify_delta` 가 A-Box 오염을 우선하는 것과 같다).
+    if basis:
+        out["note"] = VIS_INVISIBLE
+        out["detail"] = (
+            f"동결 runset {', '.join(basis)} 이 같은 파이프라인 서명({pipe.get('short')})을 "
+            f"다른 스냅샷({snap.get('short')} 아님)에서 냈다 — 스냅샷 델타가 파이프라인에 "
+            "도달하지 않았다. 이 실행의 ΔR₁₀₀ 은 측정된 0 이 아니라 구성상 0 이다")
+        return out
+    # 규칙 4 — 매치는 있으나 전부 같은 스냅샷. **가시라는 뜻이 아니라 비가시의 증거가 없다는 뜻.**
+    if matched:
+        out["note"] = VIS_NO_EVIDENCE
+        out["detail"] = (f"동결 runset {', '.join(matched)} 과 파이프라인·스냅샷 서명이 함께 "
+                         "일치한다 — 비가시라는 증거는 없다(델타가 보였다는 뜻은 아니다)")
+        return out
+    # 규칙 5 — 대조할 매니페스트가 없다. 근거 없음은 통과가 아니다.
+    out["detail"] = (f"파이프라인 서명 {pipe.get('short')} 과 일치하는 동결 runset 이 없다 — "
+                     "대조 근거가 없어 가시성을 판단하지 않는다")
+    return out
 
 
 def freeze(label: str, split: str = "test", systems: list[str] | None = None,
