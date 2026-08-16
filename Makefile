@@ -1,4 +1,4 @@
-.PHONY: rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check
+.PHONY: rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check
 
 setup:
 	uv sync --all-extras
@@ -34,6 +34,14 @@ submission-build:
 # **차단 모드** (2026-08-12 · PLAN-048 3단계 종료 시 승격 · §2.3).
 submission-check:
 	uv run python scripts/submission_check.py
+
+# 한국어 학술 문체 규격 검사 (paper/STYLE-KO-ACADEMIC.md · CLAUDE.md §8.1).
+# 대상은 투고 파생본 계열뿐이다 — 산문 소스 + 조립 산출물. 작업 정본과 supplementary 는
+# 감사 기록이므로 제외한다(submission-check 가 정본을 제외하는 것과 같은 이유).
+# 보는 것은 넷 — S3 문장 길이 · T2 구어·은유 · T3 문두 접속어 · T5 주장 볼드.
+# 나머지 규칙(문단 구조·서술어·용어 일관)은 사람이 지킨다: 통과는 필요조건이지 충분조건이 아니다.
+style-check:
+	uv run python scripts/style_check.py
 
 # 투고 파생본을 산문 소스 + 동결 표에서 기계로 조립 (PLAN-048 3단계).
 # 표의 수치는 축약 전 전문(S5)에서 문자 단위로 복사한다 — 손으로 옮겨 적지 않는다(§1-1).

@@ -40,6 +40,12 @@ jobs:
       - name: Submission readiness check
         run: uv run python scripts/submission_check.py
 
+      # 문체 규격 정합: 투고 파생본 계열이 paper/STYLE-KO-ACADEMIC.md 의 어체 규칙을
+      # 지키는가 (S3 문장 길이 · T2 구어·은유 · T3 문두 접속어 · T5 주장 볼드).
+      # 판정 강도의 표류를 verdicts 가 막듯 이것은 **어체의 표류**를 막는다.
+      - name: Academic style check (submission derivative)
+        run: uv run python scripts/style_check.py
+
       # 단위 + 통합 테스트. 통합 테스트가 커밋된 스냅샷에서 baseline 을 재조립해
       # 관측 단위 수(Process 8 / SubProcess 12)·특허 0건·결정성·CQ 서명을 검증한다.
       - name: Unit + integration tests
