@@ -1,4 +1,4 @@
-.PHONY: rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check
+.PHONY: figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check
 
 setup:
 	uv sync --all-extras
@@ -419,8 +419,16 @@ robustness:
 by-applicant:
 	uv run python -m sdkb_paper.analysis.applicant_cli
 
+# 개념 도식이 인용하는 수치를 산출물에서 다시 뽑아 동결한다 (그림 규격 F6 · paper/FIGURE-SPEC.md).
+# 손으로 고치는 파일이 아니다 — 산출물이 갱신되면 이것을 돌리고 본문 수치도 함께 확인한다.
+figure-data:
+	uv run python -m sdkb_paper.viz.figdata
+
+# 데이터 플롯(figures) + 개념 도식(concept). 개념 도식은 동결 수치와 산출물이 어긋나면
+# 그리지 않고 멈춘다 — 낡은 수치를 담은 그림은 없는 그림보다 나쁘다.
 figures:
 	uv run python -m sdkb_paper.viz.figures
+	uv run python -m sdkb_paper.viz.concept
 
 # --- 온톨로지 탐색·모니터링 로컬 웹앱 (읽기 전용) ---
 serve:
