@@ -9,7 +9,7 @@
   D3  영문 제목·초록 존재
   D4  작업 정본 전용 블록 0건      (원고상태·정정 대장·개봉 원장·미수행 설계 전문)
   D5  본문 표 ≤ 12 · 그림 4–5
-  D6  본문 분량 ≤ 동결 기준선의 60 % (= −40 %)
+  D6  본문 분량 ≤ 동결 기준선의 60 % (= −40 %) · **참고문헌 제외**
   D7  영문 초록 ≤ 250 단어          (AEI 투고 규정)
   D8  키워드 ≤ 7 개                 (AEI 투고 규정)
   D9  본문 §참조의 도달성           (축약·재배열로 사라진 절을 가리키지 않는가)
@@ -37,8 +37,11 @@ import sys
 from pathlib import Path
 
 # 동결 기준선 — paper/논문_v0_9_SDKB_통합초안.md, 2026-08-10 (PLAN-048 승인 시점) 실측.
-BASELINE_CHARS = 124_354
+# 전체 124,354자 = 본문 114,472자 + 서지 9,882자 (커밋 9188e757 의 정본에서 재측정 · 2026-08-16).
+BASELINE_CHARS = 124_354            # 참고 — D6 는 아래 본문 기준선으로 판정한다
+BASELINE_BODY_CHARS = 114_472       # D6 분모: `# 참고문헌` 앞까지
 LENGTH_TARGET_RATIO = 0.60          # D6: −40 % 이상 축약
+BIB_HEAD = "# 참고문헌"             # 이 제목부터는 D6 분량에서 제외한다
 
 MAX_TABLES = 12                     # D5
 FIGURE_RANGE = (4, 5)               # D5
@@ -124,12 +127,17 @@ def check_file(path: Path, root: Path) -> list[str]:
         fails.append(f"{path}: [D5] 그림 {n_figures}개 — 목표 {FIGURE_RANGE[0]}–{FIGURE_RANGE[1]}")
 
     # D6 · 분량
-    limit = int(BASELINE_CHARS * LENGTH_TARGET_RATIO)
-    if len(text) > limit:
-        pct = 100 * (1 - len(text) / BASELINE_CHARS)
+    # 참고문헌은 세지 않는다 — D6 는 "본문 분량"이고, 서지를 분량에 넣으면 **문헌을 보강할수록
+    # 본문을 깎아야 하는** 역유인이 된다(2026-08-16 · 사용자 승인). 기준선도 같은 방식으로
+    # 동결 시점 정본에서 다시 쟀으므로 비교는 그대로 같은 자다 — 목표는 −40 % 로 불변이다.
+    bib_at = text.find(BIB_HEAD)
+    body_len = len(text if bib_at < 0 else text[:bib_at])
+    limit = int(BASELINE_BODY_CHARS * LENGTH_TARGET_RATIO)
+    if body_len > limit:
+        pct = 100 * (1 - body_len / BASELINE_BODY_CHARS)
         fails.append(
-            f"{path}: [D6] 분량 {len(text):,}자 > 목표 {limit:,}자 "
-            f"(기준선 {BASELINE_CHARS:,}자 대비 −{pct:.1f} % · 목표 −40 %)"
+            f"{path}: [D6] 본문 분량 {body_len:,}자 > 목표 {limit:,}자 "
+            f"(기준선 {BASELINE_BODY_CHARS:,}자 대비 −{pct:.1f} % · 목표 −40 %)"
         )
 
     # D7 · 영문 초록 단어수 — Abstract 절 시작부터 다음 제목 또는 Keywords 행 직전까지.

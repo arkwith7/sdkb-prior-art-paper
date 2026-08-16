@@ -74,12 +74,9 @@ BIB_FIXES: list[tuple[str, str | None]] = [
         "(2014). Test-driven evaluation of linked data quality. In *Proceedings of the 23rd International "
         "Conference on World Wide Web* (pp. 747–758). https://doi.org/10.1145/2566486.2568002",
     ),
-    (
-        "Pauwels, P., van den Bersselaar, R., & Verhelst, J. (2024).",
-        "Pauwels, P., Van Den Bersselaar, E., & Verhelst, L. (2024). Validation of technical requirements "
-        "for a BIM model using semantic web technologies. *Advanced Engineering Informatics, 60*, 102426. "
-        "https://doi.org/10.1016/j.aei.2024.102426",
-    ),
+    # 동결 원문에서 이 항목만 알파벳 순서를 벗어나 Piroi 뒤에 있었다. 자리를 옮겨야 하므로
+    # 여기서는 지우고, 교정한 서지를 BIB_INSERTS 에서 Piroi 앞에 넣는다(2026-08-16).
+    ("Pauwels, P., van den Bersselaar, R., & Verhelst, J. (2024).", None),
     (
         "Porzel, R., & Malaka, R. (2004).",
         "Porzel, R., & Malaka, R. (2004). A task-based approach for ontology evaluation. In *Proceedings "
@@ -99,7 +96,8 @@ BIB_FIXES: list[tuple[str, str | None]] = [
 # 3단계에서 새로 인용한 문헌(설계과학연구 프레임 · §3). 알파벳 순서 자리에 끼워 넣는다.
 BIB_INSERTS: list[tuple[str, str]] = [
     (
-        "Grüninger, M., & Fox, M. S. (1995).",
+        # Gruber 앞이다 — "Gregor" < "Gruber" < "Grüninger"(2026-08-16 교정).
+        "Gruber, T. R. (1993).",
         "Gregor, S., & Hevner, A. R. (2013). Positioning and presenting design science research for "
         "maximum impact. *MIS Quarterly, 37*(2), 337–355. https://doi.org/10.25300/MISQ/2013/37.2.01",
     ),
@@ -113,6 +111,63 @@ BIB_INSERTS: list[tuple[str, str]] = [
         "Venable, J., Pries-Heje, J., & Baskerville, R. (2016). FEDS: A framework for evaluation in design "
         "science research. *European Journal of Information Systems, 25*(1), 77–89. "
         "https://doi.org/10.1057/ejis.2014.36",
+    ),
+    # 1·2장 재구성(2026-08-16)에서 새로 인용한 문헌 — AI 시대의 명시적 지식 표현(§1),
+    # 공학 정보학의 지식그래프(§1·§2.2), 측정 이론의 대리지표 논의(§2.3).
+    (
+        "Brank, J., Grobelnik,",
+        "Bharadwaj, A. G., & Starly, B. (2022). Knowledge graph construction for product designs from "
+        "large CAD model repositories. *Advanced Engineering Informatics, 53*, 101680. "
+        "https://doi.org/10.1016/j.aei.2022.101680",
+    ),
+    (
+        "Lupu, M., & Hanbury",
+        "Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., et al. (2020). Retrieval-augmented "
+        "generation for knowledge-intensive NLP tasks. In *Advances in Neural Information Processing "
+        "Systems 33* (pp. 9459–9474).",
+    ),
+    (
+        "Piroi, F., & Hanbury",
+        "Manheim, D., & Garrabrant, S. (2018). Categorizing variants of Goodhart's law. *arXiv*. "
+        "https://doi.org/10.48550/arXiv.1803.04585",
+    ),
+    (
+        "Piroi, F., & Hanbury",
+        "Pan, S., Luo, L., Wang, Y., Chen, C., Wang, J., & Wu, X. (2024). Unifying large language models "
+        "and knowledge graphs: A roadmap. *IEEE Transactions on Knowledge and Data Engineering, 36*(7), "
+        "3580–3599. https://doi.org/10.1109/TKDE.2024.3352100",
+    ),
+    (
+        "Thomas, R., & Uminsky",
+        "Strathern, M. (1997). 'Improving ratings': Audit in the British University system. *European "
+        "Review, 5*(3), 305–321. "
+        "https://doi.org/10.1002/(SICI)1234-981X(199707)5:3<305::AID-EURO184>3.0.CO;2-4",
+    ),
+    # §2 문헌 보강(2026-08-16) — 공학 지식의 공유·진화(§2.2). 서지는 출판사 페이지 대조.
+    (
+        "Daniell, K., Buzhinsky,",
+        "Chungoora, N., Young, R. I. M., Gunendran, G., Palmer, C., Usman, Z., Anjum, N. A., "
+        "Cutting-Decelle, A.-F., Harding, J. A., & Case, K. (2013). A model-driven ontology approach for "
+        "manufacturing system interoperability and knowledge sharing. *Computers in Industry, 64*(4), "
+        "392–401. https://doi.org/10.1016/j.compind.2013.01.003",
+    ),
+    (
+        "Pan, S., Luo, L.,",
+        "Noy, N. F., & Klein, M. (2004). Ontology evolution: Not the same as schema evolution. *Knowledge "
+        "and Information Systems, 6*(4), 428–440. https://doi.org/10.1007/s10115-003-0137-2",
+    ),
+    (
+        "Zaveri, A., Rula,",
+        "Zablith, F., Antoniou, G., d'Aquin, M., Flouris, G., Kondylakis, H., Motta, E., Plexousakis, D., "
+        "& Sabou, M. (2015). Ontology evolution: A process-centric survey. *The Knowledge Engineering "
+        "Review, 30*(1), 45–75. https://doi.org/10.1017/S0269888913000349",
+    ),
+    # 위 BIB_FIXES 에서 지운 Pauwels 를 알파벳 자리(Pan·Piroi 사이)에 다시 넣는다.
+    (
+        "Piroi, F., & Hanbury",
+        "Pauwels, P., Van Den Bersselaar, E., & Verhelst, L. (2024). Validation of technical requirements "
+        "for a BIM model using semantic web technologies. *Advanced Engineering Informatics, 60*, 102426. "
+        "https://doi.org/10.1016/j.aei.2024.102426",
     ),
 ]
 
