@@ -4,11 +4,16 @@
 용법:  python scripts/style_check.py [--root .] [--warn] [--stats]
 종료:  0 = 통과(또는 --warn) · 1 = 위반 · 2 = 대상 부재
 
-무엇을 보는가 — 규격 v1 의 네 항목만 본다.
+무엇을 보는가 — 규격 v2 의 아홉 항목을 본다.
   S3  문장 길이 ≤ 90자 (공백 포함)
   T2  은유·구어 동사 금지 (치환표)
   T3  문두 접속어는 표준 학술 연결어만 (그래서·그런데·하지만 금지)
   T5  볼드는 용어의 최초 등장에만 — 볼드 안에 종결어미가 있으면 주장 문장이다
+  T6  T2 를 **표 셀·그림 캡션·소제목**에도 적용 (규격 v2 · 산문 밖의 사각지대)
+  T7  축약형 금지 — 됐다→되었다 · 했다→하였다
+  H1  소제목은 명사구형 — 서술형·의문형 종결 금지
+  V5  `task` 의 번역은 "태스크" 로 단일화 (예외 합성어만 허용)
+  V6  표·그림 번호는 등장 순서로 1부터 연번 — 중복·결번 금지
 
 **S1·S2·S4·T1·T4·V1–V4 는 사람이 지킨다.** 검사기 통과는 규격 준수의 필요조건이지 충분조건이
 아니다. `check_verdicts.py` 가 판정 강도의 표류를 막듯, 이 파일은 **어체의 표류**만 막는다.
@@ -20,7 +25,11 @@
 - **언급(mention)은 사용(use)이 아니다.** 따옴표·백틱 안은 마스킹해 T2·T3 위반으로 세지 않는다.
 - 문장은 **행이 아니라 문단**에서 자른다. 원고는 100열 안팎에서 손으로 줄바꿈하므로 행 단위로
   세면 한 문장이 여러 조각으로 갈려 길이 검사가 무력해진다.
-- 표·수식·코드·서지·영문 초록은 검사하지 않는다. 규격이 정하는 것은 한국어 산문의 어체다.
+- 길이(S3)·볼드(T5)·문두 접속어(T3)는 산문에만 적용한다. 표 셀은 개조식이 정상이므로 길이와
+  종결형을 따지지 않는다. 다만 **어휘 규칙(T2·T7·V5)은 표·캡션·소제목에도 적용한다**(T6) —
+  규격 v1 이 산문만 보아 표 안의 구어체가 통째로 남았기 때문이다.
+- **판정 문구는 문체 규칙보다 우선한다**(CLAUDE.md §0.8 · `paper/verdicts.yaml`). 사전등록
+  원문에 있는 축약형은 `VERDICT_LITERALS` 로 마스킹한다 — 인용이므로 원문 충실성이 앞선다.
 - `<!-- style-ok: 사유 -->` 로 면제한다. 그 행에 있으면 그 행만, 문단 **바로 앞 줄**에 홀로
   있으면 그 문단 전체를 면제한다. 사유 없는 면제는 두지 않는다.
 """
@@ -52,10 +61,55 @@ BANNED_LEXICON: list[tuple[str, str]] = [
     (r"헐거워", "완화되다"),
     (r"건초더미", "대규모 후보 집합"),
     (r"조용히\s", "그 사실이 드러나지 않은 채"),
+    # 규격 v2 증설 (2026-08-16) — 외부 검토가 표 셀·소제목에서 실제로 지적한 표현들이다.
+    # 산문에서는 이미 사라졌으나 T6 이전에는 표·제목이 검사 대상이 아니어서 남아 있었다.
+    (r"(?<![가-힣])잴(?=\s)|(?<![가-힣])재\s*보(?=[지아았])", "측정하다"),
+    (r"무너뜨리|무너지|무너진|무너졌", "훼손하다 · 기각되다"),
+    (r"멀쩡", "정상적인"),
+    (r"일부러", "의도적으로"),
+    (r"잡아내|잡아냈|잡아낸", "검출하다"),
+    (r"말로\s*풀면", "조건의 내용"),
 ]
 
 # T3 — 문장 첫머리에서 금지되는 접속어.
 BANNED_OPENERS = re.compile(r"^(그래서|그런데|하지만)(?=[\s,])")
+
+# T7 — 축약형. 학술 레지스터에서는 본디 형태를 쓴다.
+CONTRACTIONS: list[tuple[str, str]] = [
+    (r"됐", "되었"),
+    (r"했", "하였"),
+    (r"봤", "보았"),
+    (r"줬", "주었"),
+]
+
+# T7·T2 의 예외 — 사전등록·판정 사전의 **원문**. 인용이므로 어체를 고치지 않는다
+# (CLAUDE.md §0.8 · paper/verdicts.yaml). 스팬을 마스킹해 위반으로 세지 않는다.
+VERDICT_LITERALS = [
+    re.compile(r"반복\s*관측됐다"),
+    re.compile(r"확증하지\s*못했다"),
+]
+
+# V5 — `task` 의 번역은 "태스크" 로 단일화한다. 아래는 **확립된 번역 관행**이거나
+# 애초에 task 가 아닌 낱말(assignment·future work)이므로 예외로 둔다.
+TASK_TERM_ALLOWED = [
+    re.compile(r"과제\s*기반"),          # 과제 기반 평가 (task-based evaluation)
+    re.compile(r"후속\s*과제"),          # future work
+    re.compile(r"다음\s*과제"),
+    re.compile(r"연구\s*과제"),
+    re.compile(r"별개의?\s*과제"),
+]
+TASK_TERM = re.compile(r"과제")
+
+# H1 — 소제목의 서술형·의문형 종결. 명사구형이면 여기에 걸리지 않는다.
+HEADING_FINITE = re.compile(
+    r"(는가|은가|인가|던가|을까|한가"
+    r"|한다|된다|이다|아니다|않다|않는다|없다|있다"
+    r"|았다|었다|였다|겠다|린다|진다|난다|둔다|본다|온다|간다|넣는다)$"
+)
+HEADING_TRAILING_PAREN = re.compile(r"\s*[(（][^()（）]*[)）]\s*$")
+
+# V6 — 표·그림 캡션. 본문 참조("표 8의 …")가 아니라 **캡션 행**만 번호의 원천으로 센다.
+CAPTION = re.compile(r"^\*\*(?P<kind>표|그림)\s*(?P<num>\d+)[.\s]")
 
 # T5 — 볼드 안에 종결어미가 있으면 용어가 아니라 주장 문장이다.
 BOLD = re.compile(r"\*\*(?P<inner>[^*\n]{2,})\*\*")
@@ -80,7 +134,30 @@ EN_HEAD = re.compile(r"^#{1,3}\s*(Abstract|Keywords?)\b", re.I)
 def mask_quoted(text: str) -> str:
     for rx in _QUOTE_SPANS:
         text = rx.sub(lambda m: " " * len(m.group(0)), text)
+    for rx in VERDICT_LITERALS:
+        text = rx.sub(lambda m: " " * len(m.group(0)), text)
+    for rx in TASK_TERM_ALLOWED:
+        text = rx.sub(lambda m: " " * len(m.group(0)), text)
     return text
+
+
+def lexical_hits(masked: str, raw: str) -> list[tuple[int, str, str]]:
+    """어휘 규칙(T2·T7·V5)의 위반 — (위치, 라벨, 메시지). 산문·표·캡션·소제목에 공통이다.
+
+    T6 이 요구하는 것이 이 공통 적용이다. 길이(S3)·볼드(T5)·문두 접속어(T3)와 달리 어휘
+    규칙은 문장 형식과 무관하므로 표 셀에서도 그대로 성립한다.
+    """
+    hits: list[tuple[int, str, str]] = []
+    for pat, fix in BANNED_LEXICON:
+        for m in re.finditer(pat, masked):
+            hits.append((m.start(), "T2", f"구어·은유 표현 “{raw[m.start():m.end()]}” → {fix}"))
+    for pat, fix in CONTRACTIONS:
+        for m in re.finditer(pat, masked):
+            head = raw[max(0, m.start() - 3):m.end() + 2].strip()
+            hits.append((m.start(), "T7", f"축약형 “{head}” → “{fix}~” (사전등록 인용은 style-ok)"))
+    for m in TASK_TERM.finditer(masked):
+        hits.append((m.start(), "V5", "용어 이중 번역 “과제” → “태스크” (예외 합성어만 허용)"))
+    return hits
 
 
 def visible_len(sent: str) -> int:
@@ -179,19 +256,20 @@ def check_file(path: Path) -> list[str]:
             return owner[pos] if pos < len(owner) else start
 
         # 표·그림 캡션은 산문이 아니라 라벨이다 — 길이·볼드 규칙의 대상이 아니다.
+        # 다만 **어휘 규칙은 그대로 적용한다**(T6) — 캡션의 구어체가 규격 v1 의 사각지대였다.
         is_caption = bool(re.match(r"\*\*(표|그림)\s*\d", text))
-        if is_caption:
-            continue
 
         masked = mask_quoted(text)
 
-        # T2 · 은유·구어
-        for pat, fix in BANNED_LEXICON:
-            for m in re.finditer(pat, masked):
-                ln = lineno(m.start())
-                if ln in exempt:
-                    continue
-                fails.append(f"{path}:{ln}: [T2] 구어·은유 표현 “{text[m.start():m.end()]}” → {fix}")
+        # T2 · 은유·구어 / T7 · 축약형 / V5 · 용어 단일화
+        for pos, label, msg in lexical_hits(masked, text):
+            ln = lineno(pos)
+            if ln in exempt:
+                continue
+            fails.append(f"{path}:{ln}: [{label}] {msg}")
+
+        if is_caption:
+            continue
 
         # T5 · 주장 문장 볼드
         for m in BOLD.finditer(text):
@@ -225,6 +303,80 @@ def check_file(path: Path) -> list[str]:
             if n > MAX_SENT_CHARS:
                 head = sent[:36].replace("\n", " ")
                 fails.append(f"{path}:{ln}: [S3] 문장 {n}자 > {MAX_SENT_CHARS}자 — “{head}…”")
+
+    fails += check_lines(path, lines, exempt)
+    fails += check_numbering(path, lines)
+    return fails
+
+
+def heading_is_finite(title: str) -> str | None:
+    """서술형·의문형으로 끝나는 소제목이면 그 조각을 돌려준다(H1). 명사구형이면 None."""
+    body = re.sub(r"^#+\s*", "", title).strip()
+    body = re.sub(r"^[\d.]+\s*", "", body)
+    for seg in re.split(r"\s*[—–]\s*", body):
+        seg = seg.strip().rstrip(".·")
+        while HEADING_TRAILING_PAREN.search(seg):
+            seg = HEADING_TRAILING_PAREN.sub("", seg).strip()
+        seg = re.sub(r"\*\*|`", "", seg).strip().rstrip(".")
+        if HEADING_FINITE.search(seg):
+            return seg
+    return None
+
+
+def check_lines(path: Path, lines: list[str], exempt: set[int]) -> list[str]:
+    """산문 밖의 검사 대상 — 표 셀 · 소제목 · 그림 alt (T6 · H1).
+
+    `blocks()` 는 이들을 통째로 건너뛴다. 규격 v1 이 표 안의 구어체를 한 건도 잡지 못한
+    이유가 여기에 있었다. 길이·볼드·문두 접속어는 여전히 적용하지 않는다 — 표 셀의
+    개조식(명사형 종결)은 규격이 허용하는 형태이기 때문이다.
+    """
+    fails: list[str] = []
+    in_fence = False
+    in_refs = False
+    for i, raw in enumerate(lines, 1):
+        line = raw.rstrip()
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence or in_refs:
+            continue
+        if REFS_HEAD.match(line.strip()):
+            in_refs = True
+            continue
+        stripped = line.strip()
+        is_head = stripped.startswith("#")
+        is_row = stripped.startswith("|") and not re.fullmatch(r"[|\-: ]+", stripped)
+        is_alt = stripped.startswith("![")
+        if not (is_head or is_row or is_alt):
+            continue
+        if i in exempt or EN_HEAD.match(stripped):
+            continue
+        if len(re.findall(r"[가-힣]", stripped)) * 2 < len(re.findall(r"[A-Za-z]", stripped)):
+            continue
+        for _, label, msg in lexical_hits(mask_quoted(stripped), stripped):
+            fails.append(f"{path}:{i}: [{label}] {msg} (표·캡션·소제목)")
+        if is_head:
+            seg = heading_is_finite(stripped)
+            if seg:
+                fails.append(f"{path}:{i}: [H1] 소제목이 서술형 — “{seg}” (명사구형으로 쓴다)")
+    return fails
+
+
+def check_numbering(path: Path, lines: list[str]) -> list[str]:
+    """표·그림 번호는 등장 순서로 1부터 연번이어야 한다(V6) — 중복·결번 금지."""
+    fails: list[str] = []
+    seen: dict[str, list[tuple[int, int]]] = {"표": [], "그림": []}
+    for i, raw in enumerate(lines, 1):
+        m = CAPTION.match(raw.strip())
+        if m:
+            seen[m.group("kind")].append((int(m.group("num")), i))
+    for kind, items in seen.items():
+        for order, (num, ln) in enumerate(items, 1):
+            if num != order:
+                fails.append(
+                    f"{path}:{ln}: [V6] {kind} 번호가 등장 순서와 다르다 — "
+                    f"{kind} {num} 은 {order} 번째 캡션 (1부터 연번 · 중복·결번 금지)"
+                )
     return fails
 
 
@@ -261,7 +413,7 @@ def main() -> int:
     if fails:
         print(f"\n{'경고' if args.warn else '실패'}: 문체 규격 위반 {len(fails)}건 (paper/STYLE-KO-ACADEMIC.md)")
         return 0 if args.warn else 1
-    print(f"통과: {len(targets)}개 파일 · 문체 규격 (S3·T2·T3·T5)")
+    print(f"통과: {len(targets)}개 파일 · 문체 규격 (S3·T2·T3·T5·T6·T7·H1·V5·V6)")
     return 0
 
 
