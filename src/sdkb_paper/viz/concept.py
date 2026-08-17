@@ -490,10 +490,141 @@ def fig_experiment_flow(out: Path | None = None) -> Path:
     return _save(fig, out)
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 그림 6 — 평가 에피소드와 승인식 구성요소의 대응 (결과 장의 요약 맵)
+# ═══════════════════════════════════════════════════════════════════════════
+NONE_MARK = "·"
+OBS_MARK = "감사"
+UNCONF_MARK = "미확증"
+
+# 열 = 승인식의 구성요소. 맨 왼쪽만 게이트가 아니라 자원이다 — EP1 이 재는 대상이
+# 게이트가 아니기 때문이며, 이 열이 없으면 EP1 행이 전부 빈칸이 되어 에피소드 넷이
+# 한 축 위에 놓이지 않는다.
+MATRIX_COLS = [
+    ("자원 A1", "표현 감사"),
+    ("L0–L3", "형식 · 기능"),
+    ("T1", "검색 비열등성"),
+    ("T2", "하위집단"),
+    ("T3", "교차 태스크"),
+    ("T4*", "생성 층"),
+]
+
+
+def _cell(ax, cx: float, cy: float, mark: str, note: str = "") -> None:
+    """칸 하나 — 판정 부호와 그 근거 한 줄. 부호가 색보다 앞선다(규격 F1)."""
+    if mark == NONE_MARK:
+        ax.text(cx, cy, NONE_MARK, ha="center", va="center", fontsize=13,
+                color=BORDER)
+        return
+    color, fill = GREEN, GREEN_FILL
+    if mark in (FAIL_MARK, UNCONF_MARK):
+        color, fill = ASIS, ASIS_FILL
+    elif mark == OBS_MARK:
+        color, fill = MUTE, "#F1F3F6"
+    elif "/" in mark:
+        color, fill = TOBE, TOBE_FILL
+    _chip(ax, cx, cy + 0.026, mark, color=color, fill=fill)
+    if note:
+        ax.text(cx, cy - 0.036, note, ha="center", va="center", fontsize=6.6,
+                color=MUTE, linespacing=1.45)
+
+
+def fig_ep_gate_matrix(out: Path | None = None) -> Path:
+    """네 평가 에피소드가 승인식의 어느 항을 검증하였고 그 판정이 무엇인가.
+
+    가로로 읽으면 한 에피소드의 검증 범위가 보이고, 세로로 읽으면 같은 항이 서로 다른
+    실험에서 낸 판정이 보인다. **이 그림의 요점은 두 행에 있다** — EP3 행에서 형식 검증을
+    전부 통과한 변경이 T1 에서 거부되었고, EP4 행에서 T1 을 통과한 구성이 T4 에서 비열등을
+    보이지 못하였다. 층간 지표 불일치가 산문의 도움 없이 표면에 드러난다.
+    """
+    out = out or FIGURES / "concept_ep_gate_matrix.svg"
+    v = figdata.load()
+    fig, ax = _canvas(11.0, 6.6)
+
+    ratio = v["ep3.concepts_per_doc.after"] / v["ep3.concepts_per_doc.before"]
+    t3_cq = v["cq.em"] + v["cq.tf"] + v["cq.core"]   # T3 가 관찰하는 스위트의 합
+
+    rows = [
+        ("EP1", "표현 감사", "관측 사실",
+         [(OBS_MARK, f"역량질문 {v['cq.total']}개\n세 태스크 어휘"),
+          (NONE_MARK, ""), (NONE_MARK, ""), (NONE_MARK, ""),
+          (NONE_MARK, ""), (NONE_MARK, "")],
+         "세 태스크의 어휘·관계·역량질문이 자원에 실재한다.\n"
+         "다만 표현 범위는 검색 준비도와 동일하지 않다."),
+        ("EP2", "게이트 판별력", "홀드아웃 확증",
+         [(NONE_MARK, ""),
+          (str(v["ep2.l3_detected"]), "주 태스크 CQ\n검출"),
+          (NONE_MARK, ""), (NONE_MARK, ""),
+          (str(v["ep2.t3_only"]), "교차 결함\n단독 검출"),
+          (NONE_MARK, "")],
+         f"교차 태스크 결함은 T3 가 단독으로 검출하였고 정상 델타의\n"
+         f"오거부는 {v['ep2.false_positive']} 이다 (단측 McNemar p = {v['ep2.mcnemar_p']:.4f})."),
+        ("EP3", "통제된 자원 교체", "별도 사전등록",
+         [(f"{ratio:.1f}배", f"문서당 개념\n{v['ep3.concepts_per_doc.before']} → "
+                             f"{v['ep3.concepts_per_doc.after']}"),
+          (PASS_MARK, "전부 통과"),
+          (FAIL_MARK, f"ΔR@100\n{_sig(v['ep3.p1.delta'])}"),
+          (PASS_MARK, f"최대 하락\n+{v['ep3.t2_max_drop']:.4f}"),
+          (PASS_MARK, f"CQ {t3_cq}개\n통과율 유지"),
+          (NONE_MARK, "")],
+         "자원 지표가 개선되고 형식 검증을 통과한 변경을 성능 조건\n"
+         "하나가 차단하였다. 승인식은 곱이므로 승인 결과는 거부이다."),
+        ("EP4", "검색 효용과 경계", "확증 · 분할 둘",
+         [(NONE_MARK, ""), (NONE_MARK, ""),
+          (PASS_MARK, f"A {_sig(v['ep4.p1_gain.delta'])}\n"
+                      f"B {_sig(v['ep4b.p1_gain.delta'])}"),
+          (PASS_MARK, "국소 회귀\n없음"),
+          (NONE_MARK, ""),
+          (UNCONF_MARK, f"하한 {_sig(v['t4.citation_precision.lb95'])}\n"
+                        f"마진 −{v['t4.eps']} 초과")],
+         "깊은 회수의 개선은 두 확증 분할에서 반복 관측되었다.\n"
+         "사전등록된 복합 기준의 동시 충족은 두 분할에서 확인되지 않았다."),
+    ]
+
+    # ── 열 머리글 ────────────────────────────────────────────────────────────
+    x0, cw, cgap = 0.175, 0.072, 0.004
+    centers = [x0 + cw / 2 + i * (cw + cgap) for i in range(len(MATRIX_COLS))]
+    for cx, (head, sub) in zip(centers, MATRIX_COLS):
+        ax.text(cx, 0.930, head, ha="center", va="center", fontsize=9.6,
+                fontweight="bold", color=INK)
+        ax.text(cx, 0.900, sub, ha="center", va="center", fontsize=6.8, color=MUTE)
+    ax.text(0.020, 0.930, "평가 에피소드", ha="left", va="center", fontsize=9.6,
+            fontweight="bold", color=INK)
+    ax.text(0.645, 0.930, "판정 요약", ha="left", va="center", fontsize=9.6,
+            fontweight="bold", color=INK)
+    ax.plot([0.020, 0.985], [0.876, 0.876], color=BORDER, lw=1.0)
+
+    # ── 행 ───────────────────────────────────────────────────────────────────
+    top, h, gap = 0.865, 0.145, 0.025
+    for i, (tag, name, status, cells, verdict) in enumerate(rows):
+        y = top - i * (h + gap) - h
+        _rbox(ax, 0.020, y, 0.145, h, title=tag, body=name,
+              fill="#FFFFFF", edge=BORDER, ts=10, bs=7.8)
+        _rbox(ax, x0 - 0.004, y, len(cells) * (cw + cgap), h, title="", body="",
+              fill="#FBFCFD", edge=BORDER)
+        for cx, (mark, note) in zip(centers, cells):
+            _cell(ax, cx, y + h / 2, mark, note)
+        ax.text(0.985, y + h - 0.014, f"지위 · {status}", ha="right", va="top",
+                fontsize=6.8, style="italic", color=MUTE)
+        ax.text(0.645, y + h / 2 - 0.012, verdict, ha="left", va="center",
+                fontsize=7.8, color=INK, linespacing=1.6)
+
+    # ── 읽는 법 띠 ───────────────────────────────────────────────────────────
+    ax.text(0.5, 0.055,
+            "가로로 읽으면 한 에피소드가 승인식의 어느 항을 검증하였는지 보이고, 세로로 "
+            "읽으면 같은 항이 다른 실험에서 낸 판정이 보인다.\n"
+            "EP3 행에서는 형식 검증을 전부 통과한 변경이 T1 에서 거부되었고, EP4 행에서는 "
+            "T1 을 통과한 구성이 T4 에서 비열등을 보이지 못하였다.\n"
+            "* T4 는 승인식에 포함되지 않는다 — 설계와 판정 1회의 기록이다.",
+            ha="center", va="center", fontsize=8.2, color=INK, linespacing=1.7,
+            bbox=dict(boxstyle="round,pad=0.55", fc="#F7F9FB", ec=BORDER, lw=1.0))
+    return _save(fig, out)
+
+
 def main() -> None:
     """개념 도식 전량을 동결 수치에서 결정적으로 재생성한다."""
     for fn in (fig_overview, fig_layer_mismatch, fig_tbox_views, fig_gate_flow,
-               fig_experiment_flow):
+               fig_experiment_flow, fig_ep_gate_matrix):
         print(f"  ✓ {fn().relative_to(FIGURES.parent.parent)}")
 
 

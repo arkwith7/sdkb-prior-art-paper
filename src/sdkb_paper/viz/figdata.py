@@ -50,6 +50,7 @@ _TGATE = "data/processed/tgate_report_test.json"
 _SYSTEMS = "src/sdkb_paper/retrieval/systems.py"
 _HYBRID = "src/sdkb_paper/retrieval/hybrid.py"
 _PERF = "data/processed/ir/ir_performance_test.csv"
+_PERF_B = "data/processed/ir/ir_performance_test_b.csv"
 _CEILING = "data/processed/ir/rerank_ceiling_test.json"
 # 표 3(세 태스크 뷰)의 앵커 — 캡션이 아니라 바로 앞 문장을 잡는다. 캡션 문자열은
 # 파생본 재편으로 번호가 바뀌지만 이 문장은 동결 전문의 것이라 움직이지 않는다.
@@ -119,6 +120,12 @@ RULES: list[Rule] = [
          csv_match=("label", "온톨로지 추가"), csv_field="p_two_sided"),
     Rule("ep4.n_queries", _INCREMENT, "증분 CSV · 평가 질의 수",
          csv_match=("label", "온톨로지 추가"), csv_field="n_queries", cast="int"),
+    # ②′ 검색 층 · EP4 두 번째 확증 분할 (B층). **A층과 같은 키를 돌려 쓰지 않는다** —
+    # 두 분할은 통합하지도 평균하지도 않으므로(원고 §5.4.1 주의) 값도 따로 선다.
+    Rule("ep4b.p1_gain.delta", _PERF_B, "성능 CSV(B층) · 부차 구성의 Δ family Recall@100",
+         csv_match=("system", "P1"), csv_field="d_recall"),
+    Rule("ep4b.p1_gain.lb95", _PERF_B, "성능 CSV(B층) · 부차 구성의 95% CI 하한",
+         csv_match=("system", "P1"), csv_field="lb_recall"),
     # ② 검색 층 → 운용 단위 · 검토 건수 (탐색적)
     Rule("effort.median_reduction_pct", _EFFORT, "Candidate Reduction 표 · R=0.5 행",
          pattern=r"\|\s*R=0\.5\s*\|\s*\d+\s*\|\s*([\d.]+)%"),

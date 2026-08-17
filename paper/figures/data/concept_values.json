@@ -86,6 +86,16 @@
       "source": "data/processed/ir/ir_increment_delta_test.csv",
       "how": "증분 CSV · 평가 질의 수"
     },
+    "ep4b.p1_gain.delta": {
+      "value": 0.03425925925925926,
+      "source": "data/processed/ir/ir_performance_test_b.csv",
+      "how": "성능 CSV(B층) · 부차 구성의 Δ family Recall@100"
+    },
+    "ep4b.p1_gain.lb95": {
+      "value": 0.009427609427609429,
+      "source": "data/processed/ir/ir_performance_test_b.csv",
+      "how": "성능 CSV(B층) · 부차 구성의 95% CI 하한"
+    },
     "effort.median_reduction_pct": {
       "value": 0.0,
       "source": "paper/tables/ir_effort_test.md",
