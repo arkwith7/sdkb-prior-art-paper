@@ -162,6 +162,31 @@ BIB_INSERTS: list[tuple[str, str]] = [
         "& Sabou, M. (2015). Ontology evolution: A process-centric survey. *The Knowledge Engineering "
         "Review, 30*(1), 45–75. https://doi.org/10.1017/S0269888913000349",
     ),
+    # AEI 문헌 보강(2026-08-17) — 투고처에 게재된 최근 연구와의 포지셔닝(§2.2·§2.3·§2.4·§3).
+    # 서지는 Crossref 등록 메타데이터 대조다(저자·권·논문번호·DOI).
+    (
+        "Kontokostas, D., Westphal, P.,",
+        "Johansen, K. W., Schultz, C., & Teizer, J. (2025). Knowledge graph exploitation to enhance the "
+        "usability of risk assessment in construction safety planning. *Advanced Engineering Informatics, "
+        "65*, 103305. https://doi.org/10.1016/j.aei.2025.103305",
+    ),
+    (
+        "Krestel, R., Chikkamath,",
+        "Kosse, S., Hagedorn, P., & König, M. (2025). Semantic digital twins in construction: Developing a "
+        "modular system reference architecture based on information containers. *Advanced Engineering "
+        "Informatics, 67*, 103483. https://doi.org/10.1016/j.aei.2025.103483",
+    ),
+    (
+        "Shalaby, W., & Zadrozny",
+        "Schönfelder, P., & König, M. (2025). Ontology-based reasoning in automatic floor plan analysis. "
+        "*Advanced Engineering Informatics, 68*, 103761. https://doi.org/10.1016/j.aei.2025.103761",
+    ),
+    (
+        "Strathern, M. (1997).",
+        "Speiser, K., Maciocci, G., Boukamp, F., & Teizer, J. (2026). Agentic system for construction "
+        "safety risk assessments using large language models and knowledge graphs. *Advanced Engineering "
+        "Informatics, 74*, 104681. https://doi.org/10.1016/j.aei.2026.104681",
+    ),
     # 위 BIB_FIXES 에서 지운 Pauwels 를 알파벳 자리(Pan·Piroi 사이)에 다시 넣는다.
     (
         "Piroi, F., & Hanbury",

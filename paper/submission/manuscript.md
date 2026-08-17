@@ -210,10 +210,22 @@ KGrEaT(Heist et al., 2023)가 지식그래프 보강이 하류 성능 향상을 
 제품·공정·설비가 변경될 때마다 함께 변경되는 자산이기 때문이다. 따라서 이 분야의 온톨로지는 여러
 시스템이 의미를 공유하는 통로로 설계되며(Chungoora et al., 2013), 설계 자산을 지식그래프로
 통합하는 작업 또한 그 변화를 지속적으로 흡수해야 한다(Bharadwaj & Starly, 2022). 공유 범위가
-넓을수록 변경의 파급 범위도 넓어진다. 그러나 이 분야의 검증은 대체로 구조와 규칙의 준수 여부를
-보고하는 데 머물며(Solihin et al., 2015; Pauwels et al., 2024), 온톨로지 자체는 응용에서의 동작
-시연으로 정당화되는 경우가 많다. 시연은 사용 가능성을 보일 뿐, 변경의 수용 가능성에는 답하지
-않는다.
+넓을수록 변경의 파급 범위도 넓어진다.
+
+최근 이 분야의 연구는 변화의 흡수를 세 방향에서 다루었다. 표현의 표준화는 컴퓨터 비전으로 추출한
+도면 요소를 온톨로지로 규정하고 실제 평면도 사례연구로 그 효과를 제시하였다(Schönfelder & König,
+2025). 아키텍처의 모듈화는 생애주기마다 달라지는 요구를 모듈 구성으로 흡수하는 의미 기반 디지털
+트윈을 제시하였다(Kosse et al., 2025). 응용 성능의 실증은 대규모 언어모델 기반 에이전트가 생성한
+안전 위험성 평가를 지식그래프에 적재하였다(Speiser et al., 2026). 적재의 정확성은 전문가 평가와
+SHACL 검사로 확인되었다. 또한 안전과 공정계획이 지식그래프를 공유할 때 한 도메인의 결정이 다른
+도메인에 미치는 영향이 질의로 드러났다(Johansen et al., 2025).
+
+세 방향은 자원이 무엇을 표현하며 응용에서 어떻게 동작하는가를 보인다. 반면 그 자원이 변경될 때
+어떤 변경을 수용하고 어떤 변경을 거부할 것인가의 규칙은 제시되지 않는다. 모듈 구조는 변경을
+받아들일 통로를 넓히지만 개별 변경의 수용 여부를 판정하지 않으며, 도메인 사이의 영향에 대한
+관측도 승인 조건으로 사용되지 않는다. 이 분야의 검증 논의 역시 구조와 규칙의 준수 여부를 보고하는
+데 머문다(Solihin et al., 2015; Pauwels et al., 2024). 시연은 사용 가능성을 보일 뿐, 변경의 수용
+가능성에는 답하지 않는다.
 
 ## 2.3 대리지표의 타당성 조건 — 측정 이론의 자리
 
@@ -231,6 +243,10 @@ evaluation)는 하류 성능을 충분히 예측하지 못하였다(Chiu et al.,
 한 층 아래에서는 검색 지표가 생성 품질을 예측하는지가 파이프라인의 복잡도에 따라 달라졌다
 (Samuel et al., 2026). 본 논문은 한 층의 지표가 다음 층의 성능을 대표하지 못하는 이 현상을
 **층간 지표 불일치(cross-layer metric misalignment)** 라 정의한다.
+
+공학 정보학의 최근 사례도 같은 경계를 스스로 밝혔다. 앞서의 에이전트 시스템은 적재된 지식이 하류
+추론을 실제로 개선하는지는 평가하지 않았음을 명시하고 이를 후속 과제로 남겼다(Speiser et al.,
+2026).
 
 ![그림 2. 세 층의 지표 구조와 층 사이에서 관측된 어긋남 셋.](../figures/concept_layer_mismatch.svg)
 
@@ -272,14 +288,12 @@ et al., 2022; Daniell et al., 2025). 다만 이들 연구에서 그래프는 대
 
 | 연구 흐름 | 대표 문헌 | 남는 공백 | 본 연구의 확장 |
 |---|---|---|---|
-| 특허 텍스트·임베딩 검색 | Lupu & Hanbury (2013); Krestel et al. (2021) | 명시적 도메인 의미와 그래프 진화 검증이 없다 | 반도체 온톨로지 계층을 재순위화에 결합하고, 그 결합의 **성능 상한**까지 보고 |
-| 인용·지식그래프 검색 | Mahdabi & Crestani (2014); Siddharth et al. (2022) | 질의 인용 누출과 변경 통제 문제 | 질의 간선 마스킹 · 시점·패밀리 분리 · 자원 변경의 승인 규칙 |
-| 교차언어 특허검색 | Magdy & Jones (2014); Zhang et al. (2023) | 통로가 번역·다국어 임베딩에 한정 | 언어중립 개념 IRI를 제3 통로로 두고 정답 언어별로 분해(탐색적 · §6.4.4) |
-| 온톨로지 품질·TDD 검증 | Kontokostas et al. (2014); Keet & Ławrynowicz (2016); W3C (2017) | 순위 품질·교차 태스크 회귀를 보장하지 않는다 | 형식 검증 위에 3조건 태스크 게이트와 비열등 병합 규칙 |
-| 과제 기반 온톨로지 평가 | Porzel & Malaka (2004); Brank et al. (2005) | 여러 온톨로지를 비교·선택하는 **기준**으로 사용되었다 | 같은 태스크 성능을 **변경 승인식의 항**으로 사용 |
-| 지식그래프 다운스트림 평가 | Heist et al. (2023) | 사후 비교에 머물고 승인 게이트가 아니다 | 릴리스 **전** 사전 승인 게이트로 전환 |
+| 특허 선행기술 검색과 그래프 활용 | Lupu & Hanbury (2013); Krestel et al. (2021); Mahdabi & Crestani (2014); Siddharth et al. (2022) | 그래프가 성능을 위한 입력 표현에 머물러, 그래프 자체의 변경 통제는 다루지 않는다 | 질의 인용 간선 마스킹과 시점·패밀리 분리 위에서, 검색 성능을 자원 변경의 승인 조건으로 사용하고 그 결합의 **성능 상한**까지 보고 |
+| 온톨로지 품질·진화 검증 | Kontokostas et al. (2014); Keet & Ławrynowicz (2016); W3C (2017); Zablith et al. (2015) | 변경이 온톨로지를 훼손하는가만 보고, 태스크를 훼손하는가는 보지 않는다 | 형식 검증 위에 3조건 태스크 게이트와 비열등 병합 규칙 |
+| 과제 기반 평가와 다운스트림 평가 | Porzel & Malaka (2004); Brank et al. (2005); Heist et al. (2023) | 온톨로지를 비교·선택하는 **기준** 또는 완성 이후의 사후 비교로 사용되었다 | 같은 태스크 성능을 릴리스 **전** 승인식의 항으로 사용 |
 | 자원 지표를 유용성의 대리로 쓰는 관행 | Strathern (1997); Chiu et al. (2016); Thomas & Uminsky (2020) | 어긋남이 상관 분석 수준에서 보고될 뿐 **통제된 사례와 그에 대한 결정**은 드물다 | 자원만 교체한 두 조건에서의 통제된 확인과 **승인 판정**(§6.3) |
-| 공학 정보학의 온톨로지 검증 | Solihin et al. (2015); Pauwels et al. (2024) | 구조·규칙 준수와 동작 시연에 머문다 | 사용 가능성이 아니라 **변경 수용 가능성**을 판정 |
+| 공학 정보학의 의미 표현·검증과 응용 | Schönfelder & König (2025); Kosse et al. (2025); Speiser et al. (2026); Solihin et al. (2015); Pauwels et al. (2024) | 표현의 표준화·구조 준수·응용 성능은 제시되나 **변경의 승인 규칙**은 다루지 않는다 | 사용 가능성이 아니라 **변경 수용 가능성**을 판정하고 실제 심사 기록을 제시(§6.3) |
+| 공유 그래프의 교차 도메인 활용 | Johansen et al. (2025) | 도메인 사이의 영향을 **관찰**하는 데 머문다 | 같은 영향을 승인 조건인 **교차 태스크 비회귀**로 집행 |
 
 이상의 검토에서 도출되는 연구 공백은 여러 태스크를 함께 지탱하는 도메인 온톨로지의 변경
 승인 설계에 있다. 단일 태스크만 관찰하는 게이트가 유발하는 과적합을 **교차 태스크 비회귀(cross-task
@@ -293,7 +307,8 @@ non-regression)** 조건으로 통제한 릴리스 전 승인 설계는 확인�
 
 # 3. 연구방법 — 설계과학연구(DSR)
 
-본 연구는 설계과학연구에 해당한다(Hevner et al., 2004; Gregor & Hevner, 2013). 따라서 본 장이
+본 연구는 설계과학연구에 해당한다(Hevner et al., 2004; Gregor & Hevner, 2013). 이 방법론은 공학
+정보학의 최근 산출물 연구에서도 사용되었다(Speiser et al., 2026). 따라서 본 장이
 규정하는 것은 가설의 목록이 아니다. 본 장은 무엇을 구축하였고, 무엇을 언제 어떤 기준으로
 평가하였으며, 거기에서 도출된 지식을 어떤 문턱에서 설계원리라 지칭하는가를 규정한다. 평가 점검
 셋은 이 틀 안에서 결과를 확인하기 전에 동결한 조건이며, 그 목록과 판정은 §5.7의 표에 제시한다.
@@ -1463,9 +1478,13 @@ Hevner, A. R., March, S. T., Park, J., & Ram, S. (2004). Design science in infor
 
 Hogan, A., Blomqvist, E., Cochez, M., d'Amato, C., Melo, G. de, Gutierrez, C., Kirrane, S., Gayo, J. E. L., Navigli, R., Neumaier, S., Ngomo, A.-C. N., Polleres, A., Rashid, S. M., Rula, A., Schmelzeisen, L., Sequeda, J., Staab, S., & Zimmermann, A. (2021). Knowledge graphs. *ACM Computing Surveys, 54*(4), Article 71. https://doi.org/10.1145/3447772
 
+Johansen, K. W., Schultz, C., & Teizer, J. (2025). Knowledge graph exploitation to enhance the usability of risk assessment in construction safety planning. *Advanced Engineering Informatics, 65*, 103305. https://doi.org/10.1016/j.aei.2025.103305
+
 Keet, C. M., & Ławrynowicz, A. (2016). Test-driven development of ontologies. In *The Semantic Web: Latest Advances and New Domains (ESWC 2016)* (LNCS Vol. 9678, pp. 642–657). Springer. https://doi.org/10.1007/978-3-319-34129-3_39
 
 Kontokostas, D., Westphal, P., Auer, S., Hellmann, S., Lehmann, J., Cornelissen, R., & Zaveri, A. (2014). Test-driven evaluation of linked data quality. In *Proceedings of the 23rd International Conference on World Wide Web* (pp. 747–758). https://doi.org/10.1145/2566486.2568002
+
+Kosse, S., Hagedorn, P., & König, M. (2025). Semantic digital twins in construction: Developing a modular system reference architecture based on information containers. *Advanced Engineering Informatics, 67*, 103483. https://doi.org/10.1016/j.aei.2025.103483
 
 Krestel, R., Chikkamath, R., Hewel, C., & Risch, J. (2021). A survey on deep learning for patent analysis. *World Patent Information, 65*, 102035. https://doi.org/10.1016/j.wpi.2021.102035
 
@@ -1495,6 +1514,8 @@ Risch, J., Alder, N., Hewel, C., & Krestel, R. (2020). PatentMatch: A dataset fo
 
 Samuel, S., Martin, A., Yang, E., Yates, A., Lawrie, D., Soboroff, I., Dietz, L., & Van Durme, B. (2026). Beyond relevance: On the relationship between retrieval and RAG information coverage. *arXiv*. https://doi.org/10.48550/arXiv.2603.08819
 
+Schönfelder, P., & König, M. (2025). Ontology-based reasoning in automatic floor plan analysis. *Advanced Engineering Informatics, 68*, 103761. https://doi.org/10.1016/j.aei.2025.103761
+
 Shalaby, W., & Zadrozny, W. (2019). Patent retrieval: A literature review. *Knowledge and Information Systems, 61*, 631–660. https://doi.org/10.1007/s10115-018-1322-7
 
 Shomee, H. H., Wang, Z., Ravi, S. N., & Medya, S. (2025). A survey on patent analysis: From NLP to multimodal AI. In *Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)* (pp. 8545–8561). https://doi.org/10.18653/v1/2025.acl-long.419
@@ -1502,6 +1523,8 @@ Shomee, H. H., Wang, Z., Ravi, S. N., & Medya, S. (2025). A survey on patent ana
 Siddharth, L., Li, Y., & Luo, J. (2022). Retrieving technologically distant patents using a knowledge graph approach. *Journal of Engineering Design, 33*(8–9), 670–683. https://doi.org/10.1080/09544828.2022.2144714
 
 Solihin, W., Eastman, C., & Lee, Y.-C. (2015). Toward robust and quantifiable automated IFC quality validation. *Advanced Engineering Informatics, 29*(3), 739–756. https://doi.org/10.1016/j.aei.2015.07.006
+
+Speiser, K., Maciocci, G., Boukamp, F., & Teizer, J. (2026). Agentic system for construction safety risk assessments using large language models and knowledge graphs. *Advanced Engineering Informatics, 74*, 104681. https://doi.org/10.1016/j.aei.2026.104681
 
 Strathern, M. (1997). 'Improving ratings': Audit in the British University system. *European Review, 5*(3), 305–321. https://doi.org/10.1002/(SICI)1234-981X(199707)5:3<305::AID-EURO184>3.0.CO;2-4
 
