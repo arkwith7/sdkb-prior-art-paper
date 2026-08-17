@@ -286,12 +286,16 @@ def search(model: str, *, k: int = 1000, layer: str = layers.LAYER_A,
 
 
 class _Tee:
-    """표준출력을 화면과 파일에 함께 쓴다. **로그가 사라지면 사고를 사후에 못 읽는다.**"""
+    """출력을 화면과 파일에 함께 쓴다. **로그가 사라지면 사고를 사후에 못 읽는다.**
 
-    def __init__(self, path: Path):
+    `stream` 을 받는 이유: `EncoderDown` 의 진단 문구는 **stderr 로 나간다.** stdout 만 tee 하면
+    정작 중단 사유가 로그에 남지 않는다 — 2026-08-17 재개 시도에서 실제로 그렇게 비었다.
+    """
+
+    def __init__(self, path: Path, stream=None):
         path.parent.mkdir(parents=True, exist_ok=True)
         self._f = path.open("a", encoding="utf-8", buffering=1)
-        self._out = sys.stdout
+        self._out = stream if stream is not None else sys.stdout
 
     def write(self, s: str) -> int:
         self._out.write(s)
@@ -303,6 +307,12 @@ class _Tee:
         self._f.flush()
 
 
+def tee_to(path: Path) -> None:
+    """stdout·stderr 를 같은 로그 파일로 함께 흘린다."""
+    sys.stdout = _Tee(path, sys.stdout)      # type: ignore[assignment]
+    sys.stderr = _Tee(path, sys.stderr)      # type: ignore[assignment]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", choices=sorted(ENCODERS), required=True)
@@ -312,7 +322,7 @@ def main() -> int:
                     help=f"기본 {LOG_DIR}/dense_local_<model>.log — /tmp 에 두지 않는다")
     args = ap.parse_args()
     enc = ENCODERS[args.model]
-    sys.stdout = _Tee(args.log or LOG_DIR / f"dense_local_{args.model}.log")   # type: ignore[assignment]
+    tee_to(args.log or LOG_DIR / f"dense_local_{args.model}.log")
     print(f"\n=== {time.strftime('%Y-%m-%d %H:%M:%S')} · [{enc.system}] {enc.tag} · dim={DIM}"
           f" · num_ctx={enc.ctx} · 직렬(워커 1) · 간격 {MIN_INTERVAL_S}s · layer={args.layer} ===")
     search(args.model, k=args.k, layer=args.layer)

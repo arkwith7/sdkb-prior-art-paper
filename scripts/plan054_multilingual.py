@@ -132,7 +132,7 @@ def cmd_encode(args) -> int:
     """
     import time
 
-    sys.stdout = dl._Tee(dl.LOG_DIR / f"dense_local_{args.model}.log")   # type: ignore[assignment]
+    dl.tee_to(dl.LOG_DIR / f"dense_local_{args.model}.log")
     print(f"\n=== {time.strftime('%Y-%m-%d %H:%M:%S')} · PLAN-054 encode {args.model}"
           f" · 간격 {dl.MIN_INTERVAL_S}s ===")
     for layer in (layers.LAYER_A, layers.LAYER_B):
