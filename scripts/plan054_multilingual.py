@@ -126,7 +126,15 @@ def cmd_b0c(args) -> int:
 
 
 def cmd_encode(args) -> int:
-    """B6·B8 — 모델 하나만 상주시키고 직렬로 돈다(§3.3)."""
+    """B6·B8 — 모델 하나만 상주시키고 직렬로 돈다(§3.3).
+
+    로그는 `data/logs/` 로 남긴다 — `/tmp` 는 재부팅이 지운다(2026-08-17 사고).
+    """
+    import time
+
+    sys.stdout = dl._Tee(dl.LOG_DIR / f"dense_local_{args.model}.log")   # type: ignore[assignment]
+    print(f"\n=== {time.strftime('%Y-%m-%d %H:%M:%S')} · PLAN-054 encode {args.model}"
+          f" · 간격 {dl.MIN_INTERVAL_S}s ===")
     for layer in (layers.LAYER_A, layers.LAYER_B):
         dl.search(args.model, k=1000, layer=layer)
     return 0

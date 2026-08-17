@@ -25,8 +25,10 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import sqlite3
 import struct
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -37,6 +39,14 @@ from . import layers
 OLLAMA_URL = "http://localhost:11434"
 DIM = config.IR_DENSE_DIM          # 1024 — B2 와 동일
 CACHE = config.IR_DIR / "dense_local_cache.sqlite"
+LOG_DIR = config.ROOT / "data" / "logs"    # /tmp 에 두면 재부팅이 지운다(2026-08-17 사고)
+
+#: 요청 간 최소 간격(초). 2026-08-17 에 지속 8.3 req/s 로 6분 돌린 뒤 호스트 GPU 가
+#: `UCodeReset TDR` 로 넘어갔고 장비가 정지했다. 서비스 시간이 약 0.09 s 이므로 0.22 s 간격은
+#: 약 4.5 req/s 로 부하를 절반 아래로 낮춘다. **순위에는 영향이 없다** — 같은 입력, 같은 벡터다.
+MIN_INTERVAL_S = float(os.getenv("DENSE_LOCAL_MIN_INTERVAL", "0.22"))
+REQUEST_TIMEOUT_S = 120
+COMMIT_EVERY = 100                 # 재개 지점을 여미기 위해 500 → 100 (2026-08-17)
 
 
 @dataclass(frozen=True)
@@ -136,30 +146,51 @@ def _unpack(b: bytes) -> list[float]:
 
 # --- 인코딩 -------------------------------------------------------------------
 
+class EncoderDown(SystemExit):
+    """인코더가 응답하지 못하는 상태. **재시도하지 않는다** — 근거는 아래.
+
+    2026-08-17 사고에서 호스트 GPU 가 `UCodeReset TDR` 로 넘어간 뒤, 재시도가 죽은 GPU 에
+    5분 간격으로 요청을 계속 던져 ollama 가 runner 를 세 개 더 띄웠다. 그 뒤 장비가 정지했다.
+    **GPU 소실은 일시 오류가 아니므로 즉시 멈추고 사람에게 알린다.**
+    """
+
+
+_LAST_CALL = 0.0
+
+
 def _embed_one(text: str, enc: LocalEncoder, *, url: str = OLLAMA_URL) -> list[float]:
-    """1건 임베딩. `num_ctx` 를 매 호출에 명시하고, 정규화는 서버 출력이 이미 L2=1 이다(OBS6)."""
+    """1건 임베딩. `num_ctx` 를 매 호출에 명시하고, 정규화는 서버 출력이 이미 L2=1 이다(OBS6).
+
+    **속도 제한과 즉시 중단이 이 함수의 두 규칙이다**(2026-08-17). 지연은 순위를 바꾸지 않는다.
+    """
+    global _LAST_CALL
     import requests
 
-    for attempt in range(5):
-        try:
-            r = requests.post(
-                f"{url}/api/embed",
-                json={"model": enc.tag, "input": text,
-                      "options": {"num_ctx": enc.ctx}, "keep_alive": "10m"},
-                timeout=180,
-            )
-            if r.status_code == 400:
-                # 선절단을 했는데도 400 이면 상한 가정이 틀린 것이다 — 조용히 자르지 않는다.
-                raise SystemExit(f"[dense_local] 400 — 선절단 실패: {r.text[:200]}")
-            r.raise_for_status()
-            return r.json()["embeddings"][0]
-        except SystemExit:
-            raise
-        except Exception:                       # noqa: BLE001 — 일시 오류만 재시도
-            if attempt == 4:
-                raise
-            time.sleep(min(2 ** attempt, 20))
-    raise RuntimeError("임베딩 실패(재시도 소진)")
+    wait = MIN_INTERVAL_S - (time.monotonic() - _LAST_CALL)
+    if wait > 0:
+        time.sleep(wait)
+    _LAST_CALL = time.monotonic()
+    try:
+        r = requests.post(
+            f"{url}/api/embed",
+            json={"model": enc.tag, "input": text,
+                  "options": {"num_ctx": enc.ctx}, "keep_alive": "10m"},
+            timeout=REQUEST_TIMEOUT_S,
+        )
+    except Exception as e:                       # noqa: BLE001 — 통신 실패는 GPU 소실을 뜻할 수 있다
+        raise EncoderDown(
+            f"[dense_local] {enc.system} 요청 실패({type(e).__name__}) — 재시도하지 않는다.\n"
+            f"  확인 순서: `nvidia-smi` · `journalctl -u ollama -n 30` ·\n"
+            f"  `dmesg | grep dxg`(WSL 에서 GPU 채널이 끊기면 wait_for_completion 실패가 찍힌다).\n"
+            f"  진행분은 캐시에 남아 있으므로 원인 해소 후 같은 명령으로 재개하면 이어 붙는다."
+        ) from e
+    if r.status_code == 400:
+        # 선절단을 했는데도 400 이면 상한 가정이 틀린 것이다 — 조용히 자르지 않는다.
+        raise EncoderDown(f"[dense_local] 400 — 선절단 가정 불성립: {r.text[:200]}")
+    if r.status_code >= 500:
+        raise EncoderDown(f"[dense_local] {r.status_code} — 서버측 실패, 즉시 중단: {r.text[:200]}")
+    r.raise_for_status()
+    return r.json()["embeddings"][0]
 
 
 def embed_texts(texts: list[str], enc: LocalEncoder, *, cache_path: Path | None = None,
@@ -174,14 +205,27 @@ def embed_texts(texts: list[str], enc: LocalEncoder, *, cache_path: Path | None 
     keys = [_key(t, enc) for t in prepared]
     have = {k for (k,) in cache.execute("SELECT k FROM e")}
     todo = [i for i, k in enumerate(keys) if k not in have]
-    print(f"  [{enc.system}] {label} {len(texts):,}건 · 신규 {len(todo):,} · 절단 {n_trunc:,}")
-    for n, i in enumerate(todo, 1):
-        vec = _embed_one(prepared[i], enc)
-        cache.execute("INSERT OR REPLACE INTO e (k, v) VALUES (?, ?)", (keys[i], _pack(vec)))
-        if n % 500 == 0:
-            cache.commit()
-            print(f"    {n:,}/{len(todo):,} …", flush=True)
-    cache.commit()
+    print(f"  [{enc.system}] {label} {len(texts):,}건 · 신규 {len(todo):,}"
+          f" · 캐시 재사용 {len(texts) - len(todo):,} · 절단 {n_trunc:,}"
+          f" · 간격 {MIN_INTERVAL_S}s", flush=True)
+    t0 = time.monotonic()
+    n = 0
+    try:
+        for n, i in enumerate(todo, 1):
+            vec = _embed_one(prepared[i], enc)
+            cache.execute("INSERT OR REPLACE INTO e (k, v) VALUES (?, ?)",
+                          (keys[i], _pack(vec)))
+            if n % COMMIT_EVERY == 0:
+                cache.commit()
+                el = time.monotonic() - t0
+                rate = n / el if el else 0.0
+                eta = (len(todo) - n) / rate / 60 if rate else 0.0
+                print(f"    {n:,}/{len(todo):,} · {rate:.1f} req/s · 남은 {eta:.0f}분", flush=True)
+    finally:
+        # 중단이든 완주든 여기까지의 벡터는 남긴다 — 재개가 이어 붙는 근거다.
+        cache.commit()
+        if n and n < len(todo):
+            print(f"  ⚠ 중단 — {n:,}/{len(todo):,} 까지 캐시에 커밋했다", flush=True)
     rows = dict(cache.execute("SELECT k, v FROM e"))
     return [_unpack(rows[k]) for k in keys], n_trunc
 
@@ -241,14 +285,36 @@ def search(model: str, *, k: int = 1000, layer: str = layers.LAYER_A,
     return out_path
 
 
+class _Tee:
+    """표준출력을 화면과 파일에 함께 쓴다. **로그가 사라지면 사고를 사후에 못 읽는다.**"""
+
+    def __init__(self, path: Path):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self._f = path.open("a", encoding="utf-8", buffering=1)
+        self._out = sys.stdout
+
+    def write(self, s: str) -> int:
+        self._out.write(s)
+        self._f.write(s)
+        return len(s)
+
+    def flush(self) -> None:
+        self._out.flush()
+        self._f.flush()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", choices=sorted(ENCODERS), required=True)
     ap.add_argument("--layer", choices=[layers.LAYER_A, layers.LAYER_B], default=layers.LAYER_A)
     ap.add_argument("--k", type=int, default=1000)
+    ap.add_argument("--log", type=Path, default=None,
+                    help=f"기본 {LOG_DIR}/dense_local_<model>.log — /tmp 에 두지 않는다")
     args = ap.parse_args()
     enc = ENCODERS[args.model]
-    print(f"[{enc.system}] {enc.tag} · dim={DIM} · num_ctx={enc.ctx} · 직렬(워커 1) · layer={args.layer}")
+    sys.stdout = _Tee(args.log or LOG_DIR / f"dense_local_{args.model}.log")   # type: ignore[assignment]
+    print(f"\n=== {time.strftime('%Y-%m-%d %H:%M:%S')} · [{enc.system}] {enc.tag} · dim={DIM}"
+          f" · num_ctx={enc.ctx} · 직렬(워커 1) · 간격 {MIN_INTERVAL_S}s · layer={args.layer} ===")
     search(args.model, k=args.k, layer=args.layer)
     return 0
 
