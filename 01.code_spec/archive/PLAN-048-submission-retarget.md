@@ -10,7 +10,7 @@
 > 이며, 그 뒤 **D5 그림 상한이 4–5 → 4–8 로 상향**됐고(2026-08-16 · 사용자 승인 · 개념 도식 4장)
 > **D7·D8(영문 초록 250단어 · 키워드 7개)이 증설**됐다(2026-08-13). 이 파일의 숫자와 검사기가
 > 어긋나면 **검사기가 이긴다.**
-> ② **"4단계·5단계"의 계획은 승계됐다.** 후속은 [PLAN-053](../plans/PLAN-053-manuscript-focus-restructure.md)
+> ② **"4단계·5단계"의 계획은 승계됐다.** 후속은 [PLAN-053](PLAN-053-manuscript-focus-restructure.md)
 > (집중도 재구성)과 [PLAN-054](../plans/PLAN-054-multilingual-baseline-preregistration.md)(다국어 기준선)이
 > 진다. 이 문서의 단계 번호를 현재형으로 읽지 않는다.
 >

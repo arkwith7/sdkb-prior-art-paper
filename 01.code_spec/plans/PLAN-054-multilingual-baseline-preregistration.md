@@ -9,8 +9,8 @@
 > **처리안은 §3.0 에 넷 + 실무 모사 기준선 하나(D5)로 적혀 있으며 🛑 승인 대기다.**
 > **§4 구성 정의 · §6 동결 대상 · §8 보고 규칙은 3단계(설계) 승인 이후 한 글자도 바뀌지 않는다.**
 >
-> 짝: [PLAN-053](PLAN-053-manuscript-focus-restructure.md)(원고 재구성 · 결과가 들어갈 자리 지정)
-> 짝: [PLAN-056](PLAN-056-practitioner-mirrored-experiment-exposition.md)(실험 구조 재서술 — **실무 모사 기준선의 신설은 그쪽이 아니라 이 문서 3단계의 소관이다**)
+> 짝: [PLAN-053](../archive/PLAN-053-manuscript-focus-restructure.md)(원고 재구성 · 결과가 들어갈 자리 지정)
+> 짝: [PLAN-056](../archive/PLAN-056-practitioner-mirrored-experiment-exposition.md)(실험 구조 재서술 — **실무 모사 기준선의 신설은 그쪽이 아니라 이 문서 3단계의 소관이다**)
 > 근거: 외부 검토 지적 — *"강한 다국어 검색 기준선이 없다"* · 원고 §5.3 배제 논거의 불완전성 ·
 > 원고 §8.7 표 11 의 결손 ⑦
 > 주장: **C2** (검색 유용성의 **경계**) — 탐색적 강건성 점검
@@ -22,7 +22,7 @@
 >
 > **용어.** 비교되는 검색 시스템 변형은 **구성**(*configuration*), 어느 온톨로지 자원을 쓰는가는
 > **자원 조건**(*resource condition*)이라 쓴다. 은유적 "팔"은 쓰지 않는다 — 근거는
-> [PLAN-053 §2.9](PLAN-053-manuscript-focus-restructure.md).
+> [PLAN-053 §2.9](../archive/PLAN-053-manuscript-focus-restructure.md).
 
 ---
 
