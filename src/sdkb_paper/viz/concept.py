@@ -418,9 +418,82 @@ def fig_gate_flow(out: Path | None = None) -> Path:
     return _save(fig, out)
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 그림 5 — 실무 흐름과 실험 구성의 대응 (PLAN-056)
+# ═══════════════════════════════════════════════════════════════════════════
+def fig_experiment_flow(out: Path | None = None) -> Path:
+    """선행기술조사 실무의 단계와 본 실험의 구성을 나란히 놓고 대응을 표시한다.
+
+    **대응이 없는 자리를 함께 표시하는 것이 이 그림의 요점이다.** 실무의 서지 조건에
+    대응하는 구성은 주 기준선에 융합되어 있지 않고, 실무의 순차 검토와 달리 본 실험의
+    재순위화는 후보 풀을 넘지 못한다. 결손을 가리는 그림이 아니라 드러내는 그림이다.
+    """
+    out = out or FIGURES / "concept_experiment_flow.svg"
+    v = figdata.load()
+    fig, ax = _canvas(11.0, 7.4)
+
+    ax.text(0.215, 0.945, "선행기술조사 실무의 절차", ha="center", va="center",
+            fontsize=10.5, fontweight="bold", color=MUTE)
+    ax.text(0.700, 0.945, "본 실험의 구성", ha="center", va="center",
+            fontsize=10.5, fontweight="bold", color=INK)
+
+    rows = [
+        ("대상 출원의 청구항을 읽는다",
+         "독립항 전문 추출", "질의 본문 · claims_independent", TOBE_FILL, TOBE_EDGE, TOBE),
+        ("검색식을 세운다 — 키워드와 서지 조건",
+         "질의 표현 1종 고정", "4종을 준비하였으나 비교는 실행하지 않았다",
+         "#FFFFFF", BORDER, INK),
+        ("특허 데이터베이스를 검색한다",
+         "어휘 · 의미 · 개념의 세 경로",
+         "BM25(nori) · Dense(Titan v2) · 개념 단독", "#FFFFFF", BORDER, INK),
+        ("결과를 합쳐 후보 목록을 만든다",
+         "순위 융합과 후보 풀",
+         f"reciprocal rank fusion 상수 {v['flow.rrf_c']} → 상위 "
+         f"{v['flow.pool_depth']:,}건", "#FFFFFF", BORDER, INK),
+        ("후보를 순차로 검토한다",
+         "온톨로지 재순위화", "풀 안에서만 재정렬 — 후보를 확대하지 않는다",
+         TOBE_FILL, TOBE_EDGE, TOBE),
+        ("심사관이 인용할 문헌에 도달한다",
+         "family Recall@100 으로 채점", "정답은 심사관 인용", GREEN_FILL, GREEN, GREEN),
+    ]
+
+    top, h, gap = 0.900, 0.108, 0.026
+    ys = []
+    for i, (task, title, body, fill, edge, tcolor) in enumerate(rows):
+        y = top - i * (h + gap) - h
+        ys.append(y)
+        _rbox(ax, 0.030, y, 0.370, h, title=task, body="",
+              fill="#F1F3F6", edge="#D7DBE0", tcolor=MUTE, ts=9.4)
+        _rbox(ax, 0.470, y, 0.460, h, title=title, body=body,
+              fill=fill, edge=edge, tcolor=tcolor, ts=9.6, bs=8.0)
+        _arrow(ax, 0.404, y + h / 2, 0.466, y + h / 2, color=MUTE,
+               lw=1.2, style="-", ms=10)
+        if i < len(rows) - 1:
+            _arrow(ax, 0.700, y - 0.002, 0.700, y - gap + 0.002, color=INK,
+                   lw=1.5, ms=11)
+
+    # 대응이 없는 자리 둘 — 오른쪽 여백에 표시한다.
+    ax.text(0.945, ys[1] + h / 2,
+            f"주 기준선에 융합되지 않음\n분류 신호 단독의 회수는 {v['flow.b4_r100']:.3f}",
+            ha="left", va="center", fontsize=7.6, color=ASIS, linespacing=1.5)
+    ax.text(0.945, ys[4] + h / 2,
+            f"풀 밖은 회수되지 않음\n정답의 {v['ceiling.pool_ratio'] * 100:.1f}%만 풀 안에 있다\n"
+            f"({v['ceiling.pool_hits']}/{v['ceiling.edges']} · 문서 단위 · 탐색적)",
+            ha="left", va="center", fontsize=7.6, color=ASIS, linespacing=1.5)
+
+    # 전제 상자 — 본 장의 수치가 성립하는 조건이다.
+    ax.text(0.5, 0.028,
+            "전제 · 질의 특허는 이미 온톨로지에 등재되어 있다. 자유 텍스트 질의를 개념에 "
+            "연결하는 적용기는 이후 세대에서 구현되었으며 본 장의 수치에 포함되지 않는다.",
+            ha="center", va="center", fontsize=8.6, color=INK,
+            bbox=dict(boxstyle="round,pad=0.5", fc="#F7F9FB", ec=BORDER, lw=1.0))
+    return _save(fig, out)
+
+
 def main() -> None:
     """개념 도식 전량을 동결 수치에서 결정적으로 재생성한다."""
-    for fn in (fig_overview, fig_layer_mismatch, fig_tbox_views, fig_gate_flow):
+    for fn in (fig_overview, fig_layer_mismatch, fig_tbox_views, fig_gate_flow,
+               fig_experiment_flow):
         print(f"  ✓ {fn().relative_to(FIGURES.parent.parent)}")
 
 

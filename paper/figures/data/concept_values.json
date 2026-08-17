@@ -199,6 +199,36 @@
       "source": "paper/supplementary/S5-submission-full-v2.md",
       "how": "표 3 · 기술예측 행"
     },
+    "flow.pool_depth": {
+      "value": 1000,
+      "source": "src/sdkb_paper/retrieval/systems.py",
+      "how": "재랭크 풀 깊이 상수 POOL_K"
+    },
+    "flow.rrf_c": {
+      "value": 60,
+      "source": "src/sdkb_paper/retrieval/hybrid.py",
+      "how": "순위 융합 상수 RRF_C"
+    },
+    "flow.b4_r100": {
+      "value": 0.185990860990861,
+      "source": "data/processed/ir/ir_performance_test.csv",
+      "how": "성능 CSV · 분류 단독 구성의 family Recall@100"
+    },
+    "ceiling.pool_ratio": {
+      "value": 0.6033402922755741,
+      "source": "data/processed/ir/rerank_ceiling_test.json",
+      "how": "상한 JSON · 후보 풀 안의 정답 비율 (문서 단위)"
+    },
+    "ceiling.pool_hits": {
+      "value": 289,
+      "source": "data/processed/ir/rerank_ceiling_test.json",
+      "how": "상한 JSON · 후보 풀 안의 정답 엣지 수"
+    },
+    "ceiling.edges": {
+      "value": 479,
+      "source": "data/processed/ir/rerank_ceiling_test.json",
+      "how": "상한 JSON · 분모 (확증 분할의 정답 엣지)"
+    },
     "cq.pa": {
       "value": 5,
       "source": "queries/cq",

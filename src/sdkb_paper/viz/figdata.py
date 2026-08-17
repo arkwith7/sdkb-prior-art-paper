@@ -45,6 +45,12 @@ _INCREMENT = "data/processed/ir/ir_increment_delta_test.csv"
 _T4 = "data/processed/ir/rag/scores/rag_t4_verdict_test_b.json"
 _S5 = "paper/supplementary/S5-submission-full-v2.md"
 _TGATE = "data/processed/tgate_report_test.json"
+# 실험 구성도(PLAN-056)가 쓰는 값의 출처. 설계 상수는 **코드가 원천**이다 — 산문에 적힌
+# 숫자를 읽으면 코드가 바뀌어도 그림이 따라오지 않는다.
+_SYSTEMS = "src/sdkb_paper/retrieval/systems.py"
+_HYBRID = "src/sdkb_paper/retrieval/hybrid.py"
+_PERF = "data/processed/ir/ir_performance_test.csv"
+_CEILING = "data/processed/ir/rerank_ceiling_test.json"
 # 표 3(세 태스크 뷰)의 앵커 — 캡션이 아니라 바로 앞 문장을 잡는다. 캡션 문자열은
 # 파생본 재편으로 번호가 바뀌지만 이 문장은 동결 전문의 것이라 움직이지 않는다.
 _S5_VIEW_ANCHOR = r"각 \(V_t=(C_t,R_t,Q_t)\)는 태스크별"
@@ -158,6 +164,20 @@ RULES: list[Rule] = [
          row_key="선행기술조사", cast="cells"),
     Rule("views.foresight", _S5, "표 3 · 기술예측 행", pattern=_S5_VIEW_ANCHOR,
          row_key="기술예측", cast="cells"),
+    # 실험 구성도 — 파이프라인의 설계 상수와 재순위화 상한 (PLAN-056 §6.4).
+    # 상한 값의 지위는 **탐색적 기술통계 · 문서 단위**이며 주 지표를 대체하지 않는다.
+    Rule("flow.pool_depth", _SYSTEMS, "재랭크 풀 깊이 상수 POOL_K",
+         pattern=r"\nPOOL_K = (\d+)", cast="int"),
+    Rule("flow.rrf_c", _HYBRID, "순위 융합 상수 RRF_C",
+         pattern=r"\nRRF_C = (\d+)", cast="int"),
+    Rule("flow.b4_r100", _PERF, "성능 CSV · 분류 단독 구성의 family Recall@100",
+         csv_match=("system", "B4_ipc"), csv_field="R@100"),
+    Rule("ceiling.pool_ratio", _CEILING, "상한 JSON · 후보 풀 안의 정답 비율 (문서 단위)",
+         json_path=("values", "pool_ceiling", "ratio")),
+    Rule("ceiling.pool_hits", _CEILING, "상한 JSON · 후보 풀 안의 정답 엣지 수",
+         json_path=("values", "pool_ceiling", "hits"), cast="int"),
+    Rule("ceiling.edges", _CEILING, "상한 JSON · 분모 (확증 분할의 정답 엣지)",
+         json_path=("denominator", "edges"), cast="int"),
     # CQ 스위트 크기 — 질의 파일의 머리글에서 센다(원고 산문이 아니라 실물이 원천).
     Rule("cq.pa", "queries/cq", "L3 가 관찰하는 주 태스크 스위트",
          glob="queries/cq/*.rq", suite="pa", cast="int"),
