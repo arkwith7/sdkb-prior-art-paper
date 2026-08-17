@@ -8,6 +8,7 @@
 > [paper/manuscript/stage3_source.md](../../paper/manuscript/stage3_source.md)
 > 상위: [PLAN-048](../archive/PLAN-048-submission-retarget.md)(투고 파생 경로) · [PLAN-052](../archive/PLAN-052-intro-background-restructure.md)
 > 짝: [PLAN-054](PLAN-054-multilingual-baseline-preregistration.md)(다국어 기준선 사전등록)
+> 짝: [PLAN-056](PLAN-056-practitioner-mirrored-experiment-exposition.md)(실험 구조 재서술 — **이 계획이 적용된 뒤에 실행한다**)
 > 주장: **C1 · C2 · C2′ · C3 · C4** — 전부 **서술의 자리만** 바뀌고 판정은 불변
 
 ---
