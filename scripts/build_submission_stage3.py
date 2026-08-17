@@ -16,7 +16,13 @@
 
 산문 소스에 쓰는 지시자는 둘뿐이다.
     {{COPY:<앵커 문자열>|table}}     앵커 행 다음에 오는 마크다운 표 블록을 그대로 넣는다
+    {{COPY:<앵커>|table|keep:A;B}}   같은 표에서 **머리글과 지정한 행만** 골라 넣는다
     {{BIB}}                          참고문헌 목록을 그대로 넣되, 아래 BIB_FIXES 만 교체한다
+
+**행 선별(keep)도 옮겨 적기가 아니라 복사다 (PLAN-053 §2.3).** 본문 표에서 주장을 지지 않는
+행을 내릴 때(표 8 = 17행 → 5행), 남길 행을 손으로 다시 타자하면 이 파일의 존재 이유가 사라진다.
+그래서 남길 행을 **앵커로 지목**하고 원문 행을 그대로 가져온다. 앵커가 정확히 한 행에 걸리지
+않으면 실패한다(rc 2). 내린 행은 삭제가 아니라 이관이며 전문은 동결본에 그대로 남는다.
 
 **표 안의 문구도 규약을 따라야 한다 — 그러나 표를 다시 타자하지는 않는다(CELL_FIXES).**
 절 번호가 바뀌거나(§4.9 → §4.5) §0.8 문구 사전이 늘면 표 셀도 따라가야 하는데, 그 이유로
@@ -39,7 +45,9 @@ PROSE = Path("paper/manuscript/stage3_source.md")
 FROZEN = Path("paper/supplementary/S5-submission-full-v2.md")
 TARGET = Path("paper/submission/manuscript.md")
 
-DIRECTIVE = re.compile(r"\{\{COPY:(?P<anchor>[^|}]+)\|(?P<mode>table)\}\}")
+DIRECTIVE = re.compile(
+    r"\{\{COPY:(?P<anchor>[^|}]+)\|(?P<mode>table)(?:\|keep:(?P<keep>[^}]+))?\}\}"
+)
 
 BIB_START = "# 참고문헌"
 BIB_END = "[미확정 서지"          # 이 행부터는 싣지 않는다 — 미확정 목록의 두 항목은 본문 미인용이다.
@@ -257,10 +265,10 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
     ),
     (
         "| **RQ5** 전달 |",
-        "| **점검 3 · 전달** | 확증 판독 (게이트 조건 T4) | 검색팔만 교체하고 생성기를 고정하였을 때 "
+        "| **점검 3 · 전달** | 확증 판독 (게이트 조건 T4) | 검색 구성만 교체하고 생성기를 고정하였을 때 "
         "**인용 정확도가 떨어지지 않고 환각률이 오르지 않는다**(마진 동결) | *(탐색적 판독 — "
         "계측기 동결이 목적 · 판정 없음)* | **판정 1회 = 실패 — 전달을 확증하지 못했다** "
-        "(점추정은 제안 팔이 앞서나 신뢰구간 하한이 마진을 넘겼다 · 원인 미구분) | "
+        "(점추정은 제안 구성이 앞서나 신뢰구간 하한이 마진을 넘겼다 · 원인 미구분) | "
         "[S5](../supplementary/S5-submission-full-v2.md) 부록 A |",
         "라벨 숫자 5(RQ5)만 빠지고 T4 는 게이트 이름이라 남는다 — 판정·측정값은 원문과 동일하다",
     ),
@@ -268,8 +276,8 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
     (
         "| **DP4** | **통제된 자원 교체**",
         "| **DP4** | **통제된 자원 교체** — 문서집합·모델·가중치를 고정하고 **자원만 교체**해야 "
-        "온톨로지의 효과가 판별된다 | §8.1.1 — T-Box 가 한 번도 바뀌지 않아 승인 안전성을 "
-        "**원리적으로 측정할 수 없었다** · §8.1.2 — 두 팔이 처음 성립한 뒤에야 판정이 나왔다 | "
+        "온톨로지의 효과가 판별된다 | §6.5 — T-Box 가 한 번도 바뀌지 않아 승인 안전성을 "
+        "**원리적으로 측정할 수 없었다** · 두 조건이 처음 성립한 뒤에야 판정이 나왔다 | "
         "확인이 먼저 | 2026-08-01 | **확립** |",
         "라벨 숫자 2(H2)만 빠진다 — 근거·시점·등급은 원문과 동일하다(§0.9 규칙 2)",
     ),
@@ -355,6 +363,37 @@ SECTION_RENUMBER = [
     ("§5.12", "§5.6"),
 ]
 
+# ── 집중도 재구성(PLAN-053)의 장 구성 재편: 8장 → 6장 ──────────────────────────
+# 표 셀의 절 참조도 함께 움직여야 한다 — 그러지 않으면 D9(존재하지 않는 절 참조)로 죽은
+# 링크가 된다. **표를 다시 타자하지 않기 위해** 셀 하나하나를 CELL_FIXES 로 적는 대신,
+# 복사되는 표 행 전체에 이 사상을 한 번에 적용한다. 사상은 동시 치환이며(가장 긴 토큰부터
+# 매칭) 연쇄 치환이 일어나지 않는다. 절 번호는 수치가 아니므로(measurements 가 § 토큰을
+# 제거한다) 이 치환은 수치 불변 검사를 흔들지 않는다.
+CHAPTER_REMAP: dict[str, str] = {
+    # 3장(DSR) 흡수 · 4장 산출물 → 3장
+    "§4.5.1": "§3.5.1", "§4.4–4.5": "§3.4–3.5",
+    "§4.5": "§3.5", "§4.4": "§3.4", "§4.3": "§3.3", "§4.2": "§3.2", "§4.1": "§3.1",
+    # 5장 평가 설계 → 4장 (7절 → 5절)
+    "§5.7": "§4.5", "§5.6": "§4.4", "§5.5": "§4.5", "§5.4": "§4.4",
+    "§5.3": "§4.3", "§5.2": "§4.2", "§5.1": "§4.1",
+    # 6장 결과 → 5장 (3단 제목 6개 → 3개)
+    "§6.4.1": "§5.4.1", "§6.4.2": "§5.4.1", "§6.4.3": "§5.4.2", "§6.4.4": "§5.4.3",
+    "§6.4.5": "§5.4.3", "§6.4.6": "§5.4.1",
+    "§6.4": "§5.4", "§6.3": "§5.3", "§6.2": "§5.2", "§6.1": "§5.1",
+    # 7장 논의 + 8장 한계·결론 → 6장
+    "§7.10": "§6.5", "§7.1": "§6.1", "§7.2": "§6.2", "§7.3": "§6.3", "§7.4": "§6.4",
+    "§7.5": "§6.1", "§7.6": "§6.5", "§7.7": "§6.4", "§7.8": "§6.4", "§7.9": "§6.5",
+    "§8.1.1": "§6.5", "§8.1.2": "§6.5", "§8.1": "§6.5", "§8.2": "§6.5", "§8.3": "§6.5",
+    "§8.4": "§6.5", "§8.5": "§6.5", "§8.6": "§6.6", "§8.7": "§6.5", "§8.8": "§6.7",
+}
+CHAPTER_TOKEN = re.compile(
+    "|".join(re.escape(k) for k in sorted(CHAPTER_REMAP, key=len, reverse=True))
+)
+
+
+def remap_sections(text: str) -> str:
+    return CHAPTER_TOKEN.sub(lambda m: CHAPTER_REMAP[m.group(0)], text)
+
 
 def apply_cell_fixes(lines: list[str]) -> None:
     """동결본 행을 제자리에서 고친다. 앵커가 1건이 아니거나 수치가 바뀌면 실패한다."""
@@ -385,7 +424,23 @@ def fail(msg: str) -> None:
     raise SystemExit(2)
 
 
-def extract_table(lines: list[str], anchor: str) -> str:
+def select_rows(rows: list[str], keep: str, anchor: str) -> list[str]:
+    """머리글 두 행 + `keep` 이 지목한 행만 남긴다 (원문 순서 유지)."""
+    head, body = rows[:2], rows[2:]
+    picked: list[int] = []
+    for probe in [p.strip() for p in keep.split(";") if p.strip()]:
+        hits = [i for i, row in enumerate(body) if probe in row]
+        if len(hits) != 1:
+            fail(f"행 선별 앵커가 {len(hits)}건 — {probe!r} (표: {anchor!r})")
+        picked.append(hits[0])
+    kept = [body[i] for i in sorted(set(picked))]
+    if len(kept) != len(picked):
+        fail(f"행 선별 앵커가 같은 행을 두 번 지목했다 — {anchor!r}")
+    print(f"행 선별 · {anchor!r}: {len(body)}행 → {len(kept)}행 (나머지는 동결본에 잔류)")
+    return head + kept
+
+
+def extract_table(lines: list[str], anchor: str, keep: str | None = None) -> str:
     hits = [i for i, line in enumerate(lines) if anchor in line]
     if not hits:
         fail(f"앵커 소실 — {anchor!r}")
@@ -403,7 +458,14 @@ def extract_table(lines: list[str], anchor: str) -> str:
         k += 1
     if k - j < 3:
         fail(f"표가 너무 짧다({k - j}행) — {anchor!r}")
-    return "\n".join(lines[j:k])
+    rows = lines[j:k]
+    if keep is not None:
+        rows = select_rows(rows, keep, anchor)
+    out = [remap_sections(row) for row in rows]
+    for before, after in zip(rows, out):
+        if measurements(before) != measurements(after):
+            fail(f"절 재번호가 수치를 바꿨다 — {anchor!r}\n  {before}\n  {after}")
+    return "\n".join(out)
 
 
 def extract_bib(lines: list[str]) -> str:
@@ -453,7 +515,7 @@ def build() -> str:
     def sub(match: re.Match[str]) -> str:
         anchor = match.group("anchor").strip()
         used.append(anchor)
-        return extract_table(frozen, anchor)
+        return extract_table(frozen, anchor, match.group("keep"))
 
     out = DIRECTIVE.sub(sub, prose)
     if "{{BIB}}" not in out:
