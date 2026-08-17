@@ -168,20 +168,26 @@ def cmd_assemble(args) -> int:
 
     mask = CandidateMask()
     feats = OntologyFeatures()
+    sources = {"B0c": RUN_B0C, "B6": dl.RUN_PATHS["bge-m3"], "B8": dl.RUN_PATHS["arctic"]}
     for split in SPLITS:
         layer = layers.LAYER_B if split == "test_b" else layers.LAYER_A
         qids = _split_qids(split)
-        raw = {
-            "B0c": load_run(layers.run_path_for_layer(RUN_B0C, layer)),
-            "B6": load_run(layers.run_path_for_layer(dl.RUN_PATHS["bge-m3"], layer)),
-            "B8": load_run(layers.run_path_for_layer(dl.RUN_PATHS["arctic"], layer)),
-        }
+        raw, missing = {}, []
+        for name, base in sources.items():
+            p = layers.run_path_for_layer(base, layer)
+            (raw.__setitem__(name, load_run(p)) if p.exists() else missing.append(name))
+        if "B0c" in missing:
+            raise SystemExit("[assemble] B0c run 이 없다 — `b0c` 를 먼저 돌린다")
+        # **빠진 것을 조용히 넘기지 않는다**(CLAUDE.md §6 · 무언의 절단 금지).
+        if missing:
+            print(f"  ⚠ {split}: 미산출로 건너뜀 — {', '.join(missing)}"
+                  f" (해당 융합 구성도 만들지 않는다)")
         b4 = S.build_b4(feats, mask, qids=qids)
-        fused = {
-            "B7": rrf([raw["B0c"], raw["B6"]], k=S.POOL_K, c=RRF_C),
-            "B9": rrf([raw["B0c"], raw["B8"]], k=S.POOL_K, c=RRF_C),
-            "B10": rrf([raw["B0c"], b4], k=S.POOL_K, c=RRF_C),
-        }
+        fused = {"B10": rrf([raw["B0c"], b4], k=S.POOL_K, c=RRF_C)}
+        if "B6" in raw:
+            fused["B7"] = rrf([raw["B0c"], raw["B6"]], k=S.POOL_K, c=RRF_C)
+        if "B8" in raw:
+            fused["B9"] = rrf([raw["B0c"], raw["B8"]], k=S.POOL_K, c=RRF_C)
         for name, r in raw.items():
             _write(_mask_split(r, qids, mask), RUNS / f"sys_{name}_{split}.txt", f"{name}_{split}")
         for name, r in fused.items():
