@@ -240,6 +240,37 @@ def cmd_select(args) -> int:
     return 0
 
 
+def cmd_p1prime(args) -> int:
+    """P1′ = **P1 의 점수식을 B★ 후보 풀에 적용**한다. 가중치·τ·풀 크기는 재조정하지 않는다(§3.4).
+
+    자원 조건은 **O′** 이므로 비교 상대도 O′ 의 P1 이며, 표 7 에는 넣지 않는다(D3).
+    배선은 기존 `ontology_eval` 을 그대로 호출한다 — 새 점수식을 만들지 않는다(§5-3).
+    """
+    from sdkb_paper.analysis.ontology_eval import TAUS, component_cache_p1, rerank_p1
+    from sdkb_paper.analysis.results_table import P1_ALPHA, P1_TAU, P1_W4
+    from sdkb_paper.retrieval.feature_coverage import FeatureCoverageIndex
+    from sdkb_paper.retrieval.ontology_rerank import OntologyFeatures
+
+    star = json.loads(OUT_JSON.read_text()).get("b_star")
+    if not star:
+        raise SystemExit("[p1prime] B★ 가 확정되지 않았다 — `select` 를 먼저 돌린다(§4.2)")
+    print(f"P1′ = P1 점수식(τ={P1_TAU} · α={P1_ALPHA} · w4={P1_W4}) over {star} 풀 · 자원 O′")
+    mask, feats = CandidateMask(), OntologyFeatures()
+    for split in SPLITS:
+        layer = layers.LAYER_B if split == "test_b" else layers.LAYER_A
+        qids = _split_qids(split)
+        base = load_run(RUNS / f"sys_{star}_{split}.txt")
+        pool_docs = set(qids)
+        for q in qids:
+            pool_docs.update(base.get(q, []))
+        fc = FeatureCoverageIndex(restrict_docs=pool_docs)
+        cache = component_cache_p1(feats, mask, base, qids, fc)
+        run = rerank_p1(cache, list(TAUS).index(P1_TAU), P1_ALPHA, P1_W4)
+        p = _write(run, RUNS / f"sys_P1prime_{split}.txt", f"P1prime_{split}")
+        print(f"  {split}: {p.name} (layer={layer})")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -250,10 +281,12 @@ def main() -> int:
     e.add_argument("--model", choices=sorted(dl.ENCODERS), required=True)
     sub.add_parser("assemble")
     sub.add_parser("select")
+    sub.add_parser("p1prime")
     args = ap.parse_args()
     return {
         "verify": cmd_verify, "frozen-check": cmd_frozen_check, "b0c": cmd_b0c,
         "encode": cmd_encode, "assemble": cmd_assemble, "select": cmd_select,
+        "p1prime": cmd_p1prime,
     }[args.cmd](args)
 
 
