@@ -14,13 +14,13 @@
 
 자원 교체에서는 문서당 개념 수를 2.4배로 증가시키고 형식 검증 네 층을 모두 통과한 실제 변경이 검색 회수를 저하시켰으며(family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]), 조건 T1은 그 변경을 거부하였다. 이는 형식 검증이 놓치는 회귀를 태스크 조건이 검출한 실증 사례에 해당한다. 홀드아웃 결함주입에서는 교차 태스크 결함 45건 중 12건을 T3만이 검출하였고, 잘못된 경보는 27건 중 0건으로 나타났다. 검색 유용성은 그 경계와 함께 관측되었다. 온톨로지·한정요소 재순위화는 깊은 회수를 두 분할 모두에서 개선하였으나(+0.0534 · +0.0343), 사전 지정한 주 구성은 유의에 이르지 못하였고 상위 정렬(nDCG@20)은 개선되지 않았다.
 
-본 연구는 이 평가로부터 층별 검증, 한 층 아래 승인, 교차 태스크 보존, 통제된 교체라는 이전 가능한 설계원리를 도출한다. 한계 또한 명확하다. 대상은 단일 도메인이며, 승인 거부의 실질 사례는 1회이고, 그 원인이 자원에 있는지 점수 계산식에 있는지는 구분하지 못하였다. 강한 다국어 기준선과 전문가 관련성 판정 또한 확보하지 못하였으며, 결손 여덟의 해소 명세는 본문에 표로 제시한다. 질의 또한 이미 온톨로지에 등재된 특허로 한정된다. 자유 텍스트 질의를 처리하는 텍스트–개념 매핑 단계는 후속 과제로 남는다.
+본 연구는 이 평가로부터 층별 검증, 한 층 아래 승인, 교차 태스크 보존, 통제된 교체라는 이전 가능한 설계원리를 도출한다. 한계 또한 명확하다. 대상은 단일 도메인이며, 승인 거부의 실질 사례는 1회이고, 그 원인이 자원에 있는지 점수 계산식에 있는지는 구분하지 못하였다. 강한 다국어 기준선은 별도 점검으로 추가하였고 기준선 강도는 유의하게 변하지 않았다. 전문가 관련성 판정은 수행하지 않았으나 그 취약도를 계량하고 외생 라벨로 부분 축소하였으며, 결손 여덟의 해소 명세는 본문에 표로 제시한다. 질의 또한 이미 온톨로지에 등재된 특허로 한정된다. 자유 텍스트 질의를 처리하는 텍스트–개념 매핑 단계는 후속 과제로 남는다.
 
 **주제어:** 반도체 도메인 온톨로지 데이터셋, 온톨로지 진화, 태스크 인식 승인 게이트, 교차 태스크 비회귀, 대리지표의 어긋남, 선행기술 검색, 설계과학연구
 
 ## Abstract
 
-Engineering ontologies keep changing after release, and whether a change passing structural and logical checks preserves task performance is a question resource-level evaluation leaves open. The problem grows when tasks share a vocabulary: a change approved on one task's score can break another's query paths. Following design science research, we present two artifacts and one evaluation environment: SDKB (Semiconductor Domain Knowledge Base), an ontology dataset carrying expert matching, prior-art search and technology foresight as task views on one shared schema (T-Box); a task-aware release gate adding three conditions to four layers of formal validation (L0–L3) — retrieval non-inferiority (T1), subgroup safety (T2), and non-regression of other tasks' competency questions (T3); and a multi-layer benchmark in four episodes: a representation audit (SHACL, 31 competency questions, 28 gate-observed); holdout fault injection on 45 unjudged faults; a controlled resource swap with documents, code and settings frozen; and a leakage-controlled retrieval comparison over two non-overlapping confirmatory splits (198 queries each), anchored on examiner citations for 1,000 rejected patents. In the swap, a change raising concepts per document 2.4-fold and passing all four formal layers *reduced* retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]); T1 rejected it. T3 alone detected 12 of 45 cross-task faults, with 0 of 27 false alarms. Retrieval utility has a boundary: deep recall improved in both splits (+0.0534, +0.0343), while the pre-specified primary configuration and nDCG@20 did not. We derive four core and two scope design principles, and state the limits: one domain, one refusal of undistinguished cause, no strong multilingual baseline or expert relevance judgments, and queries confined to patents already in the graph.
+Engineering ontologies keep changing after release, and whether a change passing structural and logical checks preserves task performance is a question resource-level evaluation leaves open. The problem grows when tasks share a vocabulary: a change approved on one task's score can break another's query paths. Following design science research, we present two artifacts and one evaluation environment: SDKB (Semiconductor Domain Knowledge Base), an ontology dataset carrying expert matching, prior-art search and technology foresight as task views on one shared schema (T-Box); a task-aware release gate adding three conditions to four layers of formal validation (L0–L3) — retrieval non-inferiority (T1), subgroup safety (T2), and non-regression of other tasks' competency questions (T3); and a multi-layer benchmark in four episodes: a representation audit (SHACL, 31 competency questions, 28 gate-observed); holdout fault injection on 45 unjudged faults; a controlled resource swap with documents, code and settings frozen; and a leakage-controlled retrieval comparison over two non-overlapping confirmatory splits (198 queries each), anchored on examiner citations for 1,000 rejected patents. In the swap, a change raising concepts per document 2.4-fold and passing all four formal layers *reduced* retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]); T1 rejected it. T3 alone detected 12 of 45 cross-task faults, with 0 of 27 false alarms. Retrieval utility has a boundary: deep recall improved in both splits (+0.0534, +0.0343), while the pre-specified primary configuration and nDCG@20 did not. We derive four core and two scope design principles, and state the limits: one domain, one refusal of undistinguished cause, no expert relevance judgments, and queries confined to patents already in the graph.
 
 **Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
@@ -1283,8 +1283,8 @@ L0–L3와 동결 검색 회귀 세트, 세 CQ 스위트를 CI에서 실행한�
 ①과 ②는 게이트의 판별력이 아니라 그 판별력이 관측된 횟수를 제약한다. ③과 ④는 판정의 재현
 조건을, ⑤부터 ⑦까지는 다른 도메인과 다른 언어로 옮길 때의 조건을, ⑧은 정답의 완전성을 제약한다. 특히
 ⑥과 ⑦은 함께 읽어야 한다. 한국어 어휘 검색이 영어 정답을 회수하지 못한다는 관측(§5.4.3)은
-교차언어 검색 일반의 성질이 아니라 본 파이프라인의 성질이다. 강한 다국어 기준선을 확보하기
-이전에는 이를 검색 기술 일반의 한계로 확대할 수 없다.
+교차언어 검색 일반의 성질이 아니라 본 파이프라인의 성질이다. 다국어 융합 기준선을 추가한 뒤에도
+어휘 검색의 이 성질은 그대로였다. 따라서 이 관측을 검색 기술 일반의 한계로 확대하지 않는다.
 
 해소의 우선순위는 셋이다. 첫째인 다국어 밀집 기준선의 추가는 별도 사전등록 아래에서 수행되었고,
 ⑦의 부재는 해소되었다(§5.4.3). 둘째는 상위 미인용 후보의 표적 표본에 대한 2인 가림 판정으로, ⑧의
@@ -1361,8 +1361,9 @@ SDKB 데이터셋은 [https://github.com/arkwith7/sdkb-dataset](https://github.c
 교체라는 코어 원리 넷과, 후보생성 분리·전달 검증이라는 범위 원리 둘을 도출한다. 한계 또한 축소하여
 기술하지 않는다. 대상은 단일 도메인이고, 승인 거부의 실질 사례는 1회이며 그 원인은 미구분이다. 한
 층 더 아래의 전달은 두 차례 측정하고 한 차례 판정하였으나 확증하지 못하였다. 검증 강도와 일반화
-가능성의 결손 여덟은 §6.5에 명세로 싣는다. 그 가운데 강한 다국어 기준선의 부재와 전문가 관련성
-판정의 미수행은 검색 결과를 다른 언어와 다른 정답 체계로 옮길 때의 조건을 제약한다. 또한 질의는
+가능성의 결손 여덟은 §6.5에 명세로 싣는다. 그 가운데 다국어 기준선의 부재는 해소하였으나 두 인코더가 같은 계열이어서 계열 다양성은
+확보하지 못하였다. 전문가 관련성 판정은 수행하지 않았으며, 그 미수행이 남기는 조건은 검색 결과를
+다른 정답 체계로 옮길 때 제약으로 남는다. 또한 질의는
 이미 온톨로지에 등재된 특허로 한정되며, 자유 텍스트 질의를 개념에 연결하는 매핑 단계의 구축이 이
 데이터셋의 다음 과제이다. 본 연구가 기여로 제시하는 것은 둘이다. 검증 게이트·누출 통제·교차 태스크
 비회귀·음성 대조군 절제를 결합한 설계, 그리고 그 설계가 가설에 불리한 결과까지 판정 가능하게
