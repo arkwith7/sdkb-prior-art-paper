@@ -859,10 +859,11 @@ A의 것을 승계하였으며 개봉 이전 커밋(`67568c8`)에 고정되어 �
 
 **표 7. 두 확증 분할의 검색 성능 (2-panel) — 기준선은 각 패널의 Text Hybrid(B3)이고, Δ·CI·*p*·승/패/동은 질의 단위 paired bootstrap 10,000회다.**
 
-{{COPY:**표 6.4.1a. 두 확증 분할의 검색 성능 (2-panel)|table|keep:**A** | **Text Hybrid;**A** | Text+Ontology;**A** | **+ClaimFeature;**B** | **Text Hybrid;**B** | Text+Ontology;**B** | **+ClaimFeature}}
+{{COPY:**표 6.4.1a. 두 확증 분할의 검색 성능 (2-panel)|table|keep:**A** | **Text Hybrid;**A** | Text+Ontology;**A** | **+ClaimFeature;**A** | 다국어 융합 기준선;**A** | 서지 조건 모사 기준선;**B** | **Text Hybrid;**B** | Text+Ontology;**B** | **+ClaimFeature;**B** | 다국어 융합 기준선;**B** | 서지 조건 모사 기준선}}
 
-표에는 판정이 직접 걸린 세 구성만 싣는다. 단독 구성 넷(B0·B2·B4·B5)은 기준선 B3의 분해 근거이며
-그 행은 [S5](../supplementary/S5-submission-full-v2.md)에 전량 있다. 첫 분할의 보조 지표는
+표에는 판정이 직접 걸린 세 구성과, 별도 사전등록 아래에서 추가한 탐색적 기준선 둘을 싣는다.
+탐색적 두 행은 확증 판정에 들어가지 않으며 각 패널의 마지막에 둔다. 단독 구성 넷(B0·B2·B4·B5)은
+기준선 B3의 분해 근거이며 그 행은 [S5](../supplementary/S5-submission-full-v2.md)에 전량 있다. 첫 분할의 보조 지표는
 사전등록된 두 제안 구성만 산출하였으므로 그 네 행에는 Δ nDCG@20이 애초에 존재하지 않으며, 빈칸을
 사후에 채우지 않는다.
 

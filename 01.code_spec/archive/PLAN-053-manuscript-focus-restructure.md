@@ -6,7 +6,7 @@
 > [PLAN-055](PLAN-055-incomplete-judgment-robustness.md)가 완주해 원고 §4.5·§5.4.1·§6.5 와
 > S5 §6.4.7 에 실렸다(커밋 `f4433d8`).
 >
-> **①(표 7 의 B★·P1′ 행)은 [PLAN-054](../plans/PLAN-054-multilingual-baseline-preregistration.md)로
+> **①(표 7 의 B★·P1′ 행)은 [PLAN-054](PLAN-054-multilingual-baseline-preregistration.md)로
 > 승계한다.** 그 문서 §10 이 같은 자리를 이미 지정하고 있으므로 의무는 한 곳에 있다. **자리만 지정된
 > 채로 값이 없는 행을 만들지 않는다**(§1-1) — 이 원칙은 승계 후에도 그대로다.
 > 2026-08-17 실측으로 **B★ 선정은 보류 중**이다(B9 미산출 · PLAN-054 §7.3).
@@ -36,7 +36,7 @@
 > 대상: [paper/submission/manuscript.md](../../paper/submission/manuscript.md) 및 그 산문 소스
 > [paper/manuscript/stage3_source.md](../../paper/manuscript/stage3_source.md)
 > 상위: [PLAN-048](../archive/PLAN-048-submission-retarget.md)(투고 파생 경로) · [PLAN-052](../archive/PLAN-052-intro-background-restructure.md)
-> 짝: [PLAN-054](../plans/PLAN-054-multilingual-baseline-preregistration.md)(다국어 기준선 사전등록)
+> 짝: [PLAN-054](PLAN-054-multilingual-baseline-preregistration.md)(다국어 기준선 사전등록)
 > 짝: [PLAN-056](PLAN-056-practitioner-mirrored-experiment-exposition.md)(실험 구조 재서술 — **이 계획이 적용된 뒤에 실행한다**)
 > 주장: **C1 · C2 · C2′ · C3 · C4** — 전부 **서술의 자리만** 바뀌고 판정은 불변
 
@@ -486,7 +486,7 @@ configuration)` 으로 교체**하며, 이는 용어 신설이 아니라 **기�
 
 | | 항목 | 계획 | 실제 | 사유 |
 |---|---|---|---|---|
-| ① | **표 7 의 B★·P1′ 행** | 신설 2행 추가 | **미적용 → [PLAN-054](../plans/PLAN-054-multilingual-baseline-preregistration.md) 승계**(2026-08-17) | PLAN-054 가 미실행이었다 — 값이 없는 행을 만들면 §1-1 위반이다. 자리(§4.3·§5.4.1·§5.4.3)는 지정해 두었다. **B★ 선정은 보류 중이다**(B9 미산출 · PLAN-054 §7.3) |
+| ① | **표 7 의 B★·P1′ 행** | 신설 2행 추가 | **미적용 → [PLAN-054](PLAN-054-multilingual-baseline-preregistration.md) 승계**(2026-08-17) | PLAN-054 가 미실행이었다 — 값이 없는 행을 만들면 §1-1 위반이다. 자리(§4.3·§5.4.1·§5.4.3)는 지정해 두었다. **B★ 선정은 보류 중이다**(B9 미산출 · PLAN-054 §7.3) |
 | ② | **미판정 대칭성·전복 문턱** (2.4 수 ②) | §5.5 정의 + §6.4.2 결과 2문장 | **적용 완료**(2026-08-17 · `f4433d8`) | [PLAN-055](PLAN-055-incomplete-judgment-robustness.md) 완주로 해소되었다. 자리는 재구성 후 번호인 **§4.5 정의 + §5.4.1 결과**이며 전량은 S5 §6.4.7 이다 |
 | ③ | **§8.7 결손 명세 표** | 이동 대장에 없음 (초안 작성 후 `931f4d9` 로 신설) | **유지 · 6.5 로 이관** | 본 계획의 여러 조항이 이 표를 결손의 종착지로 참조한다(2.6 · 2.4). 내리면 그 참조가 끊긴다 |
 | ④ | **6장 절 수** | 7개 | **7개** (한계·경쟁 설명·결손을 §6.5 하나로 묶었다) | 계획대로이나 묶는 방식이 초안과 다르다 — 경쟁 설명·실패 유형·결론 규칙을 별도 절로 두지 않고 한계 절의 볼드 문단으로 넣었다 |

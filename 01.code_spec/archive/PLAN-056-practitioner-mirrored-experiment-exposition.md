@@ -4,7 +4,7 @@
 >
 > 실행 커밋 `3b78b65`(그림 5 실험 구성도 · 표 4 구성요소 · 재순위화 상한 60.3 % 정량화 ·
 > 부록 C). **이 계획이 그림에 표시만 해 둔 결손 하나는 채워졌다** — *"실무의 서지 조건에 대응하는
-> 구성이 주 기준선에 없다"* 는 §8-2 대로 [PLAN-054](../plans/PLAN-054-multilingual-baseline-preregistration.md)
+> 구성이 주 기준선에 없다"* 는 §8-2 대로 [PLAN-054](PLAN-054-multilingual-baseline-preregistration.md)
 > 소관으로 넘겼고, 그쪽 결정 D5 가 **B10 = RRF(B0c, B4)** 를 신설해 값을 산출했다
 > (test 0.3988 · test_b 0.4155 · PLAN-054 §7.3 · 탐색적).
 >
@@ -21,7 +21,7 @@
 > 대상: [paper/submission/manuscript.md](../../paper/submission/manuscript.md) 및 그 산문 소스
 > [paper/manuscript/stage3_source.md](../../paper/manuscript/stage3_source.md) · 그림 생성 코드
 > 짝: [PLAN-053](PLAN-053-manuscript-focus-restructure.md)(집중도 재구성 — **먼저 승인·적용된다**) ·
-> [PLAN-054](../plans/PLAN-054-multilingual-baseline-preregistration.md)(다국어 기준선 · 실무 모사 **기준선**은
+> [PLAN-054](PLAN-054-multilingual-baseline-preregistration.md)(다국어 기준선 · 실무 모사 **기준선**은
 > 그쪽 소관) · [PLAN-055](PLAN-055-incomplete-judgment-robustness.md)(미판정 강건성)
 > 주장: **C2**(검색 유용성의 경계) · **C4**(설계지식) — **판정은 전부 불변이고 서술의 구조만 바뀐다**
 
