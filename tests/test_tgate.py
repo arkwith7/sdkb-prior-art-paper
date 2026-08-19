@@ -15,6 +15,7 @@ from sdkb_paper.validate import t3_cross_task_cq as T3
 from sdkb_paper.validate.cq_runner import CQResult, suite_pass_rates
 from sdkb_paper.validate.t1_noninferiority import t1_decide
 from sdkb_paper.validate.t2_subgroup import t2_decide, t2_gate
+from sdkb_paper.validate import t_gate as TG
 from sdkb_paper.validate.t_gate import accept
 
 
@@ -197,3 +198,36 @@ def test_suite_pass_rates_partitions_results():
     out = suite_pass_rates(rs)
     assert out["em"] == {"n_pass": 1, "n_total": 2, "rate": 0.5}
     assert out["core"]["rate"] == 1.0
+
+
+# --- 판정 파일 보존 (PLAN-060 §10 · 단계 C 선행 조치) ---------------------
+
+def test_report_path_separates_runs():
+    """실행이 다르면 파일명이 다르다 — 고정 경로 하나면 뒤 실행이 앞 판정을 지운다.
+
+    실제로 지워졌다: EP3 의 판정 JSON 이 2026-08-15 시스템 비교 실행에 덮였고
+    `data/processed` 는 gitignore 라 복구 경로가 없었다.
+    """
+    a = TG.report_path("resource", "test", "P1", "O_d578bf3_linkercode", "Oprime_2839afb")
+    b = TG.report_path("system", "test")
+    c = TG.report_path("resource", "test", "P1", "O_pre_CR013", "O_post_CR013")
+    assert len({a, b, c}) == 3
+    assert "O_d578bf3_linkercode" in a.name and "Oprime_2839afb" in a.name
+    assert a.suffix == ".json" and a.parent == config.PROCESSED
+
+
+def test_report_path_sanitizes_labels():
+    """라벨은 사람이 붙인다 — 경로 구분자가 섞여도 다른 디렉터리로 새지 않는다."""
+    p = TG.report_path("resource", "test", "P1", "../../etc", "a b/c")
+    assert p.parent == config.PROCESSED
+    assert "/" not in p.name.replace(".json", "") and ".." not in p.name
+
+
+def test_guard_refuses_silent_overwrite(tmp_path):
+    """있는 판정 파일은 --force 없이 덮지 않는다."""
+    f = tmp_path / "tgate_report__resource__O__Oprime__P1__test.json"
+    f.write_text("{}", encoding="utf-8")
+    with pytest.raises(SystemExit):
+        TG.guard_overwrite(f, force=False)
+    TG.guard_overwrite(f, force=True)          # 의도를 밝히면 통과
+    TG.guard_overwrite(tmp_path / "new.json")  # 없으면 통과

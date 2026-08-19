@@ -249,7 +249,11 @@ T3_WAIVER_LOG = CQ_GEN_DIR / "waiver_log.jsonl"
 DEDUP_EXEMPTION_LOG = CQ_GEN_DIR / "dedup_exemption_log.jsonl"
 # T3 예외 토큰. 커밋 메시지에 이 토큰이 있을 때만 통과율 하락을 승인하며 횟수를 로그에 남긴다.
 T3_WAIVER_TOKEN = "T3-WAIVER:"
-# T-gate 종합 판정 산출(JSON). 재생성 가능 → data/processed(gitignore).
+# T-gate 종합 판정 산출(JSON)의 **구 고정 경로** — 더 이상 쓰기 대상이 아니다.
+# 고정 경로 하나에 쓴 탓에 2026-08-15 시스템 비교 실행이 EP3(통제된 자원 교체)의 판정을
+# 덮었고, data/processed 는 gitignore 라 복구 경로가 없었다. 지금 기본 경로는 실행 정체성이
+# 들어간 이름이다(`validate.t_gate.report_path` · PLAN-060 §10). 이 상수는 그 사고 이전
+# 산출물을 가리키기 위해서만 남긴다.
 TGATE_REPORT = PROCESSED / "tgate_report.json"
 # --- 자원 델타(O/O′) 비교 아티팩트 (D-19 · CLAUDE.md §0 델타 유형표) -----------
 # H2(갱신 승인 안전성)는 **변경 없는 동일 파이프라인에 O 와 O′ 를 넣은** 비교로만 잰다.

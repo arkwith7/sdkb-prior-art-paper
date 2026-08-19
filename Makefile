@@ -324,6 +324,11 @@ tgate-resource:
 		--split $(or $(SPLIT),test) $(if $(GRAPH),--graph $(GRAPH),) \
 		--baseline $(or $(GEN),g0)
 
+# 판정 JSON 은 **실행 정체성이 들어간 이름**으로 나간다(mode·runset·system·split).
+# 고정 경로 하나에 쓰면 다음 실행이 앞 판정을 지우고, data/processed 는 gitignore 라
+# 복구 경로가 없다 — 실제로 EP3 의 판정이 그렇게 사라졌다(PLAN-060 §10). 같은 이름이
+# 이미 있으면 게이트는 돌기 전에 멈춘다(--force 로만 덮는다).
+#
 # T1·T2·T3 종합 판정 (+ 누출 감사). 실패 시 비영 종료 — 우회 경로 없음.
 tgate:
 	uv run python -m sdkb_paper.validate.t_gate --split $(or $(SPLIT),dev) \

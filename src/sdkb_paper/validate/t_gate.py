@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -136,6 +137,50 @@ def run_tgate(split: str = "dev", new: Path | None = None, old: Path | None = No
     return out
 
 
+_SAFE = re.compile(r"[^A-Za-z0-9_-]+")
+
+
+def _slug(text: str) -> str:
+    """파일명 조각 정규화 — 라벨은 사람이 붙이므로 경로 문자가 섞일 수 있다."""
+    return _SAFE.sub("-", str(text)).strip("-") or "na"
+
+
+def report_path(mode: str, split: str, system: str = "P1",
+                old_runset: str | None = None, new_runset: str | None = None,
+                new: Path | None = None, old: Path | None = None) -> Path:
+    """판정 JSON 의 기본 경로 — **실행 정체성을 파일명에 넣는다**(PLAN-060 §10).
+
+    고정 경로 하나에 쓰면 다음 실행이 앞 실행을 지운다. 실제로 그렇게 지워졌다 —
+    EP3(통제된 자원 교체)의 판정 JSON 이 2026-08-15 의 시스템 비교 실행에 덮여
+    `data/processed` 가 gitignore 라 복구 경로가 없었고, −0.0293·+0.0401 은 동결
+    사전등록(PLAN-035 §B)과 `concept_values.json` 에만 남았다. 파일명이 다르면
+    두 실행은 서로를 지우지 못한다.
+    """
+    if mode == "resource":
+        stem = f"resource__{_slug(old_runset)}__{_slug(new_runset)}__{_slug(system)}"
+    else:
+        n = _slug(new.stem if new else "P1")
+        o = _slug(old.stem if old else "B3_rrf")
+        stem = f"system__{n}__vs__{o}"
+    return config.PROCESSED / f"tgate_report__{stem}__{_slug(split)}.json"
+
+
+def guard_overwrite(path: Path, force: bool = False) -> None:
+    """이미 있는 판정 파일을 말없이 덮지 않는다 — 판정 기록은 재생성이 보장되지 않는다.
+
+    자원 팔은 `make vendor` 로 지나가면 되돌릴 수 없으므로, 같은 이름의 앞 실행을
+    덮는 것은 사실상 삭제다. 덮으려면 **의도를 인자로 밝힌다**(`--force`).
+    """
+    if force or not path.exists():
+        return
+    raise SystemExit(
+        f"[t-gate] 판정 파일이 이미 있다: {path}\n"
+        "         덮으면 앞 실행의 판정이 사라진다(data/processed 는 gitignore 라 복구 경로가 "
+        "없다).\n"
+        "         다른 실행이면 --out 으로 이름을 나누고, 정말 덮을 것이면 --force 를 붙인다."
+    )
+
+
 def _visibility_lines(res: dict) -> list[str]:
     """자원 델타 가시성을 `Accept` 줄 **위**에 놓는다 (D-43 · PLAN-051).
 
@@ -208,7 +253,10 @@ def main() -> None:
     ap.add_argument("--l0-l3", dest="l0_l3", choices=["pass", "fail"], default="pass",
                     help="선행 L0–L3 결과(기본 pass — `make gate` 가 앞단에서 실행)")
     ap.add_argument("--skip-leakage", action="store_true", help="누출 감사 생략(진단 전용)")
-    ap.add_argument("--out", type=Path, default=None, help="판정 JSON 경로")
+    ap.add_argument("--out", type=Path, default=None,
+                    help="판정 JSON 경로(기본: 실행 정체성이 들어간 이름 · report_path)")
+    ap.add_argument("--force", action="store_true",
+                    help="같은 이름의 앞 판정 파일을 덮는다 — 기본은 거부다")
     args = ap.parse_args()
     if args.split == "test_b":
         # T2 하위집단 판정은 A층 전용이다(PLAN-045 D5 · PLAN-047 §13.4). B층에는 공정군·
@@ -220,12 +268,17 @@ def main() -> None:
             "(PLAN-047 §13.4). 판독 B 는 results_table/ablation 으로 판정한다."
         )
 
+    # 경로 결정과 덮어쓰기 가드는 **게이트를 돌리기 전에** 끝낸다 — 다 돌린 뒤에 거부하면
+    # 계산을 버리게 되고, 그러면 다음 사람이 --force 를 습관적으로 붙인다.
+    out = args.out or report_path(args.mode, args.split, args.system,
+                                  args.old_runset, args.new_runset, args.new, args.old)
+    guard_overwrite(out, args.force)
+
     res = run_tgate(args.split, args.new, args.old, args.graph, args.baseline,
                     l0_l3=(args.l0_l3 == "pass"), k=args.k, skip_leakage=args.skip_leakage,
                     mode=args.mode, old_runset=args.old_runset, new_runset=args.new_runset,
                     system=args.system)
     print(format_report(res))
-    out = args.out or config.TGATE_REPORT
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(res, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
     print(f"✓ {out}")
