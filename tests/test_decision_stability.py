@@ -76,9 +76,10 @@ def test_no_stray_numbers(table: str) -> None:
         allowed |= {f"{val:.4f}", f"{abs(val):.4f}"}
 
     # 표 본문의 수치 토큰이 전부 허용 목록 안에 있어야 한다.
-    # 게이트 이름(T1–T4)과 지표 이름(ΔR@100·LB₉₅)의 숫자는 측정값이 아니므로 먼저 뺀다.
+    # 게이트 이름(T1–T4)·에피소드 이름(EP1–EP4)·지표 이름(ΔR@100·LB₉₅)의 숫자는 측정값이
+    # 아니므로 먼저 뺀다. EP 는 T 와 같은 성격의 라벨이다(CLAUDE.md §7 · 재사용 금지 이름공간).
     body = "\n".join(ln for ln in table.split("\n") if ln.startswith("|"))
-    body = re.sub(r"ε_T4|T[1-4]|ΔR@100|LB₉₅", "", body).replace("−", "-")
+    body = re.sub(r"ε_T4|T[1-4]|EP[1-4]|ΔR@100|LB₉₅", "", body).replace("−", "-")
     normalized = {a.lstrip("-.") for a in allowed} | {a.lstrip("-") for a in allowed} | allowed
     for token in re.findall(r"\d+(?:\.\d+)*", body):
         assert token in normalized, token
