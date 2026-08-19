@@ -278,3 +278,41 @@ KIPRIS 원문 없이 돌릴 수 있는 유일한 층이다.
 지문 검사 → benchmark/ 이관 → Zenodo 연결 → 태그 v1.1-paper → Release 발행 → DOI
 → CITATION.cff 갱신 → 원고 §6.6 (공개 태그 + Version DOI · 하네스를 공개 목록으로)
 ```
+
+## 10. 지문 검사 결과 (2026-08-19) — 원문은 0건, 그러나 셋이 걸렸다
+
+스테이징 트리 **117 파일**(코드 74 + 표 20 + supplementary 5 + 결함행렬·런셋·임계 등)에 상류
+`check_public_release.py` 를 적용했다. 판정 근거는 KIPRIS 비공개 정본에서 뽑은 **지문 3,341개
+(고유 2,322)** 다.
+
+### 10.1 통과 — KIPRIS 원문 **적중 0건**
+
+**코드 74 파일 · 결과표 20 · supplementary 5 어디에도 특허 원문이 없다.** 사전에 위험지로 지목한
+셋(테스트 픽스처 · `typology_prompt.txt` · 표의 사례 인용) 모두 무적중이다. 이관의 가장 큰 위험은
+해소되었다.
+
+### 10.2 차단 — 홈 절대경로 **218건**
+
+| 파일 | 건수 |
+|---|---|
+| `fault_matrix.json` | 126 |
+| `fault_matrix_holdout.json` | 72 |
+| `fault_matrix_n03.json` · `fault_matrix_n03adv.json` | 각 9 |
+| `fault_baseline.json` · `ir_effort_test.md` | 각 1 |
+
+경로의 뿌리는 **217건이 `…/sdkb-foresight-paper`** 다. 즉 격리 산출물의 실행 경로가 값이 아니라
+흔적으로 남았고, 그 흔적이 **이 저장소의 옛 이름을 노출한다.** 처리는 발행 시 경로를 상대화하는
+변환 단계이며, 상류 `scrub_abs_paths` 가 이미 그 일을 한다 — `wants_abs_scrub` 의 대상에
+`benchmark/assets/` 를 더한다. **JSON 값 자체는 건드리지 않는다**(경로 문자열만 치환).
+
+### 10.3 차단 — 옛 리포 슬러그 2건 · 죽은 문서 링크 2건
+
+| 파일 | 내용 | 처리 |
+|---|---|---|
+| `config.py` · `ontology/vendor.py` | 비공개 상류 슬러그 `semiconductor-knowledge-base` 1회씩 | **허용목록 등재**(사유: 스냅샷 출처 기록). 소스를 고치면 §8.1 "복사하되 고치지 않는다"가 깨진다. 상류도 `config/namespaces.py` 를 같은 이유로 예외 처리한다 |
+| `S6-preregistration-crosswalk.md` | `../논문_v0_9_SDKB_통합초안.md` · `../verdicts.yaml` | 정본 링크는 **평문화**. `verdicts.yaml` 은 판정 SSOT 이므로 **함께 싣는 편이 낫다** — 심사자가 판정 문구의 출처를 직접 볼 수 있다 |
+
+### 10.4 남은 확인 — 아직 검사하지 못한 것
+
+qrel·분할 **식별자 CSV** 는 변환기가 없어 스테이징에 포함되지 않았다. 원문 0열이 설계상 보장되나
+**변환 후 같은 검사를 다시 돌린다** — 검사하지 않은 것을 통과로 세지 않는다.
