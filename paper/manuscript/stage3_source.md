@@ -1330,7 +1330,7 @@ SDKB 데이터셋은 [https://github.com/arkwith7/sdkb-dataset](https://github.c
   [S3](../supplementary/S3-unexecuted-design-v09.md) ·
   [S5](../supplementary/S5-submission-full-v2.md)).
 - **미공개와 사유** — KIPRIS 원문은 학술이용 조건상 재배포할 수 없고, 회사 기밀 계층은 비식별
-  변조본만 존재하며, 평가 하네스 저장소는 공개할 경우 봉인 규율이 무효화된다.
+  변조본만 존재한다.
 
 본 논문이 사용한 것은 상류 스냅샷 `d578bf3` 에 대응하는 고정 릴리스이며, 파일별 sha256은 스냅샷의
 `PROVENANCE.json` 에 있다. 데이터셋은 이후에도 개선되므로, 재현 시에는 논문이 명시한 스냅샷 서명을
