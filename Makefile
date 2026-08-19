@@ -1,4 +1,4 @@
-.PHONY: figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check
+.PHONY: figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 tables-stability tables-stability-check
 
 setup:
 	uv sync --all-extras
@@ -43,9 +43,19 @@ submission-check:
 style-check:
 	uv run python scripts/style_check.py
 
+# 결정 안정성 표 — 동결 임계에서 판정이 전환되는 지점 (PLAN-060 B3 · 외부 검토 지적 3).
+# 수치는 기존 산출물에서만 읽는다(concept_values.json · fault_matrix_v4.json · T4 판정 JSON).
+# **임계는 움직이지 않는다** — 표가 보고하는 것은 판정과 전환점의 거리뿐이다.
+tables-stability:
+	uv run python -m sdkb_paper.analysis.decision_stability
+
+tables-stability-check:
+	uv run python -m sdkb_paper.analysis.decision_stability --check
+
 # 투고 파생본을 산문 소스 + 동결 표에서 기계로 조립 (PLAN-048 3단계).
 # 표의 수치는 축약 전 전문(S5)에서 문자 단위로 복사한다 — 손으로 옮겨 적지 않는다(§1-1).
-submission-stage3:
+# `paper/tables/` 의 생성 표는 `{{COPY:…|from:X.md}}` 로 가져온다(PLAN-060 B3).
+submission-stage3: tables-stability-check
 	uv run python scripts/build_submission_stage3.py
 
 test:

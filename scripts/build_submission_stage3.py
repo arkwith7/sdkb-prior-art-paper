@@ -17,6 +17,8 @@
 산문 소스에 쓰는 지시자는 둘뿐이다.
     {{COPY:<앵커 문자열>|table}}     앵커 행 다음에 오는 마크다운 표 블록을 그대로 넣는다
     {{COPY:<앵커>|table|keep:A;B}}   같은 표에서 **머리글과 지정한 행만** 골라 넣는다
+    {{COPY:<앵커>|table|from:X.md}}  동결본 대신 paper/tables/X.md(생성기 산출)에서 가져온다
+    (from: 은 keep: 보다 앞에 쓴다 — keep 의 행 앵커에는 `|` 가 들어간다)
     {{BIB}}                          참고문헌 목록을 그대로 넣되, 아래 BIB_FIXES 만 교체한다
 
 **행 선별(keep)도 옮겨 적기가 아니라 복사다 (PLAN-053 §2.3).** 본문 표에서 주장을 지지 않는
@@ -46,8 +48,18 @@ FROZEN = Path("paper/supplementary/S5-submission-full-v2.md")
 TARGET = Path("paper/submission/manuscript.md")
 
 DIRECTIVE = re.compile(
-    r"\{\{COPY:(?P<anchor>[^|}]+)\|(?P<mode>table)(?:\|keep:(?P<keep>[^}]+))?\}\}"
+    r"\{\{COPY:(?P<anchor>[^|}]+)\|(?P<mode>table)"
+    # from: 이 keep: 보다 앞이다 — keep 의 행 앵커에는 `|` 가 들어가므로 뒤에 와야 한다.
+    r"(?:\|from:(?P<src>[^|}]+))?"
+    r"(?:\|keep:(?P<keep>[^}]+))?\}\}"
 )
+
+# `from:` 로 지목할 수 있는 두 번째 복사 원본 — **생성기가 만든 표**다(PLAN-060 B3).
+# 왜 필요한가: S5 는 2단계 산출물의 동결 사본이므로 그 뒤에 새로 계산한 표는 그 안에 없다.
+# 그렇다고 산문 소스에 손으로 적으면 이 파일의 존재 이유가 사라진다(§1-1). 그래서 원본을
+# 하나 더 허용하되, **디렉터리를 paper/tables/ 로 못박아** 아무 파일이나 끌어오지 못하게 한다.
+# 이 원본에는 CELL_FIXES 와 절 재번호를 적용하지 않는다 — 생성 시점에 이미 최종 번호다.
+GENERATED_DIR = Path("paper/tables")
 
 BIB_START = "# 참고문헌"
 BIB_END = "[미확정 서지"          # 이 행부터는 싣지 않는다 — 미확정 목록의 두 항목은 본문 미인용이다.
@@ -224,7 +236,7 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
         "| **EP4** | **검색 효용과 경계** |",
         "| **EP4** | **검색 효용과 경계** | 온톨로지 보강이 강한 텍스트 기준선을 "
         "**개선하는가, 어디까지인가** | 봉인 분할에 대한 사전등록된 확증 평가 — 모든 접근을 "
-        "열람 원장에 기록 (독립 확증 분할 둘) | 확증 + 탐색적 진단 | §6.4 |",
+        "열람 원장에 기록 (비중복 확증 분할 둘) | 확증 + 탐색적 진단 | §6.4 |",
         "\"1회\" 를 뺀 자리에 회수 단정이 남지 않는다 — 개봉 횟수는 원장이 말한다(§0.3 조건 ⑤)",
     ),
     # 자원 교체 표 — P1 은 사전 지정 주 구성이 아니라 **교체 대상 구성**이다(§0.8 SYSTEM_LABELS).
@@ -251,7 +263,7 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
         "**Recall@100 과 nDCG@20 이 모두** 높고, 그 개선폭은 질의–정답의 어휘 중첩이 **낮은** "
         "집단에서 더 크다 | **부분 지지 — 주 지표에 한정** (R@100 은 P1 에서 유의 개선 · nDCG "
         "조항 미충족 · 사전 지정 주 구성 비유의 · 저중첩 조건 반증) | **미지지** (R@100 은 "
-        "개선되나 nDCG 조항이 깨졌다 · 주 구성 비유의) | §6.4.1 · §6.4.2 |",
+        "개선되나 nDCG 조항이 깨졌다 · 주 구성 비유의) | §6.4.1 (패널 A · B) |",
         "라벨 숫자 2·3(RQ2·H3)만 빠진다 — 예측·판정·측정값은 원문과 동일하다(§0.9 규칙 2)",
     ),
     (
@@ -268,7 +280,7 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
         "| **점검 3 · 전달** | 확증 판독 (게이트 조건 T4) | 검색 구성만 교체하고 생성기를 고정하였을 때 "
         "**인용 정확도가 떨어지지 않고 환각률이 오르지 않는다**(마진 동결) | *(탐색적 판독 — "
         "계측기 동결이 목적 · 판정 없음)* | **판정 1회 = 실패 — 전달을 확증하지 못했다** "
-        "(점추정은 제안 구성이 앞서나 신뢰구간 하한이 마진을 넘겼다 · 원인 미구분) | "
+        "(점추정은 제안 구성이 앞서나 신뢰구간 하한이 마진보다 낮았다 · 원인 미구분) | "
         "[S5](../supplementary/S5-submission-full-v2.md) 부록 A |",
         "라벨 숫자 5(RQ5)만 빠지고 T4 는 게이트 이름이라 남는다 — 판정·측정값은 원문과 동일하다",
     ),
@@ -277,12 +289,32 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
         "| **DP4** | **통제된 자원 교체**",
         "| **DP4** | **통제된 자원 교체** — 문서집합·모델·가중치를 고정하고 **자원만 교체**해야 "
         "온톨로지의 효과가 판별된다 | §6.5 — T-Box 가 한 번도 바뀌지 않아 승인 안전성을 "
-        "**원리적으로 측정할 수 없었다** · 두 조건이 처음 성립한 뒤에야 판정이 나왔다 | "
-        "확인이 먼저 | 2026-08-01 | **확립** |",
-        "라벨 숫자 2(H2)만 빠진다 — 근거·시점·등급은 원문과 동일하다(§0.9 규칙 2)",
+        "**원리적으로 측정할 수 없었다** · 두 조건이 처음 성립한 뒤에야 판정이 나왔다 · "
+        "**성립 사례는 1건** | 확인이 먼저 | 2026-08-01 | **경험적 지지** "
+        "(확인 선행 · 방법론적 요구사항) |",
+        "라벨 숫자 2(H2)가 빠지고 사례 수 1 이 늘어난다 — 근거와 시점은 원문과 동일하다"
+        "(§0.9 규칙 2 · §0.6 3단계 등급)",
     ),
-    ("| **DP2** |", None, None),      # 아래 SECTION_RENUMBER 로 처리 (§4.9 → §4.5)
-    ("| **DP3** |", None, None),
+    # DP2·DP3 등급 — §0.6 이 3단계로 개정되며(2026-08-19 · PLAN-060) "확립" 이 갈렸다.
+    # 설계 시점이 확인 시점보다 앞선 둘만 **사전 설계 · 실증 지지**다. 근거·시점·수치는 불변이고
+    # 바뀌는 것은 등급의 이름뿐이다. §4.9 는 SECTION_RENUMBER 가 §4.5 로 옮긴다.
+    (
+        "| **DP2** |",
+        "| **DP2** | **한 층 아래 승인** — 자원 변경은 자원 지표가 아니라 **다음 사용 층의 "
+        "비회귀 결과**로 승인한다 | §6.3 — 형식 검증 L0–L3 를 **전부 통과한** 델타를 성능 조건 "
+        "T1 이 거부(Accept = 0) | **§4.9 설계 시점** | 2026-08-01 | **사전 설계 · 실증 지지** |",
+        None,
+    ),
+    (
+        "| **DP3** |",
+        "| **DP3** | **교차 태스크 감시** — 공유 T-Box 에서는 **주 태스크 성능만으로** 변경을 "
+        "승인하지 않는다 | §6.2 — 교차 결함을 T3 만 단독 검출(12/45 · 단측 *p*=.0001) · "
+        "§6.4.3 — 음성 대조군(A8) 제거가 검색을 −0.0316 악화, 다만 **§6.4.6 두 번째 분할에서는 "
+        "0.0000 으로 갈렸다** | **§4.9 설계 시점**(T3) | 2026-07 | **사전 설계 · 실증 지지** — "
+        "근거는 결함주입 T3 단독 검출이 진다. A8 근거는 **두 표본에서 갈렸음을 그대로 "
+        "적는다**(경쟁 설명 §7.9) |",
+        None,
+    ),
     # ── 문체 규격 v2 · T6 (2026-08-16) ────────────────────────────────────────
     # 규격 v1 은 산문만 검사했으므로 **표 셀의 구어·은유·축약형이 통째로 남아 있었다**.
     # v2 의 T6·T7 이 표 셀을 검사 대상에 넣었고, 그래서 여기서 고친다. 아래 치환은
@@ -291,7 +323,7 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
         "| **EP2** | **게이트 판별력** |",
         "| **EP2** | **게이트 판별력** | 의도적으로 주입한 결함을 게이트가 **검출하는가**, "
         "정상 변경을 **거부하지는 않는가** | 아직 판정한 적 없는 홀드아웃 결함 · 사전 지정한 "
-        "세 조건 | 홀드아웃 확증 실행 (점검 목록에서는 설계 근거 · §5.7) | §6.2 |",
+        "세 조건 | 게이트 판별력에 대한 홀드아웃 산출물 평가 (확증 점검 목록에는 포함되지 않는다 · §5.7) | §6.2 |",
         None,
     ),
     (
@@ -331,8 +363,10 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
         "| **DP1** | **층별 검증**",
         "| **DP1** | **층별 검증** — 온톨로지 내부 품질과 하류 태스크 성능은 **별도 층에서** "
         "평가한다 | §6.3 — 문서당 개념 1.545 → 3.779(2.4배)인데 교체 대상 구성(P1)의 "
-        "Recall@100 은 −0.0293 | 확인이 먼저 | 2026-08-01 | **확립** |",
-        "구성 명칭이 P1 이라 라벨 숫자 1 이 늘어난다 — 측정값은 원문과 동일하다(§0.8 SYSTEM_LABELS)",
+        "Recall@100 은 −0.0293 · **성립한 자원 델타는 1건** | 확인이 먼저 | 2026-08-01 | "
+        "**경험적 지지** (확인 선행) |",
+        "구성 명칭 P1 과 델타 건수 1 이 늘어난다 — 측정값은 원문과 동일하다"
+        "(§0.8 SYSTEM_LABELS · §0.6 3단계 등급)",
     ),
     (
         "| **DP6** |",
@@ -440,7 +474,19 @@ def select_rows(rows: list[str], keep: str, anchor: str) -> list[str]:
     return head + kept
 
 
-def extract_table(lines: list[str], anchor: str, keep: str | None = None) -> str:
+def read_generated(name: str) -> list[str]:
+    """생성기 산출 표를 읽는다 — paper/tables/ 밖은 거부한다."""
+    path = (GENERATED_DIR / name.strip()).resolve()
+    if GENERATED_DIR.resolve() not in path.parents:
+        fail(f"생성 표는 {GENERATED_DIR}/ 안에서만 읽는다 — {name!r}")
+    if not path.exists():
+        fail(f"생성 표 부재 — {path} (생성기를 먼저 돌린다)")
+    return path.read_text(encoding="utf-8").split("\n")
+
+
+def extract_table(
+    lines: list[str], anchor: str, keep: str | None = None, remap: bool = True
+) -> str:
     hits = [i for i, line in enumerate(lines) if anchor in line]
     if not hits:
         fail(f"앵커 소실 — {anchor!r}")
@@ -461,7 +507,7 @@ def extract_table(lines: list[str], anchor: str, keep: str | None = None) -> str
     rows = lines[j:k]
     if keep is not None:
         rows = select_rows(rows, keep, anchor)
-    out = [remap_sections(row) for row in rows]
+    out = [remap_sections(row) for row in rows] if remap else list(rows)
     for before, after in zip(rows, out):
         if measurements(before) != measurements(after):
             fail(f"절 재번호가 수치를 바꿨다 — {anchor!r}\n  {before}\n  {after}")
@@ -515,7 +561,10 @@ def build() -> str:
     def sub(match: re.Match[str]) -> str:
         anchor = match.group("anchor").strip()
         used.append(anchor)
-        return extract_table(frozen, anchor, match.group("keep"))
+        src = match.group("src")
+        if src is None:
+            return extract_table(frozen, anchor, match.group("keep"))
+        return extract_table(read_generated(src), anchor, match.group("keep"), remap=False)
 
     out = DIRECTIVE.sub(sub, prose)
     if "{{BIB}}" not in out:
