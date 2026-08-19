@@ -130,6 +130,8 @@ def asset_sources() -> list[tuple[Path, str]]:
     for f in ASSET_FILES:
         out.append((ROOT / f, f"assets/{Path(f).name}"))
     out.append((ROOT / FIGURE_DATA, "figures/data/concept_values.json"))
+    # 진입 문서 — 산문은 사람이 쓰고(docs/benchmark/README.md) 생성기는 옮기기만 한다.
+    out.append((ROOT / "docs" / "benchmark" / "README.md", "README.md"))
     for p in sorted((ROOT / SUPPLEMENTARY[0]).glob(SUPPLEMENTARY[1])):
         out.append((p, f"supplementary/{p.name}"))
     return out
