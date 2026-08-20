@@ -100,8 +100,8 @@ def build() -> str:
         mark = " (사전 지정)" if abs(tau - TAU_MAIN) < 1e-9 else ""
         verdict = "충족" if p < 0.05 else "미충족"
         lines.append(
-            f"| T3 · 교차 태스크 검출 (EP2 분포검출 판독) | τ = {tau:.2f}{mark} | T3 단독 검출 "
-            f"{only}/{total} · *p* {_pval(p)} | {verdict} | 사전 동결 격자 안의 판독 |"
+            f"| T3 · 교차 태스크 검출 (EP2 분포 검사) | τ = {tau:.2f}{mark} | T3 단독 검출 "
+            f"{only}/{total} · *p* {_pval(p)} | {verdict} | 사전 동결 격자 안의 평가 |"
         )
     lines.append(
         f"| T4 · 하류 생성 층 | ε_T4 = {EPS_T4} | LB₉₅ = {_num(t4_lb)} | 미충족 | "
