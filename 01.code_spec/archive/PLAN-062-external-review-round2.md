@@ -18,20 +18,20 @@
 
 - **1.** `PassRate_f`는 v2다. `src/sdkb_paper/config.py:230-232` (`CQ_RULE_VERSION="v2"` · `CQ_TAU=0.05` ·
   `CQ_TAU_GRID=(0.0,0.05,0.10)`) · 판정식 `src/sdkb_paper/validate/cq_runner.py:75-101`.
-  본문 §3.5 승인식([stage3_source.md:466](../paper/manuscript/stage3_source.md#L466))은 `PassRate` 를
-  **정의 없이** 쓰고, τ는 [:489-490](../paper/manuscript/stage3_source.md#L489) 에서 "CQ 분포 검사 임계"
+  본문 §3.5 승인식([stage3_source.md:466](../../paper/manuscript/stage3_source.md#L466))은 `PassRate` 를
+  **정의 없이** 쓰고, τ는 [:489-490](../../paper/manuscript/stage3_source.md#L489) 에서 "CQ 분포 검사 임계"
   로만 선언된다. 둘을 잇는 문장이 본문에 없다.
 - **3.** 검토자의 4분해가 코드와 정확히 일치한다 — `src/sdkb_paper/analysis/bootstrap.py:93-107`.
   `delta=diff.mean()`(원표본) · `win/loss/tie`= 원표본 부호 계수 · CI = 10,000회 재표집의
   **percentile** · `p_two = 2*min(Pr(boot≤0), Pr(boot≥0))`. seed = `config.SEED = 20260726` 고정.
-  표 8 캡션([:870](../paper/manuscript/stage3_source.md#L870))은 넷 전부를 bootstrap 산출로 적고 있고,
-  §4.5([:694-698](../paper/manuscript/stage3_source.md#L694))에는 p식·seed·percentile 명시가 전혀 없다.
-- **2.** §5.3 산문([:827](../paper/manuscript/stage3_source.md#L827))은 이미 "자원 번들"로 정확하다.
+  표 8 캡션([:870](../../paper/manuscript/stage3_source.md#L870))은 넷 전부를 bootstrap 산출로 적고 있고,
+  §4.5([:694-698](../../paper/manuscript/stage3_source.md#L694))에는 p식·seed·percentile 명시가 전혀 없다.
+- **2.** §5.3 산문([:827](../../paper/manuscript/stage3_source.md#L827))은 이미 "자원 번들"로 정확하다.
   뒤처진 것은 DP4 셀(`scripts/build_submission_stage3.py:288-297`)의 *"자원만 교체해야 **온톨로지의
   효과**가 판별된다"* 와 **CLAUDE.md §0.7 DP4 행**이다.
-- **4.** [:1173-1176](../paper/manuscript/stage3_source.md#L1173) — DP2 "사례가 한 번도 없으면 반증" ·
+- **4.** [:1173-1176](../../paper/manuscript/stage3_source.md#L1173) — DP2 "사례가 한 번도 없으면 반증" ·
   DP3 "성능을 바꾸지 않으면 반증". 유한 표본의 사례 부재는 반증이 아니다.
-- **5.** 표 2 [:326](../paper/manuscript/stage3_source.md#L326) `| 자연적 평가 | …(Accept = 0) |`.
+- **5.** 표 2 [:326](../../paper/manuscript/stage3_source.md#L326) `| 자연적 평가 | …(Accept = 0) |`.
   EP3는 실제 델타를 썼으나 **통제 실험**이며 운영 환경 평가가 아니다.
 
 ### 사용자 결정 (2026-08-19)
@@ -62,7 +62,7 @@
 
 | 무엇을 | 어디서 |
 |---|---|
-| 산문 문장·제목·표 2 | [paper/manuscript/stage3_source.md](../paper/manuscript/stage3_source.md) |
+| 산문 문장·제목·표 2 | [paper/manuscript/stage3_source.md](../../paper/manuscript/stage3_source.md) |
 | 복사되는 표의 셀 문구 | `CELL_FIXES` in [scripts/build_submission_stage3.py:233-389](../scripts/build_submission_stage3.py#L233) |
 | 생성 표의 조건명 | [src/sdkb_paper/analysis/decision_stability.py](../src/sdkb_paper/analysis/decision_stability.py) → 재생성 |
 
@@ -77,7 +77,7 @@
 
 ### A · 검토 1 — T3와 τ를 승인식에 잇는다
 
-**A1.** §3.5 승인식 직후([:469](../paper/manuscript/stage3_source.md#L469) 앞뒤)에 정의 두 문장 +
+**A1.** §3.5 승인식 직후([:469](../../paper/manuscript/stage3_source.md#L469) 앞뒤)에 정의 두 문장 +
 축약 수식을 넣는다. 문구 뼈대:
 
 > \(PassRate_f\)는 스위트 \(f\)의 역량질문 가운데 v2 판정을 통과한 비율이다. v2 판정은 존재검사와
@@ -90,7 +90,7 @@
 - 극성 `up`/`down`만 싣는다 — 실측상 CQ 31개의 극성은 `up` 29 · `down` 2이고 `flat` 사용처가 0이다
   (`grep '^# monotone:' queries/cq/*.rq`). 코드는 `flat`도 정의하지만 본문에 미사용 분기를 실을
   이유가 없고, S2 보충자료의 2분기 서술과도 일치한다.
-- τ 선언 문단([:489-493](../paper/manuscript/stage3_source.md#L489))에서 "CQ 분포 검사 임계"를 이
+- τ 선언 문단([:489-493](../../paper/manuscript/stage3_source.md#L489))에서 "CQ 분포 검사 임계"를 이
   정의와 연결하는 한 구절로 다듬는다(문장 신설 없이).
 
 **A2.** 표 10 조건명 구체화 — `T3 · 교차 태스크 검출` → `T3 · 교차 태스크 검출 (EP2 판독)`.
@@ -102,25 +102,25 @@
 | 자리 | 현재 | 교정 |
 |---|---|---|
 | `CELL_FIXES` DP4 (`build_submission_stage3.py:288-297`) | 자원만 교체해야 **온톨로지의 효과**가 판별된다 | 자원 **번들**만 교체해야 **온톨로지 중심 자원 변경의 효과**가 판별된다 |
-| 반증 조건 DP4 ([:1175-1176](../paper/manuscript/stage3_source.md#L1175)) | "자원 효과가 동일하게 분리되면" | "자원 번들의 효과가 동일하게 분리되면" |
+| 반증 조건 DP4 ([:1175-1176](../../paper/manuscript/stage3_source.md#L1175)) | "자원 효과가 동일하게 분리되면" | "자원 번들의 효과가 동일하게 분리되면" |
 | 초록 · §5.3 · §6.4 · 결론 | 혼재 | "자원 번들" 단일화 · 효과를 "온톨로지" 단독에 귀속하지 않는다 |
 
 DP4 셀은 기존 entry에 **사유 문자열이 이미 달려 있으므로** 수치 검사에 걸리지 않는다(문구만 변경).
-초록은 [:13](../paper/manuscript/stage3_source.md#L13)에서 이미 "자원 번들"이므로 §2·표 7 캡션
-([:260](../paper/manuscript/stage3_source.md#L260)·[:286](../paper/manuscript/stage3_source.md#L286)·
-[:837](../paper/manuscript/stage3_source.md#L837))만 정렬한다.
+초록은 [:13](../../paper/manuscript/stage3_source.md#L13)에서 이미 "자원 번들"이므로 §2·표 7 캡션
+([:260](../../paper/manuscript/stage3_source.md#L260)·[:286](../../paper/manuscript/stage3_source.md#L286)·
+[:837](../../paper/manuscript/stage3_source.md#L837))만 정렬한다.
 
 ### C · 검토 3 — bootstrap 산출 방법 정정
 
-**C1.** 표 8 캡션([:870](../paper/manuscript/stage3_source.md#L870)) — 산문 소스이므로 직접 편집:
+**C1.** 표 8 캡션([:870](../../paper/manuscript/stage3_source.md#L870)) — 산문 소스이므로 직접 편집:
 
 > Δ와 승/패/동은 질의 단위 짝지은 원표본 요약이고, 95% 신뢰구간과 양측 *p*값은 질의 단위 paired
 > bootstrap 10,000회로 산출하였다.
 
-같은 오기가 있는지 표 9 캡션([:965-966](../paper/manuscript/stage3_source.md#L965))도 함께 점검한다
+같은 오기가 있는지 표 9 캡션([:965-966](../../paper/manuscript/stage3_source.md#L965))도 함께 점검한다
 (현재 "질의 단위 paired bootstrap 10,000회"만 있어 Δ 귀속 주장이 없다 → 무수정 가능성 높음).
 
-**C2.** §4.5([:694-698](../paper/manuscript/stage3_source.md#L694))에 두 문장 추가:
+**C2.** §4.5([:694-698](../../paper/manuscript/stage3_source.md#L694))에 두 문장 추가:
 
 > 신뢰구간은 재표집 분포의 2.5·97.5 백분위이며, 양측 *p*값은
 > \(2\min\{\Pr(\Delta^{*}\le 0),\ \Pr(\Delta^{*}\ge 0)\}\)로 산출한다. 재표집 시드는 평가셋 개봉
@@ -130,7 +130,7 @@ percentile 방식임을 명시한다 — BCa 여부는 현재 원고 어디에�
 
 ### D · 검토 4 — 반증 조건 재정식화 (라벨 유지)
 
-[:1173-1176](../paper/manuscript/stage3_source.md#L1173) 네 문장 중 **둘만** 교체한다.
+[:1173-1176](../../paper/manuscript/stage3_source.md#L1173) 네 문장 중 **둘만** 교체한다.
 
 | | 현재 (사례 부재 = 반증) | 교정 (관측 가능한 반증) |
 |---|---|---|
@@ -144,7 +144,7 @@ DP1·DP4·DP5·DP6의 조건문은 이미 관측 가능하므로 **유지**한�
 
 ### E · 검토 5 — DSR 평가유형 명칭
 
-표 2 [:326](../paper/manuscript/stage3_source.md#L326):
+표 2 [:326](../../paper/manuscript/stage3_source.md#L326):
 
 > `| 실제 델타 기반 통제 평가 | 실제 자원 델타에 대한 게이트의 거부(Accept = 0) | §5.3 |`
 
@@ -156,9 +156,9 @@ DP1·DP4·DP5·DP6의 조건문은 이미 관측 가능하므로 **유지**한�
 | | 자리 | 교정 |
 |---|---|---|
 | F1 | `CELL_FIXES` DP3 | "검색을 −0.0316 악화" → "검색 성능이 0.0316 저하되었다(제거 손실 +0.0316)" — **수치 토큰이 바뀌므로 사유 문자열 필수**(부호 표기 통일 · 표 9 캡션의 제거 손실 정의와 일치) |
-| F2 | 초록 [:17](../paper/manuscript/stage3_source.md#L17) | "강한 다국어 기준선" → "다국어 융합 기준선". **결손 ⑦ 행([:1291](../paper/manuscript/stage3_source.md#L1291))의 제목은 결손의 이름이므로 유지** |
-| F3 | 결론 [:1352-1353](../paper/manuscript/stage3_source.md#L1352) | "판별력은 … 45건에서 **확증되었다**" → "… 홀드아웃 산출물 평가에서 **지지되었다**" (§5.2 지위 문장·표 3 EP2 행과 일치) |
-| F4 | §3.5.1 [:514](../paper/manuscript/stage3_source.md#L514) | "편입의 발효 조건 둘은 충족되었다" → "정식 평가를 위한 선행조건은 충족되었으나, 승인식 채택에는 반복검증이 추가로 필요하다" |
+| F2 | 초록 [:17](../../paper/manuscript/stage3_source.md#L17) | "강한 다국어 기준선" → "다국어 융합 기준선". **결손 ⑦ 행([:1291](../../paper/manuscript/stage3_source.md#L1291))의 제목은 결손의 이름이므로 유지** |
+| F3 | 결론 [:1352-1353](../../paper/manuscript/stage3_source.md#L1352) | "판별력은 … 45건에서 **확증되었다**" → "… 홀드아웃 산출물 평가에서 **지지되었다**" (§5.2 지위 문장·표 3 EP2 행과 일치) |
+| F4 | §3.5.1 [:514](../../paper/manuscript/stage3_source.md#L514) | "편입의 발효 조건 둘은 충족되었다" → "정식 평가를 위한 선행조건은 충족되었으나, 승인식 채택에는 반복검증이 추가로 필요하다" |
 | F5 | §3.5.1 전체 (690자) | 한 문단 + T4 정의 인용문으로 축약 · 세부 수식과 판독 조건은 S5 부록 A 링크로 이관 |
 
 ---
