@@ -135,3 +135,35 @@ def test_verdicts_yaml_seal_and_system_label_rules_bite():
     assert any(r.search("| **P1 (주 시스템)** | 0.4849 |") for r in labels)
     assert any(r.search("**P0** Text+Ontology(사전 지정 주 시스템)") for r in labels)
     assert not any(r.search("**P1** +ClaimFeature(부차 구성)") for r in labels)
+
+
+# ── D6 · 분량 2단 규칙 (2026-08-20) ──────────────────────────────────────
+# 왜 이 테스트가 있는가 — 직전 판의 본문은 상한에 5자를 남기고 있었고, 그 상태의 D6 는 편집
+# 품질이 아니라 **설명의 보강**을 차단하였다. 2단 규칙은 그 차단을 경고 구간으로 옮긴 것이므로,
+# **경고가 차단으로 새지 않는가**와 **실패 상한은 여전히 차단하는가**를 둘 다 고정한다.
+def _body_of(n: int) -> str:
+    return HEAD + ("가" * n) + "\n"
+
+
+def test_d6_soft_band_warns_but_does_not_fail(tmp_path):
+    n = int(sc.BASELINE_BODY_CHARS * sc.LENGTH_TARGET_RATIO) + 500
+    warns: list[str] = []
+    fails = sc.check_file(_write(tmp_path, _body_of(n)), tmp_path, warns)
+    assert "D6" not in _codes(fails)
+    assert any("D6·경고" in w for w in warns)
+
+
+def test_d6_hard_limit_still_blocks(tmp_path):
+    n = int(sc.BASELINE_BODY_CHARS * sc.LENGTH_HARD_RATIO) + 500
+    warns: list[str] = []
+    fails = sc.check_file(_write(tmp_path, _body_of(n)), tmp_path, warns)
+    assert "D6" in _codes(fails)
+    assert not warns
+
+
+def test_d6_under_target_is_silent(tmp_path):
+    n = int(sc.BASELINE_BODY_CHARS * sc.LENGTH_TARGET_RATIO) - 500
+    warns: list[str] = []
+    fails = sc.check_file(_write(tmp_path, _body_of(n)), tmp_path, warns)
+    assert "D6" not in _codes(fails)
+    assert not warns

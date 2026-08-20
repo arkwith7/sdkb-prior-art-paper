@@ -8,8 +8,8 @@
   D2  플레이스홀더 0건            (`[서지 재확인 필요]` 류)
   D3  영문 제목·초록 존재
   D4  작업 정본 전용 블록 0건      (원고상태·정정 대장·개봉 원장·미수행 설계 전문)
-  D5  본문 표 ≤ 12 · 그림 4–5
-  D6  본문 분량 ≤ 동결 기준선의 60 % (= −40 %) · **참고문헌 제외**
+  D5  본문 표 ≤ 13 · 그림 4–8
+  D6  본문 분량 — 권고 목표 61 % 초과는 **경고** · 실패 상한 63 % 초과는 **차단** · **참고문헌 제외**
   D7  영문 초록 ≤ 250 단어          (AEI 투고 규정)
   D8  키워드 ≤ 7 개                 (AEI 투고 규정)
   D9  본문 §참조의 도달성           (축약·재배열로 사라진 절을 가리키지 않는가)
@@ -22,8 +22,8 @@
   없는 것을 실패로 만들면 0단계 배선 자체가 CI 를 붉힌다.
 - 분량 기준선은 **코드에 동결**한다. 정본을 실시간으로 읽어 비교하면 정본이 자라는 만큼
   목표가 헐거워진다(움직이는 골대).
-- **D7·D8 은 투고처 규정이므로 협상 대상이 아니다**(D6 의 −40 % 는 우리가 정한 목표라 성격이
-  다르다). 규정이 바뀌면 상수를 고치고 출처를 주석에 남긴다.
+- **D7·D8 은 투고처 규정이므로 협상 대상이 아니다**(D6 의 축약 목표는 우리가 정한 페이지 목표라
+  성격이 다르다). 규정이 바뀌면 상수를 고치고 출처를 주석에 남긴다.
 - **D9 는 §2.3 의 "이관은 삭제가 아니다"를 절 참조로 확장한 것**이다. 파생본은 장 구성을 접으며
   만들어지므로(PLAN-048 2단계: 11장 → 8장) 산문에 남은 옛 절 번호가 조용히 죽은 링크가 된다.
   파일 링크만 검사하면 이것을 놓친다 — 실제로 놓쳤다(§4.8·§4.9·§4.9.1).
@@ -47,7 +47,16 @@ BASELINE_BODY_CHARS = 114_472       # D6 분모: `# 참고문헌` 앞까지
 # **완화분은 서술이 아니라 문헌에만 쓴다** — 직전 판의 본문은 68,672자(−40.01 %)로 상한에
 # 11자를 남기고 있었고, 문헌 보강의 순증은 807자다(신설 문단 둘 · §2.3 한 문단 · §3 한 문장 ·
 # 표 1 을 10행에서 6행으로 압축한 감소분을 상계한 값). 판정·수치는 하나도 바뀌지 않았다.
-LENGTH_TARGET_RATIO = 0.61          # D6: −39 % 이상 축약
+# D6 를 한 줄 상한에서 **2단 규칙**으로 바꾼다 (2026-08-20 · 사용자 승인).
+# 왜 바꾸는가: 직전 판의 본문은 상한에 **5자**를 남기고 있었다. 그 상태에서 D6 는 편집 품질을
+# 관리하는 것이 아니라 **설명의 보강을 차단**한다 — 문장 하나를 더하면 검사가 실패하므로,
+# 저자는 설명을 제대로 쓰는 대신 축약하도록 유도된다. 실제로 산출물 설계를 서술하는 §3.1 이
+# 1,225자인 반면 결과·한계 서술은 1만 5천자를 넘었다. **D6 는 투고처 규정이 아니라 우리가 정한
+# 페이지 목표이므로 조정 대상이다**(D7·D8 과 성격이 다르다 — 위 설계 메모).
+# 규칙은 둘이다. 권고 목표(soft) 를 넘으면 **경고만** 내고, 실패 상한(hard) 을 넘어야 차단한다.
+# 경고 구간은 편집 중에만 쓰는 작업 여유이며, 최종 투고본은 권고 목표 아래로 되돌린다.
+LENGTH_TARGET_RATIO = 0.61          # D6 권고 목표(soft): −39 % 이상 축약 · 초과 시 경고
+LENGTH_HARD_RATIO = 0.63            # D6 실패 상한(hard): −37 % · 초과 시 차단
 BIB_HEAD = "# 참고문헌"             # 이 제목부터는 D6 분량에서 제외한다
 
 MAX_TABLES = 13                     # D5
@@ -114,8 +123,10 @@ def strip_fenced(lines: list[str]) -> list[str]:
     return out
 
 
-def check_file(path: Path, root: Path) -> list[str]:
+def check_file(path: Path, root: Path, warns: list[str] | None = None) -> list[str]:
     fails: list[str] = []
+    # 경고 채널을 넘기지 않으면 경고는 버린다 — 단위 테스트가 차단 위반만 보기 위해서다.
+    warns = [] if warns is None else warns
     text = path.read_text(encoding="utf-8", errors="replace")
     lines = strip_fenced(text.splitlines())
     body = "\n".join(lines)
@@ -154,12 +165,19 @@ def check_file(path: Path, root: Path) -> list[str]:
     # 동결 시점 정본에서 다시 쟀으므로 비교는 그대로 같은 자다 — 목표는 −40 % 로 불변이다.
     bib_at = text.find(BIB_HEAD)
     body_len = len(text if bib_at < 0 else text[:bib_at])
-    limit = int(BASELINE_BODY_CHARS * LENGTH_TARGET_RATIO)
-    if body_len > limit:
+    soft = int(BASELINE_BODY_CHARS * LENGTH_TARGET_RATIO)
+    hard = int(BASELINE_BODY_CHARS * LENGTH_HARD_RATIO)
+    if body_len > hard:
         pct = 100 * (1 - body_len / BASELINE_BODY_CHARS)
         fails.append(
-            f"{path}: [D6] 본문 분량 {body_len:,}자 > 목표 {limit:,}자 "
-            f"(기준선 {BASELINE_BODY_CHARS:,}자 대비 −{pct:.1f} % · 목표 −40 %)"
+            f"{path}: [D6] 본문 분량 {body_len:,}자 > 실패 상한 {hard:,}자 "
+            f"(기준선 {BASELINE_BODY_CHARS:,}자 대비 −{pct:.1f} % · 권고 목표 {soft:,}자)"
+        )
+    elif body_len > soft:
+        pct = 100 * (1 - body_len / BASELINE_BODY_CHARS)
+        warns.append(
+            f"{path}: [D6·경고] 본문 분량 {body_len:,}자 > 권고 목표 {soft:,}자 "
+            f"(실패 상한 {hard:,}자 · 기준선 대비 −{pct:.1f} %) — 편집 중 여유 구간"
         )
 
     # D7 · 영문 초록 단어수 — Abstract 절 시작부터 다음 제목 또는 Keywords 행 직전까지.
@@ -225,9 +243,12 @@ def main() -> int:
         return 0
 
     fails: list[str] = []
+    warns: list[str] = []
     for f in targets:
-        fails += check_file(f, root)
+        fails += check_file(f, root, warns)
 
+    for line in warns:
+        print(line)
     for line in fails:
         print(line)
     if fails:
@@ -236,7 +257,8 @@ def main() -> int:
             print("(경고 모드 — CLAUDE.md §2.3: PLAN-048 3단계 종료 시 차단으로 승격)")
             return 0
         return 1
-    print(f"통과: {len(targets)}개 파일 · 투고 준비 검사 (D2–D9 · 내부 링크)")
+    tail = f" · 경고 {len(warns)}건" if warns else ""
+    print(f"통과: {len(targets)}개 파일 · 투고 준비 검사 (D2–D9 · 내부 링크){tail}")
     return 0
 
 
