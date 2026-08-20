@@ -121,7 +121,7 @@
 
 새 세션은 이 문서부터 읽는다. 온톨로지 용어가 낯설면 [GLOSSARY-ONTOLOGY.md](../GLOSSARY-ONTOLOGY.md) 를,
 **반도체 도메인(공정·소자·특허) 용어가 낯설면 [GLOSSARY-SEMICONDUCTOR.md](../GLOSSARY-SEMICONDUCTOR.md) 를,
-논문의 통계(Wilcoxon·부호검정·사전등록)가 낯설면 [GLOSSARY-STATISTICS.md](../GLOSSARY-STATISTICS.md) 를**,
+논문의 통계(Wilcoxon·부호검정·사전등록)가 낯설면 [GLOSSARY-STATISTICS.md](GLOSSARY-STATISTICS.md) 를**,
 소부장 IP-R&D 실무(RQ3 의 태스크가 무엇인가)가 낯설면 [REF-001](../REF-001-ip-rnd-domain-framework.md) 을 먼저 본다.
 
 ---
