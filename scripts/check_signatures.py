@@ -18,6 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CANONICAL = ROOT / "01.code_spec" / "CANONICAL-INDEX.md"
+BASELINE_TEST = ROOT / "tests" / "test_baseline_integration.py"
 
 # 검사 대상: 서명 수치를 '현재 값'으로 인용하는 문서
 # (STATUS.md 는 서사 정본이라 구 서명 보존이 설계 — 제외.
@@ -30,6 +31,10 @@ TARGETS = [
 
 # 재동결·교정 이전의 낡은 서명 — 새 세대 확정 시 직전 세대를 여기에 추가한다.
 HISTORICAL_SIGNATURES = [
+    # 2026-08-15 vendor(상류 0a7ff15 · PLAN-050 · +43 은 전부 T-Box 주석) 이전의 네 세대.
+    # 115,076·118,808·119,208 은 문서에 '현재 값'으로 등장한 적이 없으나, 재등장하면 그것도
+    # 표류이므로 함께 내린다. 세대별 실측은 tests/test_baseline_integration.py 가 보유한다.
+    "115,095", "115,076", "118,808", "119,208",
     # 2026-08-05 G₀ 재조립(상류 39855bb · CR-008·CR-009·CR-004R 반영 · 105,713 → 115,095) 이전.
     # PLAN-035 두 팔(D-23)이 이 세대 위에서 측정됐다 — O′ 팔의 서명이다.
     "105,713",
@@ -52,6 +57,23 @@ def canonical_signatures() -> list[str]:
     return [re.sub(r"[^\d,]", "", g).strip() for g in m.groups()]
 
 
+def anchor_signature() -> str | None:
+    """G₀ 정본 서명의 **외부 정박점** — 통합 테스트가 디스크에서 실측해 고정한 값.
+
+    왜 필요한가 (2026-08-20 · 실제로 새어 나간 표류를 막는다). 이 검사기는 CANONICAL-INDEX §1 을
+    읽어 *다른 문서가 §1 과 맞는가*만 보았다. 즉 §1 자체가 낡으면 **전원이 사이좋게 틀린 채
+    통과**한다. 실제로 그랬다 — 디스크의 G₀ 는 2026-08-15 vendor 로 119,251 이 되었는데 §1 ·
+    DATASET-CARD · MANIFEST 는 115,095 세대에 머물러 있었고, 이 검사기는 5일 동안 녹색이었다.
+
+    정박점을 `tests/test_baseline_integration.py` 의 `SNAPSHOT_OBSERVATIONS["current"]` 로 둔다.
+    그 값은 `test_baseline_signature` 가 **실제 graph_v0.ttl 을 파싱해** 대조하므로, 디스크와
+    어긋나면 테스트가 먼저 실패한다. 여기서 26 MB 를 다시 파싱하지 않는 이유는 이 검사기가 매
+    커밋 도는 게이트이기 때문이다 — 느린 검사는 꺼지고, 꺼진 검사는 없는 검사다.
+    """
+    m = re.search(r'"current":\s*\{"triples":\s*(\d+)', BASELINE_TEST.read_text(encoding="utf-8"))
+    return f"{int(m.group(1)):,}" if m else None
+
+
 def exempt_lines(lines: list[str]) -> set[int]:
     """이력 서술로 간주해 검사에서 제외할 줄 번호(1-기반)."""
     exempt: set[int] = set()
@@ -72,6 +94,20 @@ def main() -> int:
     canon = canonical_signatures()
     print(f"정본 서명 (CANONICAL-INDEX §1): G0={canon[0]} · G1={canon[1]} · G2={canon[2]}\n")
     failed = False
+
+    # §1 자체가 디스크와 어긋나지 않는가 — 문서끼리만 대조하면 전원이 함께 낡는다.
+    anchor = anchor_signature()
+    if anchor is None:
+        print("[warn] 정박점을 읽지 못했다 — tests/test_baseline_integration.py 의 "
+              "SNAPSHOT_OBSERVATIONS 형식 변경 여부 확인\n")
+    elif anchor != canon[0]:
+        failed = True
+        print(f"[FAIL] CANONICAL-INDEX §1 의 G₀ 서명 {canon[0]} 이 디스크 정박점 {anchor} 과 다르다.\n"
+              f"       정박점은 tests/test_baseline_integration.py 의 "
+              f'SNAPSHOT_OBSERVATIONS["current"] 이며, 그 값은 실제 graph_v0.ttl 로 검증된다.\n'
+              f"       §1 을 갱신하고 직전 세대를 HISTORICAL_SIGNATURES 에 내릴 것.\n")
+    else:
+        print(f"[ok]   CANONICAL-INDEX §1 G₀ = 디스크 정박점 {anchor}\n")
     manuscripts_seen = 0
 
     for target in TARGETS:
