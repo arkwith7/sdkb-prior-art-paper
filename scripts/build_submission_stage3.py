@@ -214,6 +214,27 @@ BIB_INSERTS: list[tuple[str, str]] = [
         "for a BIM model using semantic web technologies. *Advanced Engineering Informatics, 60*, 102426. "
         "https://doi.org/10.1016/j.aei.2024.102426",
     ),
+    # 신규성 경계 보강(2026-08-21 · PLAN-063 트랙 2) — 변경된 KG 자체의 품질 지표, CQ 의 자동
+    # 시험화, 통합 파이프라인 벤치마크. 셋 다 §2.2 에서 본 연구와 대비된다. 서지는 Crossref ·
+    # arXiv · CEUR 볼륨 페이지 대조다. 아래 셋은 앞의 Hevner·Noy 삽입 뒤에 와야 앵커가 산다.
+    (
+        "Bekamiri, H., Hain,",
+        "Bakker, R. M., & de Boer, M. H. T. (2026). Dynamic knowledge graph evaluation: Semantic and "
+        "syntactic metrics for evaluating changes. *Data & Knowledge Engineering, 164*, 102611. "
+        "https://doi.org/10.1016/j.datak.2026.102611",
+    ),
+    (
+        "Hogan, A., Blomqvist, E.,",
+        "Hofer, M., & Rahm, E. (2026). Evaluation of pipelines for data integration into knowledge "
+        "graphs. *arXiv*. https://doi.org/10.48550/arXiv.2605.22304",
+    ),
+    (
+        "Noy, N. F., & Klein, M. (2004).",
+        "Mynarz, J., Haniková, K., & Svátek, V. (2023). Test-driven knowledge graph construction. In "
+        "*Proceedings of the 4th International Workshop on Knowledge Graph Construction (KGCW 2023) "
+        "co-located with ESWC 2023* (CEUR Workshop Proceedings, Vol. 3471). "
+        "https://ceur-ws.org/Vol-3471/paper4.pdf",
+    ),
 ]
 
 

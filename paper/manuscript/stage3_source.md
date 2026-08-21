@@ -1,8 +1,8 @@
 
 
-# 다중 태스크 공학 온톨로지 진화를 위한 태스크 기반 승인 게이트: 반도체 도메인 지식 베이스 SDKB의 설계과학 연구
+# 여러 태스크 뷰를 공유하는 공학 온톨로지의 진화를 위한 태스크 기반 승인 게이트: 반도체 선행기술 검색에서의 설계과학 연구
 
-**A Task-Aware Release Gate for Evolving Multi-Task Engineering Ontologies: A Design Science Study of the Semiconductor Domain Knowledge Base (SDKB)**
+**A Task-Aware Release Gate for Shared Engineering Ontologies with Multiple Task Views: A Design Science Study in Semiconductor Prior-Art Retrieval**
 
 ## 국문 초록
 
@@ -20,7 +20,7 @@
 
 ## Abstract
 
-Engineering ontologies keep changing after release, and whether a change passing structural and logical checks preserves task performance is a question resource-level evaluation leaves open. The problem grows when tasks share a vocabulary: a change approved on one task's score can break another's query paths. Following design science research, we present two artifacts and one evaluation environment: SDKB (Semiconductor Domain Knowledge Base), an ontology dataset carrying expert matching, prior-art search and technology foresight as task views on one shared schema (T-Box); a task-aware release gate adding three conditions to four layers of formal validation (L0–L3) — retrieval non-inferiority (T1), subgroup safety (T2), and non-regression of other tasks' competency questions (T3); and a multi-layer benchmark in four episodes: a representation audit (SHACL, 31 competency questions, 28 gate-observed); holdout fault injection on 45 unjudged faults; a controlled resource swap with documents, code and settings frozen; and a leakage-controlled retrieval comparison over two non-overlapping confirmatory splits (198 queries each), anchored on examiner citations for 1,000 rejected patents. In the swap, a change raising concepts per document 2.4-fold and passing all four formal layers *reduced* retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]); T1 rejected it. T3 alone detected 12 of 45 cross-task faults, with 0 of 27 false alarms. Retrieval utility has a boundary: deep recall improved in both splits (+0.0534, +0.0343), while the pre-specified primary configuration and nDCG@20 did not. We derive four core and two scope design principles, and state the limits: one domain, one refusal of undistinguished cause, no expert relevance judgments, and queries confined to patents already in the graph.
+Engineering ontologies keep changing after release. Whether a change passing structural and logical checks preserves task performance is a question resource-level evaluation leaves open. When tasks share a vocabulary, a change approved on one task's score can break another's query paths. Following design science research, we present two artifacts and an evaluation environment. SDKB (Semiconductor Domain Knowledge Base) carries expert matching, prior-art search and foresight as task views on one shared schema (T-Box). A task-aware release gate adds three conditions to four layers of formal validation (L0–L3): retrieval non-inferiority (T1), subgroup safety (T2), and non-regression of other tasks' competency questions (T3). A multi-layer benchmark evaluates both in four episodes: a representation audit (SHACL, 31 competency questions); holdout fault injection on 45 unjudged faults; a controlled resource swap with documents, code and settings frozen; and a leakage-controlled retrieval comparison over two non-overlapping splits of 198 queries, anchored on examiner citations for 1,000 rejected patents. In the swap, a change raising concepts per document 2.4-fold and passing every formal layer reduced retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]); T1 rejected it. T3 alone detected 12 of 45 cross-task faults, with no false alarms in 27. The pre-registered composite prediction held in neither split: deep recall improved in both (+0.0534, +0.0343), while the pre-specified primary configuration and nDCG@20 did not. We derive four core and two scope design principles, and state the limits: one domain, one refusal of undistinguished cause, no expert relevance judgments, and queries confined to patents in the graph.
 
 **Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
@@ -182,7 +182,10 @@ et al., 2024), 그리고 인용망 활용이다(Mahdabi & Crestani, 2014). 성�
 온톨로지 품질 논의는 명료성·일관성·확장성과 같은 설계 원칙에서 출발하였다(Gruber, 1993).
 역량질문(CQ)은 요구사항과 검증 항목을 연결하는 장치로 정착하였으며(Grüninger & Fox, 1995),
 테스트 주도 온톨로지 개발은 그 요구사항을 자동 검사가 가능한 형태로 형식화하였다(Keet &
-Ławrynowicz, 2016). 구조 측면에서는 RDF(Resource Description Framework) 품질 점검이 발전하였고
+Ławrynowicz, 2016). 지식그래프 구축에서는 역량질문을 SPARQL 질의로 옮기고 SHACL 제약으로 감싸
+자동 시험으로 사용하는 방법이 제시되었다(Mynarz et al., 2023). 다만 그 시험은 구축 과정을
+유도하는 장치이며, 완성된 자원의 변경을 수용할지 판정하는 장치는 아니다.
+구조 측면에서는 RDF(Resource Description Framework) 품질 점검이 발전하였고
 (Kontokostas et al., 2014), SHACL(Shapes Constraint Language)이 이를 표준 shape로 표현한다
 (W3C, 2017).
 
@@ -191,10 +194,14 @@ et al., 2024), 그리고 인용망 활용이다(Mahdabi & Crestani, 2014). 성�
 측면에서는 온톨로지 진화가 스키마 진화와 동일하지 않다는 점이 일찍 지적되었으며(Noy & Klein,
 2004), 이후 변경의 탐지·표현·전파·일관성 보존으로 절차가 정리되었다(Flouris et al., 2008;
 Zablith et al., 2015). 그러나 그 절차가 검증하는 것은 변경이 온톨로지 자체를 훼손하지 않는가이며,
-변경이 그 온톨로지를 사용하는 태스크를 훼손하지 않는가는 아니다. 하류 측면에서는
+변경이 그 온톨로지를 사용하는 태스크를 훼손하지 않는가는 아니다. 최근에는 변경 자체를 대상으로
+하는 구문·의미 품질 지표가 제안되어 변경 전후의 지식그래프를 자동으로 비교할 수 있게 되었다
+(Bakker & de Boer, 2026). 그러나 그 지표가 산출하는 것은 변경의 기술이며 릴리스 여부의 판정이
+아니다. 하류 측면에서는
 KGrEaT(Heist et al., 2023)가 지식그래프 보강이 하류 성능 향상을 전제로 정당화되면서도 정작 그
-성능은 거의 측정되지 않는다고 지적하였다. 이 역시 완성 이후의 사후 비교이며, 변경을 릴리스
-이전에 수용할지 결정하는 조건으로 사용되지는 않았다.
+성능은 거의 측정되지 않는다고 지적하였다. 통합 파이프라인을 대상으로 한 벤치마크도 제안되어
+적재 결과의 포괄성·정확성·일관성을 비교하였다(Hofer & Rahm, 2026). 이 역시 완성 이후의 사후
+비교이며, 변경을 릴리스 이전에 수용할지 결정하는 조건으로 사용되지는 않았다.
 
 공학 정보학에서 이 공백은 특히 중대하다. 공학 지식은 제품·공정·설비가 변경될 때마다 함께 변경되는
 자산이기 때문이다. 따라서 이 분야의 온톨로지는 여러 시스템이 의미를 공유하는 통로로 설계되며
@@ -222,6 +229,9 @@ SHACL 검사로 확인되었다. 또한 안전과 공정계획이 지식그래�
 따라서 승인 규칙은 측정 틀이 요구하지 않는 셋을 추가로 요구한다. 결과를 확인하기 이전에 동결한
 임계, 그 임계가 적용되는 비교의 통제 조건, 그리고 판정이 거부일 때 릴리스를 중단시키는 집행
 경로이다. 앞의 문헌은 이 셋을 갖추지 않은 측정을 제시하였으며, 이 차이가 본 연구의 연구 공백이다.
+선행 연구가 측정하는 대상은 변경된 지식그래프 자체의 품질이거나 구축·통합 파이프라인의 품질이다.
+본 연구가 더하는 것은 그 측정을 사전 동결된 하류 태스크 비열등성과 교차 태스크 CQ 비회귀로
+구성하여 릴리스 차단 조건으로 집행하는 것이다.
 
 ## 2.3 자원 지표가 태스크 성능을 대표하기 위한 조건
 
@@ -565,8 +575,8 @@ T4는 위 승인식에 포함되어 있지 않다. 정식 평가를 위한 선�
 본 실험은 선행기술조사 실무의 절차를 모사한다. 실무의 조사자는 대상 출원의 청구항을 읽고 검색식을
 세워 후보를 얻은 뒤 순차로 검토한다. 그림 5는 그 절차와 본 실험 구성의 대응을 제시하며, 대응이
 성립하지 않는 자리 둘을 함께 표시한다. 첫째는 실무의 서지 조건에 해당하는 구성이 주 기준선에
-융합되어 있지 않다는 것이고, 둘째는 본 실험의 재순위화가 후보 풀을 확대하지 않는다는 것이다. 두
-두 제약이 결과에 미치는 영향은 각각 §4.3과 §6.2에서 다룬다.
+융합되어 있지 않다는 것이고, 둘째는 본 실험의 재순위화가 후보 풀을 확대하지 않는다는 것이다.
+이 두 제약이 결과에 미치는 영향은 각각 §4.3과 §6.2에서 다룬다.
 
 ![그림 5. 선행기술조사 실무의 절차와 본 실험 구성의 대응, 그리고 대응이 성립하지 않는 자리 둘.](../figures/concept_experiment_flow.svg)
 
@@ -833,7 +843,9 @@ IRI는 T-Box 수준의 속성이며, A-Box 수준에서는 비한국어 문서�
 인스턴스 전량에서 0건). 처방은 두 범위를 분리하는 것이었다(§3.4). 합집합이 여전히 CQ 28개
 전량이므로 검출 능력은 유지되며 검출 주체만 변경된다(`L3_all ⟺ L3_pa ∨ T3` 위반 0/144).
 
-이 판별력의 범위도 함께 보고한다. 검출률은 분포 검사 임계에 민감하며 τ=0.10에서는 4/45이다(표 10). 공유 계층
+이 판별력의 범위도 함께 보고한다. 검출률은 분포 검사 임계에 민감하며, 사전 지정한 τ=0.05의
+12/45 는 τ=0.10에서 4/45로 감소하고 τ=0.00에서 17/45로 증가한다(표 10). 사전 지정 임계에서도
+결함 45건 가운데 33건은 T3 단독으로 검출되지 않았다. 공유 계층
 역전은 이번에도 0/9이며, T3의 특이성은 아직 검정되지 않았다. 형식층 L2에는 이러한 결함을
 검출할 수 있는 논리 제약이 사실상 없다. T-Box에 서로소·카디널리티 제약이 없어 타입 모순의 주입이 모순으로 성립하지
 않기 때문이다.
@@ -879,7 +891,7 @@ IRI는 T-Box 수준의 속성이며, A-Box 수준에서는 비한국어 문서�
 본 연구는 이 결과를 세 가지로 구분하여 기술한다. ① 자원 자체는 개선되었으나 융합 단계에서 손실이
 발생하였다. 온톨로지 단독 구성은 27% 개선되었다. 따라서 이 결과는 온톨로지 보강이 무익하다는 증거가 아니라,
 자원 지표가 개선되고 형식 검증을 통과한 변경도 성능을 저하시킬 수 있다는 증거이다. ② 원인은
-원인은 구분하지 못하였다. 문서당 개념이 2.4배로 증가하면 비가중 Jaccard의 분모가 커지고, 고빈도 일반
+구분하지 못하였다. 문서당 개념이 2.4배로 증가하면 비가중 Jaccard의 분모가 커지고, 고빈도 일반
 개념(`식각` 6,974문서 · `챔버` 6,462)이 변별력 없는 동점 블록을 형성한다. 그러나 본 실험은 이것이
 자원의 결함인지 점수식의 결함인지 구분하지 못한다. 구분에는 문서빈도 가중이 필요하며 그것은
 재측정이 아니라 새로운 방법이다. ③ 본 실행은 우월성의 재확증이 아니라 승인 규칙의 적용이다(§4.5).
@@ -904,16 +916,15 @@ IRI는 T-Box 수준의 속성이며, A-Box 수준에서는 비한국어 문서�
 
 {{COPY:**표 6.4.1a. 두 확증 분할의 검색 성능 (2-panel)|table|keep:**A** | **Text Hybrid;**A** | Text+Ontology;**A** | **+ClaimFeature;**A** | 다국어 융합 기준선;**A** | 서지 조건 모사 기준선;**B** | **Text Hybrid;**B** | Text+Ontology;**B** | **+ClaimFeature;**B** | 다국어 융합 기준선;**B** | 서지 조건 모사 기준선}}
 
-표에는 판정이 직접 걸린 세 구성과, 별도 사전등록 아래에서 추가하여 확증 판정에 들어가지 않는
-탐색적 기준선 둘을 싣는다. 첫 분할의 보조 지표는 사전등록된 두 제안 구성만 산출하였으므로
-나머지 네 행의 Δ nDCG@20은 빈칸이며 사후에 채우지 않는다. 단독 구성 넷(B0·B2·B4·B5)의 행은
+표에는 판정이 직접 걸린 세 구성과, 별도 사전등록 아래에서 추가한 탐색적 기준선 둘을 싣는다.
+탐색적 기준선의 값은 확증 판정에 들어가지 않는다. 각 패널의 첫 행은 비교 기준선이므로 Δ 열이
+정의되지 않는다. 단독 구성 넷(B0·B2·B4·B5)의 행은
 [S5](../supplementary/S5-submission-full-v2.md)에 있다.
 
 두 패널이 공통으로 지시하는 사항은 셋이다. ① 이득은 깊은 회수에 국한된다. R@100은 두 분할 모두
 P1에서 개선되었고(신뢰구간 하한 > 0), nDCG@20은 두 분할 모두 음의 방향이다. ② 주 구성 P0★는 두
 분할 모두 유의에 이르지 못하였고(*p* = .181 → .147), 유의한 개선은 부차 구성 P1에서만
-관측되었다(+0.0534 · +0.0343). 따라서 본 논문은 주·부차의 구분 없이 +0.0534만 단독으로 인용하지
-않는다. ③ 효과 크기는 패널 B에서 약 3분의 2 수준으로 축소되었다.
+관측되었다(+0.0534 · +0.0343). ③ 효과 크기는 패널 B에서 약 3분의 2 수준으로 축소되었다.
 
 정답의 불완전성 아래에서도 짝지은 차이는 유지되었다. 상위 100위의 미판정 문서는 언어·공개
 연도·개념 수에서 두 구성이 유사하였다. 또한 해외 대응 출원의 심사관 인용을 병합하여 정답지를
@@ -969,8 +980,8 @@ T1 하한은 −0.0139로 마진 −0.02보다 근소하게 높았다. T2에서�
 방향이 일치한다. 이 성질은 개봉 이전 사전등록 문서에 기술되어 있으며, 본 연구는 이를 근거로
 임계나 지표를 변경하지 않았다.
 
-효과의 확실성 다섯 조건 가운데 충족된 것은 하나이다. ① 두 비중복 분할에서의 재현은 부분
-충족이고, ② 사전 지정 주 구성에서의 유의는 미달이며, ③ 효과 크기 신뢰구간 하한 > 0 은
+효과의 확실성 다섯 조건 가운데 온전히 충족된 것은 하나이고, 하나는 부분 충족이다. ① 두 비중복
+분할에서의 재현은 부분 충족이고, ② 사전 지정 주 구성에서의 유의는 미달이며, ③ 효과 크기 신뢰구간 하한 > 0 은
 충족이다(P1). ④ 민감도 격자에서의 부호 유지는 미실행이다. ⑤ 누출 감사 결과는 0이지만 열람
 원장은 5행이다. 첫 두 시도는
 코드 결함과 집계 표기 오류로 중단되어 판정과 출력이 모두 0건이었고, 세 번째 시도의 세 단계가 각각
@@ -1061,12 +1072,17 @@ T1 하한은 −0.0139로 마진 −0.02보다 근소하게 높았다. T2에서�
 
 # 6. 논의 · 설계지식 · 결론
 
+본 장은 앞 장의 관측을 셋으로 나누어 논의한다. 먼저 층간 지표 불일치를 중심 관측으로 기술하고
+(§6.1–§6.3), 거기에서 이전 가능한 설계원리를 도출한 뒤(§6.4), 그 원리가 서는 근거의 한계와
+경쟁 설명을 명시한다(§6.5). 자료 가용성과 결론은 §6.6과 §6.7에 있다.
+
 ## 6.1 층간 지표 불일치 — 본 연구의 중심 관측
 
 온톨로지의 품질을 향상시키면 검색 성능이 향상된다는 명제는 자명해 보이나, 본 연구에서는 그와
 반대되는 현상이 세 층위에서 관측되었다.
 
-**① 자원 층 → 검색 층.** 문서당 개념이 2.4배로 증가하고 자원 품질 지표가 모두 향상된 변경을
+**① 자원 층 → 검색 층.** 문서당 개념이 2.4배로 증가하고 사전 지정한 자원 커버리지 지표가 모두
+향상된 변경을
 동일 파이프라인에 교체 투입하였다. 그 결과 교체 대상 구성(P1)의 회수가 저하되었다(−0.0293 ·
 95% CI [−0.0542, −0.0053]). 형식 검증 L0–L3를 전부 통과한 그 변경을 성능 조건 T1이 거부하였다(§5.3).
 
@@ -1230,8 +1246,7 @@ DP4는 문서집합까지 함께 바뀐 비교에서도 자원 번들의 효과�
 성장을 의미하며, 세 태스크의 성능이 모두 검증되었다는 의미가 아니다. 전문가 관련성 판정을
 수행하지 않았으므로 상위 미인용 후보의 실제 관련성은 미관측이다. 이 미관측이 제약하는 것은 절대
 성능의 진술이며, 짝지은 차이와 게이트 판정은 두 시스템에 동일한 정답을 적용하므로 영향을 덜
-받는다. 다만 완화는 부분적이다(§5.4.1의 판정 전환 최소 건수). 게이트 판정과 설계원리는 이 값에 의존하지
-않는다.
+받는다. 다만 완화는 부분적이다(§5.4.1의 판정 전환 최소 건수).
 
 **재순위화와 매핑 단계의 부재.** 첫 번째 제약은 재순위화 방식에서 발생한다(§6.2). 측정된 값은
 온톨로지가 검색을 개선하는 정도의 상한이 아니라 재순위화라는 결합 방식에서의 개선분이다. 첫
@@ -1298,7 +1313,7 @@ DP4는 문서집합까지 함께 바뀐 비교에서도 자원 번들의 효과�
 |---|---|---|---|
 | ① | 실제 자원 변경의 거부 사례가 1회 | 통제된 자원 교체 1회에서 T1 미충족에 따른 승인 거부 (§5.3) | 자격 있는 델타 3–5건을 순차 투입하고 판정의 분포를 보고 |
 | ② | 승인된 변경의 사후 안전성 미검정 | 심사한 델타가 승인되지 않아 비교가 성립하지 않았다 (§6.5) | 승인된 델타를 릴리스한 뒤 다음 세대의 봉인 분할에서 재측정 |
-| ③ | 교차 태스크 검출의 임계 민감성 | τ=0.05에서 T3 단독 검출 12/45이나 τ=0.10에서는 4/45 (§5.2) | τ 격자 전반의 검출률·위양성률 곡선을 사전등록하고 동시 보고 |
+| ③ | 교차 태스크 검출의 임계 민감성 | τ=0.05에서 T3 단독 검출 12/45이나 τ=0.10에서는 4/45, τ=0.00에서는 17/45 (§5.2) | τ 격자 전반의 검출률·위양성률 곡선을 사전등록하고 동시 보고 |
 | ④ | 임계 셋의 실무적 근거 부재 | ε=0.02·δ=0.05·τ=0.05는 동결한 규범적 선택이며 보정을 거치지 않았다 (§3.5) | 재색인 반복의 회수 변동폭 측정과 실무자 허용 한계 조사 |
 | ⑤ | 단일 도메인·단일 관할 | 한국 반도체 특허와 특정 거절 표본에 집중 (§6.5) | 제2 공학 온톨로지에 게이트를 이식하여 동일 절차로 판정 |
 | ⑥ | 질의 언어와 정답 언어의 불일치 | 질의는 전량 한국어이고 알려진 양성의 41%는 비한국어 (§6.5) | 질의 측 번역 구성을 추가하여 언어별 회수를 분해 재측정 |
@@ -1319,7 +1334,8 @@ DP4는 문서집합까지 함께 바뀐 비교에서도 자원 번들의 효과�
 
 SDKB 데이터셋과 평가 하네스는
 [https://github.com/arkwith7/sdkb-dataset](https://github.com/arkwith7/sdkb-dataset)에서 공개된다.
-본 논문이 보고하는 판은 릴리스 `v1.1-paper`이며 DOI 는 `10.5281/zenodo.22030396`이다. 데이터 계층은
+본 논문이 보고하는 판은 릴리스 `v1.1.1-paper`이며 버전 DOI 는 `10.5281/zenodo.22046508`이다.
+데이터셋 일반을 지시하는 개념 DOI 는 `10.5281/zenodo.22030395`이다. 데이터 계층은
 CDLA-Permissive-2.0, 코드 계층은 Apache-2.0, 문서는 CC-BY-4.0으로 배포한다. 공개 대상은 파일로
 수록되는 것과 재구축되는 것으로 구분된다.
 
@@ -1338,15 +1354,22 @@ CDLA-Permissive-2.0, 코드 계층은 Apache-2.0, 문서는 CC-BY-4.0으로 배�
   [S3](../supplementary/S3-unexecuted-design-v09.md) ·
   [S5](../supplementary/S5-submission-full-v2.md)).
 - **평가 하네스** — 검색 구성 일곱의 구현과 게이트 조건, 채점과 통계, 그림 생성 코드가
-  `benchmark/` 에 수록된다. 표 4가 지시하는 진입점이 그 경로에 실재하며, 이관 내역과 제외 목록,
+  `benchmark/` 에 수록된다. 표 5가 지시하는 진입점이 그 경로에 실재하며, 이관 내역과 제외 목록,
   그리고 원고의 표와 코드의 대응은 같은 디렉터리의 세 파일이 밝힌다.
 - **미공개와 사유** — KIPRIS 원문은 학술이용 조건상 재배포할 수 없고, 회사 기밀 계층은 비식별
   변조본만 존재한다.
 
-공개 자산 전량의 파일별 sha256은 릴리스의 `PROVENANCE.json` 에 등재되어 있다. 해당 값은 공개
-트리의 파일에서 계산되었으므로 내려받은 파일과 직접 대조할 수 있다. 데이터셋은 이후에도
-개선되므로, 재현 시에는 최신 상태가 아니라 위 릴리스와 그 해시를 대조해야 한다. 미공개 두 항목의 부재는 재현을 차단하지 않는다. 식별자와 재구축 절차로 동일한
-코퍼스를 재구성할 수 있기 때문이며, 알려진 결손 둘도 함께 기술하였다(§4.5).
+공개 자산 전량의 파일별 sha256은 릴리스의 `provenance/PROVENANCE.json` 에 등재되어 있다. 해당
+값은 공개 트리의 파일에서 계산되었으므로 내려받은 파일과 직접 대조할 수 있다. 데이터셋은 이후에도
+개선되므로, 재현 시에는 최신 상태가 아니라 위 릴리스와 그 해시를 대조해야 한다.
+
+재현 가능성은 자산에 따라 세 등급으로 나뉜다. 첫째는 공개 파일만으로 동일한 산출을 얻는
+등급이고, 둘째는 식별자로 원문을 재인출한 뒤 근사적으로 재현되는 등급이며, 셋째는 감사만 가능한
+등급이다. 공개 저장소의 실측에서 둘째 경로의 CQ 통과율은 27/31이다. 셋째 등급에는 청구항
+한정요소 층과 그 층에 의존하는 CQ 네 건이 속하고, 분해 입력이 원문이므로 키를 발급받아도
+재생성되지 않는다. 본문이 밝힌 결손 둘도 셋째 등급이다(§4.5). 또한 원고가 보고하는 수치는 실험이
+수행된 동결 세대의 값이고 릴리스는 이후의 상류 교정을 반영한 현행 세대이다. 자산별 등급과
+두 세대의 수치 대조는 [S7](../supplementary/S7-release-crosswalk.md)에 있다.
 평가 결과보다 평가 절차를 먼저 공개하는 이유는 확증 시점에 프롬프트를 선택하는 일을 막기 위해서다.
 
 ## 6.7 결론

@@ -74,6 +74,47 @@ def anchor_signature() -> str | None:
     return f"{int(m.group(1)):,}" if m else None
 
 
+def canonical_tbox() -> dict[str, int] | None:
+    """§1 의 'T-Box 술어 (정본)' 행 — ObjectProperty · DatatypeProperty · Class."""
+    text = CANONICAL.read_text(encoding="utf-8")
+    m = re.search(r"\*\*T-Box 술어 \(정본\)\*\*\s*\|([^|]+)\|", text)
+    if not m:
+        return None
+    cell = m.group(1)
+    out: dict[str, int] = {}
+    for key, label in (("object_properties", "ObjectProperty"),
+                       ("datatype_properties", "DatatypeProperty"),
+                       ("classes", "Class")):
+        # DatatypeProperty 가 ObjectProperty 를 부분 문자열로 갖지 않으므로 단순 탐색으로 족하다.
+        hit = re.search(rf"{label}\D{{0,4}}(\d[\d,]*)", cell)
+        if not hit:
+            return None
+        out[key] = int(hit.group(1).replace(",", ""))
+    return out
+
+
+def anchor_tbox() -> dict[str, int] | None:
+    """T-Box 술어 수의 **디스크 정박점** — 트리플과 같은 이유로 필요하다(D-45 · 2026-08-21).
+
+    트리플만 감시하던 시기에 `owl:ObjectProperty` 가 97 → 99 로, `owl:DatatypeProperty` 가
+    81 → 85 로 움직였는데 이 검사기는 다섯 세대 동안 녹색이었다. 원고가 실험 세대의 97 을
+    인용하는 것은 옳으나(§1-1 · 세대를 밝힌다), 문서가 **현행 값이라 믿고** 97 을 쓰면 그것은
+    표류다. 정박점은 `test_baseline_tbox_signature` 가 실제 `graph_v0.ttl` 로 검증한다.
+    """
+    text = BASELINE_TEST.read_text(encoding="utf-8")
+    m = re.search(r'"current":\s*\{(.*?)\}', text, re.S)
+    if not m:
+        return None
+    body = m.group(1)
+    out: dict[str, int] = {}
+    for key in ("object_properties", "datatype_properties", "classes"):
+        hit = re.search(rf'"{key}":\s*(\d+)', body)
+        if not hit:
+            return None
+        out[key] = int(hit.group(1))
+    return out
+
+
 def exempt_lines(lines: list[str]) -> set[int]:
     """이력 서술로 간주해 검사에서 제외할 줄 번호(1-기반)."""
     exempt: set[int] = set()
@@ -108,6 +149,25 @@ def main() -> int:
               f"       §1 을 갱신하고 직전 세대를 HISTORICAL_SIGNATURES 에 내릴 것.\n")
     else:
         print(f"[ok]   CANONICAL-INDEX §1 G₀ = 디스크 정박점 {anchor}\n")
+
+    # T-Box 술어 수도 같은 방식으로 정박시킨다 — 트리플만 보면 이 축의 표류가 샌다(D-45).
+    canon_tbox, disk_tbox = canonical_tbox(), anchor_tbox()
+    if disk_tbox is None:
+        print("[warn] T-Box 정박점을 읽지 못했다 — SNAPSHOT_OBSERVATIONS 형식 변경 여부 확인\n")
+    elif canon_tbox is None:
+        failed = True
+        print("[FAIL] CANONICAL-INDEX §1 에 'T-Box 술어 (정본)' 행이 없다 — 트리플만 감시하면\n"
+              "       ObjectProperty·DatatypeProperty 의 표류를 놓친다(D-45).\n")
+    elif canon_tbox != disk_tbox:
+        failed = True
+        print(f"[FAIL] CANONICAL-INDEX §1 의 T-Box 술어 {canon_tbox} 가 디스크 정박점 "
+              f"{disk_tbox} 과 다르다.\n"
+              f"       정박점은 test_baseline_tbox_signature 가 graph_v0.ttl 로 검증한다.\n")
+    else:
+        op, dp, cl = (disk_tbox[k] for k in ("object_properties", "datatype_properties", "classes"))
+        print(f"[ok]   CANONICAL-INDEX §1 T-Box = 디스크 정박점 "
+              f"(ObjectProperty {op} · DatatypeProperty {dp} · Class {cl})\n")
+
     manuscripts_seen = 0
 
     for target in TARGETS:

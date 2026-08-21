@@ -408,6 +408,15 @@ def main() -> int:
     targets = [root / "paper" / "manuscript" / "stage3_source.md"]
     targets += sorted((root / "paper" / "submission").rglob("*.md"))
     targets = [t for t in targets if t.exists()]
+    # `paper/submission/en/` 은 영문 투고 산출물이다 — 한국어 학술 문체 규격의 대상이 아니다.
+    # 규격이 재는 것(서술어 어체·문두 접속어·축약형·`task` 번역)은 전부 한국어 문장의 성질이며,
+    # 영문에 적용하면 위반이 아니라 소음이 나온다. **면제가 아니라 적용 범위의 문제다** —
+    # 영문 산출물은 `submission_check` 의 D2·D3·D7·D8·D9 와 링크 검사를 그대로 받는다.
+    en_dir = root / "paper" / "submission" / "en"
+    skipped = [t for t in targets if en_dir in t.parents]
+    targets = [t for t in targets if en_dir not in t.parents]
+    for t in skipped:
+        print(f"[skip] {t.relative_to(root)} — 영문 산출물 (한국어 문체 규격 비대상)")
     if not targets:
         print("대상 부재: paper/manuscript/stage3_source.md · paper/submission/**/*.md")
         return 2

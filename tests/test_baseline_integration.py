@@ -102,8 +102,15 @@ SNAPSHOT_OBSERVATIONS = {
     # **이 +43 이 이번 델타의 유일한 가시 지점이다.** 같은 교체가 코퍼스 sha(83eef760…)도
     # 파이프라인 서명(9745a7d9…)도 바꾸지 않았다 — 즉 자원 층에서는 보이고 태스크 층에서는
     # 보이지 않는다. 게이트가 그것을 판정할 수단이 없다는 것이 D-43 이다.
+    #
+    # **T-Box 술어 수를 2026-08-21(PLAN-063 트랙 1.4)에 관측치로 편입했다.** 왜 늦게 넣는가 —
+    # 이 값들이 문서에서 조용히 낡아 있었기 때문이다. 원고는 실험 세대의 97/81 을 옳게 인용하는데
+    # 공개 릴리스와 디스크는 99/85 였고, 트리플만 감시하던 `scripts/check_signatures.py` 는 그
+    # 표류를 통과시켰다(D-45). 관측치로 올려 두면 `test_baseline_tbox_signature` 가 디스크에서
+    # 실측해 고정하고, 서명 검사기가 CANONICAL-INDEX §1 을 이 값에 정박시킨다.
     "current": {"triples": 119251, "process": 12, "subprocess": 38, "device": 34,
-                "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84},
+                "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84,
+                "object_properties": 99, "datatype_properties": 85, "classes": 103},
 }
 _CURRENT = SNAPSHOT_OBSERVATIONS["current"]
 
@@ -271,6 +278,22 @@ def test_baseline_observation_units(graph_v0):
     assert counts["SubProcess"] == EXPECTED_SUBPROCESS
     assert counts["Device"] == EXPECTED_DEVICE
     assert len(g) == EXPECTED_TRIPLES
+
+
+def test_baseline_tbox_signature(graph_v0):
+    """T-Box 술어·클래스 수를 디스크에서 실측해 고정한다 — 트리플만 감시하면 새는 표류가 있다.
+
+    실제로 샜다(D-45 · 2026-08-21). 원고는 실험 세대의 `owl:ObjectProperty` 97 을 옳게 인용하는데
+    공개 릴리스와 디스크는 99 였고, 트리플 서명만 보던 `scripts/check_signatures.py` 는 그것을
+    통과시켰다. 이 회귀가 `SNAPSHOT_OBSERVATIONS["current"]` 의 세 값을 디스크에 정박시키고,
+    서명 검사기는 그 값으로 CANONICAL-INDEX §1 을 대조한다.
+    """
+    from rdflib import OWL
+
+    g, _ = graph_v0
+    assert len(set(g.subjects(RDF.type, OWL.ObjectProperty))) == _CURRENT["object_properties"]
+    assert len(set(g.subjects(RDF.type, OWL.DatatypeProperty))) == _CURRENT["datatype_properties"]
+    assert len(set(g.subjects(RDF.type, OWL.Class))) == _CURRENT["classes"]
 
 
 def test_baseline_carries_sirp_patents(graph_v0):

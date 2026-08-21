@@ -137,12 +137,20 @@ def check_file(path: Path, root: Path, warns: list[str] | None = None) -> list[s
             if ph in line:
                 fails.append(f"{path}:{i}: [D2] 플레이스홀더 잔존 — {ph}")
 
+    # **원고 검사와 제출 부속물 검사를 가른다 (2026-08-21 · PLAN-063 트랙 4).**
+    # D3(영문 제목·초록)·D5(표·그림 계수)·D6(분량)·D7(초록 단어)·D8(키워드)은 **원고의 성질**을
+    # 재는 검사다. Highlights·cover letter·declarations 에 같은 자를 대면 "그림 0개"와 "초록 없음"이
+    # 위반으로 잡히는데, 그 파일들은 그림도 초록도 가질 이유가 없다. 부속물은 D2(플레이스홀더) ·
+    # D4(작업 정본 전용 블록) · D9(절 참조 도달성) · 내부 링크 검사를 그대로 받는다 — **면제가
+    # 아니라 해당 없는 항목을 빼는 것이다.**
+    is_manuscript = path.stem == "manuscript"
+
     # D3 · 영문 제목·초록 (ASCII 알파벳이 실질적으로 있는 제목/초록 절)
     has_en_title = bool(re.search(r"^#\s+.*[A-Za-z]{4,}", body, re.M))
     has_en_abstract = bool(re.search(r"^#{1,3}\s*(Abstract|영문 초록)", body, re.M))
-    if not has_en_title:
+    if is_manuscript and not has_en_title:
         fails.append(f"{path}: [D3] 영문 제목 없음")
-    if not has_en_abstract:
+    if is_manuscript and not has_en_abstract:
         fails.append(f"{path}: [D3] 영문 초록 절(Abstract) 없음")
 
     # D4 · 작업 정본 전용 블록
@@ -154,20 +162,32 @@ def check_file(path: Path, root: Path, warns: list[str] | None = None) -> list[s
     # D5 · 표·그림 계수
     n_tables = sum(1 for line in lines if TABLE_SEP.match(line))
     n_figures = len(IMAGE_REF.findall(body))
-    if n_tables > MAX_TABLES:
+    if is_manuscript and n_tables > MAX_TABLES:
         fails.append(f"{path}: [D5] 본문 표 {n_tables}개 > 상한 {MAX_TABLES}")
-    if not (FIGURE_RANGE[0] <= n_figures <= FIGURE_RANGE[1]):
+    if is_manuscript and not (FIGURE_RANGE[0] <= n_figures <= FIGURE_RANGE[1]):
         fails.append(f"{path}: [D5] 그림 {n_figures}개 — 목표 {FIGURE_RANGE[0]}–{FIGURE_RANGE[1]}")
 
     # D6 · 분량
     # 참고문헌은 세지 않는다 — D6 는 "본문 분량"이고, 서지를 분량에 넣으면 **문헌을 보강할수록
     # 본문을 깎아야 하는** 역유인이 된다(2026-08-16 · 사용자 승인). 기준선도 같은 방식으로
     # 동결 시점 정본에서 다시 쟀으므로 비교는 그대로 같은 자다 — 목표는 −40 % 로 불변이다.
+    #
+    # **영문 산출물(`paper/submission/en/`)에는 D6 를 적용하지 않는다.** 기준선
+    # `BASELINE_BODY_CHARS` 는 한국어 정본의 **글자 수**에서 동결한 값이고, 같은 내용을 영문으로
+    # 옮기면 글자 수가 배 가까이 늘어난다 — 그 상태에서 이 자를 대면 재는 것은 분량이 아니라
+    # 언어다. 영문 분량은 투고처의 페이지 규정으로 따로 관리하며, D2·D3·D7·D8·D9 와 링크
+    # 검사는 영문 산출물에도 그대로 적용된다.
+    is_english = (root / "paper" / "submission" / "en") in path.parents
     bib_at = text.find(BIB_HEAD)
     body_len = len(text if bib_at < 0 else text[:bib_at])
     soft = int(BASELINE_BODY_CHARS * LENGTH_TARGET_RATIO)
     hard = int(BASELINE_BODY_CHARS * LENGTH_HARD_RATIO)
-    if body_len > hard:
+    if not is_manuscript:
+        pass                      # 부속물은 분량 목표의 대상이 아니다
+    elif is_english:
+        warns.append(f"{path}: [D6·비대상] 영문 원고 — 한국어 글자 수 목표를 적용하지 않는다 "
+                     f"(본문 {body_len:,}자)")
+    elif body_len > hard:
         pct = 100 * (1 - body_len / BASELINE_BODY_CHARS)
         fails.append(
             f"{path}: [D6] 본문 분량 {body_len:,}자 > 실패 상한 {hard:,}자 "

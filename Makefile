@@ -1,4 +1,4 @@
-.PHONY: figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 tables-stability tables-stability-check
+.PHONY: figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check
 
 setup:
 	uv sync --all-extras
@@ -57,6 +57,11 @@ tables-stability-check:
 # `paper/tables/` 의 생성 표는 `{{COPY:…|from:X.md}}` 로 가져온다(PLAN-060 B3).
 submission-stage3: tables-stability-check
 	uv run python scripts/build_submission_stage3.py
+
+# 영문 투고본 — 산문은 en_source.md 가, 표·그림·서지는 한국어 파생본이 원본이다.
+# 수치가 하나라도 달라지면 실패한다(rc 2). 본문 완성 전까지 산출은 초안 경로다.
+submission-en:
+	uv run python scripts/build_submission_en.py
 
 test:
 	uv run pytest -q
