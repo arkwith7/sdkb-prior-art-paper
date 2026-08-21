@@ -43,6 +43,20 @@
 > 검증 실측 — 전체 스위트 **620 통과 · 0 실패** · `sig-check`·`verdicts`·`style-check` 녹색 ·
 > `submission-check` 는 4파일 통과에 D6 경고 1건(본문 **69,967자** · 권고 목표 69,827 · 실패 상한
 > 72,117). 남은 140자는 본문 번역 단계의 축약에서 함께 처리한다.
+>
+> **종결 PLAN 2건을 아카이빙하였다 (2026-08-22).** [PLAN-058](archive/PLAN-058-single-repo-benchmark-release.md)
+> (공개·DOI·원고 §6.6 반영까지 종료 · 커밋 `b04fdda`)과
+> [PLAN-061](archive/PLAN-061-additional-delta-eligibility-screening.md)(자격 있는 델타 0건으로
+> 심사 기록에서 종결 · 선행 조치 완료)을 `archive/` 로 내렸다. **지우지 않는다** — 사전등록 증거와
+> 커밋 해시는 그대로다. 최상위에 떨어져 있던 PLAN-058 §11 조각을 본문 끝에 병합하였고, 참조
+> 링크 6건(STATUS · PLAN-060 · M5 가이드 · DEFECT-LEDGER)을 새 경로로 고쳤다.
+> **`plans/` 에 남은 것은 살아 있는 계획 2건**이다 —
+> [PLAN-063](plans/PLAN-063-external-review-3-submission-consistency.md)(외부 검토 3차 · 영문 본문
+> 번역만 잔여)과 [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)(제2 도메인
+> 이식 시연 EP5 · 미착수). **후자는 `PLAN-063` 과 번호가 겹쳐 `PLAN-064` 로 고쳤다** — 같은 기호가
+> 두 계획을 가리키면 사전등록 기록과의 추적성이 끊긴다. 사전등록 파일명도 `PLAN-064-prereg.md` 로
+> 따라 고쳤으며, 아직 착수 전이라 외부 참조는 없다.
+> **판정·수치 변경 0 · 새 실험 0 · 원고 변경 0.**
 
 > ## 🔜 이전 인계 — **PLAN-063 트랙 1.1(재태그)만 남았고, 그것은 되돌릴 수 없어 승인 대기다** (2026-08-21 21차 인계)
 >
@@ -145,13 +159,13 @@
 > `archive/` 로 내리고, 살아 있는 둘은 `plans/` 로 옮겼다 — README 표가 규정한 `plans/PLAN-xxx`
 > 자리이며, PLAN-030 이 기록한 `plans/` → `archive/` 관례와도 일치한다. 이동으로 깊어진 상대
 > 경로 링크 **23건**과 이전 회차부터 끊겨 있던 **3건**을 함께 교정했다. 남긴 둘은
-> [PLAN-058](plans/PLAN-058-single-repo-benchmark-release.md)(공개 리포 이관 · 곧 착수)과
-> [PLAN-061](plans/PLAN-061-additional-delta-eligibility-screening.md)(§4 가 델타 도착 시 사전등록으로
+> [PLAN-058](archive/PLAN-058-single-repo-benchmark-release.md)(공개 리포 이관 · 곧 착수)과
+> [PLAN-061](archive/PLAN-061-additional-delta-eligibility-screening.md)(§4 가 델타 도착 시 사전등록으로
 > 발효할 빈칸)이다.
 
 > ## 🔜 다음 세션이 할 일 — **살아 있는 계획이 없다.** PLAN-060 이 단계 C 까지 닫혔다 (2026-08-19 19차 인계)
 >
-> **[PLAN-061](plans/PLAN-061-additional-delta-eligibility-screening.md) 이 단계 C 의 자격 심사를 끝냈고,
+> **[PLAN-061](archive/PLAN-061-additional-delta-eligibility-screening.md) 이 단계 C 의 자격 심사를 끝냈고,
 > 판정은 "자격 있는 델타 0건"이다.** 그래서 **T-gate 를 추가로 돌리지 않았다** — 델타가 없는데
 > 돌리면 그 판정은 측정된 결과가 아니라 **구성상 0** 이고(D-43), 표를 채우려고 세대를 만들지
 > 않는다. **새 실험 0 · 수치 재산출 0 · 봉인 개봉 0 · 판정 변경 0 · 원고 변경 0.**
