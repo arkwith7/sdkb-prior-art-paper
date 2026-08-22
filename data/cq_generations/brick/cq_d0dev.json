@@ -1,0 +1,234 @@
+{
+  "generation": "d0dev",
+  "graph": "data/processed/ep5/d0dev.ttl",
+  "profile": "brick",
+  "graph_sha256": "be90b0df67183deb8cadcdfbb77f05cdd7475fdb253ef19021ffeb1896874f4e",
+  "rule_version": "v2",
+  "tau": 0.05,
+  "against": null,
+  "n_cq": 15,
+  "suites": {
+    "core": {
+      "n_pass": 5,
+      "n_total": 5,
+      "rate": 1.0
+    },
+    "fdd": {
+      "n_pass": 5,
+      "n_total": 5,
+      "rate": 1.0
+    },
+    "space": {
+      "n_pass": 5,
+      "n_total": 5,
+      "rate": 1.0
+    }
+  },
+  "measurements": {
+    "graph": {
+      "n_pass": 15,
+      "n_total": 15,
+      "cqs": [
+        {
+          "cq": "CORE02_sensor_count_per_location",
+          "suite": "core",
+          "rows": 90,
+          "passed": true
+        },
+        {
+          "cq": "CORE04_zone_room_point_path",
+          "suite": "core",
+          "rows": 221,
+          "passed": true
+        },
+        {
+          "cq": "CORE05_equipment_parts_with_points",
+          "suite": "core",
+          "rows": 14,
+          "passed": true
+        },
+        {
+          "cq": "CORE06_equipment_points_in_rooms",
+          "suite": "core",
+          "rows": 134,
+          "passed": true
+        },
+        {
+          "cq": "CORE07_floor_room_sensor_path",
+          "suite": "core",
+          "rows": 167,
+          "passed": true
+        },
+        {
+          "cq": "FDD01_ahu_discharge_air_temperature",
+          "suite": "fdd",
+          "rows": 4,
+          "passed": true
+        },
+        {
+          "cq": "FDD02_vav_airflow_points",
+          "suite": "fdd",
+          "rows": 120,
+          "passed": true
+        },
+        {
+          "cq": "FDD03_equipment_status_points",
+          "suite": "fdd",
+          "rows": 2,
+          "passed": true
+        },
+        {
+          "cq": "FDD04_equipment_command_points",
+          "suite": "fdd",
+          "rows": 9,
+          "passed": true
+        },
+        {
+          "cq": "FDD05_air_supply_chain_sensors",
+          "suite": "fdd",
+          "rows": 8,
+          "passed": true
+        },
+        {
+          "cq": "SPA01_building_floor_room_hierarchy",
+          "suite": "space",
+          "rows": 90,
+          "passed": true
+        },
+        {
+          "cq": "SPA02_points_located_in_rooms",
+          "suite": "space",
+          "rows": 168,
+          "passed": true
+        },
+        {
+          "cq": "SPA03_rooms_with_occupancy_sensing",
+          "suite": "space",
+          "rows": 4,
+          "passed": true
+        },
+        {
+          "cq": "SPA04_hvac_zone_membership",
+          "suite": "space",
+          "rows": 108,
+          "passed": true
+        },
+        {
+          "cq": "SPA05_room_count_per_floor",
+          "suite": "space",
+          "rows": 5,
+          "passed": true
+        }
+      ],
+      "rate": 1.0
+    }
+  },
+  "sidecar_provenance": null,
+  "per_cq": {
+    "CORE02_sensor_count_per_location": {
+      "suite": "core",
+      "rows": 90,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CORE04_zone_room_point_path": {
+      "suite": "core",
+      "rows": 221,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CORE05_equipment_parts_with_points": {
+      "suite": "core",
+      "rows": 14,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CORE06_equipment_points_in_rooms": {
+      "suite": "core",
+      "rows": 134,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "CORE07_floor_room_sensor_path": {
+      "suite": "core",
+      "rows": 167,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "FDD01_ahu_discharge_air_temperature": {
+      "suite": "fdd",
+      "rows": 4,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "FDD02_vav_airflow_points": {
+      "suite": "fdd",
+      "rows": 120,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "FDD03_equipment_status_points": {
+      "suite": "fdd",
+      "rows": 2,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "FDD04_equipment_command_points": {
+      "suite": "fdd",
+      "rows": 9,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "FDD05_air_supply_chain_sensors": {
+      "suite": "fdd",
+      "rows": 8,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "SPA01_building_floor_room_hierarchy": {
+      "suite": "space",
+      "rows": 90,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "SPA02_points_located_in_rooms": {
+      "suite": "space",
+      "rows": 168,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "SPA03_rooms_with_occupancy_sensing": {
+      "suite": "space",
+      "rows": 4,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "SPA04_hvac_zone_membership": {
+      "suite": "space",
+      "rows": 108,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    },
+    "SPA05_room_count_per_floor": {
+      "suite": "space",
+      "rows": 5,
+      "monotone": "up",
+      "expect_min": 1,
+      "passed": true
+    }
+  }
+}

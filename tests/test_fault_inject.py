@@ -130,7 +130,7 @@ def test_pristine_violation_is_raised_not_returned(tmp_path, monkeypatch):
     manifest = tmp_path / "PRISTINE.json"
     monkeypatch.setattr(Q, "PRISTINE_MANIFEST", manifest)
     monkeypatch.setattr(Q.config, "ROOT", tmp_path)
-    monkeypatch.setattr(Q, "protected_paths", lambda: [target])
+    monkeypatch.setattr(Q, "protected_paths", lambda profile=None: [target])
     monkeypatch.setattr(Q, "BACKUP", tmp_path / "backup")
     Q.seal(backup=(target,))
     assert Q.verify_pristine() == []
@@ -145,7 +145,7 @@ def test_backup_is_a_real_copy(tmp_path, monkeypatch):
     target.write_text("original")
     monkeypatch.setattr(Q, "PRISTINE_MANIFEST", tmp_path / "PRISTINE.json")
     monkeypatch.setattr(Q.config, "ROOT", tmp_path)
-    monkeypatch.setattr(Q, "protected_paths", lambda: [target])
+    monkeypatch.setattr(Q, "protected_paths", lambda profile=None: [target])
     monkeypatch.setattr(Q, "BACKUP", tmp_path / "backup")
     Q.seal(backup=(target,))
     assert (tmp_path / "backup" / "graph_v0.ttl").read_text() == "original"

@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import random
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -70,8 +71,18 @@ OWL_EQUIV_PROP = NamedNode("http://www.w3.org/2002/07/owl#equivalentProperty")
 
 
 def load(path: Path, workdir: Path) -> Store:
-    """그래프를 격리 작업공간의 스토어로 적재한다(정본 파일은 읽기만 한다)."""
-    store = Store(path=str(workdir / "store"))
+    """그래프를 격리 작업공간의 스토어로 적재한다(정본 파일은 읽기만 한다).
+
+    **이미 있는 스토어 위에 적재하지 않는다.** 오래된 스토어가 남아 있으면 이전 실행의 결함본
+    위에 원본이 다시 얹히고, 그 위에 같은 결함이 한 번 더 주입된다 — 방향 역전처럼 **멱등이
+    아닌 조작은 두 번 걸면 원상 복구되어** 결함이 사라진 채로 "검출 실패"가 기록된다(실측
+    2026-08-22: SPA01 90 → 72 여야 할 인스턴스가 재사용 워크스페이스에서 90 → 90 이 됐다).
+    조용히 틀리는 대신 지우고 새로 적재한다.
+    """
+    sdir = workdir / "store"
+    if sdir.exists():
+        shutil.rmtree(sdir)
+    store = Store(path=str(sdir))
     with open(path, "rb") as fh:
         store.bulk_load(fh, format=RdfFormat.TURTLE)
     return store

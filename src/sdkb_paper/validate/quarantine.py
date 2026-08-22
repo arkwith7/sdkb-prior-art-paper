@@ -29,6 +29,21 @@ from pathlib import Path
 from .. import config
 
 PRISTINE_MANIFEST = config.DATA / "PRISTINE.json"
+
+
+def manifest_path(profile=None) -> Path:
+    """봉인 대장은 **프로파일별로 가른다**(PLAN-064 A-1 · C11 의 남은 절반).
+
+    대장이 하나뿐이면 Brick 실험이 SDKB 정본의 해시를 검사하게 되고, 그 둘은 애초에 무관하다.
+    실제로 SDKB 대장은 2026-07-28 봉인이고 디스크는 O′ 자원이라 어긋나 있다 — 그 상태에서
+    Brick 판정을 돌리면 **자기 자원과 무관한 이유로 전량 무효**가 된다. sdkb 는 기존 경로를
+    그대로 쓴다(바이트 동일).
+    """
+    from .. import profile as _profile
+
+    prof = _profile.resolve(profile)
+    return PRISTINE_MANIFEST if prof.name == "sdkb" else \
+        config.DATA / f"PRISTINE.{prof.name}.json"
 QUARANTINE = config.DATA / "quarantine"
 BACKUP = config.DATA / "pristine_backup"
 LEDGER = QUARANTINE / "LEDGER.jsonl"
@@ -88,10 +103,10 @@ def _now() -> str:
 
 
 # --- 1. 봉인 · 검증 -----------------------------------------------------------
-def seal(backup: tuple[Path, ...] = (config.GRAPH_V0,)) -> dict:
+def seal(backup: tuple[Path, ...] = (config.GRAPH_V0,), profile=None) -> dict:
     """정본 해시를 굳히고 주입 대상은 실복사 백업한다. 실험 **전에** 반드시 부른다."""
     entries = {}
-    for p in protected_paths():
+    for p in protected_paths(profile):
         entries[str(p.relative_to(config.ROOT))] = {"sha256": sha256(p), "bytes": p.stat().st_size}
 
     BACKUP.mkdir(parents=True, exist_ok=True)
@@ -106,20 +121,22 @@ def seal(backup: tuple[Path, ...] = (config.GRAPH_V0,)) -> dict:
 
     manifest = {"sealed_at": _now(), "commit": _commit(), "n_files": len(entries),
                 "backups": backed, "files": entries}
-    PRISTINE_MANIFEST.parent.mkdir(parents=True, exist_ok=True)
-    PRISTINE_MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    mpath = manifest_path(profile)
+    mpath.parent.mkdir(parents=True, exist_ok=True)
+    mpath.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     return manifest
 
 
-def verify_pristine(strict: bool = True) -> list[dict]:
+def verify_pristine(strict: bool = True, profile=None) -> list[dict]:
     """봉인 이후 정본이 변했는지 검사. 반환 = 위반 목록(빈 리스트면 무결).
 
     strict 면 위반 시 `PristineViolation` 을 던진다 — 결함주입 러너는 **매 인스턴스 뒤에**
     이걸 부른다. 한 번이라도 새면 그 지점에서 멈춰야 오염 범위가 한 인스턴스로 갇힌다.
     """
-    if not PRISTINE_MANIFEST.exists():
-        raise FileNotFoundError(f"봉인이 없다: {PRISTINE_MANIFEST} (quarantine.seal() 선행)")
-    manifest = json.loads(PRISTINE_MANIFEST.read_text(encoding="utf-8"))
+    mpath = manifest_path(profile)
+    if not mpath.exists():
+        raise FileNotFoundError(f"봉인이 없다: {mpath} (quarantine.seal() 선행)")
+    manifest = json.loads(mpath.read_text(encoding="utf-8"))
     bad = []
     for rel, rec in manifest["files"].items():
         p = config.ROOT / rel

@@ -40,6 +40,12 @@ graph_default: null           # D0…D5 는 인자로 받는다 (T-Box × 홀드
 # 그래서 판정 JSON 의 `accept` 는 null 이고 `Accept_partial` 이 별도 키로 남는다.
 has_t1_t2: false
 
+# L1 은 **기준 대비 신규 위반**으로 판정한다(SPEC-010 §6.2 · 승인 2026-08-22).
+# 사전등록의 전사가 아니라 **계측기 결정**이다 — Brick 공식 예제는 무결한 상태에서도 Brick
+# 자신의 shape 을 통과하지 않으므로(sh:Violation 293 실측) conforms 이진은 상수이고,
+# 상수 게이트는 결함을 구분하지 못한다. 판정식(사전등록 §6.2)은 바뀌지 않는다.
+l1_mode: relative
+
 # 사전등록 §4.2 — `20260822 + 100·결함번호 + 반복번호`. **이 식에는 강도가 없다.**
 seed_rule: linear
 seed_base: 20260822

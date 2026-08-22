@@ -263,7 +263,7 @@ def faulted_p1_run(fault_key: str, strength: float, seed: int, ws: Path,
 def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
                  split: str = "dev", skip_t12: bool = False,
                  profile=None, graph: Path | None = None,
-                 baseline_gen: str = "g0") -> dict:
+                 baseline_gen: str = "g0", shapes=None) -> dict:
     """결함 하나를 만들어 전 층에 통과시킨다. 산출물은 전부 격리 디렉터리 안에 남는다.
 
     **프로파일이 정하는 것은 넷이다**(PLAN-064 A-1 · C10) — 주입 대상 그래프 · 기준 세대 ·
@@ -281,7 +281,7 @@ def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
     from ..validate.leakage_check import audit_graph
     from ..validate.t1_noninferiority import t1_gate
     from ..validate.t2_subgroup import t2_gate
-    from ..validate.t3_cross_task_cq import load_generation, t3_gate
+    from ..validate.t3_cross_task_cq import baseline_rows, load_generation, t3_gate
 
     from .metrics import load_run
     from .results_table import _split_qrel, run_path
@@ -313,9 +313,15 @@ def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
     out["detected"]["L0"] = faulted.stat().st_mtime < src_mtime
 
     # 3) L1 SHACL
-    from ..validate.shacl_gate import validate_graph
-    conforms, _ = validate_graph(faulted, shapes="graph", profile=prof)
-    out["detected"]["L1"] = not conforms
+    from ..validate.shacl_gate import new_violations, validate_graph
+    if prof.l1_mode == "relative":
+        # 기준은 **주입 이전의 같은 그래프**다 — 절대 위반 수가 아니라 변화를 본다.
+        l1 = new_violations(faulted, graph, shapes=shapes or "graph", profile=prof)
+        out["l1"] = l1
+        out["detected"]["L1"] = not l1["pass"]
+    else:
+        conforms, _ = validate_graph(faulted, shapes=shapes or "graph", profile=prof)
+        out["detected"]["L1"] = not conforms
 
     # 4) L2 HermiT
     from ..validate.reasoner_gate import check_consistency
@@ -326,7 +332,13 @@ def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
                  with_digest=not prof.has_t1_t2)
     n_pass = sum(r.passed for r in cq)
     base_gen = load_generation(baseline_gen, prof)
-    suites = suite_pass_rates(cq, None, prof.cq_tau)
+    # **판정 v2 에는 기준 행 수가 필요하다.** 주지 않으면 τ 가 걸리지 않아 존재검사(v1)가 되고,
+    # 행 수만 줄이는 결함은 원리적으로 비가시가 된다 — EP5 사전등록 §4.3 의 회귀 정의가
+    # "행 수의 상대 감소 > τ" 이므로 그 자원에서는 판정 자체가 성립하지 않는다.
+    # SDKB 는 실행 시 v1 로 세고 `rejudge` 가 저장된 행 수에서 v2 를 다시 세는 배선이므로,
+    # **기존 동작을 보존하려면 v2 는 v1·v2 가 갈리는 자원에서만 켠다.**
+    base_rows_map = (baseline_rows(base_gen) if not prof.has_t1_t2 else None)
+    suites = suite_pass_rates(cq, base_rows_map, prof.cq_tau)
     out["n_cq_pass"] = n_pass
     base_pass = base["n_cq_pass"] if base else sum(
         1 for v in base_gen.get("per_cq", {}).values() if v.get("passed"))
@@ -337,6 +349,10 @@ def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
     # **탐색적** — 행 수가 불변인 오배선의 관측용. 판정식에 들어가지 않는다(사전등록 §6.4).
     if not prof.has_t1_t2:
         out["result_digest"] = {r.name: r.result_digest for r in cq}
+        # τ 격자는 **재실행이 아니라 저장된 행 수의 다시 읽기**다(사전등록 §4.3).
+        out["per_cq"] = {r.name: {"suite": r.suite, "rows": r.rows, "passed": r.passed}
+                         for r in cq}
+        out["base_rows"] = base_rows_map
 
     # 6) 누출 감사 (그래프 층 — F09·F10 표적)
     if prof.has_t1_t2:
@@ -369,7 +385,7 @@ def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
     (ws / "result.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     Q.log({"run_id": run_id, "label": label, "fault": fault_key, "strength": strength,
            "rep": rep, "seed": seed, "first_layer": out["first_layer"]})
-    Q.verify_pristine(strict=True)
+    Q.verify_pristine(strict=True, profile=prof)
     return out
 
 

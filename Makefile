@@ -404,12 +404,15 @@ gate-profile:
 cq-freeze-profile:
 	uv run python -m sdkb_paper.validate.t3_cross_task_cq $(GRAPH) 		--freeze $(GEN) $(if $(AGAINST),--against $(AGAINST),) --profile $(or $(PROFILE),brick)
 
-# EP5 전량 (A-4). **이 타깃은 A-1 에서 배선만 하고 실행하지 않는다** — 실행은 별도 단계이며,
-# 홀드아웃 A-Box 는 그때 처음 열린다.
+# EP5 전량 (A-4). 결함 21 + 정상 31 + 릴리스 계보 10 을 **각 1회** 판정한다. 재판정은 없다.
+# 선행: `make ep5-freeze` (기준 세대 D₀ 동결 · **이 시점에 홀드아웃이 열린다**).
+#   make ep5 [STAGE=faults|normal|lineage|all] [WORKERS=4]
 ep5:
-	@echo "EP5 실행은 A-4 단계다. 사전등록: 01.code_spec/plans/PLAN-064-prereg.md"
-	@echo "선행 조건: (1) make cq-freeze-profile GEN=d0 (2) 홀드아웃 개봉 결정"
-	@exit 2
+	uv run python -m sdkb_paper.analysis.ep5 --stage $(or $(STAGE),all) --workers $(or $(WORKERS),4)
+
+# 기준 세대 D₀ = Brick v1.3.0 + 홀드아웃 A-Box. 동결이 곧 개봉이다(SPEC-010 §4).
+ep5-freeze:
+	uv run python -m sdkb_paper.analysis.ep5_freeze
 
 gate: gate-graph leakage tgate
 

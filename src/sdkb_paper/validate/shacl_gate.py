@@ -17,7 +17,7 @@ from collections.abc import Iterable
 from pathlib import Path
 
 from pyshacl import validate
-from rdflib import Graph, URIRef
+from rdflib import RDF, BNode, Graph, URIRef
 from rdflib.namespace import SH
 
 from sdkb_paper import profile as _profile
@@ -75,6 +75,52 @@ def validate_graph(
     shapes_graph = shapes if isinstance(shapes, Graph) else load_shapes(shapes, profile)
     conforms, _, report_text = validate(g, shacl_graph=shapes_graph, inference="rdfs")
     return bool(conforms), report_text
+
+
+# --- EP5 · 기준 대비 신규 위반 (SPEC-010 §6.2) --------------------------------
+#
+# **왜 `conforms` 이진이 아닌가.** 제2 도메인에서는 무결한 그래프도 `conforms=False` 다
+# (Brick 공식 예제가 Brick 자신의 shape 을 통과하지 않는다 — 실측 `sh:Violation` 293건).
+# 상수를 내는 게이트는 결함을 구분하지 못하므로, 판정을 **변화**로 옮긴다. T3 가 행 수 회귀를
+# 보는 것과 같은 형태이며, 두 층을 같은 자로 읽을 수 있게 된다.
+#
+# 텍스트 보고서를 파싱하지 않는다 — 결과 그래프를 직접 읽는다. 문구가 바뀌면 조용히 틀리는
+# 파서를 만들지 않기 위해서다.
+
+def violation_set(data: Graph | Path, shapes: Path | str | Graph = SHAPES_GRAPH,
+                  profile=None, *, inference: str = "rdfs") -> set[tuple]:
+    """`sh:Violation` 등급 결과의 정규화 튜플 집합. `sh:Warning`·`sh:Info` 는 세지 않는다."""
+    g = data if isinstance(data, Graph) else Graph().parse(data)
+    shapes_graph = shapes if isinstance(shapes, Graph) else load_shapes(shapes, profile)
+    _conforms, results, _txt = validate(g, shacl_graph=shapes_graph, inference=inference,
+                                        advanced=True)
+    out: set[tuple] = set()
+    for r in results.subjects(RDF.type, SH.ValidationResult):
+        if results.value(r, SH.resultSeverity) != SH.Violation:
+            continue
+        out.add(tuple(_term(results.value(r, k)) for k in
+                      (SH.sourceShape, SH.focusNode, SH.resultPath,
+                       SH.sourceConstraintComponent, SH.value)))
+    return out
+
+
+def _term(v) -> str:
+    """공백노드는 라벨이 적재마다 달라지므로 종류만 남긴다 — 차집합이 흔들리지 않게."""
+    if v is None:
+        return ""
+    return "_:bnode" if isinstance(v, BNode) else str(v)
+
+
+def new_violations(new: Graph | Path, base: Graph | Path,
+                   shapes: Path | str | Graph = SHAPES_GRAPH, profile=None) -> dict:
+    """L1 판정 — 기준 대비 **신규** 위반이 하나라도 있으면 실패다(SPEC-010 §6.2)."""
+    v_base = violation_set(base, shapes, profile)
+    v_new = violation_set(new, shapes, profile)
+    added = sorted(v_new - v_base)
+    removed = sorted(v_base - v_new)
+    return {"pass": not added, "n_base": len(v_base), "n_new": len(v_new),
+            "n_added": len(added), "n_removed": len(removed),
+            "added": [list(a) for a in added[:50]]}
 
 
 def main() -> None:

@@ -51,6 +51,8 @@ catalog-v*.xml
 data/quarantine/
 data/pristine_backup/
 data/PRISTINE.json
+# 프로파일별 봉인 대장 (EP5 brick 등) — 로컬 상태이므로 SDKB 판과 같이 취급한다
+data/PRISTINE.*.json
 
 # S-시리즈(구 패러다임) 재생성물 — `make s1`·`s2`·`robustness`·`by-applicant`·`ksia-strata`·
 # `figures` 가 여기에 쓴다. **동결본은 paper/archive/{tables,figures}/ 이고 그쪽이 인용 대상**이다.

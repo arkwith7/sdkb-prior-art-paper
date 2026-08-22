@@ -74,6 +74,9 @@ class Profile:
     generation_dir: Path
     graph_default: Path | None
     has_t1_t2: bool
+    # L1 판정 형태 — "conforms"(SDKB 기본) | "relative"(기준 대비 신규 위반 · SPEC-010 §6.2).
+    # 무결한 그래프도 conforms=False 인 자원에서는 이진 판정이 상수라 결함을 구분하지 못한다.
+    l1_mode: str
     seed_rule: str
     seed_base: int | None
     strengths: tuple
@@ -148,6 +151,8 @@ def _validate(p: Profile) -> Profile:
         raise ProfileError(f"'{p.name}': L3 ∪ T3 가 스위트 전량과 다르다 — 검출력이 줄어든다")
     if p.cq_gate_target not in p.cq_targets:
         raise ProfileError(f"'{p.name}': 게이트 대상 '{p.cq_gate_target}' 이 조회 대상 목록에 없다")
+    if p.l1_mode not in ("conforms", "relative"):
+        raise ProfileError(f"'{p.name}': 알 수 없는 L1 판정 형태 '{p.l1_mode}'")
     if p.cq_tau not in p.cq_tau_grid:
         raise ProfileError(f"'{p.name}': 주값 τ={p.cq_tau} 가 동결 격자 {p.cq_tau_grid} 밖이다")
     if not p.cq_dir.exists():
@@ -231,6 +236,7 @@ def load(name: str = DEFAULT_PROFILE, *, verify: bool = True) -> Profile:
         generation_dir=_path(ROOT, d["generation_dir"]),
         graph_default=_path(ROOT, d.get("graph_default")),
         has_t1_t2=bool(d["has_t1_t2"]),
+        l1_mode=d.get("l1_mode", "conforms"),
         seed_rule=d["seed_rule"],
         seed_base=d.get("seed_base"),
         strengths=_tuple(d.get("strengths")),
