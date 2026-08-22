@@ -1,10 +1,13 @@
-.PHONY: gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check
+.PHONY: style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check
 
 setup:
 	uv sync --all-extras
 
+# 린트 대상에 `scripts` 를 포함한다 — 검사기들이 사는 자리다. 빠져 있던 동안
+# `style_check_en.py` 의 E741 4건과 `rerank_ceiling.py` 의 미사용 import 가
+# 커밋된 채로 남았다: 규율을 강제하는 코드가 규율 밖에 있으면 안 된다.
 lint:
-	uv run ruff check src tests
+	uv run ruff check src tests scripts
 
 # 서명 수치 표류 검사 — 원고·README·DATASET-CARD 가 CANONICAL-INDEX §1 과 정합한가.
 # 데이터에 L0(신선도)을 두는 것과 같은 이유로 문서에도 둔다: 해시/커밋은 "안 바뀌었음"만
@@ -42,6 +45,29 @@ submission-check:
 # 나머지 규칙(문단 구조·서술어·용어 일관)은 사람이 지킨다: 통과는 필요조건이지 충분조건이 아니다.
 style-check:
 	uv run python scripts/style_check.py
+
+# 영문 학술 문체 규격 검사 (paper/STYLE-EN-ACADEMIC.md).
+# style-check 의 영문 대응이다 — 같은 자리에서 같은 일을 하되 **언어가 바뀌면 방향이 뒤집히는
+# 규칙 셋**(주어 we 허용 · 단문 허용 ≤30단어 · 종결어미 대신 시제 규약)을 따로 본다.
+# 판정 강도는 verdicts.yaml 이 한국어만 보므로, 영문 관용구(partial support · replicated ·
+# did not transfer 등)의 금지열은 STYLE-EN §4 가 맡는다.
+# **경고 모드로 시작한다**(`--warn`) — 영문 본문 번역이 끝나기 전에 차단으로 올리면 번역
+# 커밋이 전부 막힌다. 본문 완성 시점에 `--warn` 을 떼고 차단으로 승격한다(style-check 가 밟은 경로).
+style-check-en:
+	uv run python scripts/style_check_en.py --warn
+
+# 용어 첫 등장 규율 검사 (paper/glossary-terms.yaml · STYLE V1·V2 · PLAN-066).
+# style-check 가 어체의 표류를, verdicts 가 판정 강도의 표류를 막듯 이것은 **정보 제시 순서의
+# 표류**를 막는다 — 절을 옮기거나 S5 로 이관하면 정의가 사용 뒤로 밀리는 일이 재구성마다
+# 재발했다(PLAN-066 §1 실측: 파생본 위반 25건). 대상은 투고 파생본 계열뿐이다(style-check 와 같다).
+# **경고 모드로 시작한다**(`--warn`) — 착수 시점의 위반이 0 이 아니므로 차단으로 올리면 B 단계의
+# 모든 커밋이 막힌다. B 단계 종료(PLAN-066 DoD 4)에서 차단으로 승격한다(verdicts 가 밟은 경로).
+glossary-check:
+	uv run python scripts/check_glossary.py --warn
+
+# 용어별 첫 등장·정의 위치 대장 — PLAN-066 실측표와 glossary.md §J 의 원천. 손으로 세지 않는다.
+glossary-inventory:
+	uv run python scripts/check_glossary.py --warn --inventory
 
 # 결정 안정성 표 — 동결 임계에서 판정이 전환되는 지점 (PLAN-060 B3 · 외부 검토 지적 3).
 # 수치는 기존 산출물에서만 읽는다(concept_values.json · fault_matrix_v4.json · T4 판정 JSON).

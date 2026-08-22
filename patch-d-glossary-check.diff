@@ -1,0 +1,139 @@
+diff --git a/Makefile b/Makefile
+index e2c4e83..98c0d65 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,4 +1,4 @@
+-.PHONY: gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check
++.PHONY: glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check
+ 
+ setup:
+ 	uv sync --all-extras
+@@ -43,6 +43,19 @@ submission-check:
+ style-check:
+ 	uv run python scripts/style_check.py
+ 
++# 용어 첫 등장 규율 검사 (paper/glossary-terms.yaml · STYLE V1·V2 · PLAN-066).
++# style-check 가 어체의 표류를, verdicts 가 판정 강도의 표류를 막듯 이것은 **정보 제시 순서의
++# 표류**를 막는다 — 절을 옮기거나 S5 로 이관하면 정의가 사용 뒤로 밀리는 일이 재구성마다
++# 재발했다(PLAN-066 §1 실측: 파생본 위반 25건). 대상은 투고 파생본 계열뿐이다(style-check 와 같다).
++# **경고 모드로 시작한다**(`--warn`) — 착수 시점의 위반이 0 이 아니므로 차단으로 올리면 B 단계의
++# 모든 커밋이 막힌다. B 단계 종료(PLAN-066 DoD 4)에서 차단으로 승격한다(verdicts 가 밟은 경로).
++glossary-check:
++	uv run python scripts/check_glossary.py --warn
++
++# 용어별 첫 등장·정의 위치 대장 — PLAN-066 실측표와 glossary.md §J 의 원천. 손으로 세지 않는다.
++glossary-inventory:
++	uv run python scripts/check_glossary.py --warn --inventory
++
+ # 결정 안정성 표 — 동결 임계에서 판정이 전환되는 지점 (PLAN-060 B3 · 외부 검토 지적 3).
+ # 수치는 기존 산출물에서만 읽는다(concept_values.json · fault_matrix_v4.json · T4 판정 JSON).
+ # **임계는 움직이지 않는다** — 표가 보고하는 것은 판정과 전환점의 거리뿐이다.
+diff --git a/paper/STYLE-KO-ACADEMIC.md b/paper/STYLE-KO-ACADEMIC.md
+index d642689..fd9be06 100644
+--- a/paper/STYLE-KO-ACADEMIC.md
++++ b/paper/STYLE-KO-ACADEMIC.md
+@@ -108,8 +108,22 @@ T5(볼드) · T3(문두 접속어)는 적용하지 않는다. 금지되는 것
+ 
+ **V1 · 최초 등장 1회만 정의.** `한글 풀이(영문 원어, 약어)` 형식으로 적는다. 예: 교차 태스크
+ 회귀(cross-task regression), 즉 한 태스크를 위한 변경이 다른 태스크의 질의 경로를 훼손하는 현상.
++— *기계 검사 대상(부분 · v3 신설 · PLAN-066)*: `paper/glossary-terms.yaml` 에 등재된 용어에 한해
++**정의가 첫 사용보다 앞서는가(G1)** · **약어가 정의보다 먼저 단독 등장하지 않는가(G2)** 를
++`make glossary-check` 가 본다. 기점은 §1 이다 — 초록·약어표는 자기완결 단위이며 **약어표는 색인이지
++정의가 아니다.** 정의문의 품질·예시 유무는 사람이 지킨다.
++
++**V1-a · 용어의 부류 셋과 처리 규칙 (v3 신설).** ㈎ 이 논문이 만든 개념어(실제 델타·평가 에피소드·
++깊은 회수 등)는 정의 없이 쓰지 않는다 — 정의는 "일상어 풀이 → 이 논문에서의 뜻 → 왜 이 구분이
++필요한가" 세 문장 이내. ㈏ 정보검색·통계의 표준 용어(qrel·MRR·McNemar·Holm 등)는 정의가 아니라
++**"왜 이 지표인가"** 를 적고, 표준 정의는 각주·S5 로 보낸다. ㈐ 코드·자원 식별자(`em`·`tf`·F12·B5·
++A8 등)는 산문에서 쓰지 않고 이름으로 풀어 쓴다 — 식별자는 표·캡션·수식에만(G4 · 경고).
++지표 일곱을 한 문장에 나열하지 않는다 — "묻는 질문 → 지표" 대응 표 하나로 바꾼다.
+ 
+ **V2 · 정의 이후에는 동일 용어만.** 동의어 교체를 금지한다(일/태스크 혼용 금지 → 태스크로 통일).
++— *기계 검사 대상(부분 · v3)*: `glossary-terms.yaml` 의 `synonyms_forbidden`·`forbid_patterns` 를
++`make glossary-check` 가 본다(G5). 실측된 다의어 한 건 — `CI` 가 신뢰구간(95% CI)과 지속 통합 두
++뜻으로 쓰였다. 지속 통합의 뜻으로는 약어를 쓰지 않고 "지속 통합 파이프라인"으로 풀어 쓴다.
+ 
+ **역방향도 같은 규칙이다 — 한 낱말을 여러 뜻으로 쓰지 않는다.** 은유 명사에서 특히 잘 나며,
+ 그 낱말이 표·제목에 먼저 등장하면 독자는 정의를 만나기 전에 뜻을 추측하게 된다. 실제로
+@@ -176,7 +190,9 @@ T5(볼드) · T3(문두 접속어)는 적용하지 않는다. 금지되는 것
+ ## 검사기가 보는 것과 보지 못하는 것
+ 
+ `scripts/style_check.py`(= `make style-check`)는 **S3 · T2 · T3 · T5 · T6 · T7 · H1 · V5 · V6**
+-을 기계로 본다. **S1 · S2 · S4 · T1 · T4 · V1–V4는 사람이 지킨다.** 검사기 통과는 규격 준수의
++을 기계로 본다. `scripts/check_glossary.py`(= `make glossary-check`)는 **V1·V2 의 등재 용어 부분**
++(정의 선행 G1 · 약어 선행 G2 · 동의어·다의어 G5 · 식별자 산문 G4 경고)을 본다.
++**S1 · S2 · S4 · T1 · T4 · V3 · V4 와 V1·V2 의 나머지는 사람이 지킨다.** 검사기 통과는 규격 준수의
+ 필요조건이지 충분조건이 아니다 — `make verdicts`가 판정 강도의 표류를 막듯, 이 검사기는
+ **어체의 표류**만 막는다.
+ 
+diff --git a/paper/glossary.md b/paper/glossary.md
+index 242e899..4bfaa34 100644
+--- a/paper/glossary.md
++++ b/paper/glossary.md
+@@ -209,3 +209,66 @@
+ **편집·검증 경로.** 편집은 `paper/manuscript/stage3_source.md` → 조립 `make submission-stage3` →
+ 검사 `make verdicts` + `make submission-check`(둘 다 차단) + `make sig-check`. 파생본
+ `paper/submission/manuscript.md`를 직접 고치지 않는다.
++
++---
++
++## J. 첫 등장 규율 — 정의가 사용보다 앞서는가 (2026-08-22 · PLAN-066)
++
++> **A–I 가 "무엇으로 옮기는가"라면 J 는 "어디서 처음 정의하는가"다.** 영문 확정어가 있어도 한국어
++> 본문에서 약어가 정의보다 먼저 나오면 독자는 약어표로 되돌아가야 하고, 영문본에서는 같은 자리에서
++> 번역자가 정의를 지어내게 된다. 기계 정본은 `paper/glossary-terms.yaml`, 검사기는
++> `make glossary-check`(G1–G5), 대장 출력은 `make glossary-inventory` 다. **이 절의 표는 그 출력에서
++> 옮긴 것이며 손으로 세지 않는다.**
++
++### J.1 부류 셋 — 처리 규칙이 다르다
++
++| 부류 | 대상(예) | 첫 등장의 꼴 | 이후 |
++|---|---|---|---|
++| ㈎ **개념어**(이 논문이 만든 말) | 실제 델타 · 평가 에피소드 · 정답 비참조 분석 · 홀드아웃 · 음성 대조군 · 문서당 개념 수 · 깊은 회수 · 통제된 자원 교체 | `한글(영문)` + 정의 ≤3문장(일상어 풀이 → 이 논문의 뜻 → 왜 구분하는가) | 동일 용어만(V2) |
++| ㈏ **표준 용어**(정보검색·통계·온톨로지) | qrel · Recall@K · Success@K · MRR · nDCG · bpref · Effort@Recall · 후보 축소율 · 쌍체 부트스트랩 · McNemar · Holm · 절제 · 신뢰구간 | `한글(영문, 약어)` 1회 — 정의가 아니라 **"왜 이 지표인가"** | 약어 허용 |
++| ㈐ **식별자**(코드·자원) | `em`·`tf`·`core` 스위트 · F11–F16 · B0–B5 · A1–A8 | 산문에서는 **이름**("전문가 매칭 스위트" · "공유 계층 역전") | 식별자는 표·캡션·수식에만 |
++
++기관 약어(KSIA)는 ㈐ 가 아니라 표준 약어 규칙이다 — 첫 등장 `한국반도체산업협회(KSIA)`, 이후 약어.
++
++### J.2 규칙 넷
++
++1. 영문 약어는 항상 국문 풀이 **뒤**에 괄호로만 등장한다. `MRR@K` 단독 첫 등장 금지.
++2. 정의는 읽기 순서상 첫 사용 절보다 앞에 있어야 한다 — **절 재배치(PLAN-064 §5.3)·S5 이관 뒤에
++   반드시 재검사**한다. 위반의 대부분이 그 두 작업의 부작용이다.
++3. S5 로 이관한 문단에 묻혀 있던 정의는 본문에 한 줄 스텁으로 남긴다(무손실 이관의 조건).
++4. 한 절 안의 새 용어는 셋 이하. 넘으면 그 절은 결과 절이지 도입 절이 아니므로 정의를 앞으로 옮긴다.
++
++### J.3 실측 — 파생본 `paper/submission/manuscript.md` (2026-08-22 · `make glossary-inventory`)
++
++위반 **25건**(G1 24 — 그중 정의 지연 2 · G2 0 · G5 1) · 경고 7건(G4). 표준 용어·개념어 31항 가운데
++**정의형으로 첫 등장하는 것은 1항**(`회수율(Recall@K)`, §2.1)뿐이다.
++
++| 용어 | 첫 등장 | 정의 | 상태 | 처방 위치 |
++|---|---|---|---|---|
++| 교차 태스크 회귀 | §1 L88 | — | 정의 없음 | §1 (V1 예문 그대로) |
++| 문서당 개념 수 | §1 L92 | — | 정의 없음 | §1 자원 층 설명 |
++| 평가 에피소드(EP) | §1 L105 (약어) | — | 정의 없음 · 약어표만 | §3 도입 |
++| 층간 지표 불일치 | §1 L108 | §2.3 L247 | **정의가 뒤에** | 정의를 §1 로 |
++| 홀드아웃 | §1 L115 | — | 정의 없음 | §3 용어 소절 |
++| 적합성 판정 목록(qrel) | §2.1 L165 | — | 정의 없음(영문 병기만) | §2.1 |
++| 통제된 자원 교체 | §2.3 L267 | — | 정의 없음 | §3 (DP4 의 이름) |
++| 실제 델타 | §3 L314 | — | 정의 없음 | §3 용어 소절 |
++| 한국반도체산업협회(KSIA) | §3.2 L405 | — | 정의 없음 | §3.2 |
++| 지속 통합(CI) | §3.2 L426 · §6.4 L1313 | — | **다의어 — 95% CI 와 충돌** | 풀어 쓰기 |
++| 질의 단위 쌍체 부트스트랩 | §3.5 L517 | — | 정의 없음 (영문 그대로) | §3.5 |
++| 신뢰구간(CI) | §3.5 L518 | — | 정의 없음 | §3.5 |
++| 음성 대조군 | §4 L578 | — | 정의 없음 · 두 용법 | §4.4 |
++| 정답 비참조 분석(oracle-free) | §4.2 L617 | — | 영문 그대로 | §4.2 |
++| 절제 | §4.3 L633 | §4.4 L690 | **정의가 뒤에** | §4.3 첫 문장 또는 §4 도입 |
++| 맥니마 검정 | §4.4 L686 | — | 정의 없음 · §4.5 통계 소절보다 앞 | §4.4 |
++| Success@K · MRR · nDCG · Effort@Recall · 후보 축소율 | §4.5 L714–715 | — | 한 문장에 지표 7개 나열 | "질문 → 지표" 표로 |
++| bpref | §4.5 L719 | — | 정의 없음 | §4.5 (배제 사유와 함께) |
++| 홀름 보정 | §4.5 L735 | — | 정의 없음 | §4.5 |
++| 깊은 회수 | §5 L802 | — | 정의 없음 | §4.5 지표 표 |
++| `em`·`tf`·`core` | §3.4 L473 (표) · L482 (산문) | — | 식별자 산문 | 이름으로 |
++| B0–B5 · A1–A8 · F11–F16 | §3 L307 · §4.3 · §5.2 | — | 식별자 산문 (PLAN-064 §8 라벨 과밀) | 이름으로 |
++
++**분량 영향.** 정의 추가 약 +600~800자, 지표 나열 → 표 전환은 분량 중립에 가깝다. 다만 번호표는 이미 13개로
++D5 상한(14 = 분리행 기준, 약어표 포함)에 닿아 있으므로 **새 표를 만들지 않고 §4.5 의 기존 표에
++열("묻는 질문")을 더하는 방식**이어야 한다. 이 예산은 PLAN-064 §5.2 의 B 단계
++예산(−1,999)에 **더해진다** — PLAN-066 §3.

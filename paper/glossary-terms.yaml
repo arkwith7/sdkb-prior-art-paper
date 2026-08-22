@@ -1,0 +1,288 @@
+# paper/glossary-terms.yaml — 용어 첫 등장 규율의 기계 정본 (SSOT)
+# 규격: paper/STYLE-KO-ACADEMIC.md V1(최초 등장 1회 정의) · V2(정의 이후 동일 용어 · 한 낱말 한 뜻)
+# 검사기: scripts/check_glossary.py (= make glossary-check). 계획: PLAN-066.
+#
+# 이 파일은 paper/glossary.md(영한 확정어 대장)를 대체하지 않는다 — 그 대장은 "무엇으로 옮기는가"를,
+# 이 파일은 "어디서 처음 정의하고 그 전에 무엇을 쓰면 안 되는가"를 적는다. 두 파일의 `en` 열은
+# 같아야 하며, 다르면 glossary.md 가 우선한다(영문 확정어의 정본은 그쪽이다).
+#
+# 부류(category) 셋 — 처리 규칙이 다르다.
+#   concept     (가) 이 논문이 만든 개념어. 정의 없이 쓰면 안 된다. 첫 등장은 `한글(영문)` 정의형.
+#   standard    (나) 정보검색·통계·온톨로지의 표준 용어. 정의가 아니라 "왜 이 지표인가"가 필요하다.
+#               첫 등장은 `한글(영문, 약어)` 1회이고 이후 약어 허용.
+#   identifier  (다) 코드·자원에서 올라온 식별자. 산문에서는 쓰지 않고 이름으로 풀어 쓴다.
+#               표·캡션·수식·코드 안에서만 허용.
+#
+# 검사 규칙 G1–G5 (라벨은 검사기 출력과 같다)
+#   G1  정의 선행 — 본문(§1 이후)에서 용어의 첫 등장은 정의형이어야 하고, 정의는 첫 사용과 같거나
+#       앞선 자리에 있어야 한다. 표·캡션에 먼저 나오는 것도 위반이다(V2 역방향).
+#   G2  약어 선행 금지 — 약어(abbr)가 정의형보다 먼저 단독 등장하면 위반.
+#   G3  정의 위치 — 정의가 define_in 에 적힌 절에 있지 않으면 경고(읽기 순서는 G1 이 본다).
+#   G4  식별자 산문 금지 — identifier 부류가 표·캡션·수식·코드 밖 산문에 나오면 경고.
+#   G5  동의어·다의어 — synonyms_forbidden 에 적은 낱말(V2)과 forbid_patterns(한 낱말 두 뜻)는 위반.
+#
+# 면제: 행 끝 `<!-- glossary-ok: 사유 -->`. 사유 없는 면제는 두지 않는다.
+# 초록·약어표는 자기완결 단위라 G1·G2 의 기점에서 제외한다(body_start 이전). 약어표에 있는 것이
+# 본문 첫 등장의 정의를 대신하지는 않는다 — 약어표는 색인이지 정의가 아니다(PLAN-066 §1).
+
+version: 1
+meta:
+  plan: PLAN-066
+  targets:
+    - paper/manuscript/stage3_source.md
+    - paper/submission/manuscript.md
+  body_start: "^# 1\\. "          # 이 제목부터 본문(읽기 순서의 기점)
+  body_end: "^# 참고문헌"          # 여기부터는 보지 않는다
+  # 정의형의 기본 꼴: `한글` 뒤에 볼드·공백을 허용하고 `(영문` 이 따른다. 예: **양성 전용 qrel(positive-only qrel)**
+  definition_form: "{ko}\\**\\s*\\(\\s*{en}"
+
+terms:
+  # ───────── (가) concept — 이 논문이 만든 개념어 ─────────
+  - id: real-delta
+    category: concept
+    ko: 실제 델타
+    en: real delta
+    aliases_ko: [실제 자원 델타]
+    define_in: "§3"
+    gloss: 저자가 주입한 결함이 아니라 자원의 실제 개정 이력에서 발생한 버전 간 변경
+
+  - id: evaluation-episode
+    category: concept
+    ko: 평가 에피소드
+    en: evaluation episode
+    abbr: EP
+    abbr_pattern: "\\bEP[1-5]\\b"
+    define_in: "§3"
+    gloss: 하나의 질문에 하나의 사전 지정 판정식을 대응시킨 평가 단위. EP1–EP5 는 그 번호
+
+  - id: oracle-free
+    category: concept
+    ko: 정답 비참조 분석
+    en: oracle-free
+    aliases_ko: [Oracle-free 주 분석 모드, Oracle-free]
+    define_in: "§4.2"
+    gloss: 질의 특허의 인용 정보를 검색기에 주지 않는 주 분석 조건. 누출을 차단한 결과만 주 결론에 쓴다
+
+  - id: holdout
+    category: concept
+    ko: 홀드아웃
+    en: hold-out
+    define_in: "§3"
+    gloss: 판정식을 동결하기 전에는 한 번도 보지 않은 결함·건물·분할. "판정한 적 없는"과 같은 뜻
+
+  - id: negative-control
+    category: concept
+    ko: 음성 대조군
+    en: negative control
+    synonyms_forbidden: [음성대조군]
+    define_in: "§4.4"
+    gloss: 게이트가 통과시켜야 하는 정상 변경(위양성 측정용)과, 절제에서 효과가 없어야 하는 계층(A8) 두 용법이 있다 — 첫 등장에서 어느 쪽인지 명시
+
+  - id: concepts-per-doc
+    category: concept
+    ko: 문서당 개념 수
+    en: concepts per document
+    aliases_ko: [문서당 개념]
+    define_in: "§1"
+    gloss: 온톨로지 링커가 한 문서에 붙인 개념 IRI 의 평균 수 — 자원 층 지표의 대표 예
+
+  - id: deep-recall
+    category: concept
+    ko: 깊은 회수
+    en: deep recall
+    define_in: "§4.5"
+    gloss: 상위 K 가 큰 구간(Recall@100 이상)에서의 회수율. 상위 정렬(nDCG@20)과 대비되는 축
+
+  - id: cross-task-regression
+    category: concept
+    ko: 교차 태스크 회귀
+    en: cross-task regression
+    define_in: "§1"
+    gloss: 한 태스크를 위한 변경이 다른 태스크의 질의 경로를 훼손하는 현상
+
+  - id: controlled-substitution
+    category: concept
+    ko: 통제된 자원 교체
+    en: controlled resource substitution
+    define_in: "§3"
+    gloss: 문서집합·코드·설정·분할을 전부 동결하고 온톨로지 번들만 교체하는 비교
+
+  - id: cross-layer-misalignment
+    category: concept
+    ko: 층간 지표 불일치
+    en: cross-layer metric misalignment
+    define_in: "§1"
+
+  # ───────── (나) standard — 정보검색·통계·온톨로지 표준 용어 ─────────
+  - id: qrel
+    category: standard
+    ko: 적합성 판정 목록
+    en: relevance judgments
+    abbr: qrel
+    abbr_pattern: "\\bqrels?\\b"
+    define_in: "§2.1"
+    gloss: 질의마다 "어느 문헌이 적합한가"를 적은 채점표. 본 자원은 양성만 있는 qrel 이다
+
+  - id: ksia
+    category: standard
+    ko: 한국반도체산업협회
+    en: Korea Semiconductor Industry Association
+    abbr: KSIA
+    define_in: "§3.2"
+
+  - id: ci-continuous-integration
+    category: standard
+    ko: 지속 통합
+    en: continuous integration
+    abbr: CI
+    define_in: "§3"
+    # 한 낱말 두 뜻(V2 역방향): `95% CI`(신뢰구간)와 충돌한다. 지속 통합의 뜻으로는 약어를 본문에
+    # 쓰지 않고 "지속 통합 파이프라인"으로 풀어 쓴다. 아래 패턴은 신뢰구간이 아닌 CI 만 잡는다.
+    forbid_patterns:
+      - pattern: "(?<![%\\d]\\s)(?<![%\\d])CI(에서|에|의|로|를|가|는)\\s"
+        message: "‘CI’ 가 지속 통합의 뜻으로 단독 사용 — ‘95% CI’(신뢰구간)와 충돌. ‘지속 통합 파이프라인’으로 풀어 쓴다"
+
+  - id: confidence-interval
+    category: standard
+    ko: 신뢰구간
+    en: confidence interval
+    abbr: CI
+    abbr_pattern: "95\\s*%\\s*CI"
+    define_in: "§3.5"
+    gloss: 첫 등장은 "95% 신뢰구간(confidence interval, CI)" — 이후 `95% CI` 허용
+
+  - id: paired-bootstrap
+    category: standard
+    ko: 질의 단위 쌍체 부트스트랩
+    en: paired bootstrap
+    aliases_ko: [paired bootstrap]
+    synonyms_forbidden: [페어드 부트스트랩]
+    define_in: "§3.5"
+    gloss: 같은 질의에서 두 시스템의 차이를 재표집하여 신뢰구간을 얻는 방법 — 질의를 쌍으로 묶어 시스템 간 차이만 본다
+
+  - id: mcnemar
+    category: standard
+    ko: 맥니마 검정
+    en: McNemar test
+    abbr: McNemar
+    define_in: "§4.4"
+    gloss: 같은 결함 집합에 대해 두 검출기(L1–L3 대 T3)의 검출 여부 쌍을 비교하는 검정
+
+  - id: holm
+    category: standard
+    ko: 홀름 보정
+    en: Holm correction
+    abbr: Holm
+    define_in: "§4.5"
+    gloss: 여러 검정을 동시에 할 때 유의수준을 순차적으로 조정하는 다중비교 보정
+
+  - id: ablation
+    category: standard
+    ko: 절제
+    en: ablation
+    define_in: "§4.4"
+    gloss: 온톨로지의 한 계층을 빼고 성능 변화를 보는 조건. A1–A8 은 그 번호
+
+  - id: bpref
+    category: standard
+    ko: 판정 비적합 기반 선호도
+    en: binary preference
+    abbr: bpref
+    define_in: "§4.5"
+    gloss: 미판정 문헌에 강건한 지표 — 단 "판정된 비적합 집합"을 전제하므로 본 자원에는 쓰지 않는다
+
+  - id: recall-at-k
+    category: standard
+    ko: 회수율
+    en: Recall@K
+    abbr_pattern: "Recall@\\d+"
+    define_in: "§2.1"
+
+  - id: success-at-k
+    category: standard
+    ko: 상위 K 적중 여부
+    en: Success@K
+    abbr_pattern: "Success@K?\\d*"
+    define_in: "§4.5"
+
+  - id: mrr
+    category: standard
+    ko: 평균 역순위
+    en: mean reciprocal rank
+    abbr: MRR
+    abbr_pattern: "MRR(@K?\\d*)?"
+    define_in: "§4.5"
+
+  - id: ndcg
+    category: standard
+    ko: 정규화 할인 누적 이득
+    en: normalized discounted cumulative gain
+    abbr: nDCG
+    abbr_pattern: "nDCG(@\\d+)?"
+    define_in: "§4.5"
+
+  - id: effort-at-recall
+    category: standard
+    ko: 목표 회수율 도달 노력
+    en: Effort@Recall
+    aliases_ko: [Effort@Recall]
+    define_in: "§4.5"
+    gloss: 목표 회수율에 이르기까지 검토해야 하는 문헌 수 — 후보 축소와 함께 운용 비용을 나타낸다
+
+  - id: candidate-reduction
+    category: standard
+    ko: 후보 축소율
+    en: Candidate Reduction
+    aliases_ko: [Candidate Reduction, 후보 축소]
+    define_in: "§4.5"
+
+  # ───────── (다) identifier — 코드·자원 식별자 (산문 금지) ─────────
+  - id: suite-em
+    category: identifier
+    ko: 전문가 매칭 스위트
+    en: expert-matching suite
+    abbr: em
+    abbr_pattern: "(?<![A-Za-z])em(?=[·,)\\s])"
+    define_in: "§3.1"
+
+  - id: suite-tf
+    category: identifier
+    ko: 기술예측 스위트
+    en: technology-foresight suite
+    abbr: tf
+    abbr_pattern: "(?<![A-Za-z])tf(?=[·,)\\s])"
+    define_in: "§3.1"
+
+  - id: suite-core
+    category: identifier
+    ko: 공유 코어 스위트
+    en: shared-core suite
+    abbr: core
+    abbr_pattern: "(?<![A-Za-z])core(?=[·,)\\s])"
+    define_in: "§3.1"
+
+  - id: fault-families
+    category: identifier
+    ko: 결함군
+    en: fault family
+    abbr: F
+    abbr_pattern: "\\bF1[1-6]\\b"
+    define_in: "§4.4"
+    gloss: 산문에서는 이름으로 — F11 동의어 오병합 · F12 공유 계층 역전 · F13–F15 재배선
+
+  - id: baseline-labels
+    category: identifier
+    ko: 기준선
+    en: baseline
+    abbr: B
+    abbr_pattern: "\\bB[0-5]\\b"
+    define_in: "§4.3"
+    gloss: 산문에서는 "어휘 기준선(BM25)" 처럼 이름으로. 라벨은 표에만 (PLAN-064 §8 라벨 과밀)
+
+  - id: ablation-labels
+    category: identifier
+    ko: 절제 조건
+    en: ablation condition
+    abbr: A
+    abbr_pattern: "\\bA[1-8]\\b"
+    define_in: "§4.4"

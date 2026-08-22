@@ -26,7 +26,6 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from sdkb_paper import config
 from sdkb_paper.analysis.metrics import load_qrel, load_run
