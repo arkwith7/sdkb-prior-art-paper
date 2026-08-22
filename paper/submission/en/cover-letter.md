@@ -19,8 +19,8 @@ score can break another task's query paths.
 evaluation environment, and we report what evaluating them taught us. SDKB is a semiconductor domain
 ontology dataset that carries expert matching, prior-art search and technology foresight as task
 views on one shared T-Box. The task-aware release gate adds three conditions to four layers of
-formal validation: retrieval non-inferiority, subgroup safety, and non-regression of the other
-tasks' competency questions. The benchmark measures both over 1,000 rejected Korean patents with
+formal validation: retrieval non-inferiority, a subgroup non-regression guardrail, and
+non-regression of the other tasks' competency questions. The benchmark measures both over 1,000 rejected Korean patents with
 examiner citations as partial ground truth, under leakage control, on two non-overlapping
 confirmatory splits.
 
