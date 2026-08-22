@@ -742,6 +742,26 @@ D_q=\{d \mid t_{\mathrm{pub}}(d)<t_{\mathrm{cutoff}}(q),\; family(d)\neq family(
 | P1 | +ClaimFeature | P0 + 한정요소 포괄 | 세밀한 청구항 의미 |
 | P2 | +Ground-aware | P1 + 거절근거 호환, oracle-free 범위 | 법적 맥락 |
 
+**본문에서 이관 (PLAN-066 B-2 · 2026-08-22).** 아래 표와 미구현 기록은 투고 파생본 §4.3 에 있던 것을 그대로 옮긴 것이다. 수치·판정 변경은 없다.
+
+**비교 구성의 실무 대응과 재현 경로 — 순위 파일은 분할별로 `dev`·`test`·`test_b` 세 벌이다.**
+
+| 구성 | 실무 대응 단계 | 입력 텍스트 | 코드 모듈·진입점 | 산출 순위 파일 |
+|---|---|---|---|---|
+| **B0** BM25-Claim | 키워드 검색 | 질의 `claims_independent` · 문서 `text_main` | `retrieval/bm25.py::search` (nori 사전 토큰화) | `sys_B0_bm25_*.txt` |
+| **B2** Dense | 의미 검색 | 동일 | `retrieval/dense.py::search` (Titan v2 · FAISS flat) | `sys_B2_dense_*.txt` |
+| **B3** Text Hybrid | 두 결과의 통합 | 순위 융합이므로 텍스트를 직접 읽지 않는다 | `retrieval/hybrid.py::rrf` | `sys_B3_rrf_*.txt` |
+| **B4** 분류 단독 | 서지 조건 검색 | 분류 기호 | `retrieval/systems.py::build_b4` | `sys_B4_ipc_*.txt` |
+| **B5** 개념 단독 | 대응 없음 — 본 연구가 제안하는 경로 | 개념 링크 | `retrieval/systems.py::build_b5` | `sys_B5_concept_*.txt` |
+| **P0★** Text+Ontology | 후보 검토의 우선순위 부여 | B3 후보 풀과 개념 | `retrieval/systems.py::rerank_p0` | `sys_P0star_*.txt` |
+| **P1** +ClaimFeature | 동일 | 위의 입력과 청구항 한정요소 | `analysis/ontology_eval.py::rerank_p1` | `sys_P1_*.txt` |
+
+각 순위 파일은 `analysis/metrics.py`의 채점을 거쳐 본문 §5.4 의 성능표가 되며, 절제와 하위집단은 같은 파일에서 파생된다.
+
+**미구현 구성.** B1(BM25-Fielded)과 P2(+Ground-aware)는 설계하였으나 구현하지 않았으므로 순위와 지표가 산출된 적이 없다. 즉 결과가 불리하여 제외한 것이 아니라 보고할 값이 존재하지 않는다.
+
+**다국어 장문 인코더의 탐색적 추가.** 두 제약(영어 전용·짧은 입력)에 걸리지 않는 다국어 장문 인코더는 확증 판정 이후 별도 사전등록 아래에서 탐색적으로 추가하였고, 선정은 개발 분할로만 수행하였다.
+
 **as-built 기록.** 밀집 기준선 B2는 **Titan Embed v2**다. 설계 당시 후보였던 특허 특화 인코더(PatentSBERTa·PaECTER)는 영어 전용·짧은 입력이라 한국어 장문 질의와 문서(2,255자)를 자르지 않고 넣을 수 없었다. 모델은 개발셋을 열기 전에 고정했고 테스트 결과를 보고 바꾸지 않았다.
 
 ## 5.6 제안 순위 함수

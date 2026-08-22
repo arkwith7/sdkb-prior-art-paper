@@ -117,28 +117,33 @@ def fig_overview(out: Path | None = None) -> Path:
             ha="right", va="center", fontsize=8, color=GOLD)
 
     # ── A3 · 평가 벤치마크 (아래 띠) ─────────────────────────────────────────
-    # **화살표를 쓰지 않는다.** 네 에피소드의 측정 대상이 위 두 띠에 흩어져 있어 선으로
+    # **화살표를 쓰지 않는다.** 다섯 에피소드의 측정 대상이 위 두 띠에 흩어져 있어 선으로
     # 이으면 교차가 생기고, 교차한 선은 단색 인쇄에서 읽히지 않는다(규격 F1). 대상은
     # 상자 안의 한 줄이 지시한다.
-    ax.text(0.055, 0.262, "A3 · 다층 평가 벤치마크 — 네 평가 에피소드와 각각의 측정 대상",
+    ax.text(0.055, 0.262, "A3 · 다층 평가 벤치마크 — 다섯 평가 에피소드와 각각의 측정 대상",
             ha="left", va="center", fontsize=11, fontweight="bold", color=INK)
     episodes = [
-        (0.153, "EP1 · 표현 감사", "A1 자원",
+        (0.128, "EP1 · 표현 감사", "A1 자원",
          "세 태스크 어휘와 CQ 가\n자원에 실재하는가"),
-        (0.385, "EP2 · 게이트 판별력", "A2 게이트",
+        (0.314, "EP2 · 게이트 판별력", "A2 게이트",
          f"홀드아웃 결함 {v['ep2.t3_only']} 를 T3 가 단독 검출\n"
          f"정상 델타 오거부 {v['ep2.false_positive']}"),
-        (0.617, "EP3 · 통제된 자원 교체", "ΔG → A2 판정",
+        (0.500, "EP3 · 통제된 자원 교체", "ΔG → A2 판정",
          f"자원만 교체 → T1 {FAIL_MARK}\n승인 = 0"),
-        (0.849, "EP4 · 검색 효용과 경계", "T1 의 주 지표",
+        (0.686, "EP4 · 검색 효용과 경계", "T1 의 주 지표",
          f"질의 {v['ep4.n_queries']} · 확증 분할 둘\nfamily Recall@100"),
+        # 다섯째 상자의 아래 줄은 **검출 수가 아니라 관찰면**이다. 분모가 없는 0 을 적으면
+        # 그림이 "게이트가 놓쳤다"고 말하게 된다(§0.8 판정 문구 사전과 같은 규율).
+        (0.872, "EP5 · 제2 자원 이식", "A2 절차의 자원 비의존성",
+         f"형식 층·T3 코드 변경 없이 실행\n"
+         f"관찰면 {v['ep5.observable']}/{v['ep5.cq_total']} · 명세 재접지 필요"),
     ]
     for x, title, target, body in episodes:
-        _rbox(ax, x - 0.108, 0.045, 0.216, 0.170, title=title, body="",
-              fill="#FFFFFF", edge=BORDER, ts=9.2)
+        _rbox(ax, x - 0.089, 0.045, 0.178, 0.170, title=title, body="",
+              fill="#FFFFFF", edge=BORDER, ts=8.4)
         ax.text(x, 0.148, f"측정 대상 · {target}", ha="center", va="center",
-                fontsize=8, fontweight="bold", color=TOBE)
-        ax.text(x, 0.092, body, ha="center", va="center", fontsize=7.8,
+                fontsize=7.2, fontweight="bold", color=TOBE)
+        ax.text(x, 0.092, body, ha="center", va="center", fontsize=7.0,
                 color=MUTE, linespacing=1.45)
     return _save(fig, out)
 
@@ -530,7 +535,7 @@ def _cell(ax, cx: float, cy: float, mark: str, note: str = "") -> None:
 
 
 def fig_ep_gate_matrix(out: Path | None = None) -> Path:
-    """네 평가 에피소드가 승인식의 어느 항을 검증하였고 그 판정이 무엇인가.
+    """다섯 평가 에피소드가 승인식의 어느 항을 검증하였고 그 판정이 무엇인가.
 
     가로로 읽으면 한 에피소드의 검증 범위가 보이고, 세로로 읽으면 같은 항이 서로 다른
     실험에서 낸 판정이 보인다. **이 그림의 요점은 두 행에 있다** — EP3 행에서 형식 검증을
@@ -579,6 +584,18 @@ def fig_ep_gate_matrix(out: Path | None = None) -> Path:
                         f"마진 −{v['t4.eps']} 초과")],
          "깊은 회수의 개선은 두 확증 분할에서 반복 관측되었다.\n"
          "사전등록된 복합 기준의 동시 충족은 두 분할에서 확인되지 않았다."),
+        # EP5 행의 부호는 **검출 실패가 아니라 미판정**이다. 21건 전량에서 어느 층도 검출하지
+        # 않았고 층 사이의 불일치 쌍이 0 이므로, T3 를 다른 층과 비교할 표본이 성립하지 않았다.
+        # 이 구분을 부호로 세우지 않으면 그림이 산문보다 강한 주장을 하게 된다.
+        ("EP5", "제2 자원 이식", "별도 사전등록",
+         [(NONE_MARK, ""),
+          (PASS_MARK, f"코드 변경 없이 실행\n정상 델타 오거부 {v['ep5.false_positive']}"),
+          (NONE_MARK, ""), (NONE_MARK, ""),
+          (UNCONF_MARK, f"관찰면 {v['ep5.observable']}/{v['ep5.cq_total']}\n"
+                        f"불일치 쌍 {v['ep5.discordant']}"),
+          (NONE_MARK, "")],
+         "형식 층과 교차 태스크 층의 절차는 자원을 바꾸어도 실행되었다.\n"
+         "동결한 결함 명세는 그 자원의 표현 관습에 재접지가 필요하였다."),
     ]
 
     # ── 열 머리글 ────────────────────────────────────────────────────────────

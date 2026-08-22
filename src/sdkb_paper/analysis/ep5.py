@@ -337,6 +337,15 @@ def render_table(faults: dict, normal: dict, lineage: dict, cost: dict) -> str:
               "주입 후보가 0 이어서",
               "> 결함이 그래프에 들어가지 않았다. **판정 가능한 것은 "
               f"{j['n_judgeable']}건**이며, 아래 수치는 그 분모 위에서 읽는다.", ""]
+    # **관찰면을 검출 수보다 먼저 적는다.** 홀드아웃 기준에서 행을 내지 못한 역량질문은 어떤
+    # 결함이 들어와도 회귀를 보일 수 없으므로, 그 질문 위의 "미검출"은 검출 실패가 아니라
+    # 관찰되지 않음이다. 사전등록 §3 이 "홀드아웃에서 0 행인 CQ 는 제거하지 않고 홀드아웃
+    # 미충족으로 보고한다"고 지시한 것이 이 줄이다. 값은 판정 JSON 의 기준 행 수에서 센다.
+    base_rows = faults.get("baseline", {}).get("rows", {})
+    if base_rows:
+        live_cq = sum(1 for v in base_rows.values() if v)
+        L += [f"- **관찰면**: 홀드아웃 기준에서 행을 낸 역량질문 **{live_cq}/{len(base_rows)}** "
+              f"(나머지는 행이 0 이므로 회귀를 보일 수 없다 · 사전등록 §3 의 홀드아웃 미충족)"]
     L += [f"- 인스턴스 **{j['n']}**건(판정 가능 **{j['n_judgeable']}**) · "
           f"T3 단독 검출 **{j['t3_only']}**건 · 불일치 쌍 **{j['n_discordant']}**",
           f"- 단측 McNemar(방향 사전 지정 = T3 우세) *p* = **{j['mcnemar']['p']:.4f}** "
@@ -423,9 +432,20 @@ def render_table(faults: dict, normal: dict, lineage: dict, cost: dict) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="EP5 판정 실행 (PLAN-064 A-4)")
-    ap.add_argument("--stage", choices=("faults", "normal", "lineage", "all"), default="all")
+    # `table` 은 **판정을 다시 돌리지 않는다** — 동결된 판정 JSON 넷을 읽어 표만 다시 그린다.
+    # 보고 형식이 바뀔 때 판정을 재실행하면 그것은 재측정이며 사전등록의 1회 판정을 깬다
+    # (PLAN-064-prereg · CLAUDE.md §1-3). 표만 고치는 경로를 따로 두어 그 유혹을 구조로 막는다.
+    ap.add_argument("--stage", choices=("faults", "normal", "lineage", "all", "table"),
+                    default="all")
     ap.add_argument("--workers", type=int, default=4)
     a = ap.parse_args()
+    if a.stage == "table":
+        f, n, ln, c = (json.loads(p.read_text(encoding="utf-8"))
+                       for p in (OUT_FAULTS, OUT_NORMAL, OUT_LINEAGE, OUT_COST))
+        TABLE.parent.mkdir(parents=True, exist_ok=True)
+        TABLE.write_text(render_table(f, n, ln, c), encoding="utf-8")
+        print(f"[EP5 표] 재생성(판정 재실행 없음) → {TABLE.relative_to(config.ROOT)}")
+        return
     f = n = ln = None
     if a.stage in ("faults", "all"):
         f = run_faults(a.workers)

@@ -45,6 +45,11 @@ _INCREMENT = "data/processed/ir/ir_increment_delta_test.csv"
 _T4 = "data/processed/ir/rag/scores/rag_t4_verdict_test_b.json"
 _S5 = "paper/supplementary/S5-submission-full-v2.md"
 _TGATE = "data/processed/tgate_report_test.json"
+# EP5(제2 공학 온톨로지 이식)의 원천은 판정 산출물 셋이다. 이 판정은 1회이고 재실행하지
+# 않으므로(PLAN-064-prereg) 값이 흔들리지 않는다.
+_EP5_FAULTS = "data/processed/ep5_faults.json"
+_EP5_NORMAL = "data/processed/ep5_normal.json"
+_EP5_LINEAGE = "data/processed/ep5_lineage.json"
 # 실험 구성도(PLAN-056)가 쓰는 값의 출처. 설계 상수는 **코드가 원천**이다 — 산문에 적힌
 # 숫자를 읽으면 코드가 바뀌어도 그림이 따라오지 않는다.
 _SYSTEMS = "src/sdkb_paper/retrieval/systems.py"
@@ -155,6 +160,30 @@ RULES: list[Rule] = [
          pattern=r"\|\s*0\.05\s*\|(?:\s*\d+/\d+\s*\|){3}\s*(\d+/\d+)\s*\|", cast="str"),
     Rule("ep2.mcnemar_p", _FAULT_V4, "τ 민감도 표 · 주 τ=0.05 행 · McNemar p",
          pattern=r"\|\s*0\.05\s*\|(?:\s*\d+/\d+\s*\|){4}\s*([\d.]+)\s*\|"),
+    # EP5 이식 판정 (PLAN-064-prereg · 판정 1회 · 재실행 없음)
+    # **관찰면(`observable`)이 이 묶음의 핵심이다.** 검출 0 만 그림에 적으면 "T3 가 다른 층보다
+    # 못했다"로 읽히지만, 실측은 21건 전량에서 어느 층도 검출하지 않았고 홀드아웃에서 역량질문
+    # 15개 중 7개만 행을 냈다. 분모가 없는 0 을 검출 실패로 그리지 않기 위해 함께 뽑는다.
+    Rule("ep5.judgeable", _EP5_FAULTS, "결함 판정 JSON · 판정 가능한 인스턴스 수",
+         json_path=("judgment", "n_judgeable"), cast="int"),
+    Rule("ep5.instances", _EP5_FAULTS, "결함 판정 JSON · 주입 설계된 인스턴스 총수",
+         json_path=("n_instances",), cast="int"),
+    Rule("ep5.vacuous", _EP5_FAULTS, "결함 판정 JSON · 주입 후보 0 으로 공허한 인스턴스 수",
+         json_path=("judgment", "n_vacuous"), cast="int"),
+    Rule("ep5.t3_only", _EP5_FAULTS, "결함 판정 JSON · T3 단독 검출",
+         json_path=("judgment", "t3_only"), cast="int"),
+    Rule("ep5.discordant", _EP5_FAULTS, "결함 판정 JSON · 층 사이 불일치 쌍",
+         json_path=("judgment", "mcnemar", "n_discordant"), cast="int"),
+    Rule("ep5.false_positive", _EP5_NORMAL, "정상 델타 JSON · 오거부 건수",
+         json_path=("n_rejected",), cast="int"),
+    Rule("ep5.normal", _EP5_NORMAL, "정상 델타 JSON · 합성 정상 변경 수",
+         json_path=("n_synthetic",), cast="int"),
+    Rule("ep5.lineage_judgments", _EP5_LINEAGE, "계보 판정 JSON · 판정 수",
+         json_path=("n_judgments",), cast="int"),
+    Rule("ep5.observable", _EP5_FAULTS, "결함 판정 JSON · 홀드아웃 기준에서 행을 낸 역량질문 수",
+         json_path=("baseline", "rows"), cast="nonzero"),
+    Rule("ep5.cq_total", _EP5_FAULTS, "결함 판정 JSON · 이식한 역량질문 총수",
+         json_path=("baseline", "rows"), cast="count"),
     # 승인식의 동결 임계 — T4 의 ε 와 값이 같으나 **출처가 다르다**. 같은 숫자라는 이유로
     # 한 키를 돌려 쓰면 T1 의 마진이 T4 산출물에 매달린다.
     Rule("gate.epsilon", _TGATE, "T-gate 판정 보고 · T1 비열등 마진",
@@ -210,6 +239,12 @@ def _cast(raw: Any, kind: str) -> Any:
         return bool(raw)
     if kind == "cells":
         return [str(c) for c in raw]
+    # 관찰면 계수 — 역량질문별 행 수 매핑에서 **행을 낸 질의**와 **전체 질의**를 센다.
+    # 손으로 세지 않기 위한 장치다(§1-1): 판정 산출물의 매핑이 바뀌면 값도 따라 바뀐다.
+    if kind == "nonzero":
+        return sum(1 for v in dict(raw).values() if v)
+    if kind == "count":
+        return len(dict(raw))
     return str(raw)
 
 

@@ -135,3 +135,53 @@ def test_dl_projection_is_a_noop_on_sdkb():
 
     g = Graph().parse(config.GRAPH_V0)
     assert RG.dl_projection_count(g) == 0
+
+
+# --- 6. 관찰면 보고 (PLAN-067 R-4) --------------------------------------------
+# **왜 이 테스트가 있는가.** 표에서 "T3 단독 검출 0" 만 읽히면 게이트가 결함을 놓친 것으로
+# 읽힌다. 그러나 홀드아웃 기준에서 행이 0 인 역량질문은 어떤 결함이 들어와도 회귀를 보일 수
+# 없으므로, 그 질문 위의 0 은 검출 실패가 아니라 관찰되지 않음이다. 사전등록 §3 이 이 경우를
+# "홀드아웃 미충족" 으로 보고하도록 지시했고, 이 줄이 그 이행이다. 줄이 조용히 사라지면
+# 표는 다시 분모 없는 0 을 보여준다.
+def _stub(rows: dict) -> tuple[dict, dict, dict, dict]:
+    j = {"n": 3, "n_judgeable": 3, "n_vacuous": 0, "t3_only": 0, "n_discordant": 0,
+         "mcnemar": {"p": 1.0, "b": 0, "c": 0, "test": "none"},
+         "per_bundle": {"M": {"n": 2, "n_judgeable": 2, "t3_detected": 0, "t3_only": 0},
+                        "S": {"n": 1, "n_judgeable": 1, "t3_detected": 0, "t3_only": 0}},
+         "rows": []}
+    faults = {"judgment": j, "baseline": {"rows": rows}}
+    normal = {"n_synthetic": 30, "n_rejected": 0, "upper_bound_95_one_sided": 0.095,
+              "synthetic": [], "real_normal_delta": None}
+    lineage = {"n_judgments": 0, "pairs": [], "judgments": []}
+    cost = {"resource": "Brick", "n_triples_d0": 1, "n_cq": len(rows), "n_shapes_delta": 3,
+            "layer_wall_clock_s_mean": {}, "faults_wall_clock_s": 0.0, "max_rss_mb": 1.0}
+    return faults, normal, lineage, cost
+
+
+def test_table_reports_observable_surface():
+    """행을 낸 역량질문과 전체를 함께 적는다 — 분모 없는 0 을 싣지 않는다."""
+    from sdkb_paper.analysis.ep5 import render_table
+
+    md = render_table(*_stub({"A": 5, "B": 0, "C": 12, "D": 0}))
+    assert "**2/4**" in md, "관찰면은 '행을 낸 수/전체' 로 적어야 한다"
+    assert "홀드아웃 미충족" in md, "사전등록 §3 의 보고 지시를 근거로 밝혀야 한다"
+
+
+def test_observable_surface_is_counted_not_typed():
+    """숫자를 손으로 적지 않는다 — 기준 행 수 매핑이 바뀌면 값도 따라 바뀐다(§1-1)."""
+    from sdkb_paper.analysis.ep5 import render_table
+
+    assert "**3/3**" in render_table(*_stub({"A": 1, "B": 2, "C": 3}))
+    assert "**0/2**" in render_table(*_stub({"A": 0, "B": 0}))
+
+
+def test_table_stage_does_not_rejudge():
+    """표 재생성 경로는 판정 함수를 부르지 않는다 — 1회 판정을 깨지 않기 위한 구조."""
+    import inspect
+
+    from sdkb_paper.analysis import ep5
+
+    src = inspect.getsource(ep5.main)
+    body = src[src.index('if a.stage == "table"'):src.index("f = n = ln = None")]
+    for forbidden in ("run_faults", "run_normals", "run_lineage"):
+        assert forbidden not in body, f"표 단계가 {forbidden} 을 호출한다 — 재실행 금지"

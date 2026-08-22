@@ -161,6 +161,56 @@
       "source": "paper/tables/fault_matrix_v4.md",
       "how": "τ 민감도 표 · 주 τ=0.05 행 · McNemar p"
     },
+    "ep5.judgeable": {
+      "value": 12,
+      "source": "data/processed/ep5_faults.json",
+      "how": "결함 판정 JSON · 판정 가능한 인스턴스 수"
+    },
+    "ep5.instances": {
+      "value": 21,
+      "source": "data/processed/ep5_faults.json",
+      "how": "결함 판정 JSON · 주입 설계된 인스턴스 총수"
+    },
+    "ep5.vacuous": {
+      "value": 9,
+      "source": "data/processed/ep5_faults.json",
+      "how": "결함 판정 JSON · 주입 후보 0 으로 공허한 인스턴스 수"
+    },
+    "ep5.t3_only": {
+      "value": 0,
+      "source": "data/processed/ep5_faults.json",
+      "how": "결함 판정 JSON · T3 단독 검출"
+    },
+    "ep5.discordant": {
+      "value": 0,
+      "source": "data/processed/ep5_faults.json",
+      "how": "결함 판정 JSON · 층 사이 불일치 쌍"
+    },
+    "ep5.false_positive": {
+      "value": 0,
+      "source": "data/processed/ep5_normal.json",
+      "how": "정상 델타 JSON · 오거부 건수"
+    },
+    "ep5.normal": {
+      "value": 30,
+      "source": "data/processed/ep5_normal.json",
+      "how": "정상 델타 JSON · 합성 정상 변경 수"
+    },
+    "ep5.lineage_judgments": {
+      "value": 10,
+      "source": "data/processed/ep5_lineage.json",
+      "how": "계보 판정 JSON · 판정 수"
+    },
+    "ep5.observable": {
+      "value": 7,
+      "source": "data/processed/ep5_faults.json",
+      "how": "결함 판정 JSON · 홀드아웃 기준에서 행을 낸 역량질문 수"
+    },
+    "ep5.cq_total": {
+      "value": 15,
+      "source": "data/processed/ep5_faults.json",
+      "how": "결함 판정 JSON · 이식한 역량질문 총수"
+    },
     "gate.epsilon": {
       "value": 0.02,
       "source": "data/processed/tgate_report_test.json",

@@ -113,6 +113,22 @@ terms:
     en: cross-layer metric misalignment
     define_in: "§1"
 
+  # PLAN-067 신설 둘. 이식 판정의 결과를 읽는 데 필요한 개념어이며, 정의 없이 쓰면 검출 0 이
+  # "게이트가 놓쳤다" 로 읽힌다 — 이 두 낱말이 그 오독을 막는 자리에 서 있다.
+  - id: observable-surface
+    category: concept
+    ko: 관찰면
+    en: observable surface
+    define_in: "§5.5"
+    gloss: 역량질문이 대상 인스턴스에서 실제로 행을 산출하는 범위 · 행이 0 인 질문은 어떤 변경도 회귀로 보일 수 없다
+
+  - id: port-layer-separation
+    category: concept
+    ko: 이식 계층 분리
+    en: port-layer separation
+    define_in: "§6.4"
+    gloss: 게이트의 기제는 자원에 의존하지 않으나 명세는 대상 자원의 표현 관습과 관찰면에 재접지해야 한다는 설계원리(DP7)
+
   # ───────── (나) standard — 정보검색·통계·온톨로지 표준 용어 ─────────
   - id: qrel
     category: standard
