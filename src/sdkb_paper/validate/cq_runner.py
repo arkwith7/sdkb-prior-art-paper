@@ -32,18 +32,16 @@ import argparse
 import sys
 import tempfile
 from dataclasses import dataclass
+from dataclasses import field as dataclass_field
 from pathlib import Path
 
+from sdkb_paper import profile as _profile
 from sdkb_paper.config import (
     CENTRAL_AXIS_PROVENANCE,
     CENTRAL_AXIS_STORE,
     CQ_GATE_TARGET,
-    CQ_MONOTONE,
-    CQ_SUITES,
-    CQ_TARGETS,
     CQ_TAU,
     L3_SUITES,
-    QUERIES_CQ,
     ROOT,
     T3_SUITES,
 )
@@ -61,6 +59,16 @@ class CQResult:
     suite: str = "core"
     monotone: str = "up"
     target: str = "graph"
+    # 프로파일이 선언한 추가 헤더(예: Brick `# shared: true`). 선언만 하고 버리지 않는다.
+    extras: dict = dataclass_field(default_factory=dict)
+    # **탐색적 지표** — 정렬된 binding 의 sha256 (PLAN-064 §3 C6′ · 사전등록 §6.4).
+    # 행 수가 불변인 오배선(X4)을 관측하기 위한 것이며 **판정식에 들어가지 않는다.**
+    # `judge()` 는 이 값을 읽지 않는다. 기본은 None 이다(계산 비용을 SDKB 경로에 지우지 않는다).
+    result_digest: str | None = None
+
+    def gated(self, profile=None) -> bool:
+        """L3·T3 판정 분모에 드는가 — 게이트 대상은 프로파일 값이다."""
+        return self.target == _profile.resolve(profile).cq_gate_target
 
     @property
     def in_gate(self) -> bool:
@@ -101,13 +109,22 @@ class CQResult:
         return base_rows is None or not self.regressed(base_rows, tau)
 
 
-def _parse_meta(rq_text: str) -> tuple[str, int, str, str, str]:
-    """(desc, expect_min, suite, monotone, target). 라벨 누락·오값은 ValueError(조용한 기본값 금지).
+def _parse_meta(rq_text: str, profile=None) -> tuple[str, int, str, str, str, dict]:
+    """(desc, expect_min, suite, monotone, target, extras). 라벨 누락·오값은 ValueError.
 
     `# target:` 만은 생략 가능하며 기본이 `graph` 다 — 기존 28개 CQ 를 건드리지 않기 위한
     하위호환이고, 기본값이 **게이트에 드는 쪽**이라 누락이 감시를 약화시키지 않는다.
+
+    **유효값은 프로파일이 정한다.** 스위트 이름을 코드에 박아 두면 다른 자원의 CQ 는 파싱조차
+    되지 않는다(실측: Brick CQ 15개 전량이 `ValueError` 로 막혔다). 앞 네 항목의 자리는
+    바뀌지 않으므로 `[2]`(스위트)·`[4]`(대상)를 쓰는 기존 호출부는 그대로 동작한다.
+
+    `extras` 는 프로파일이 `cq_extra_headers` 로 선언한 헤더다(예: Brick `# shared: true`).
+    선언만 하고 버리면 동결한 표기가 코드에 도달하지 못하므로 **읽어서 돌려준다.**
     """
-    desc, expect_min, suite, monotone, target = "", 1, "", "", "graph"
+    prof = _profile.resolve(profile)
+    desc, expect_min, suite, monotone, target = "", 1, "", "", prof.cq_gate_target
+    extras: dict = {}
     for line in rq_text.splitlines():
         line = line.strip()
         if line.startswith("# desc:"):
@@ -120,20 +137,24 @@ def _parse_meta(rq_text: str) -> tuple[str, int, str, str, str]:
             monotone = line.removeprefix("# monotone:").strip()
         elif line.startswith("# target:"):
             target = line.removeprefix("# target:").strip()
+        elif line.startswith("#") and ":" in line:
+            key = line[1:].split(":", 1)[0].strip()
+            if key in prof.cq_extra_headers:
+                extras[key] = line.split(":", 1)[1].strip()
         elif line and not line.startswith("#"):
             break
-    if target not in CQ_TARGETS:
-        raise ValueError(f"CQ 조회 대상 라벨이 잘못됐다: '{target}' (허용 {CQ_TARGETS})")
-    if suite not in CQ_SUITES:
-        raise ValueError(f"CQ 스위트 라벨이 없거나 잘못됐다: '{suite}' (허용 {CQ_SUITES})")
-    if monotone not in CQ_MONOTONE:
-        raise ValueError(f"CQ 극성 라벨이 없거나 잘못됐다: '{monotone}' (허용 {CQ_MONOTONE}) — "
+    if target not in prof.cq_targets:
+        raise ValueError(f"CQ 조회 대상 라벨이 잘못됐다: '{target}' (허용 {prof.cq_targets})")
+    if suite not in prof.cq_suites:
+        raise ValueError(f"CQ 스위트 라벨이 없거나 잘못됐다: '{suite}' (허용 {prof.cq_suites})")
+    if monotone not in prof.cq_monotone:
+        raise ValueError(f"CQ 극성 라벨이 없거나 잘못됐다: '{monotone}' (허용 {prof.cq_monotone}) — "
                          "극성 없이 '행수 하락=회귀'로 판정하면 공백 탐색 질의(CQ03·CQ06)의 "
                          "정당한 개선이 회귀로 오판된다(PLAN-021 §2)")
-    return desc, expect_min, suite, monotone, target
+    return desc, expect_min, suite, monotone, target, extras
 
 
-def suite_predicates(cq_dir: Path = QUERIES_CQ) -> dict[str, set[str]]:
+def suite_predicates(cq_dir: Path | None = None, profile=None) -> dict[str, set[str]]:
     """스위트 → 그 스위트 CQ 가 **실제로 참조하는 술어** 집합 (`.rq` 정적 추출).
 
     PLAN-025 §2.3 의 "교차성은 결과가 아니라 구성으로 보증한다"를 코드가 지탱하게 하는 함수다.
@@ -142,18 +163,42 @@ def suite_predicates(cq_dir: Path = QUERIES_CQ) -> dict[str, set[str]]:
 
     소문자로 시작하는 지역명만 술어로 센다 — 대문자는 클래스다(`ont:Patent` 등).
     주석 줄은 제외한다(설명문에 적힌 술어 이름이 섞이면 교집합이 거짓으로 커진다).
-    """
-    import re
 
+    **접두어는 프로파일에서 온다(PLAN-064 A-1).** 구 구현은 `ont:`·`skos:` 를 정규식에 박아
+    두었고, 그래서 다른 어휘의 CQ 에서는 **모든 스위트가 빈 집합**이 되어 교집합 검사가 실패가
+    아니라 공허한 통과를 냈다. 그 실패 양식은 `assert_disjoint()` 가 함께 막는다.
+    """
+    prof = _profile.resolve(profile)
+    pat = prof.predicate_pattern()
     out: dict[str, set[str]] = {}
-    for rq in sorted(cq_dir.glob("*.rq")):
+    for rq in sorted((cq_dir or prof.cq_dir).glob("*.rq")):
         text = rq.read_text(encoding="utf-8")
-        suite = _parse_meta(text)[2]
+        suite = _parse_meta(text, prof)[2]
         body = "\n".join(ln for ln in text.splitlines() if not ln.strip().startswith("#"))
-        preds = set(re.findall(r"\bont:([a-z][A-Za-z0-9_]*)", body))
-        preds |= {f"skos:{m}" for m in re.findall(r"\bskos:([a-z][A-Za-z0-9_]*)", body)}
+        preds = {prof.qname(pfx, local) for pfx, local in pat.findall(body)}
         out.setdefault(suite, set()).update(preds)
     return out
+
+
+def assert_disjoint(suite_a: str, suite_b: str, cq_dir: Path | None = None,
+                    profile=None) -> dict:
+    """두 스위트의 조작 술어가 서로소임을 **비어 있지 않은 상태에서** 확인한다.
+
+    교집합이 공집합인 것만 보면 **양쪽이 빈 집합일 때도 통과한다** — 추출기가 그 어휘를 읽지
+    못한 경우가 정확히 그렇고, 그때 검사기는 실패가 아니라 초록불을 낸다. 눈이 먼 검사기는
+    검사가 없는 것보다 나쁘다. 그래서 공집합 자체를 오류로 세운다(SPEC-009 §3.3).
+    """
+    preds = suite_predicates(cq_dir, profile)
+    a, b = preds.get(suite_a, set()), preds.get(suite_b, set())
+    if not a or not b:
+        raise ValueError(
+            f"술어 추출이 비었다: {suite_a}={len(a)}개 · {suite_b}={len(b)}개 — "
+            "교집합이 공집합인 것은 '서로소'의 증거가 아니라 **추출 실패**의 증거다. "
+            "프로파일의 네임스페이스 접두어가 CQ 원문과 맞는지 확인하라.")
+    inter = a & b
+    if inter:
+        raise ValueError(f"스위트 '{suite_a}' 와 '{suite_b}' 의 술어가 겹친다: {sorted(inter)}")
+    return {"a": suite_a, "b": suite_b, "n_a": len(a), "n_b": len(b), "intersection": []}
 
 
 def _count_rdflib(graph_path: Path, texts: list[str]) -> list[int]:
@@ -161,6 +206,20 @@ def _count_rdflib(graph_path: Path, texts: list[str]) -> list[int]:
 
     g = Graph().parse(graph_path)
     return [len(list(g.query(t))) for t in texts]
+
+
+def _digest(rows: list[tuple[str, ...]]) -> str:
+    """정렬된 binding 의 sha256 — **탐색적 지표**(C6′ · 사전등록 §6.4).
+
+    행 수를 보존하는 오배선(EP5 의 X4)은 행 수 판정으로 관측되지 않는다. 판정식에 넣지 않고
+    관측만 하기 위한 값이며, `judge()` 는 이 값을 읽지 않는다.
+    """
+    import hashlib
+
+    h = hashlib.sha256()
+    for row in sorted(rows):
+        h.update(("\x1f".join(row) + "\x1e").encode("utf-8"))
+    return h.hexdigest()
 
 
 def _count_oxigraph(graph_path: Path, texts: list[str]) -> list[int]:
@@ -177,6 +236,24 @@ def _count_oxigraph(graph_path: Path, texts: list[str]) -> list[int]:
         with open(graph_path, "rb") as fh:
             store.bulk_load(fh, format=RdfFormat.TURTLE)
         return [sum(1 for _ in store.query(t)) for t in texts]
+
+
+def _digest_oxigraph(graph_path: Path, texts: list[str]) -> list[str]:
+    """같은 질의의 binding 을 실제로 물질화해 digest 를 만든다 — **기본 경로가 아니다.**
+
+    비용을 SDKB 판정 경로에 지우지 않으려고 카운트와 분리했다(`with_digest=True` 일 때만 돈다).
+    """
+    from pyoxigraph import RdfFormat, Store
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(path=str(Path(tmp) / "cqd"))
+        with open(graph_path, "rb") as fh:
+            store.bulk_load(fh, format=RdfFormat.TURTLE)
+        out = []
+        for q in texts:
+            res = store.query(q)
+            out.append(_digest([tuple("" if v is None else str(v) for v in sol) for sol in res]))
+        return out
 
 
 def _count_sidecar(texts: list[str]) -> list[int]:
@@ -208,9 +285,10 @@ def sidecar_provenance() -> dict:
             "source_sha256": {k: v.get("sha256") for k, v in p.get("source_files", {}).items()}}
 
 
-def run_cqs(graph_path: Path, cq_dir: Path = QUERIES_CQ,
+def run_cqs(graph_path: Path, cq_dir: Path | None = None,
             engine: str = DEFAULT_ENGINE,
-            targets: tuple[str, ...] = CQ_TARGETS) -> list[CQResult]:
+            targets: tuple[str, ...] | None = None,
+            profile=None, with_digest: bool = False) -> list[CQResult]:
     """CQ 전량 실행. `# target:` 에 따라 그래프와 사이드카로 나눠 조회한다(PLAN-023 §1).
 
     `targets` 로 조회 대상을 좁힐 수 있다. **게이트 경로는 절대 이 인자를 쓰지 않는다** —
@@ -219,14 +297,17 @@ def run_cqs(graph_path: Path, cq_dir: Path = QUERIES_CQ,
         28-CQ 체제로 동결된 표 6.5 계열의 **재현성**을 위해 graph 로 고정한다.
       · 사이드카 스토어(gitignore·1.8GB)가 없는 환경의 테스트.
     """
+    prof = _profile.resolve(profile)
+    cq_dir = cq_dir or prof.cq_dir
+    targets = targets if targets is not None else prof.cq_targets
     if engine not in ENGINES:
         raise ValueError(f"알 수 없는 CQ 엔진: '{engine}' (허용 {ENGINES})")
-    bad = set(targets) - set(CQ_TARGETS)
+    bad = set(targets) - set(prof.cq_targets)
     if bad:
-        raise ValueError(f"알 수 없는 CQ 조회 대상: {sorted(bad)} (허용 {CQ_TARGETS})")
+        raise ValueError(f"알 수 없는 CQ 조회 대상: {sorted(bad)} (허용 {prof.cq_targets})")
     rqs = sorted(cq_dir.glob("*.rq"))
     texts = [rq.read_text(encoding="utf-8") for rq in rqs]
-    metas = [_parse_meta(t) for t in texts]
+    metas = [_parse_meta(t, prof) for t in texts]
     keep = [i for i, m in enumerate(metas) if m[4] in targets]
     rqs = [rqs[i] for i in keep]
     texts = [texts[i] for i in keep]
@@ -240,19 +321,24 @@ def run_cqs(graph_path: Path, cq_dir: Path = QUERIES_CQ,
     if idx_side:
         for i, n in zip(idx_side, _count_sidecar([texts[i] for i in idx_side])):
             counts[i] = n
-    return [CQResult(rq.stem, desc, expect_min, rows, suite, mono, target)
-            for rq, (desc, expect_min, suite, mono, target), rows in zip(rqs, metas, counts)]
+    digests: list[str | None] = [None] * len(rqs)
+    if with_digest and idx_graph:
+        for i, d in zip(idx_graph, _digest_oxigraph(graph_path, [texts[i] for i in idx_graph])):
+            digests[i] = d
+    return [CQResult(rq.stem, desc, expect_min, rows, suite, mono, target, extras, dg)
+            for rq, (desc, expect_min, suite, mono, target, extras), rows, dg
+            in zip(rqs, metas, counts, digests)]
 
 
-def verify_engines(graph_path: Path, cq_dir: Path = QUERIES_CQ) -> list[dict]:
+def verify_engines(graph_path: Path, cq_dir: Path | None = None) -> list[dict]:
     """두 엔진의 CQ 별 결과행을 대조한다. 불일치가 있으면 엔진 전환은 무효다.
 
     사이드카 CQ 는 **엔진 고정**이다 — rdflib 인메모리는 11.6M 에서 OOM 이다(메모리
     `central-axis-use-oxigraph-ondisk`). 조용히 빼지 않고 `engine_fixed` 로 명시 보고한다.
     """
-    rqs = sorted(cq_dir.glob("*.rq"))
+    rqs = sorted((cq_dir or _profile.resolve(None).cq_dir).glob("*.rq"))
     texts = [rq.read_text(encoding="utf-8") for rq in rqs]
-    targets = [_parse_meta(t)[4] for t in texts]
+    targets = [_parse_meta(t)[4] for t in texts]   # 자리 불변 — [4] 는 여전히 조회 대상이다
     g = [i for i, t in enumerate(targets) if t == "graph"]
     ox = _count_oxigraph(graph_path, [texts[i] for i in g])
     rd = _count_rdflib(graph_path, [texts[i] for i in g])

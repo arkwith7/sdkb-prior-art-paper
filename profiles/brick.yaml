@@ -1,0 +1,122 @@
+# profiles/brick.yaml — 제2 도메인 프로파일 (EP5 · PLAN-064-prereg 의 전사)
+#
+# **이 파일은 설계하지 않는다 — 동결된 사전등록을 옮겨 적는다.** 값을 고치는 것은 프로파일
+# 편집이 아니라 사전등록 변경이며, 그것은 §1-3 위반이다. sha256 핀은 손으로 적지 않고
+# `PROVENANCE.json` 과 파일 실물에서 기계로 뽑았다(§1-1·§1-7).
+#
+# 뷰는 둘이다 — 고장탐지·진단(fdd)과 공간·구역 점유(space) + 공유 어휘(core).
+# 에너지 계량 뷰는 **A-Box 가 받쳐 주지 않아** 제외됐다(사전등록 §2 · A-0 K3 실측).
+
+name: brick
+
+namespaces:
+  brick: "https://brickschema.org/schema/Brick#"
+bare_prefix: brick
+
+cq_dir: queries/brick/cq
+# Brick 은 배포 TTL 에 SHACL 이 내장돼 있다 — 디렉터리가 아니라 파일이다(사전등록 §3.2).
+shapes_graph: data/external/brick/Brick-v1.4.4.ttl
+shapes_delta: queries/brick/shapes/delta.ttl
+
+# L3 = 주 태스크(fdd) · T3 = 타 태스크(space) + 공유 어휘(core) — 두 표면은 서로소다.
+cq_suites: [fdd, space, core]
+l3_suites: [fdd]
+t3_suites: [space, core]
+
+# 사이드카가 없다 — 조회 대상은 그래프 하나뿐이다.
+cq_targets: [graph]
+cq_gate_target: graph
+# `core` 는 공유 어휘를 **의도적으로** 참조함을 헤더로 표기한다(사전등록 §3.1).
+cq_extra_headers: [shared]
+
+cq_monotone: [up, down, flat]
+cq_tau: 0.05                  # 주값 (사전등록 §4.3)
+cq_tau_grid: [0.0, 0.05, 0.10]
+
+generation_dir: data/cq_generations/brick
+graph_default: null           # D0…D5 는 인자로 받는다 (T-Box × 홀드아웃 A-Box)
+
+# **T1·T2 는 이식하지 않는다** — 도메인별 태스크 벤치마크(정답·후보풀)가 없다.
+# 그래서 판정 JSON 의 `accept` 는 null 이고 `Accept_partial` 이 별도 키로 남는다.
+has_t1_t2: false
+
+# 사전등록 §4.2 — `20260822 + 100·결함번호 + 반복번호`. **이 식에는 강도가 없다.**
+seed_rule: linear
+seed_base: 20260822
+strengths: [0.05, 0.10, 0.20]
+cross_fault_predicates: {}
+
+faults:
+  X2:
+    number: 2
+    kind: rate
+    strengths: [0.05, 0.10, 0.20]
+    reps: [1, 2, 3]
+    prefix: brick
+    predicates: [hasPart]
+    options:
+      label: "공간 포함관계 역전(교차·M)"
+      expected: "T3(space·core)"
+      # Building–Floor · Floor–Room 만 대상으로 한다(사전등록 §4.2).
+      type_pairs: [[Building, Floor], [Floor, Room]]
+  X3:
+    number: 3
+    kind: tier
+    strengths: [1, 2, 3]
+    reps: [1]               # 조작에 무작위 요소가 없어 반복이 정보를 더하지 않는다
+    prefix: brick
+    predicates: []
+    options:
+      label: "공유 관계 동치 오선언(교차·S)"
+      expected: "T3(core·space)"
+      tiers: [[feeds, hasPart], [isFedBy, isPartOf], [hasPoint, hasPart]]
+  X4:
+    number: 4
+    kind: rate
+    strengths: [0.05, 0.10, 0.20]
+    reps: [1, 2, 3]
+    prefix: brick
+    predicates: [isLocationOf]
+    options:
+      label: "위치 재배선(교차·M)"
+      expected: "T3(space·core)"
+      # 행 수 불변이 가능하다 — T3 의 구성 타당도 **경계 사례**로 사전 지정됐다.
+      boundary_case: true
+
+# 봉인 대상 — 홀드아웃은 목록에 넣되 sha256 만 본다(열람이 아니다).
+protected_config_attrs: []
+protected_paths:
+  - data/external/brick/*.ttl
+  - queries/brick/cq/*.rq
+  - queries/brick/shapes/delta.ttl
+
+# 동결 자원의 sha256 — 불일치면 로드 시점에 예외다(SPEC-009 §3.1.3).
+prereg:
+  document: 01.code_spec/plans/PLAN-064-prereg.md
+  effective: "2026-08-22"
+  sha256:
+    "data/external/brick/Brick-v1.3.0.ttl": "a88a716d6ff90748e4847d99cae5e581f8dd9efd2c85e3f207110e59fbb44882"
+    "data/external/brick/Brick-v1.4.0.ttl": "d336095f4cc24bbdee63ba414bb12f46dd6450f718cbe8a4b3c9be23fc26f620"
+    "data/external/brick/Brick-v1.4.1.ttl": "20d5ed752d7e3eb6c4941e6e7ba6bd05f1f95c7656662f66cdd450dc24f0c359"
+    "data/external/brick/Brick-v1.4.2.ttl": "c4a9a35355da6be158123f5dced3a7ad0714d3a2cab51c6a80c4720c3c8d28f0"
+    "data/external/brick/Brick-v1.4.3.ttl": "bff317821868628601d1d0780eab78f58fd66c28d545eb50fd28419fb25ef456"
+    "data/external/brick/Brick-v1.4.4.ttl": "b65720b7b9b64c646745c689777e6138c0d59ce0088df0aeb78fbd444d04d8e7"
+    "data/external/brick/ex-g36-combined-ahu-vav.ttl": "c2cf22b2d8bcb0f351732504aea7271689de8d312e09c05077a43c427aa14490"
+    "data/external/brick/ex-rice_brick.ttl": "33c3bb0c1a748b28178eb1a689c73bcbbfc293c9a0ee2e73b8a92565d68cc8f0"
+    "data/external/brick/ex-soda_brick.ttl": "09c2ca37b628e6eea88c0b0791a3c028c3c22083c6302055aa85b609a9d17254"
+    "queries/brick/cq/CORE02_sensor_count_per_location.rq": "e27ee858e1891158d4a5c47fca5c1eadfd4f970bdbbf6bbab490fd98486e4d78"
+    "queries/brick/cq/CORE04_zone_room_point_path.rq": "1ddfdb7f17030ca2ae5f6847afc5fbd1c4020690b81f5cb0895795a87cae62f6"
+    "queries/brick/cq/CORE05_equipment_parts_with_points.rq": "8704199679df804a73a31d68eac1e14cc5fa217fc98ddb9cd004f497286d5e6c"
+    "queries/brick/cq/CORE06_equipment_points_in_rooms.rq": "e15d4f9ab0dbb46e68cdd696e64361753c99ba4d688898ccde22276bb66c7b0e"
+    "queries/brick/cq/CORE07_floor_room_sensor_path.rq": "c12b7df68afae0812b90731b3326c43d31b1f37e899653a18ab1a9f5045c2373"
+    "queries/brick/cq/FDD01_ahu_discharge_air_temperature.rq": "e52dbe60b2b98bfe63e8b27caabb0c6a4558cb5ff074baf1f766f3525b7d5602"
+    "queries/brick/cq/FDD02_vav_airflow_points.rq": "9e7e5a8b83cb05931a326ff5f3f268d169fc1dd2ce86a2e82ba3165dcb545525"
+    "queries/brick/cq/FDD03_equipment_status_points.rq": "2b9befe8ba0824574bfe35034adf6d0336822a6b4de57e4eb8d71aad9694aa9b"
+    "queries/brick/cq/FDD04_equipment_command_points.rq": "516ece9ba272db38b6850edc3ced4f1f3ff81f6efcdf70933d1ef1ceae993cf4"
+    "queries/brick/cq/FDD05_air_supply_chain_sensors.rq": "7bd859933ff6461dad79d2115be9b32152b0407aa0c8bb1dd4ea7a5b8e5433e3"
+    "queries/brick/cq/SPA01_building_floor_room_hierarchy.rq": "dd0d69a8c72bef712d24fd8ddd59aa001dfa70298da5b7bbf83bab1289b6751f"
+    "queries/brick/cq/SPA02_points_located_in_rooms.rq": "c730eca375e390243794fa924441c2f2ce0c26780404282c72744d29065ba892"
+    "queries/brick/cq/SPA03_rooms_with_occupancy_sensing.rq": "ad751b993f14510e18ae680f32bf3c2cc8d2eea42714a0506d47756aa8fe4710"
+    "queries/brick/cq/SPA04_hvac_zone_membership.rq": "036fed237b20c02786db6a053f961e34a88a0aac2bb75b3aa23f42ed242f7a61"
+    "queries/brick/cq/SPA05_room_count_per_floor.rq": "15e54da273b89019638f728c94a6fae6fc8e28caf175fd70f5a0cd5d82cb0e3d"
+    "queries/brick/shapes/delta.ttl": "fde91ac47c43d9e7a7f9bae580cd397ddd26e82a10ebdf72a5a27f8ed9c85358"

@@ -14,6 +14,9 @@ dependencies = [
     "matplotlib>=3.8",
     "scipy>=1.12",
     "pyoxigraph>=0.5.9",
+    # 게이트 프로파일(profiles/*.yaml)의 로더가 쓴다. pyshacl 경유로 이미 깔려 있지만
+    # **전이 의존에 기대면 상류가 끊을 때 게이트가 죽는다** — 프로파일은 게이트의 입력이다.
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]

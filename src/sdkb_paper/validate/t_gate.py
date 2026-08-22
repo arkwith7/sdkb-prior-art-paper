@@ -42,6 +42,60 @@ def accept(l0_l3: bool, t1: bool, t2: bool, t3: bool) -> bool:
     return bool(l0_l3 and t1 and t2 and t3)
 
 
+def accept_partial(l0_l3: bool, t3: bool) -> bool:
+    """**부분 승인식** — `1[L0–L3] · 1[T3]`. 이름이 부분임을 말한다.
+
+    T1·T2 는 도메인별 태스크 벤치마크(정답·후보풀)를 요구하므로 자원에 따라 **설계상 부재**일
+    수 있다. 그때 `accept()` 를 그냥 쓰면 없는 조건을 참으로 채워 승인을 만들게 되고, 그것은
+    승인이 아니라 승인의 외양이다. 그래서 판정 JSON 은 `accept` 를 **`null` 로 두고** 이 값을
+    별도 키로 남긴다 — **부분 승인식을 승인식이라 부르지 않는다**(PLAN-064-prereg §6.2).
+    """
+    return bool(l0_l3 and t3)
+
+
+def run_t3only(graph: Path, baseline: str = "g0", l0_l3: bool = True,
+               profile=None) -> dict:
+    """T1·T2 가 **설계상 부재**인 자원의 판정 — L0–L3 + T3 만 돌린다(PLAN-064 A-1 · C6).
+
+    `accept` 는 `null` 이다. 종료코드는 0(부분 통과)·1(부분 불통과) 둘뿐이며 **2(미검정)를 쓰지
+    않는다** — "재보지 못한 것"과 "설계상 없는 것"은 다른 문장이고, 같은 코드로 적으면 결과가
+    흐려진다.
+
+    층별 wall-clock 과 최대 RSS 를 함께 남긴다(사전등록 §7 · **탐색적** · 판정 미편입).
+    """
+    import resource
+    import time
+
+    from .. import profile as _profile
+    from .cq_runner import run_cqs, suite_pass_rates
+    from .t3_cross_task_cq import commit_waiver, load_generation, t3_gate
+
+    prof = _profile.resolve(profile)
+    if prof.has_t1_t2:
+        raise ValueError(
+            f"프로파일 '{prof.name}' 은 T1·T2 를 갖는다 — t3only 는 그 둘이 설계상 부재인 "
+            "자원에만 쓴다. 있는 게이트를 빼고 부분 판정을 내면 그것이 우회로다.")
+    out: dict = {"mode": "t3only", "profile": prof.name, "graph": str(graph),
+                 "baseline_generation": baseline,
+                 # T1·T2 는 실행하지 않은 것이 아니라 **이 자원에 존재하지 않는다.**
+                 "t1": None, "t2": None, "t1_t2_status": "absent_by_design",
+                 "leakage": None, "resource_visibility": None}
+    cost: dict[str, float] = {}
+    t0 = time.time()
+    cq = run_cqs(graph, profile=prof)
+    rates = suite_pass_rates(cq, None, prof.cq_tau)
+    cost["L3_T3_cq_s"] = round(time.time() - t0, 2)
+    old_gen = load_generation(baseline, prof)
+    out["t3"] = t3_gate(rates, old_gen["suites"], waiver=commit_waiver(), profile=prof)
+    out["suites"] = rates
+    out["l0_l3"] = l0_l3
+    cost["peak_rss_kb"] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    out["cost"] = cost                      # 탐색적 — 어떤 판정에도 들어가지 않는다
+    out["accept"] = None                    # 승인식이 완성되지 않았음을 스키마가 말한다
+    out["Accept_partial"] = int(accept_partial(l0_l3, out["t3"]["pass"]))
+    return out
+
+
 def run_tgate(split: str = "dev", new: Path | None = None, old: Path | None = None,
               graph: Path | None = None, baseline: str = "g0",
               l0_l3: bool = True, k: int = 100, skip_leakage: bool = False,
@@ -156,7 +210,9 @@ def report_path(mode: str, split: str, system: str = "P1",
     사전등록(PLAN-035 §B)과 `concept_values.json` 에만 남았다. 파일명이 다르면
     두 실행은 서로를 지우지 못한다.
     """
-    if mode == "resource":
+    if mode == "t3only":
+        stem = f"t3only__{_slug(system)}__{_slug(new.stem if new else 'graph')}"
+    elif mode == "resource":
         stem = f"resource__{_slug(old_runset)}__{_slug(new_runset)}__{_slug(system)}"
     else:
         n = _slug(new.stem if new else "P1")
@@ -205,6 +261,22 @@ def _visibility_lines(res: dict) -> list[str]:
     return lines + [""]
 
 
+def format_t3only(res: dict) -> str:
+    """부분 판정 보고 — `Accept` 라는 글자를 단독으로 쓰지 않는다."""
+    from .t3_cross_task_cq import format_report as t3_fmt
+
+    lines = [f"═══ 부분 판정 (mode=t3only · profile={res['profile']} · graph={res['graph']})",
+             "  T1·T2 = 부재(설계상) — 이 자원에는 태스크 벤치마크가 없다. "
+             "'재보지 못했다'가 아니라 '없다'다.", "",
+             t3_fmt(res["t3"]), "",
+             f"  L0–L3={'✅' if res['l0_l3'] else '❌'} · "
+             f"T3={'✅' if res['t3']['pass'] else '❌'}", "",
+             "  ⇒ accept = null  (승인식 미완성 — 부분 승인식을 승인식이라 부르지 않는다)",
+             f"  ⇒ Accept_partial = {res['Accept_partial']}",
+             f"  · 비용(탐색적): {res['cost']}"]
+    return "\n".join(lines)
+
+
 def format_report(res: dict) -> str:
     from .leakage_check import format_report as leak_fmt
     from .t1_noninferiority import format_report as t1_fmt
@@ -240,8 +312,10 @@ def format_report(res: dict) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", choices=["train", "dev", "test", "test_b", "all"], default="dev")
-    ap.add_argument("--mode", choices=["system", "resource"], default="system",
-                    help="system=시스템 대 시스템(기본) · resource=O 대 O′(H2 는 이쪽만)")
+    ap.add_argument("--mode", choices=["system", "resource", "t3only"], default="system",
+                    help="system=시스템 대 시스템(기본) · resource=O 대 O′(H2 는 이쪽만) · "
+                         "t3only=T1·T2 가 설계상 부재인 자원(accept=null · Accept_partial)")
+    ap.add_argument("--profile", default=None, help="자원 프로파일(기본: SDKB_PROFILE 또는 sdkb)")
     ap.add_argument("--old-runset", default=None, help="resource 모드의 구 자원 run 세트 라벨")
     ap.add_argument("--new-runset", default=None, help="resource 모드의 신 자원 run 세트 라벨")
     ap.add_argument("--system", default="P1", help="resource 모드에서 비교할 단일 시스템")
@@ -258,6 +332,21 @@ def main() -> None:
     ap.add_argument("--force", action="store_true",
                     help="같은 이름의 앞 판정 파일을 덮는다 — 기본은 거부다")
     args = ap.parse_args()
+
+    if args.mode == "t3only":
+        # T1·T2 가 없는 자원의 판정. 승인식이 아니라 **부분 승인식**이며 JSON 이 그렇게 말한다.
+        res = run_t3only(args.graph, args.baseline, l0_l3=(args.l0_l3 == "pass"),
+                         profile=args.profile)
+        out = args.out or report_path("t3only", "na", res["profile"], new=args.graph)
+        guard_overwrite(out, args.force)
+        print(format_t3only(res))
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(res, ensure_ascii=False, indent=2, default=str),
+                       encoding="utf-8")
+        print(f"✓ {out}")
+        # 0 부분 통과 · 1 부분 불통과. **2 는 쓰지 않는다** — 미검정과 설계상 부재는 다르다.
+        sys.exit(0 if res["Accept_partial"] else 1)
+
     if args.split == "test_b":
         # T2 하위집단 판정은 A층 전용이다(PLAN-045 D5 · PLAN-047 §13.4). B층에는 공정군·
         # 거절근거 라벨의 원천이 없고, 그 상태로 δ 를 적용하면 사전등록이 정한 것과 **다른

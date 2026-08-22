@@ -250,4 +250,4 @@ def test_layers_are_disjoint_and_cover_all_cqs():
     """L3∩T3=∅ · L3∪T3 = 스위트 전량. 하나라도 어긋나면 T3 단독검출의 의미가 무너진다."""
     l3, t3 = set(config.L3_SUITES), set(config.T3_SUITES)
     assert l3.isdisjoint(t3)
-    assert l3 | t3 == set(CQ.CQ_SUITES)
+    assert l3 | t3 == set(config.CQ_SUITES)   # 스위트 정본은 config(=프로파일 파생)다

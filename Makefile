@@ -1,4 +1,4 @@
-.PHONY: figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check
+.PHONY: gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check
 
 setup:
 	uv sync --all-extras
@@ -388,6 +388,29 @@ faults-holdout-judge:
 # 머지 전 전체 게이트: L0(무결성+신선도) + baseline 재조립 + L1 + L2 + L3 + 어휘 커버리지 측정
 #   + 누출 감사 + T1·T2·T3. IR 산출물(run·코퍼스)이 없는 환경에서는 tgate 가 먼저 실패하므로
 #   그래프만 검증하려면 `make gate-graph` 를 쓴다.
+# --- 제2 도메인 프로파일 (EP5 · PLAN-064 A-1 · C7) ----------------------------
+# **자원만 바뀌고 게이트 코드는 그대로다** — 그것이 이 타깃의 존재 이유이자 C3 의 코드 증거다.
+# T1·T2 는 이 자원에 **설계상 없다**. 그래서 판정은 승인식이 아니라 부분 승인식이며
+# (`accept=null` · `Accept_partial`), 그 사실을 JSON 스키마가 말한다.
+#   make gate-profile PROFILE=brick GRAPH=<D_n.ttl> BASELINE=d0
+gate-profile:
+	uv run python -m sdkb_paper.validate.shacl_gate $(GRAPH) --shapes graph --profile $(or $(PROFILE),brick)
+	uv run python -m sdkb_paper.validate.reasoner_gate $(GRAPH)
+	uv run python -m sdkb_paper.validate.cq_runner $(GRAPH) --report --min-pass 0
+	uv run python -m sdkb_paper.validate.t_gate --mode t3only --graph $(GRAPH) 		--baseline $(or $(BASELINE),d0) --profile $(or $(PROFILE),brick)
+
+# 프로파일 세대 동결 (D0 기준 세대 → 이후 델타의 비교 기준)
+#   make cq-freeze-profile PROFILE=brick GEN=d0 GRAPH=<D0.ttl> [AGAINST=<이전세대>]
+cq-freeze-profile:
+	uv run python -m sdkb_paper.validate.t3_cross_task_cq $(GRAPH) 		--freeze $(GEN) $(if $(AGAINST),--against $(AGAINST),) --profile $(or $(PROFILE),brick)
+
+# EP5 전량 (A-4). **이 타깃은 A-1 에서 배선만 하고 실행하지 않는다** — 실행은 별도 단계이며,
+# 홀드아웃 A-Box 는 그때 처음 열린다.
+ep5:
+	@echo "EP5 실행은 A-4 단계다. 사전등록: 01.code_spec/plans/PLAN-064-prereg.md"
+	@echo "선행 조건: (1) make cq-freeze-profile GEN=d0 (2) 홀드아웃 개봉 결정"
+	@exit 2
+
 gate: gate-graph leakage tgate
 
 gate-graph: l0 validate reason cq vocab

@@ -20,23 +20,31 @@ from pyshacl import validate
 from rdflib import Graph, URIRef
 from rdflib.namespace import SH
 
-from sdkb_paper.config import SHAPES_DELTA, SHAPES_GRAPH
+from sdkb_paper import profile as _profile
+from sdkb_paper.config import SHAPES_GRAPH
 
-_NAMED = {"graph": SHAPES_GRAPH, "delta": SHAPES_DELTA}
-
-
-def resolve_shapes(spec: str | Path = "graph") -> Path:
-    """'graph' / 'delta' 같은 이름이나 경로를 shapes 디렉터리로 푼다."""
-    if isinstance(spec, str) and spec in _NAMED:
-        return _NAMED[spec]
+def resolve_shapes(spec: str | Path = "graph", profile=None) -> Path:
+    """'graph' / 'delta' 같은 이름이나 경로를 shapes 로 푼다 — **경로는 프로파일 값이다.**"""
+    if isinstance(spec, str) and spec in ("graph", "delta"):
+        prof = _profile.resolve(profile)
+        return prof.shapes_graph if spec == "graph" else prof.shapes_delta
     return Path(spec)
 
 
-def load_shapes(shapes_dir: Path | str = SHAPES_GRAPH) -> Graph:
-    shapes_dir = resolve_shapes(shapes_dir)
+def load_shapes(shapes_dir: Path | str = SHAPES_GRAPH, profile=None) -> Graph:
+    """shapes 를 적재한다. **디렉터리와 단일 TTL 을 모두 받는다.**
+
+    SDKB 의 shape 은 `queries/shapes/{graph,delta}/` 디렉터리이지만, 자원에 따라서는 배포
+    TTL 자체에 SHACL 이 내장돼 있어(예: Brick) 디렉터리가 아니다. 빈 shapes 를 조용히
+    통과시키지 않는 규율은 그대로 둔다 — 빈 검사는 검사가 아니다.
+    """
+    shapes_dir = resolve_shapes(shapes_dir, profile)
     shapes = Graph()
-    for ttl in sorted(shapes_dir.glob("*.ttl")):
-        shapes.parse(ttl)
+    if shapes_dir.is_file():
+        shapes.parse(shapes_dir)
+    else:
+        for ttl in sorted(shapes_dir.glob("*.ttl")):
+            shapes.parse(ttl)
     if not len(shapes):
         raise SystemExit(f"[shacl_gate] shapes 가 비었다: {shapes_dir}")
     return shapes
@@ -61,10 +69,10 @@ def target_only(shapes: Graph, nodes: Iterable[URIRef]) -> Graph:
 
 
 def validate_graph(
-    data: Graph | Path, shapes: Path | str | Graph = SHAPES_GRAPH
+    data: Graph | Path, shapes: Path | str | Graph = SHAPES_GRAPH, profile=None
 ) -> tuple[bool, str]:
     g = data if isinstance(data, Graph) else Graph().parse(data)
-    shapes_graph = shapes if isinstance(shapes, Graph) else load_shapes(shapes)
+    shapes_graph = shapes if isinstance(shapes, Graph) else load_shapes(shapes, profile)
     conforms, _, report_text = validate(g, shacl_graph=shapes_graph, inference="rdfs")
     return bool(conforms), report_text
 
@@ -74,11 +82,12 @@ def main() -> None:
     ap.add_argument("graph", type=Path)
     ap.add_argument(
         "--shapes", default="graph",
-        help="graph(기본, 전체 그래프) | delta(병합 델타) | shapes 디렉터리 경로",
+        help="graph(기본, 전체 그래프) | delta(병합 델타) | shapes 디렉터리·파일 경로",
     )
+    ap.add_argument("--profile", default=None, help="자원 프로파일(기본: SDKB_PROFILE 또는 sdkb)")
     args = ap.parse_args()
 
-    conforms, report = validate_graph(args.graph, args.shapes)
+    conforms, report = validate_graph(args.graph, args.shapes, args.profile)
     print(report)
     print(f"[shacl_gate] {args.graph}  shapes={args.shapes}  conforms = {conforms}")
     sys.exit(0 if conforms else 1)

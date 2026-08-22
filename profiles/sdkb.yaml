@@ -1,0 +1,67 @@
+# profiles/sdkb.yaml — SDKB 프로파일 (PLAN-064 A-1 · SPEC-009 §3.2)
+#
+# **이 파일은 새 값을 정하지 않는다 — `config.py` 의 기존 리터럴을 전사한 것이다.**
+# 값이 하나라도 어긋나면 원고 §6 의 수치가 재현되지 않으므로, `tests/test_profile.py` 의
+# 전사 검증(T-1)이 이 파일과 동결 리터럴의 동일성을 단언한다. 값을 고치려면 그것은
+# 프로파일 편집이 아니라 사전등록 변경이다(CLAUDE.md §1-3).
+
+name: sdkb
+
+# 술어 추출(suite_predicates)·어휘 측정이 보는 접두어. 정규식은 이 목록에서 생성한다.
+namespaces:
+  ont: "https://w3id.org/sdkb/ont/"
+  skos: "http://www.w3.org/2004/02/skos/core#"
+# 이 접두어의 술어만 지역명으로 적는다(`realizesProcess`). 나머지는 접두어를 붙여
+# 구분한다(`skos:broader`) — 구 구현의 표기를 그대로 보존하기 위한 값이다.
+bare_prefix: ont
+
+cq_dir: queries/cq
+shapes_graph: queries/shapes/graph
+shapes_delta: queries/shapes/delta
+
+# PLAN-019 §3.2 동결 · PLAN-022 층 분리(L3 ⊥ T3 · 합집합 = 전량)
+cq_suites: [pa, em, tf, core]
+l3_suites: [pa]
+t3_suites: [em, tf, core]
+
+# PLAN-023 §1 희석 금지 — 게이트 분모는 graph 하나다
+cq_targets: [graph, sidecar]
+cq_gate_target: graph
+cq_extra_headers: []          # SDKB CQ 에는 추가 헤더가 없다
+
+# PLAN-021 판정 v2
+cq_monotone: [up, down, flat]
+cq_tau: 0.05
+cq_tau_grid: [0.0, 0.05, 0.10]
+
+generation_dir: data/cq_generations
+graph_default: data/processed/graph_v0.ttl
+
+# 승인식에 T1·T2 가 있는가. false 면 t_gate 는 accept=null 경로로 간다(SPEC-009 §3.7).
+has_t1_t2: true
+
+# 결함주입 (원고 §4.10 동결 · F16 결정성)
+seed_rule: sha256             # seed = sha256(key|rate|rep)
+seed_base: null
+strengths: [0.01, 0.05, 0.10]
+cross_fault_predicates:
+  F13: [hasProcessExpertise, hasEquipmentExperience, hasMaterialExpertise, hasSkill]
+  F14: [caseFailureMode]
+  F15: [providedBy, madeBy]
+faults: {}                    # SDKB 결함 12종은 코드에 정의돼 있다(FAULTS/NORMALS)
+
+# quarantine 봉인 대상 — config 속성명으로 가리킨다(경로는 config 가 정본이다)
+protected_config_attrs:
+  - GRAPH_V0
+  - GRAPH_V1
+  - GRAPH_V2
+  - IR_CONCEPT_AXIS
+  - IR_CORPUS
+  - QREL_EXAMINER
+  - IR_QREL_TEST_SEALED
+  - IR_SPLIT
+  - IR_OVERLAP_THRESHOLD
+protected_paths:
+  - data/cq_generations/cq_g0.json
+
+prereg: null                  # SDKB 는 원고가 동결 기록이다 — 별도 sha256 핀을 두지 않는다

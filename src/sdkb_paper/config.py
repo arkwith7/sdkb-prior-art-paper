@@ -9,6 +9,16 @@ from pathlib import Path
 
 from rdflib import Namespace
 
+from sdkb_paper import profile as _profile
+
+# **이 모듈의 게이트 상수는 `profiles/sdkb.yaml` 에서 파생된다** (PLAN-064 A-1 · SPEC-009 §3.2).
+# 값은 하나도 바뀌지 않았다 — yaml 은 기존 리터럴의 전사이고, 동일성은 `tests/test_profile.py`
+# 의 전사 검증(T-1)이 단언한다. 상수를 남겨 두는 이유는 620개 테스트와 호출부가 그대로 돌아야
+# 하기 때문이며(바이트 동일 계약), 프로파일 전환은 이 상수가 아니라 **CLI 의 `--profile` 인자**
+# 로만 일어난다. 환경변수가 여기를 갈아 끼우면 한 프로세스 안에서 SDKB 경로와 다른 자원의
+# 스위트가 섞여 조용히 틀린다(SPEC-009 §3.1.1).
+_SDKB = _profile.load("sdkb")
+
 # --- 경로 ---------------------------------------------------------------
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
@@ -18,13 +28,19 @@ INTERIM = DATA / "interim"
 PROCESSED = DATA / "processed"
 SAMPLES = DATA / "samples"
 EXTERNAL_SDKB = DATA / "external" / "sdkb"   # 근간 온톨로지 스냅샷 (vendor.py 가 채운다)
-QUERIES_CQ = ROOT / "queries" / "cq"
+# --- 제2 도메인 자원 (EP5 · PLAN-064-prereg §1) --------------------------------
+# TTL 은 공개 릴리스에서 재생성 가능하므로 커밋하지 않는다(.gitignore) — 커밋되는 정본은
+# PROVENANCE.json(파일별 sha256)과 CQ·shape 전문이다.
+EXTERNAL_BRICK = DATA / "external" / "brick"
+BRICK_PROVENANCE = EXTERNAL_BRICK / "PROVENANCE.json"
+BRICK_CALIBRATION = EXTERNAL_BRICK / "ep5_cq_calibration.json"
+QUERIES_CQ = _SDKB.cq_dir
 QUERIES_SHAPES = ROOT / "queries" / "shapes"
 # L1 은 두 겹이다. 그래프 전체(레거시 SIRP 포함)에는 완화 제약, 이 논문이 병합하는 델타에는
 # 개념 매핑(Process ∪ Device) ≥1 을 요구하는 엄격 제약. 게이트는 델타를 검증하는 것이지
 # 상류가 남긴 데이터를 소급 처벌하는 것이 아니다.
-SHAPES_GRAPH = QUERIES_SHAPES / "graph"
-SHAPES_DELTA = QUERIES_SHAPES / "delta"
+SHAPES_GRAPH = _SDKB.shapes_graph
+SHAPES_DELTA = _SDKB.shapes_delta
 MAPPINGS = ROOT / "mappings"
 # IPC/CPC 접두어 -> SDKB 개념 IRI. 개념 축은 Process ∪ Device 이므로 공정 전용이 아니다 —
 # axis 컬럼이 realizesProcess 와 concernsDevice 를 가른다.
@@ -196,8 +212,8 @@ T2_DIMS = ("pos_lang", "proc_group", "rejection")   # 사전 지정 하위집단
 # CQ 스위트 배정 (PLAN-019 §3.2 · 2026-07-28 동결). `.rq` 헤더 `# suite:` 가 정본이며 여기는
 # 유효값 목록일 뿐이다. T3 는 **주 태스크(pa)를 제외한** 타 태스크·공유 스위트만 본다 —
 # pa 의 회귀는 T1 이 통계적으로 담당하기 때문이다.
-CQ_SUITES = ("pa", "em", "tf", "core")
-T3_SUITES = ("em", "tf", "core")
+CQ_SUITES = _SDKB.cq_suites
+T3_SUITES = _SDKB.t3_suites
 # --- L3 검출 표면 분리 (PLAN-022 · 2026-07-28 동결 · N5c) ------------------
 # W4b 실측: T3 발화 ∧ L3 미발화 인스턴스가 τ 세 값 전량(135개)에서 **0건**이었다. L3 가 전
 # 스위트를 세고 T3 가 그 부분집합을 보므로 **L3 ⊇ T3 가 정의상 성립**해, H1 의 "T3 단독검출"은
@@ -206,7 +222,7 @@ T3_SUITES = ("em", "tf", "core")
 # **검출력은 불변이다** — 두 집합의 합집합이 여전히 CQ_SUITES 전량이고 승인식은 곱이므로,
 # 개정 전 거부되던 델타가 개정 후 승인되는 일은 없다(PLAN-022 §0.1 · 불변량 테스트로 강제).
 # 바뀌는 것은 검출력이 아니라 **귀속**이다.
-L3_SUITES = ("pa",)
+L3_SUITES = _SDKB.l3_suites
 # --- CQ 조회 대상 (PLAN-023 §1 · 2026-07-28 동결 · N5d) --------------------
 # 청구항 층(Claim 586,567 · ClaimFeature 1,289,300)은 G₀ 가 아니라 **사이드카**
 # `central_axis.oxstore` 에만 있다 — CQ 러너가 읽는 graph_v0.ttl 에는 인스턴스가 0 건이다.
@@ -217,8 +233,8 @@ L3_SUITES = ("pa",)
 #   분모는 target=="graph" 로 한정**하고, 사이드카 CQ 는 **게이트가 아니라 측정**으로 운용한다
 #   (CLAUDE.md §5 가 어휘 커버리지를 측정으로 둔 것과 같은 규율). 사이드카의 회귀는 델타 단위가
 #   아니라 **세대 간 비교**로 잡는다(상류 재벤더 시 PROVENANCE 핀이 함께 움직인다).
-CQ_TARGETS = ("graph", "sidecar")
-CQ_GATE_TARGET = "graph"            # L3·T3 분모에 드는 유일한 대상
+CQ_TARGETS = _SDKB.cq_targets
+CQ_GATE_TARGET = _SDKB.cq_gate_target   # L3·T3 분모에 드는 유일한 대상
 # --- 델타 유형과 중복제거 면제 (PLAN-022 §2 · 2026-07-28 동결) --------------
 # W4b 불리한 실측: 정상 델타 N03(완전중복 병합)이 τ=0 에서 3/27(11.1%) 거부됐다(사전등록
 # 기준 5% 초과). 분포검사는 **행이 준 이유**를 구분하지 못한다 — 지식 소실과 중복 정리를
@@ -237,13 +253,13 @@ DELTA_TYPES = ("generic", "dedup")
 #             = |rows − base| > τ·base      (monotone: flat — 구조 불변량)
 # 극성은 `.rq` 헤더 `# monotone:` 이 정본이다. 극성 선언 없이 "행수 하락=회귀"로 두면
 # CQ03·CQ06 같은 **공백 탐색 질의**에서 정당한 보강이 회귀로 오판된다(실측 근거 PLAN-021 §3).
-CQ_MONOTONE = ("up", "down", "flat")
+CQ_MONOTONE = _SDKB.cq_monotone
 CQ_RULE_VERSION = "v2"
-CQ_TAU = 0.05                       # 주값 — 결과를 보기 전 동결
-CQ_TAU_GRID = (0.0, 0.05, 0.10)     # 사전 동결 민감도 격자 (CLAUDE.md §1-2)
+CQ_TAU = _SDKB.cq_tau               # 주값 — 결과를 보기 전 동결
+CQ_TAU_GRID = _SDKB.cq_tau_grid     # 사전 동결 민감도 격자 (CLAUDE.md §1-2)
 # 세대별 CQ 통과율 아티팩트(표 6.6 의 원천)와 waiver 로그. **집계·해시만** 담으므로 커밋 가능
 # (data/processed 와 달리 gitignore 되지 않는다 · CLAUDE.md §1-5).
-CQ_GEN_DIR = DATA / "cq_generations"
+CQ_GEN_DIR = _SDKB.generation_dir
 T3_WAIVER_LOG = CQ_GEN_DIR / "waiver_log.jsonl"
 # 중복제거 면제 사용 이력 — waiver 와 같은 규율이다. 조용한 면제는 게이트를 장식으로 만든다.
 DEDUP_EXEMPTION_LOG = CQ_GEN_DIR / "dedup_exemption_log.jsonl"

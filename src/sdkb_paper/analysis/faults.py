@@ -261,8 +261,21 @@ def faulted_p1_run(fault_key: str, strength: float, seed: int, ws: Path,
 
 # --- 한 인스턴스: 결함 주입 → 7층 판정 -----------------------------------------
 def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
-                 split: str = "dev", skip_t12: bool = False) -> dict:
-    """결함 하나를 만들어 전 층에 통과시킨다. 산출물은 전부 격리 디렉터리 안에 남는다."""
+                 split: str = "dev", skip_t12: bool = False,
+                 profile=None, graph: Path | None = None,
+                 baseline_gen: str = "g0") -> dict:
+    """결함 하나를 만들어 전 층에 통과시킨다. 산출물은 전부 격리 디렉터리 안에 남는다.
+
+    **프로파일이 정하는 것은 넷이다**(PLAN-064 A-1 · C10) — 주입 대상 그래프 · 기준 세대 ·
+    누출 감사 실행 여부 · T1·T2 실행 여부. T1·T2 가 설계상 부재인 자원에서는 그 둘을 `None`
+    으로 남기고, 누출 감사도 돌리지 않는다(그 자원의 사전등록에 누출 축이 없다). **인자를
+    주지 않으면 SDKB 경로는 한 글자도 다르지 않게 돈다.**
+    """
+    from .. import profile as _profile
+
+    prof = _profile.resolve(profile)
+    graph = graph or prof.graph_default or config.GRAPH_V0
+    skip_t12 = skip_t12 or not prof.has_t1_t2
     from ..collect.bq_family_ir import load_family_map
     from ..validate.cq_runner import run_cqs, suite_pass_rates
     from ..validate.leakage_check import audit_graph
@@ -274,16 +287,16 @@ def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
     from .results_table import _split_qrel, run_path
     from .subgroup import query_labels
 
-    base = load_baseline()
-    spec = FI.BY_KEY[fault_key]
-    seed = FI.seed_for(fault_key, strength, rep)
+    base = load_baseline() if prof.has_t1_t2 else None
+    spec = FI.by_key(prof)[fault_key]
+    seed = FI.seed_for(fault_key, strength, rep, prof)
     label = f"{fault_key}_s{int(strength * 100):02d}_r{rep}"
     ws = Q.workspace(run_id, label, {"fault": fault_key, "strength": strength,
                                      "rep": rep, "seed": seed})
     t0 = time.time()
 
     # 1) 주입 — 정본은 읽기만 한다
-    store = FI.load(config.GRAPH_V0, ws)
+    store = FI.load(graph, ws)
     stats = spec.inject(store, strength, seed)
     faulted = FI.dump(store, ws / "graph_faulted.ttl")
     del store
@@ -293,14 +306,15 @@ def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
            "seed": seed, "workspace": str(ws), "stats": stats, "detected": {}}
 
     # 2) L0 — F01 은 산출물을 입력보다 낡게 만든다(파일시스템 사실)
-    src_mtime = max(p.stat().st_mtime for p in config.EXTERNAL_SDKB.glob("*.ttl"))
+    src_dir = config.EXTERNAL_SDKB if prof.name == "sdkb" else config.EXTERNAL_BRICK
+    src_mtime = max(p.stat().st_mtime for p in src_dir.glob("*.ttl"))
     if fault_key == "F01":
         os.utime(faulted, (src_mtime - 86400, src_mtime - 86400))
     out["detected"]["L0"] = faulted.stat().st_mtime < src_mtime
 
     # 3) L1 SHACL
     from ..validate.shacl_gate import validate_graph
-    conforms, _ = validate_graph(faulted, shapes="graph")
+    conforms, _ = validate_graph(faulted, shapes="graph", profile=prof)
     out["detected"]["L1"] = not conforms
 
     # 4) L2 HermiT
@@ -308,20 +322,31 @@ def run_instance(fault_key: str, strength: float, rep: int, run_id: str,
     out["detected"]["L2"] = not check_consistency(faulted)
 
     # 5) L3 · T3 — CQ 는 한 번만 돌려 두 층이 나눠 쓴다
-    cq = run_cqs(faulted, targets=("graph",))
+    cq = run_cqs(faulted, targets=("graph",), profile=prof,
+                 with_digest=not prof.has_t1_t2)
     n_pass = sum(r.passed for r in cq)
-    suites = suite_pass_rates(cq)
+    base_gen = load_generation(baseline_gen, prof)
+    suites = suite_pass_rates(cq, None, prof.cq_tau)
     out["n_cq_pass"] = n_pass
-    out["detected"]["L3"] = n_pass < base["n_cq_pass"]
-    t3 = t3_gate(suites, load_generation("g0")["suites"])
+    base_pass = base["n_cq_pass"] if base else sum(
+        1 for v in base_gen.get("per_cq", {}).values() if v.get("passed"))
+    out["detected"]["L3"] = n_pass < base_pass
+    t3 = t3_gate(suites, base_gen["suites"], profile=prof)
     out["detected"]["T3"] = not t3["pass"]
     out["t3"] = t3
+    # **탐색적** — 행 수가 불변인 오배선의 관측용. 판정식에 들어가지 않는다(사전등록 §6.4).
+    if not prof.has_t1_t2:
+        out["result_digest"] = {r.name: r.result_digest for r in cq}
 
     # 6) 누출 감사 (그래프 층 — F09·F10 표적)
-    leak = audit_graph(faulted, baseline=base["g3_gold_concept_copy_pairs"])
-    out["detected"]["leak"] = not leak["pass"]
-    out["leak"] = {k: leak[k] for k in ("g1_doc_as_concept", "g3_gold_concept_copy_pairs",
-                                        "g3_exceeds")}
+    if prof.has_t1_t2:
+        leak = audit_graph(faulted, baseline=base["g3_gold_concept_copy_pairs"])
+        out["detected"]["leak"] = not leak["pass"]
+        out["leak"] = {k: leak[k] for k in ("g1_doc_as_concept", "g3_gold_concept_copy_pairs",
+                                            "g3_exceeds")}
+    else:
+        # 누출 축이 없는 자원에서 감사를 "통과"로 적으면 돌지 않은 검사를 통과로 세게 된다.
+        out["detected"]["leak"] = None
 
     # 7) T1·T2 — 오염 뷰로 P1 재랭크 후 정상 B3 와 비교
     if skip_t12:

@@ -25,7 +25,6 @@ CLI: `python -m sdkb_paper.validate.fault_inject --list`
 from __future__ import annotations
 
 import argparse
-import hashlib
 import random
 from dataclasses import dataclass
 from pathlib import Path
@@ -33,6 +32,7 @@ from pathlib import Path
 from pyoxigraph import DefaultGraph, NamedNode, Quad, RdfFormat, Store
 
 from .. import config
+from .. import profile as _profile
 
 ONT = str(config.ONT)
 SKOS = "http://www.w3.org/2004/02/skos/core#"
@@ -44,7 +44,9 @@ CONCEPT_PROPS = ("realizesProcess", "involvesProcess", "concernsDevice",
                  "involvesMaterial", "concernsSkill", "exhibitsFailureMode")
 DOC_TYPES = ("Patent", "RejectedPatent", "CitedPatent")
 
-STRENGTHS = (0.01, 0.05, 0.10)   # 원고 §4.10 동결
+# 원고 §4.10 동결. 값은 `profiles/sdkb.yaml` 의 전사이며 프로파일마다 다르다 — EP5 는
+# 사전등록 §4.2 가 5 %·10 %·20 % 를 동결했다.
+STRENGTHS = tuple(_profile.load("sdkb").strengths)
 
 
 def ont(name: str) -> NamedNode:
@@ -53,6 +55,18 @@ def ont(name: str) -> NamedNode:
 
 def skos(name: str) -> NamedNode:
     return NamedNode(SKOS + name)
+
+
+def ns(prefix: str, name: str, profile=None) -> NamedNode:
+    """프로파일 네임스페이스의 IRI — 어휘를 코드에서 떼어내는 자리(PLAN-064 A-1).
+
+    `ont()`·`skos()` 는 SDKB 결함 12종이 쓰는 이름이라 그대로 둔다. 새 프로파일의 결함은
+    이 함수를 쓴다 — 조작 술어는 전량 해당 자원의 실물이어야 한다(CLAUDE.md §1-6).
+    """
+    return NamedNode(_profile.resolve(profile).iri(prefix, name))
+
+
+OWL_EQUIV_PROP = NamedNode("http://www.w3.org/2002/07/owl#equivalentProperty")
 
 
 def load(path: Path, workdir: Path) -> Store:
@@ -269,11 +283,8 @@ def f12_hierarchy_inversion(store: Store, rate: float, rng: random.Random) -> di
 # 교차성을 **결과가 아니라 구성**으로 보증한다: 아래 술어 집합은 pa 스위트(주 태스크) CQ 가
 # 참조하는 술어 20개와 교집합이 **공집합**이며, 이는 `queries/cq/*.rq` 정적 추출로 테스트가
 # 강제한다(tests/test_holdout_faults.py). 조작 술어는 전량 상류 스냅샷 실물이다(CLAUDE.md §1-6).
-CROSS_FAULT_PREDICATES: dict[str, tuple[str, ...]] = {
-    "F13": ("hasProcessExpertise", "hasEquipmentExperience", "hasMaterialExpertise", "hasSkill"),
-    "F14": ("caseFailureMode",),
-    "F15": ("providedBy", "madeBy"),
-}
+CROSS_FAULT_PREDICATES: dict[str, tuple[str, ...]] = dict(
+    _profile.load("sdkb").cross_fault_predicates)
 HUB_K = 2          # 허브 집중화가 몰아넣는 목적지 수 (술어·타입군당)
 
 
@@ -312,6 +323,28 @@ def _rewire(store: Store, hit: list[Quad], pool_of, rng: random.Random) -> dict:
             continue
         store.remove(q)
         store.add(Quad(q.subject, q.predicate, tgt, q.graph_name))
+        n_rewired += 1
+    return {"n_rewired": n_rewired, "n_skipped_collision": n_skipped}
+
+
+def _rewire_subject(store: Store, hit: list[Quad], pool_of, rng: random.Random) -> dict:
+    """간선의 **주어만** 바꾼다 — `_rewire` 의 대칭판(EP5 X4 의 재료).
+
+    `_rewire` 는 객체를 바꾸므로 "무엇을 가리키는가"가 틀어지고, 이쪽은 "무엇에 달려 있는가"가
+    틀어진다. 두 조작은 같은 술어에서도 다른 CQ 경로를 건드리므로 하나로 뭉뚱그리지 않는다.
+    링크 수 보존과 중복 회피 규율은 `_rewire` 와 같다.
+    """
+    n_rewired = n_skipped = 0
+    for q in hit:
+        cands = [s for s in pool_of(q) if str(s) != str(q.subject)]
+        rng.shuffle(cands)
+        tgt = next((s for s in cands
+                    if not list(store.quads_for_pattern(s, q.predicate, q.object, None))), None)
+        if tgt is None:
+            n_skipped += 1
+            continue
+        store.remove(q)
+        store.add(Quad(tgt, q.predicate, q.object, q.graph_name))
         n_rewired += 1
     return {"n_rewired": n_rewired, "n_skipped_collision": n_skipped}
 
@@ -371,6 +404,95 @@ def f15_supply_direction_flip(store: Store, rate: float, rng: random.Random) -> 
         n_flipped += 1
     return {"predicates": list(preds), "pooled": True, "n_candidates": len(quads),
             "n_affected": len(hit), "n_flipped": n_flipped, "n_skipped_collision": n_skipped}
+
+
+# --- EP5 교차결함 3종 (PLAN-064-prereg §4.2 · 사전등록 동결 후 구현) -----------
+# **조작 술어·강도·seed 는 전부 프로파일 값이다** — 이 파일에는 조작의 *형태*만 있고 *대상*은
+# 없다. 그것이 "게이트는 자원 비의존적"이라는 주장의 코드 형태다(C3·C4).
+# X1(계량 포인트 오배선)은 계량 뷰와 함께 제외됐다(사전등록 §2 · A-Box 가 받쳐 주지 않는다).
+
+def _typed(store: Store, node, prof, names: tuple[str, ...], prefix: str) -> bool:
+    """노드가 주어진 클래스 중 하나로 **직접** 단언됐는가(추론 없음 · 결정적)."""
+    want = {str(ns(prefix, n, prof)) for n in names}
+    return any(str(q.object) in want for q in store.quads_for_pattern(node, RDF_TYPE, None, None))
+
+
+def x2_containment_inversion(store: Store, rate: float, rng: random.Random,
+                             prof, spec) -> dict:
+    """**교차결함 (M)** — 공간 포함관계의 방향을 뒤집는다.
+
+    역관계 제약이 없어 L2 는 무반응이고, 조작 술어가 주 태스크 스위트의 참조 술어와 교집합이
+    공집합이라(사전등록 §4.1 실측) 주 태스크 CQ 는 이 결함을 볼 수 없다. 링크 수는 보존되지만
+    방향이 바뀌므로 계층 경로를 타는 CQ 의 **행 수가 줄어든다.**
+    """
+    pred = ns(spec.prefix, spec.predicates[0], prof)
+    pairs = [tuple(x) for x in spec.options.get("type_pairs", [])]
+    cands = []
+    for q in _sorted_quads(store, None, pred, None):
+        if not pairs or any(_typed(store, q.subject, prof, (a,), spec.prefix)
+                            and _typed(store, q.object, prof, (b,), spec.prefix)
+                            for a, b in pairs):
+            cands.append(q)
+    hit = _sample(rng, cands, rate)
+    n_flipped = n_skipped = 0
+    for q in hit:
+        if list(store.quads_for_pattern(q.object, q.predicate, q.subject, None)):
+            n_skipped += 1          # 역방향이 이미 있으면 뒤집기가 간선을 지운다 — 건너뛴다
+            continue
+        store.remove(q)
+        store.add(Quad(q.object, q.predicate, q.subject, q.graph_name))
+        n_flipped += 1
+    return {"predicate": spec.predicates[0], "type_pairs": [list(x) for x in pairs],
+            "n_candidates": len(cands), "n_affected": len(hit),
+            "n_flipped": n_flipped, "n_skipped_collision": n_skipped}
+
+
+def x3_equivalent_property(store: Store, tier: float, rng: random.Random,
+                           prof, spec) -> dict:
+    """**교차결함 (S)** — 공유 관계를 `owl:equivalentProperty` 로 잘못 동치 선언한다.
+
+    강도는 비율이 아니라 **누적 단계**다(사전등록 §4.2). 단계 n 은 앞의 n 쌍을 전부 넣는다.
+    조작에 무작위 요소가 없으므로 반복은 정보를 더하지 않는다 — 그래서 반복이 1 이며, 그
+    사실은 결과 표에 그대로 적는다.
+
+    `owl:sameAs` 는 쓰지 않는다 — 속성에 쓰면 OWL DL 밖이라 L2 가 **다른 이유로** 잡고, 그러면
+    이 결함이 재려던 것을 재지 못한다.
+    """
+    tiers = spec.options.get("tiers", [])
+    n = int(tier)
+    added = []
+    for pair in tiers[:n]:
+        a, b = ns(spec.prefix, pair[0], prof), ns(spec.prefix, pair[1], prof)
+        if not list(store.quads_for_pattern(a, OWL_EQUIV_PROP, b, None)):
+            store.add(Quad(a, OWL_EQUIV_PROP, b))
+            added.append(f"{pair[0]}≡{pair[1]}")
+    return {"tier": n, "declared": added, "n_candidates": len(tiers), "n_affected": len(added)}
+
+
+def x4_location_rewire(store: Store, rate: float, rng: random.Random,
+                       prof, spec) -> dict:
+    """**교차결함 (M)** — 위치 간선의 **주어**를 같은 타입 서명의 다른 노드로 치환한다.
+
+    타입 서명을 보존하므로 `sh:class` 제약을 통과하고 트리플 수도 보존된다. 그래서 **행 수
+    판정으로는 놓칠 수 있다** — 이 결함은 사전등록 §4.2 가 T3 의 **구성 타당도 경계 사례**로
+    미리 지정한 것이며, 검출 실패는 결과의 실패가 아니라 경계의 실측이다. 보조 관측은
+    `result_digest`(탐색적)가 맡고 판정식에는 들어가지 않는다.
+    """
+    pred = ns(spec.prefix, spec.predicates[0], prof)
+    quads = _sorted_quads(store, None, pred, None)
+    pools: dict[tuple, list] = {}
+    for q in quads:
+        pools.setdefault(_type_sig(store, q.subject), []).append(q.subject)
+    for k, subs in pools.items():
+        pools[k] = sorted({str(s): s for s in subs}.values(), key=str)
+    hit = _sample(rng, quads, rate)
+    st = _rewire_subject(store, hit, lambda q: pools[_type_sig(store, q.subject)], rng)
+    return {"predicate": spec.predicates[0], "n_candidates": len(quads),
+            "n_pools": len(pools), "n_affected": len(hit), **st}
+
+
+EP5_FAULT_FN = {"X2": x2_containment_inversion, "X3": x3_equivalent_property,
+                "X4": x4_location_rewire}
 
 
 # --- 정상 델타 (위양성률 분모 · 결함이 아니다) --------------------------------
@@ -591,28 +713,63 @@ NORMALS: tuple[FaultSpec, ...] = (
 BY_KEY = {f.key: f for f in FAULTS + NORMALS}
 
 
-def seed_for(key: str, rate: float, rep: int) -> int:
+def faults_for(profile=None) -> tuple[FaultSpec, ...]:
+    """프로파일의 결함 명세 → `FaultSpec` 튜플.
+
+    SDKB 결함 12종은 이 파일에 정의돼 있고(`FAULTS`), 다른 프로파일의 결함은 **조작의 형태만**
+    이 파일에 있고 대상 술어·강도·단계는 프로파일이 준다. 그 분리가 없으면 결함 정의가 곧
+    자원 정의가 되어 게이트가 자원에 붙는다.
+    """
+    prof = _profile.resolve(profile)
+    if not prof.faults:
+        return FAULTS
+    out = []
+    for key, spec in sorted(prof.faults.items()):
+        fn = EP5_FAULT_FN.get(key)
+        if fn is None:
+            raise ValueError(f"프로파일 '{prof.name}' 의 결함 '{key}' 에 대응하는 조작 함수가 없다")
+        out.append(FaultSpec(key, spec.options.get("label", key),
+                             spec.options.get("expected", "T3"), True,
+                             (lambda f, s: lambda store, rate, rng: f(store, rate, rng, prof, s))(fn, spec)))
+    return tuple(out)
+
+
+def by_key(profile=None) -> dict[str, FaultSpec]:
+    prof = _profile.resolve(profile)
+    if not prof.faults:
+        return BY_KEY
+    return {f.key: f for f in faults_for(prof)}
+
+
+def seed_for(key: str, rate: float, rep: int, profile=None) -> int:
     """(결함·강도·반복) → 고정 시드. 언제 돌려도 같은 결함 그래프가 나온다.
+
+    **규칙 자체가 프로파일 값이다**(SPEC-009 §3.5). SDKB 는 `sha256(key|rate|rep)` 이고,
+    EP5 는 사전등록 §4.2 가 동결한 `20260822 + 100·결함번호 + 반복번호` 다. 후자에는 강도가
+    없으므로 같은 (결함·반복)의 세 강도가 같은 시드를 공유한다 — 결정성은 온전하며 판정에도
+    관여하지 않는다. 식을 고쳐서 강도를 넣지 않는다(CLAUDE.md §1-3).
 
     파이썬 내장 `hash()` 는 프로세스마다 문자열 해시가 달라져(PYTHONHASHSEED) 재현이 깨진다 —
     sha256 을 쓴다.
     """
-    h = hashlib.sha256(f"{key}|{rate:.4f}|{rep}".encode()).digest()
-    return int.from_bytes(h[:4], "big")
+    return _profile.resolve(profile).seed_for(key, rate, rep)
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--list", action="store_true", help="결함군 목록과 예상 검출층")
+    ap.add_argument("--profile", default=None, help="자원 프로파일(기본: SDKB_PROFILE 또는 sdkb)")
     args = ap.parse_args()
     if args.list:
+        specs = faults_for(args.profile)
         print(f"{'키':<5} {'결함군':<24} {'예상 검출층':<14} 교차")
-        for f in FAULTS:
+        for f in specs:
             print(f"{f.key:<5} {f.label:<24} {f.expected:<14} {'★' if f.cross_task else ''}")
         print()
-        for f in NORMALS:
+        for f in (NORMALS if specs is FAULTS else ()):
             print(f"{f.key:<5} {f.label:<24} {'(거부되면 위양성)':<14}")
-        print(f"\n강도 {STRENGTHS} · n = max(1, round(rate·N))")
+        strengths = _profile.resolve(args.profile).strengths
+        print(f"\n강도 {strengths} · n = max(1, round(rate·N))")
 
 
 if __name__ == "__main__":

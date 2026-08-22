@@ -29,16 +29,18 @@ import sys
 from pathlib import Path
 
 from .. import config
+from .. import profile as _profile
 from .cq_runner import run_cqs, sidecar_provenance, suite_pass_rates, target_measurements
 
 
 def compare_rates(new: dict[str, dict], old: dict[str, dict],
-                  suites: tuple[str, ...] = config.T3_SUITES) -> dict:
+                  suites: tuple[str, ...] | None = None, profile=None) -> dict:
     """스위트별 (old→new) 비교. 하나라도 하락하면 regressed.
 
     스위트가 새 쪽에 아예 없으면(=CQ 가 사라졌으면) 통과율 0 으로 본다 — CQ 삭제로 게이트를
     통과하는 우회로를 막는다.
     """
+    suites = suites if suites is not None else _profile.resolve(profile).t3_suites
     rows, regressed = [], []
     for f in suites:
         o = old.get(f, {}).get("rate", 0.0)
@@ -70,9 +72,10 @@ def commit_waiver(message: str | None = None) -> str | None:
 
 
 def t3_gate(new_rates: dict[str, dict], old_rates: dict[str, dict],
-            suites: tuple[str, ...] = config.T3_SUITES,
-            waiver: str | None = None) -> dict:
+            suites: tuple[str, ...] | None = None,
+            waiver: str | None = None, profile=None) -> dict:
     """T3 판정. waiver 가 있으면 하락에도 통과시키되 waived=True 로 남긴다."""
+    suites = suites if suites is not None else _profile.resolve(profile).t3_suites
     cmp = compare_rates(new_rates, old_rates, suites)
     regressed = bool(cmp["regressed"])
     return {"gate": "T3", "suites": suites, "rows": cmp["rows"],
@@ -81,13 +84,28 @@ def t3_gate(new_rates: dict[str, dict], old_rates: dict[str, dict],
             "pass": (not regressed) or bool(waiver)}
 
 
-def generation_path(label: str) -> Path:
-    return config.CQ_GEN_DIR / f"cq_{label}.json"
+def gen_dir(profile=None) -> Path:
+    """세대 아티팩트 디렉터리 — **프로파일별로 가른다.**
+
+    구 구현은 평면 경로 하나였고, 그래서 다른 자원의 세대를 얼리면 원고 표 6.6 의 원천과 같은
+    디렉터리에서 이름이 부딪힌다.
+
+    **sdkb 에서는 `config.CQ_GEN_DIR` 을 읽는다.** 값이 둘인 것이 아니라 이름이 둘이다 —
+    `config.CQ_GEN_DIR` 자체가 이 프로파일에서 파생됐고, 동일성은 `tests/test_profile.py` 가
+    단언한다. 이 이름을 남기는 이유는 도구와 테스트가 오래 써 온 대체 지점이기 때문이며,
+    그것을 옮기면 이 작업이 바꾸지 않기로 한 것(SDKB 동작)을 바꾸게 된다.
+    """
+    prof = _profile.resolve(profile)
+    return config.CQ_GEN_DIR if prof.name == "sdkb" else prof.generation_dir
+
+
+def generation_path(label: str, profile=None) -> Path:
+    return gen_dir(profile) / f"cq_{label}.json"
 
 
 def freeze_generation(graph_path: Path, label: str, against: str | None = None,
                       rule: str = config.CQ_RULE_VERSION,
-                      tau: float = config.CQ_TAU) -> dict:
+                      tau: float | None = None, profile=None) -> dict:
     """현재 그래프의 스위트별 통과율을 세대 아티팩트로 얼린다(표 6.6 축적).
 
     `against` 를 주면 **그 세대 대비 T3 판정까지 계산해 아티팩트에 넣는다**(N5e). 판정을
@@ -99,14 +117,17 @@ def freeze_generation(graph_path: Path, label: str, against: str | None = None,
     """
     from .leakage_check import sha256_file
 
-    results = run_cqs(graph_path)
-    prev = load_generation(against) if against else None
+    prof = _profile.resolve(profile)
+    tau = prof.cq_tau if tau is None else tau
+    results = run_cqs(graph_path, profile=prof)
+    prev = load_generation(against, prof) if against else None
     base = baseline_rows(prev) if (prev is not None and rule == "v2") else None
     suites = suite_pass_rates(results, base, tau)
     gpath = Path(graph_path).resolve()
     rel = gpath.relative_to(config.ROOT) if gpath.is_relative_to(config.ROOT) else gpath
     meas = target_measurements(results, base, tau)
     rec = {"generation": label, "graph": str(rel),
+           **({} if prof.name == "sdkb" else {"profile": prof.name}),
            "graph_sha256": sha256_file(graph_path),
            # 판정 규칙과 τ 는 표 6.6 의 **스위트 버전 이력**으로 함께 실린다(PLAN-021 §1).
            "rule_version": rule, "tau": tau, "against": against,
@@ -122,7 +143,7 @@ def freeze_generation(graph_path: Path, label: str, against: str | None = None,
                       for r in results}}
     if prev is not None:
         waiver = commit_waiver()
-        v = t3_gate(suites, prev["suites"], waiver=waiver)
+        v = t3_gate(suites, prev["suites"], waiver=waiver, profile=prof)
         rec["verdict"] = {"baseline": prev["generation"], "pass": v["pass"],
                           "regressed": v["regressed"], "waived": v["waived"],
                           "waiver_reason": v["waiver_reason"], "rows": v["rows"]}
@@ -130,9 +151,9 @@ def freeze_generation(graph_path: Path, label: str, against: str | None = None,
             log_waiver({"generation_old": prev["generation"], "generation_new": label,
                         "graph": str(rel), "regressed": v["regressed"],
                         "reason": v["waiver_reason"]})
-    config.CQ_GEN_DIR.mkdir(parents=True, exist_ok=True)
-    generation_path(label).write_text(json.dumps(rec, ensure_ascii=False, indent=2),
-                                      encoding="utf-8")
+    gen_dir(prof).mkdir(parents=True, exist_ok=True)
+    generation_path(label, prof).write_text(json.dumps(rec, ensure_ascii=False, indent=2),
+                                            encoding="utf-8")
     return rec
 
 
@@ -141,8 +162,8 @@ def baseline_rows(gen: dict) -> dict[str, int]:
     return {k: v["rows"] for k, v in gen.get("per_cq", {}).items()}
 
 
-def load_generation(label: str) -> dict:
-    p = generation_path(label)
+def load_generation(label: str, profile=None) -> dict:
+    p = generation_path(label, profile)
     if not p.exists():
         raise FileNotFoundError(
             f"세대 아티팩트 없음: {p} — 먼저 `--freeze {label}` 로 기준 세대를 동결하라")
@@ -163,7 +184,7 @@ def waiver_count() -> int:
                if line.strip())
 
 
-def render_generations() -> str:
+def render_generations(profile=None) -> str:
     """원고 표 6.6 — 세대별 CQ 통과율 추이 + **판정 규칙 버전 이력**(부록 F 요구).
 
     세대 아티팩트가 있는 만큼만 싣는다. 없는 세대를 만들어 채우지 않는다 — 표를 채우려고
@@ -173,19 +194,32 @@ def render_generations() -> str:
     않고 **에러로 떨어뜨린다** — 자리표시자를 남기면 사람이 채우게 되고, 그것이 §1-7 위반의
     발생 경로였다(N5e). 고치는 법은 `--freeze <세대> --against <이전세대>` 재동결이다.
     """
-    gens = sorted(config.CQ_GEN_DIR.glob("cq_*.json"), key=lambda p: p.stat().st_mtime)
+    prof = _profile.resolve(profile)
+    # 열 이름을 프로파일에서 만든다 — 스위트 이름이 코드에 박혀 있으면 다른 자원의 세대 표가
+    # 엉뚱한 열로 렌더된다. SDKB 에서는 생성 결과가 구 문자열과 **문자 단위로 같다.**
+    suite_cols = [f"CQ-{s.upper()}" for s in prof.cq_suites]
+    has_side = "sidecar" in prof.cq_targets
+    head = ["보강 세대", "판정 규칙", *suite_cols]
+    align = ["---", "---", *["---:"] * len(suite_cols)]
+    if has_side:
+        head.append("청구항층(측정)")
+        align.append("---:")
+    head += ["T3 판정", "waiver"]
+    align += ["---", "---:"]
+    gens = sorted(gen_dir(prof).glob("cq_*.json"), key=lambda p: p.stat().st_mtime)
     lines = ["# 표 6.6 세대별 CQ 통과율 추이 (T3 이력 · 게이트 표류 감시)", "",
-             "| 보강 세대 | 판정 규칙 | CQ-PA | CQ-EM | CQ-TF | CQ-CORE | 청구항층(측정) | T3 판정 | waiver |",
-             "|---|---|---:|---:|---:|---:|---:|---|---:|"]
+             "| " + " | ".join(head) + " |",
+             "|" + "|".join(align) + "|"]
     for p in gens:
         g = json.loads(p.read_text(encoding="utf-8"))
         s = g.get("suites", {})
         cells = " | ".join(
             f"{s[k]['rate']:.3f} ({s[k]['n_pass']}/{s[k]['n_total']})" if k in s else "—"
-            for k in ("pa", "em", "tf", "core"))
-        side = (g.get("measurements") or {}).get("sidecar")
-        cells += " | " + (f"{side['rate']:.3f} ({side['n_pass']}/{side['n_total']})"
-                          if side else "— (미측정)")
+            for k in prof.cq_suites)
+        if has_side:
+            side = (g.get("measurements") or {}).get("sidecar")
+            cells += " | " + (f"{side['rate']:.3f} ({side['n_pass']}/{side['n_total']})"
+                              if side else "— (미측정)")
         v = g.get("verdict")
         if v is None:
             if g.get("against"):
@@ -211,7 +245,8 @@ def render_generations() -> str:
               f"- 누적 중복제거 면제 승인 {exemption_count()[0]}건 "
               f"(판정 로그 {exemption_count()[1]}행 — 불승인·재판정 반복분 포함 · PLAN-022 §2). "
               "조용한 면제는 게이트를 장식으로 만든다.",
-              "- **L3 = pa · T3 = em·tf·core 로 검출 표면이 서로소다**(2026-07-28 개정 · PLAN-022). "
+              f"- **L3 = {'·'.join(prof.l3_suites)} · T3 = {'·'.join(prof.t3_suites)} 로 검출 "
+              "표면이 서로소다**(2026-07-28 개정 · PLAN-022). "
               "주 태스크 CQ 의 기능 회귀는 L3, 검색 성능 회귀는 T1, 타 태스크 CQ 회귀는 T3 가 맡는다. "
               "구 정의(L3 가 전 스위트를 셈)에서는 L3 ⊇ T3 가 성립해 T3 단독검출이 원리적으로 0 이었다.",
               "- **청구항층 열은 게이트가 아니라 측정이다**(2026-07-28 신설 · PLAN-023 §1). "
@@ -253,39 +288,42 @@ def main() -> None:
                     help="비교 기준 세대 라벨(기본 g0)")
     ap.add_argument("--rule", choices=("v1", "v2"), default=config.CQ_RULE_VERSION,
                     help="CQ 판정 규칙. v1=존재검사 · v2=존재검사∧분포검사(PLAN-021 동결)")
-    ap.add_argument("--tau", type=float, default=config.CQ_TAU,
+    ap.add_argument("--tau", type=float, default=config.CQ_TAU,   # 프로파일 전환 시 --tau 명시
                     help=f"v2 허용 변동폭(동결 주값 {config.CQ_TAU} · 격자 {config.CQ_TAU_GRID})")
     ap.add_argument("--table", action="store_true",
                     help="표 6.6(세대별 통과율·규칙 버전 이력) 생성 — 그래프 인자 무시")
+    ap.add_argument("--profile", default=None, help="자원 프로파일(기본: SDKB_PROFILE 또는 sdkb)")
     args = ap.parse_args()
+    prof = _profile.resolve(args.profile)
 
     if args.table:
-        out = config.ROOT / "paper" / "tables" / "cq_generations.md"
+        name = "cq_generations.md" if prof.name == "sdkb" else f"cq_generations_{prof.name}.md"
+        out = config.ROOT / "paper" / "tables" / name
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(render_generations(), encoding="utf-8")
-        print(render_generations())
+        out.write_text(render_generations(prof), encoding="utf-8")
+        print(render_generations(prof))
         print(f"→ {out}")
         return
 
     if args.freeze:
         rec = freeze_generation(args.graph, args.freeze, against=args.against,
-                                rule=args.rule, tau=args.tau)
+                                rule=args.rule, tau=args.tau, profile=prof)
         kind = f"vs 세대 '{args.against}' 판정 포함" if args.against else "기준 세대(판정 없음)"
-        print(f"[T3] 세대 '{args.freeze}' 동결 ({kind}) → {generation_path(args.freeze)}")
+        print(f"[T3] 세대 '{args.freeze}' 동결 ({kind}) → {generation_path(args.freeze, prof)}")
         for f, s in sorted(rec["suites"].items()):
             print(f"  · {f:<5} {s['rate']:.3f} ({s['n_pass']}/{s['n_total']})")
         if "verdict" in rec:
             print(format_report(t3_gate(rec["suites"],
-                                        load_generation(args.against)["suites"],
-                                        waiver=rec["verdict"]["waiver_reason"])))
+                                        load_generation(args.against, prof)["suites"],
+                                        waiver=rec["verdict"]["waiver_reason"], profile=prof)))
             sys.exit(0 if rec["verdict"]["pass"] else 1)
         return
 
-    old = load_generation(args.baseline or "g0")
+    old = load_generation(args.baseline or "g0", prof)
     base = None if args.rule == "v1" else baseline_rows(old)
-    new_rates = suite_pass_rates(run_cqs(args.graph), base, args.tau)
+    new_rates = suite_pass_rates(run_cqs(args.graph, profile=prof), base, args.tau)
     waiver = commit_waiver()
-    r = t3_gate(new_rates, old["suites"], waiver=waiver)
+    r = t3_gate(new_rates, old["suites"], waiver=waiver, profile=prof)
     print(f"[T3] new={args.graph.name}  old=세대 '{old['generation']}'  "
           f"판정규칙 {args.rule}" + (f" (τ={args.tau})" if args.rule != "v1" else ""))
     print(format_report(r))

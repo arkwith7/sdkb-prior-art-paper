@@ -11,11 +11,13 @@
 from __future__ import annotations
 
 import json
-import re
 import sys
 from pathlib import Path
 
 from rdflib import Graph
+
+from sdkb_paper import profile as _profile
+from sdkb_paper.validate.cq_runner import _parse_meta, suite_predicates
 
 ROOT = Path(__file__).resolve().parents[1]
 CQ_DIR = ROOT / "queries" / "brick" / "cq"
@@ -25,26 +27,11 @@ DEV_ABOX = ("ex-rice_brick.ttl", "ex-g36-combined-ahu-vav.ttl")
 HOLDOUT = "ex-soda_brick.ttl"  # 이 스크립트는 열지 않는다 — 이름만 남겨 의도를 밝힌다
 
 BRICK_NS = "https://brickschema.org/schema/Brick#"
-PRED_RE = re.compile(r"brick:([A-Za-z_][A-Za-z0-9_]*)")
-CLASS_HEAD = re.compile(r"rdfs:subClassOf\*\s+brick:([A-Za-z_][A-Za-z0-9_]*)")
 
-
-def meta(text: str) -> dict:
-    out = {}
-    for line in text.splitlines():
-        if not line.startswith("#"):
-            break
-        if ":" in line:
-            k, v = line.removeprefix("#").split(":", 1)
-            out[k.strip()] = v.strip()
-    return out
-
-
-def predicates(text: str) -> set[str]:
-    """CQ 가 참조하는 brick 술어 — 클래스 위치의 토큰은 뺀다."""
-    classes = set(CLASS_HEAD.findall(text)) | {
-        m for m in PRED_RE.findall(text) if m[0].isupper()}
-    return {m for m in PRED_RE.findall(text) if m not in classes}
+# **파서는 하나다**(PLAN-064 A-1 · C2). 이 스크립트는 한때 자체 정규식으로 헤더와 술어를
+# 읽었고, 그래서 사전등록 §4.1 표의 근거와 게이트 판정 코드가 **서로 다른 파서**를 쓰고
+# 있었다. 같은 값을 두 곳이 내면 언젠가 갈라지고, 갈라진 쪽이 무엇인지 아무도 모른다.
+# 교체 후 이 스크립트의 산출물이 바이트 동일함이 그 교체가 값을 바꾸지 않았다는 증거다.
 
 
 def main() -> int:
@@ -61,18 +48,20 @@ def main() -> int:
         g.parse(BRICK_DIR / a, format="turtle")
     print(f"개발 그래프: T-Box {tbox_triples:,} + 개발 A-Box {len(DEV_ABOX)}개 → 합 {len(g):,} 트리플")
 
-    rows, preds, zero = {}, {}, []
+    prof = _profile.load("brick")
+    preds = {k: set(v) for k, v in suite_predicates(CQ_DIR, prof).items()}
+    rows, zero = {}, []
     for rq in sorted(CQ_DIR.glob("*.rq")):
         text = rq.read_text(encoding="utf-8")
-        m = meta(text)
+        _desc, expect_min, suite, _mono, _tgt, extras = _parse_meta(text, prof)
         n = len(list(g.query(text)))
-        rows[rq.name] = dict(suite=m.get("suite"), expect_min=int(m.get("expect-min", 1)),
-                             shared=m.get("shared", "false"), rows=n, passes=n >= int(m.get("expect-min", 1)))
-        preds.setdefault(m.get("suite"), set()).update(predicates(text))
+        rows[rq.name] = dict(suite=suite, expect_min=expect_min,
+                             shared=extras.get("shared", "false"), rows=n,
+                             passes=n >= expect_min)
         if n == 0:
             zero.append(rq.name)
-        print(f"   {m.get('suite'):5s} {rq.name:45s} rows={n:5d} "
-              f"{'통과' if n >= int(m.get('expect-min', 1)) else '0행 — 제거 대상'}")
+        print(f"   {suite:5s} {rq.name:45s} rows={n:5d} "
+              f"{'통과' if n >= expect_min else '0행 — 제거 대상'}")
 
     print("\n== 스위트별 참조 술어")
     for s, p in sorted(preds.items()):

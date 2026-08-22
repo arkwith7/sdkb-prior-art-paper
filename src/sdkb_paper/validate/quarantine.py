@@ -44,16 +44,26 @@ class PristineViolation(RuntimeError):
 
 
 # --- 봉인 대상 ----------------------------------------------------------------
-def protected_paths() -> list[Path]:
-    """결함주입이 절대 건드리면 안 되는 정본 산출물. 없는 파일은 봉인에서 제외한다."""
-    cands = [
-        config.GRAPH_V0, config.GRAPH_V1, config.GRAPH_V2,
-        config.IR_CONCEPT_AXIS, config.IR_CONCEPT_AXIS.with_suffix(".tree.json"),
-        config.IR_CORPUS, config.QREL_EXAMINER, config.IR_QREL_TEST_SEALED,
-        config.IR_SPLIT, config.IR_OVERLAP_THRESHOLD,
-        config.CQ_GEN_DIR / "cq_g0.json",
-    ]
-    cands += sorted(config.IR_RUNS_DIR.glob("*.txt")) if config.IR_RUNS_DIR.exists() else []
+def protected_paths(profile=None) -> list[Path]:
+    """결함주입이 절대 건드리면 안 되는 정본 산출물. 없는 파일은 봉인에서 제외한다.
+
+    **봉인 목록은 프로파일 값이다**(PLAN-064 A-1 · C11). 자원이 바뀌면 지켜야 할 정본도 바뀌는데
+    목록이 코드에 박혀 있으면, 다른 자원의 실험은 **봉인 없이 돌거나 없는 파일을 찾는다.** 둘 다
+    이 모듈의 존재 이유를 무너뜨린다.
+
+    **홀드아웃 파일은 목록에 넣되 내용을 읽지 않는다** — 봉인은 sha256 만 보므로 열람이 아니다.
+    """
+    from .. import profile as _profile
+
+    prof = _profile.resolve(profile)
+    cands: list[Path] = [getattr(config, attr) for attr in prof.protected_config_attrs
+                         if hasattr(config, attr)]
+    if prof.name == "sdkb":
+        cands.append(config.IR_CONCEPT_AXIS.with_suffix(".tree.json"))
+        cands += sorted(config.IR_RUNS_DIR.glob("*.txt")) if config.IR_RUNS_DIR.exists() else []
+    for rel in prof.protected_paths:
+        cands += sorted(config.ROOT.glob(rel)) if any(c in rel for c in "*?[") \
+            else [config.ROOT / rel]
     return [p for p in cands if p.exists()]
 
 
