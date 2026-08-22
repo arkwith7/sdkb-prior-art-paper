@@ -1,0 +1,15 @@
+# desc: 실에 위치한 포인트를 가진 장비는 무엇이며 그 실은 어디인가? — 장비·포인트·위치를 잇는 실제 공유 경로
+# suite: core
+# shared: true
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?equipment ?point ?room
+WHERE {
+  ?equipment a/rdfs:subClassOf* brick:Equipment .
+  ?equipment brick:hasPoint|^brick:isPointOf ?point .
+  ?room brick:isLocationOf|^brick:hasLocation ?point .
+  ?room a/rdfs:subClassOf* brick:Room .
+}
+ORDER BY ?equipment ?point ?room

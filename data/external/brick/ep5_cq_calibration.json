@@ -1,0 +1,152 @@
+{
+ "tbox": "Brick-v1.3.0.ttl",
+ "tbox_triples": 52113,
+ "dev_abox": [
+  "ex-rice_brick.ttl",
+  "ex-g36-combined-ahu-vav.ttl"
+ ],
+ "graph_triples": 53871,
+ "cq": {
+  "CORE02_sensor_count_per_location.rq": {
+   "suite": "core",
+   "expect_min": 1,
+   "shared": "true",
+   "rows": 90,
+   "passes": true
+  },
+  "CORE04_zone_room_point_path.rq": {
+   "suite": "core",
+   "expect_min": 1,
+   "shared": "true",
+   "rows": 221,
+   "passes": true
+  },
+  "CORE05_equipment_parts_with_points.rq": {
+   "suite": "core",
+   "expect_min": 1,
+   "shared": "true",
+   "rows": 14,
+   "passes": true
+  },
+  "CORE06_equipment_points_in_rooms.rq": {
+   "suite": "core",
+   "expect_min": 1,
+   "shared": "true",
+   "rows": 134,
+   "passes": true
+  },
+  "CORE07_floor_room_sensor_path.rq": {
+   "suite": "core",
+   "expect_min": 1,
+   "shared": "true",
+   "rows": 167,
+   "passes": true
+  },
+  "FDD01_ahu_discharge_air_temperature.rq": {
+   "suite": "fdd",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 4,
+   "passes": true
+  },
+  "FDD02_vav_airflow_points.rq": {
+   "suite": "fdd",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 120,
+   "passes": true
+  },
+  "FDD03_equipment_status_points.rq": {
+   "suite": "fdd",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 2,
+   "passes": true
+  },
+  "FDD04_equipment_command_points.rq": {
+   "suite": "fdd",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 9,
+   "passes": true
+  },
+  "FDD05_air_supply_chain_sensors.rq": {
+   "suite": "fdd",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 8,
+   "passes": true
+  },
+  "SPA01_building_floor_room_hierarchy.rq": {
+   "suite": "space",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 90,
+   "passes": true
+  },
+  "SPA02_points_located_in_rooms.rq": {
+   "suite": "space",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 168,
+   "passes": true
+  },
+  "SPA03_rooms_with_occupancy_sensing.rq": {
+   "suite": "space",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 4,
+   "passes": true
+  },
+  "SPA04_hvac_zone_membership.rq": {
+   "suite": "space",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 108,
+   "passes": true
+  },
+  "SPA05_room_count_per_floor.rq": {
+   "suite": "space",
+   "expect_min": 1,
+   "shared": "false",
+   "rows": 5,
+   "passes": true
+  }
+ },
+ "suite_predicates": {
+  "core": [
+   "hasLocation",
+   "hasPart",
+   "hasPoint",
+   "isLocationOf",
+   "isPartOf",
+   "isPointOf"
+  ],
+  "fdd": [
+   "feeds",
+   "hasPoint",
+   "isFedBy",
+   "isPointOf"
+  ],
+  "space": [
+   "hasLocation",
+   "hasPart",
+   "isLocationOf",
+   "isPartOf"
+  ]
+ },
+ "suite_intersections": {
+  "core∩fdd": [
+   "hasPoint",
+   "isPointOf"
+  ],
+  "core∩space": [
+   "hasLocation",
+   "hasPart",
+   "isLocationOf",
+   "isPartOf"
+  ],
+  "fdd∩space": []
+ },
+ "zero_row": []
+}

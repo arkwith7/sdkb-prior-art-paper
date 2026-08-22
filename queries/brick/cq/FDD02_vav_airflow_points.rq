@@ -1,0 +1,16 @@
+# desc: 각 변풍량 유닛(VAV)이 가진 유량·온도 포인트는 무엇인가? — 말단 유닛 과소급기 진단의 관측 경로
+# suite: fdd
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?vav ?point ?pointClass
+WHERE {
+  ?vav a/rdfs:subClassOf* brick:VAV .
+  ?vav brick:hasPoint|^brick:isPointOf ?point .
+  ?point a ?pointClass .
+  { ?pointClass rdfs:subClassOf* brick:Flow_Sensor }
+  UNION
+  { ?pointClass rdfs:subClassOf* brick:Temperature_Sensor }
+}
+ORDER BY ?vav ?point

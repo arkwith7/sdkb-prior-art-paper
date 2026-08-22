@@ -1,0 +1,14 @@
+# desc: 재실 감지가 가능한 실은 어디인가? — 점유 기반 구역 운영의 대상 집합
+# suite: space
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?room ?sensor
+WHERE {
+  ?room a/rdfs:subClassOf* brick:Room .
+  ?room brick:isLocationOf|^brick:hasLocation ?sensor .
+  ?sensor a ?sensorClass .
+  ?sensorClass rdfs:subClassOf* brick:Occupancy_Sensor .
+}
+ORDER BY ?room ?sensor

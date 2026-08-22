@@ -1,0 +1,30 @@
+# EP5 · L1 델타 shape (PLAN-064-prereg §3.2 에서 동결)
+# 대상은 "델타가 도입하거나 폐기한 T-Box 항목"이며, Brick 배포 TTL 에 내장된 graph shape 과는
+# 별개의 층이다. 세 규칙 전부 Brick 이 실제로 쓰는 술어만 참조한다(실측 v1.4.4).
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix brick: <https://brickschema.org/schema/Brick#> .
+@prefix ep5:   <https://w3id.org/sdkb/ep5/shapes#> .
+
+# S-D1 · 델타가 도입한 클래스는 라벨을 가져야 한다.
+ep5:NewClassHasLabel a sh:NodeShape ;
+    sh:targetClass owl:Class ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ;
+                  sh:message "델타가 도입한 클래스에 rdfs:label 이 없다" ] .
+
+# S-D2 · 폐기된 항목은 이행 지시를 가져야 한다.
+ep5:DeprecatedHasMitigation a sh:NodeShape ;
+    sh:target [ a sh:SPARQLTarget ;
+                sh:select """SELECT ?this WHERE { ?this <http://www.w3.org/2002/07/owl#deprecated> true }""" ] ;
+    sh:or ( [ sh:property [ sh:path brick:deprecationMitigationMessage ; sh:minCount 1 ] ]
+            [ sh:property [ sh:path brick:deprecationMitigationRule ; sh:minCount 1 ] ] ) ;
+    sh:message "폐기 선언에 이행 지시(brick:deprecationMitigationMessage 또는 …Rule)가 없다" .
+
+# S-D3 · 델타가 도입한 ObjectProperty 는 정의역·치역을 선언해야 한다.
+ep5:NewObjectPropertyTyped a sh:NodeShape ;
+    sh:targetClass owl:ObjectProperty ;
+    sh:property [ sh:path rdfs:domain ; sh:minCount 1 ;
+                  sh:message "델타가 도입한 ObjectProperty 에 rdfs:domain 이 없다" ] ;
+    sh:property [ sh:path rdfs:range ; sh:minCount 1 ;
+                  sh:message "델타가 도입한 ObjectProperty 에 rdfs:range 이 없다" ] .

@@ -56,3 +56,7 @@ data/PRISTINE.json
 # `figures` 가 여기에 쓴다. **동결본은 paper/archive/{tables,figures}/ 이고 그쪽이 인용 대상**이다.
 # 재생성물을 커밋하면 "동결 기록"과 "현행 코드 출력"이 다시 뒤섞인다 — 커밋하지 않는다.
 paper/archive/regenerated/
+
+# EP5 · 제2 도메인(Brick) 자원 — 공개 릴리스 TTL 은 재생성 가능하므로 커밋하지 않는다.
+# 커밋되는 것은 PROVENANCE.json(sha256)·probe·보정 기록뿐이다.
+data/external/brick/*.ttl

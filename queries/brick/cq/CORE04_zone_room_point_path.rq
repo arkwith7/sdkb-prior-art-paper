@@ -1,0 +1,15 @@
+# desc: 공조 구역에서 실을 거쳐 포인트에 이르는 경로는 무엇인가? — 구역 질의와 진단 질의가 만나는 경로
+# suite: core
+# shared: true
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?zone ?room ?point
+WHERE {
+  ?zone a/rdfs:subClassOf* brick:HVAC_Zone .
+  ?zone brick:hasPart|^brick:isPartOf ?room .
+  ?room brick:isLocationOf|^brick:hasLocation ?point .
+  ?point a/rdfs:subClassOf* brick:Point .
+}
+ORDER BY ?zone ?room ?point

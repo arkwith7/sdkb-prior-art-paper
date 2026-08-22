@@ -1,0 +1,14 @@
+# desc: 층별 실의 수는 얼마인가? — 공간 계층의 분포 요약
+# suite: space
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?floor (COUNT(DISTINCT ?room) AS ?rooms)
+WHERE {
+  ?floor a/rdfs:subClassOf* brick:Floor .
+  ?floor brick:hasPart|^brick:isPartOf ?room .
+  ?room a/rdfs:subClassOf* brick:Room .
+}
+GROUP BY ?floor
+ORDER BY ?floor

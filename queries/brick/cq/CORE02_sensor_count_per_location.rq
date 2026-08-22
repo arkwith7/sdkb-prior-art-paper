@@ -1,0 +1,16 @@
+# desc: 위치별로 몇 개의 센서가 있는가? — 공유 어휘 위의 계측 밀도 분포
+# suite: core
+# shared: true
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?location (COUNT(DISTINCT ?sensor) AS ?sensors)
+WHERE {
+  ?location a/rdfs:subClassOf* brick:Location .
+  ?location brick:isLocationOf|^brick:hasLocation ?sensor .
+  ?sensor a ?sensorClass .
+  ?sensorClass rdfs:subClassOf* brick:Sensor .
+}
+GROUP BY ?location
+ORDER BY ?location

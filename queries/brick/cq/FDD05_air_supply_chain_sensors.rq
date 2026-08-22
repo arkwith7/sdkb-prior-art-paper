@@ -1,0 +1,15 @@
+# desc: 공기를 공급하는 장비 쌍과 각 장비의 온도 센서는 무엇인가? — 상류·하류 온도 대조에 필요한 급기 계통 경로
+# suite: fdd
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?upstream ?downstream ?upstreamPoint ?downstreamPoint
+WHERE {
+  ?upstream brick:feeds|^brick:isFedBy ?downstream .
+  ?upstream brick:hasPoint|^brick:isPointOf ?upstreamPoint .
+  ?downstream brick:hasPoint|^brick:isPointOf ?downstreamPoint .
+  ?upstreamPoint a ?uc . ?uc rdfs:subClassOf* brick:Temperature_Sensor .
+  ?downstreamPoint a ?dc . ?dc rdfs:subClassOf* brick:Temperature_Sensor .
+}
+ORDER BY ?upstream ?downstream

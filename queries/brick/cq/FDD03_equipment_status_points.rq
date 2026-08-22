@@ -1,0 +1,14 @@
+# desc: 상태(Status) 포인트를 가진 장비와 그 상태 포인트는 무엇인가? — 운전 상태 기반 결함 판정의 입력
+# suite: fdd
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?equipment ?status ?statusClass
+WHERE {
+  ?equipment a/rdfs:subClassOf* brick:Equipment .
+  ?equipment brick:hasPoint|^brick:isPointOf ?status .
+  ?status a ?statusClass .
+  ?statusClass rdfs:subClassOf* brick:Status .
+}
+ORDER BY ?equipment ?status

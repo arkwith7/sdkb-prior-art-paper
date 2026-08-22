@@ -1,0 +1,15 @@
+# desc: 건물–층–실의 포함 계층은 어떻게 구성되어 있는가? — 구역 질의의 기준 골격
+# suite: space
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?building ?floor ?room
+WHERE {
+  ?building a/rdfs:subClassOf* brick:Building .
+  ?building brick:hasPart|^brick:isPartOf ?floor .
+  ?floor a/rdfs:subClassOf* brick:Floor .
+  ?floor brick:hasPart|^brick:isPartOf ?room .
+  ?room a/rdfs:subClassOf* brick:Room .
+}
+ORDER BY ?building ?floor ?room

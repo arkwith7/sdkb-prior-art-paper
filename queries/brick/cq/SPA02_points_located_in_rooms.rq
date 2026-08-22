@@ -1,0 +1,13 @@
+# desc: 각 실에 위치한 포인트는 무엇인가? — 실 단위 계측 가용성 확인
+# suite: space
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?room ?point
+WHERE {
+  ?room a/rdfs:subClassOf* brick:Room .
+  ?room brick:isLocationOf|^brick:hasLocation ?point .
+  ?point a/rdfs:subClassOf* brick:Point .
+}
+ORDER BY ?room ?point

@@ -1,0 +1,14 @@
+# desc: 각 공조기(AHU)와 그 급기 온도 센서는 무엇인가? — 급기 온도 이상 진단의 최소 관측 경로
+# suite: fdd
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?ahu ?point ?pointClass
+WHERE {
+  ?ahu a/rdfs:subClassOf* brick:AHU .
+  ?ahu brick:hasPoint|^brick:isPointOf ?point .
+  ?point a ?pointClass .
+  ?pointClass rdfs:subClassOf* brick:Temperature_Sensor .
+}
+ORDER BY ?ahu ?point

@@ -1,0 +1,13 @@
+# desc: 각 공조 구역에 속한 실은 무엇인가? — 구역과 물리 공간의 대응
+# suite: space
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?zone ?room
+WHERE {
+  ?zone a/rdfs:subClassOf* brick:HVAC_Zone .
+  ?zone brick:hasPart|^brick:isPartOf ?room .
+  ?room a/rdfs:subClassOf* brick:Room .
+}
+ORDER BY ?zone ?room

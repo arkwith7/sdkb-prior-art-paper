@@ -1,0 +1,14 @@
+# desc: 명령(Command) 포인트를 가진 장비와 그 명령 포인트는 무엇인가? — 진단 결과를 제어 동작과 대조하는 경로
+# suite: fdd
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?equipment ?command ?commandClass
+WHERE {
+  ?equipment a/rdfs:subClassOf* brick:Equipment .
+  ?equipment brick:hasPoint|^brick:isPointOf ?command .
+  ?command a ?commandClass .
+  ?commandClass rdfs:subClassOf* brick:Command .
+}
+ORDER BY ?equipment ?command

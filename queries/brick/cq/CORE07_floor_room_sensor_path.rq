@@ -1,0 +1,16 @@
+# desc: 층에서 실을 거쳐 센서에 이르는 경로는 무엇인가? — 공간 계층과 계측 어휘가 만나는 공유 경로
+# suite: core
+# shared: true
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?floor ?room ?sensor
+WHERE {
+  ?floor a/rdfs:subClassOf* brick:Floor .
+  ?floor brick:hasPart|^brick:isPartOf ?room .
+  ?room brick:isLocationOf|^brick:hasLocation ?sensor .
+  ?sensor a ?sensorClass .
+  ?sensorClass rdfs:subClassOf* brick:Sensor .
+}
+ORDER BY ?floor ?room ?sensor

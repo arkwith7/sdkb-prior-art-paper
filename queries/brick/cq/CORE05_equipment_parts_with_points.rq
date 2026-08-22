@@ -1,0 +1,15 @@
+# desc: 하위 부품을 가진 장비와 그 부품의 포인트는 무엇인가? — 부품 계층을 타는 공유 경로
+# suite: core
+# shared: true
+# monotone: up
+# expect-min: 1
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?equipment ?part ?point
+WHERE {
+  ?equipment a/rdfs:subClassOf* brick:Equipment .
+  ?equipment brick:hasPart|^brick:isPartOf ?part .
+  ?part a/rdfs:subClassOf* brick:Equipment .
+  ?part brick:hasPoint|^brick:isPointOf ?point .
+}
+ORDER BY ?equipment ?part ?point

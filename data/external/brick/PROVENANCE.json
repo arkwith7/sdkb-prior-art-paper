@@ -1,0 +1,92 @@
+{
+ "source": "BrickSchema/Brick (public releases)",
+ "license": "BSD-3-Clause",
+ "fetched_at": "2026-08-22",
+ "fetched_by": "scripts/probe_brick_candidate.py --download",
+ "note": "EP5 제2 도메인 자원. 계보는 v1.3.0 이후로 한정한다(PLAN-064 §1.3 K1 경고 ⓐ). v1.2.1 은 후보 적격 확인용으로만 내려받았고 EP5 계보에 포함하지 않는다.",
+ "abox_examples_pinned_to": "https://raw.githubusercontent.com/BrickSchema/Brick/v1.4.4/examples/",
+ "tbox_lineage": {
+  "v1.3.0": {
+   "file": "Brick-v1.3.0.ttl",
+   "bytes": 1598801,
+   "sha256": "a88a716d6ff90748e4847d99cae5e581f8dd9efd2c85e3f207110e59fbb44882",
+   "released": "2022-10-12",
+   "url": "https://github.com/BrickSchema/Brick/releases/download/v1.3.0/Brick.ttl"
+  },
+  "v1.4.0": {
+   "file": "Brick-v1.4.0.ttl",
+   "bytes": 1720595,
+   "sha256": "d336095f4cc24bbdee63ba414bb12f46dd6450f718cbe8a4b3c9be23fc26f620",
+   "released": "2024-04-15",
+   "url": "https://github.com/BrickSchema/Brick/releases/download/v1.4.0/Brick.ttl"
+  },
+  "v1.4.1": {
+   "file": "Brick-v1.4.1.ttl",
+   "bytes": 1691538,
+   "sha256": "20d5ed752d7e3eb6c4941e6e7ba6bd05f1f95c7656662f66cdd450dc24f0c359",
+   "released": "2024-08-23",
+   "url": "https://github.com/BrickSchema/Brick/releases/download/v1.4.1/Brick.ttl"
+  },
+  "v1.4.2": {
+   "file": "Brick-v1.4.2.ttl",
+   "bytes": 1760685,
+   "sha256": "c4a9a35355da6be158123f5dced3a7ad0714d3a2cab51c6a80c4720c3c8d28f0",
+   "released": "2024-09-20",
+   "url": "https://github.com/BrickSchema/Brick/releases/download/v1.4.2/Brick.ttl"
+  },
+  "v1.4.3": {
+   "file": "Brick-v1.4.3.ttl",
+   "bytes": 1767990,
+   "sha256": "bff317821868628601d1d0780eab78f58fd66c28d545eb50fd28419fb25ef456",
+   "released": "2025-03-20",
+   "url": "https://github.com/BrickSchema/Brick/releases/download/v1.4.3/Brick.ttl"
+  },
+  "v1.4.4": {
+   "file": "Brick-v1.4.4.ttl",
+   "bytes": 1749633,
+   "sha256": "b65720b7b9b64c646745c689777e6138c0d59ce0088df0aeb78fbd444d04d8e7",
+   "released": "2025-05-02",
+   "url": "https://github.com/BrickSchema/Brick/releases/download/v1.4.4/Brick.ttl"
+  }
+ },
+ "abox": {
+  "ex-building_meter.ttl": {
+   "bytes": 2450,
+   "sha256": "17d1b93b5c4c0a7afe06aa3ffc52261f55899f054995fb5783426688cd904aeb"
+  },
+  "ex-g36-combined-ahu-vav.ttl": {
+   "bytes": 3477,
+   "sha256": "c2cf22b2d8bcb0f351732504aea7271689de8d312e09c05077a43c427aa14490"
+  },
+  "ex-main-and-submeter.ttl": {
+   "bytes": 2292,
+   "sha256": "ac4a4ad56aab3dee09a819ae2c45610b900066339f916488aa4c76ff93f68a11"
+  },
+  "ex-rice_brick.ttl": {
+   "bytes": 83922,
+   "sha256": "33c3bb0c1a748b28178eb1a689c73bcbbfc293c9a0ee2e73b8a92565d68cc8f0"
+  },
+  "ex-soda_brick.ttl": {
+   "bytes": 187782,
+   "sha256": "09c2ca37b628e6eea88c0b0791a3c028c3c22083c6302055aa85b609a9d17254"
+  },
+  "ex-solar_array.ttl": {
+   "bytes": 5382,
+   "sha256": "5c853e7b374414bd0fa1ff71b11dd6ba5c86821b9f0640fc59fbd424f687390a"
+  }
+ },
+ "split": {
+  "dev": [
+   "ex-rice_brick.ttl",
+   "ex-g36-combined-ahu-vav.ttl"
+  ],
+  "holdout": [
+   "ex-soda_brick.ttl"
+  ],
+  "excluded": [
+   "ex-building_meter.ttl",
+   "ex-main-and-submeter.ttl",
+   "ex-solar_array.ttl"
+  ]
+ }
+}

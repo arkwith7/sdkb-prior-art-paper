@@ -1,0 +1,197 @@
+{
+ "schema": {
+  "v1.2.1": {
+   "triples": 29780,
+   "owl_class": 2413,
+   "objectproperty": 29,
+   "datatypeproperty": 1,
+   "sh_nodeshape": 30,
+   "sh_propertyshape": 34,
+   "shacl_predicates": 15,
+   "subclassof": 2398,
+   "deprecated_true": 0
+  },
+  "v1.3.0": {
+   "triples": 52113,
+   "owl_class": 1438,
+   "objectproperty": 33,
+   "datatypeproperty": 19,
+   "sh_nodeshape": 1452,
+   "sh_propertyshape": 212,
+   "shacl_predicates": 32,
+   "subclassof": 1621,
+   "deprecated_true": 65
+  },
+  "v1.4.0": {
+   "triples": 54631,
+   "owl_class": 1529,
+   "objectproperty": 32,
+   "datatypeproperty": 20,
+   "sh_nodeshape": 1749,
+   "sh_propertyshape": 479,
+   "shacl_predicates": 40,
+   "subclassof": 1876,
+   "deprecated_true": 219
+  },
+  "v1.4.1": {
+   "triples": 53646,
+   "owl_class": 1530,
+   "objectproperty": 77,
+   "datatypeproperty": 76,
+   "sh_nodeshape": 1751,
+   "sh_propertyshape": 485,
+   "shacl_predicates": 40,
+   "subclassof": 2016,
+   "deprecated_true": 220
+  },
+  "v1.4.2": {
+   "triples": 55055,
+   "owl_class": 1530,
+   "objectproperty": 77,
+   "datatypeproperty": 76,
+   "sh_nodeshape": 1751,
+   "sh_propertyshape": 485,
+   "shacl_predicates": 40,
+   "subclassof": 2016,
+   "deprecated_true": 220
+  },
+  "v1.4.3": {
+   "triples": 55308,
+   "owl_class": 1531,
+   "objectproperty": 128,
+   "datatypeproperty": 76,
+   "sh_nodeshape": 1763,
+   "sh_propertyshape": 497,
+   "shacl_predicates": 41,
+   "subclassof": 2026,
+   "deprecated_true": 222
+  },
+  "v1.4.4": {
+   "triples": 53960,
+   "owl_class": 1518,
+   "objectproperty": 124,
+   "datatypeproperty": 75,
+   "sh_nodeshape": 1750,
+   "sh_propertyshape": 471,
+   "shacl_predicates": 41,
+   "subclassof": 2014,
+   "deprecated_true": 246
+  }
+ },
+ "abox": {
+  "rice_brick": {
+   "triples": 1665,
+   "type_assertions": 680,
+   "classes_used": 56,
+   "views": {
+    "FDD(고장탐지·진단)": {
+     "classes": 36,
+     "instances": 412
+    },
+    "에너지 계량·보고": {
+     "classes": 0,
+     "instances": 0
+    },
+    "공간·구역 점유": {
+     "classes": 8,
+     "instances": 153
+    }
+   }
+  },
+  "soda_brick": {
+   "triples": 3774,
+   "type_assertions": 1693,
+   "classes_used": 34,
+   "views": {
+    "FDD(고장탐지·진단)": {
+     "classes": 20,
+     "instances": 695
+    },
+    "에너지 계량·보고": {
+     "classes": 1,
+     "instances": 1
+    },
+    "공간·구역 점유": {
+     "classes": 7,
+     "instances": 961
+    }
+   }
+  },
+  "building_meter/building_meter": {
+   "triples": 55,
+   "type_assertions": 15,
+   "classes_used": 8,
+   "views": {
+    "FDD(고장탐지·진단)": {
+     "classes": 3,
+     "instances": 6
+    },
+    "에너지 계량·보고": {
+     "classes": 4,
+     "instances": 9
+    },
+    "공간·구역 점유": {
+     "classes": 3,
+     "instances": 5
+    }
+   }
+  },
+  "submeter_hierarchies/main-and-submeter": {
+   "triples": 54,
+   "type_assertions": 13,
+   "classes_used": 6,
+   "views": {
+    "FDD(고장탐지·진단)": {
+     "classes": 1,
+     "instances": 4
+    },
+    "에너지 계량·보고": {
+     "classes": 3,
+     "instances": 8
+    },
+    "공간·구역 점유": {
+     "classes": 3,
+     "instances": 5
+    }
+   }
+  },
+  "solar_array/solar_array": {
+   "triples": 139,
+   "type_assertions": 14,
+   "classes_used": 8,
+   "views": {
+    "FDD(고장탐지·진단)": {
+     "classes": 3,
+     "instances": 3
+    },
+    "에너지 계량·보고": {
+     "classes": 4,
+     "instances": 4
+    },
+    "공간·구역 점유": {
+     "classes": 0,
+     "instances": 0
+    }
+   }
+  },
+  "g36/g36-combined-ahu-vav": {
+   "triples": 93,
+   "type_assertions": 45,
+   "classes_used": 32,
+   "views": {
+    "FDD(고장탐지·진단)": {
+     "classes": 16,
+     "instances": 25
+    },
+    "에너지 계량·보고": {
+     "classes": 0,
+     "instances": 0
+    },
+    "공간·구역 점유": {
+     "classes": 3,
+     "instances": 4
+    }
+   }
+  }
+ }
+}
