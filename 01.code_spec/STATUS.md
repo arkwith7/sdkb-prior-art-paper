@@ -2,6 +2,46 @@
 
 *최종 갱신: 2026-08-22 24차 (**EP5 사전등록 발효 · CQ 15 · 결함 3종 · 자원 sha256 동결**) · 이전: 2026-08-22 23차 (**PLAN-064 P0 교정 3건 + README · P1 압축 −1,704자 · A-0 Brick 실측**) · 이전: 2026-08-20 20차 (**D6 2단 규칙 · 분량 재배분 · L0 신선도 해소 · 종결 PLAN 3건 아카이빙**) · 이전: 2026-08-19 19차 (**PLAN-060 단계 C · 자격 심사 = 델타 0건 · 판정 산출 덮어쓰기 차단**) · 이전: 2026-08-19 18차 (**PLAN-060 단계 B 완주 · 외부 검토 반영 · DP 재등급**) · 이전: 2026-08-18 16차 (**PLAN-054 완주 · 다국어 기준선 B★ 확정과 원고 반영 · 살아 있는 계획 0**) · 기조: 설계과학(DSR) — 전환 완료*
 
+> ## 📌 범위 결정 — **후속 논문 분리** (2026-08-23 · 사용자 승인)
+>
+> **현 투고본은 PLAN-069 트랙 A 프레임(선언 → 실체화 → 작동)으로 마감한다.** 온톨로지 재구성
+> 설계안(공리 채굴 · 청구항 의미층 · 온톨로지 우선 검색 실험)은 **후속 논문으로 분리**되어
+> [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md) 이 받는다.
+> **PLAN-069 트랙 B(CR-A~D)·트랙 C(R3·R4)도 함께 이관**됐다 — §8 로드맵 ⑥–⑨ 는 이제 현 투고본의
+> 임계 경로가 아니다. `PLAN-070-prereg` 번호는 **결번 보존**(재사용 금지).
+>
+> **현 투고본으로 넘어오는 것은 0건이다** — 판정·수치·기여 셋·장 구성·`verdicts.yaml` 전량 불변이며,
+> 그래서 이 결정은 §2.2 대상이 아니고 CLAUDE.md 개정도 요구하지 않는다. 검토 중 제안됐던
+> *문서 유형별 인용·논거 분포표*(통지서 2,060 vs 결정서 689)의 현 원고 편입도 **보류**한다 —
+> 새 기여 항목 추가는 §2.2 이며 별도 승인 사항이다.
+>
+> **착수 전 확인된 제약 넷**(PLAN-071 §-1.3 · 전부 2026-08-23 실측) — ① 공리 원천 텍스트가 이
+> 저장소에 없다(통지서 1,155 · 결정서 968건은 `~/Dev/paper_data` 에만 · 스냅샷 CSV 는 본문 없는
+> 7열 2,749행) ② 목표 노드 Disclosure 는 지시만 있고 개시 본문이 없다(`fulltext_corpus.parquet`
+> 에 description 없음 · `claims` 평균 길이 0) → **O-5 진입 조건이 정의상 성립하지 않는다**
+> ③ 공리 유형별 표본 편중(결합 679 · 치환 57 · 주지관용 56 문서) ④ E5 가 자원과 점수식을 함께
+> 바꿔 **DP4 를 만족하지 못한다**. **따라서 임계 경로는 여전히 A-1 이다** — 아래 인계 그대로다.
+
+> ## 🗂 계획 정리 — **살아 있는 계획 4 + 열린 항목 대장 1** (2026-08-23)
+>
+> **아카이빙 4건.** [PLAN-063](archive/PLAN-063-external-review-3-submission-consistency.md)(본체 완주 ·
+> 재태그·DOI·트랙 2·3) · [PLAN-066](archive/PLAN-066-terminology-first-mention.md)(B-1′·B-2·B-3′ 반영 ·
+> G1·G2·G5 위반 25 → **0**) · [PLAN-068](archive/PLAN-068-defensive-prose-reduction-and-cause-separation.md)
+> (트랙 A 완주 · 누적 −2,054자) · `README-PLAN-066-files.md`(반영 완료된 전달 안내 · 루트에서 내림).
+>
+> **삭제는 하지 않았다** — PLAN 은 지워지지 않는다(README · 사전등록 증거·커밋 해시 불변).
+>
+> **열린 항목 여섯은 [plans/OPEN-ITEMS.md](plans/OPEN-ITEMS.md) 한 장으로 통합했다** —
+> O-1 영문 본문 번역(EP5 이후) · O-2 `glossary-check` 차단 승격(**조건 충족 · 승격 미실행**) ·
+> O-3 용어집 `en` 열 24항 · O-4 D6 임계 원복(PLAN-069 ④ 가 흡수 가능) · **~~O-5~~ 2×2 가름 실험은
+> PLAN-071 §-1.7 로 이관 종결**(2026-08-23 사용자 승인) · O-6 봉인 원장 배선(**선행 조건 소멸 —
+> PLAN-071 의 2×2 사전등록 동결 전에 끝내거나 그 이후로는 착수하지 않는다**).
+>
+> **살아 있는 계획은 넷이다** — [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)
+> (+[사전등록](plans/PLAN-064-prereg.md) · **A-1 이 임계 경로**) ·
+> [PLAN-069](plans/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
+> [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)(후속 논문 · 착수 전).
+
 > ## 🔜 다음 세션이 할 일 — **A-1(게이트 자원 비의존화)이 임계 경로다** (2026-08-22 24차 인계)
 >
 > **EP5 사전등록이 발효되었다 — [PLAN-064-prereg.md](plans/PLAN-064-prereg.md) 커밋이 §2.1 의
@@ -142,7 +182,7 @@
 > 커밋 해시는 그대로다. 최상위에 떨어져 있던 PLAN-058 §11 조각을 본문 끝에 병합하였고, 참조
 > 링크 6건(STATUS · PLAN-060 · M5 가이드 · DEFECT-LEDGER)을 새 경로로 고쳤다.
 > **`plans/` 에 남은 것은 살아 있는 계획 2건**이다 —
-> [PLAN-063](plans/PLAN-063-external-review-3-submission-consistency.md)(외부 검토 3차 · 영문 본문
+> [PLAN-063](archive/PLAN-063-external-review-3-submission-consistency.md)(외부 검토 3차 · 영문 본문
 > 번역만 잔여)과 [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)(제2 도메인
 > 이식 시연 EP5 · 미착수). **후자는 `PLAN-063` 과 번호가 겹쳐 `PLAN-064` 로 고쳤다** — 같은 기호가
 > 두 계획을 가리키면 사전등록 기록과의 추적성이 끊긴다. 사전등록 파일명도 `PLAN-064-prereg.md` 로
@@ -151,7 +191,7 @@
 
 > ## 🔜 이전 인계 — **PLAN-063 트랙 1.1(재태그)만 남았고, 그것은 되돌릴 수 없어 승인 대기다** (2026-08-21 21차 인계)
 >
-> **외부 검토 3차를 실측 대조하고 [PLAN-063](plans/PLAN-063-external-review-3-submission-consistency.md)
+> **외부 검토 3차를 실측 대조하고 [PLAN-063](archive/PLAN-063-external-review-3-submission-consistency.md)
 > 으로 반영했다.** 범위는 사용자 결정대로 **A안 — 서술·정합만**이다.
 > **새 실험 0 · 수치 재산출 0 · 봉인 개봉 0 · 판정 변경 0 · 기여 목록 불변 · 장 구성 불변.**
 >

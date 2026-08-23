@@ -1,0 +1,504 @@
+# PLAN-071 — 후속 논문(논문 B): 판단 공리 자원 재구성과 온톨로지 우선 검색 실험
+
+> **지지하는 주장.** C1(자원) · C4(설계지식) · C0(상류 환류). **현 투고본의 C2·C2′·C3 판정에는
+> 관여하지 않는다** — 관여하면 그것이 §1-2 위반이다.
+>
+> **이 문서는 계획이지 착수 승인이 아니다.** 착수 조건은 §-1.4 Phase 0 이며, 그 실측 없이는
+> §-1.5 의 어느 단계도 시작하지 않는다.
+
+---
+
+## -1. 범위 결정 — 이것은 **후속 논문**이다 (2026-08-23 · 사용자 승인)
+
+### -1.1 결정
+
+**현 투고본은 [PLAN-069](PLAN-069-axiomatization-reframe.md) 트랙 A 프레임(선언 → 실체화 →
+작동)으로 마감한다. 아래 본문(1부·2부)의 설계 전체는 후속 논문으로 분리한다.**
+
+| | 귀속 | 근거 |
+|---|---|---|
+| PLAN-069 **트랙 A** (R1 · 원고 · 명세) | **현 투고본** | 판정·수치 변경 0 · §2.2 |
+| PLAN-069 **트랙 B** (R2 · 상류 CR-A~D) | **이 계획(후속 논문)** | 2026-08-23 결정으로 이관 |
+| PLAN-069 **트랙 C** (R3·R4 · `PLAN-070-prereg`) | **이 계획(후속 논문)** | 〃 |
+| 이 문서 본문 1부·2부 | **이 계획(후속 논문)** | 〃 |
+| **PLAN-068 트랙 B** (2×2 자원·점수식 가름 실험) | **이 계획(후속 논문)** | 2026-08-23 결정 · §-1.7 |
+
+**PLAN-069 로드맵의 ⑥–⑨ 는 현 투고본의 임계 경로에서 빠진다.** 특히 ⑨(*"R3·R4 결과를 §5 에
+편입"*)는 **더 이상 현 원고의 계획이 아니다** — 그 결과는 후속 논문에 실린다.
+
+**`PLAN-070-prereg` 번호는 결번으로 보존한다**(PLAN-069 ⑧ 이 선점한 이름). 후속 논문의 사전등록은
+이 계획 아래 새 번호로 발행하며, **번호를 재사용하지 않는다**(§0.5 라벨 규칙과 같은 이유).
+
+### -1.2 현 투고본으로 넘어오는 것 — **0건**
+
+이 계획에서 현 투고본으로 이관되는 판정·수치·표·그림·기여는 **하나도 없다.** 따라서 이 결정은
+§2.2(원고 기조 변경)의 대상이 **아니며**, CLAUDE.md 개정도 요구하지 않는다(요건 5 역방향 점검:
+충돌 없음). 기여는 셋 그대로이고(§0.5), H1–H5 · EP1–EP5 · DP1–DP7 · `verdicts.yaml` 전량 불변이다.
+
+> **검토 중 제안됐다가 보류된 것 하나.** 2.7 의 *"문서 유형별 인용·논거 분포표(통지서 2,060 vs
+> 결정서 689)"* 를 현 원고에 데이터셋 특성 기여로 싣는 안이 있었으나, **"설계안 전체를 분리"**
+> 라는 결정에 따라 **싣지 않는다.** 새 기여 항목의 추가는 §2.2 이며 별도 승인 사항이다.
+
+### -1.3 착수 전에 알아야 할 실측 — 네 개의 제약 (2026-08-23)
+
+**이 넷은 본문 1부·2부가 작성될 때 확인되지 않았던 사실이며, 착수 설계를 바꾼다.**
+
+**(a) 공리 원천 텍스트가 이 저장소에 없다.**
+`data/external/sdkb/rejection_reasons.csv` 는 `doc_id, clause, ground, notice_round, notice_type,
+notice_date, reason_id` **7열 2,749행**이고 **이유 본문이 없다.** 본문은
+`/home/arkwith/Dev/paper_data/data/processed/` 에만 있다 — 의견제출통지서 txt **1,155건** ·
+거절결정서 txt **968건**. 상류 `~/Dev/sdkb` 에는 `data/processed/` 디렉터리 자체가 없다.
+→ **O-2 채굴기는 상류에 두고 하류는 `MinedAxiom` TTL 스냅샷만 받는다**(§0.1 단방향 계약).
+이 저장소가 두 번째 원천에 직접 의존하면 재현 경로가 갈린다.
+
+**(b) 목표 노드(Disclosure)는 지시만 있고 개시 내용이 없다.**
+단락 표기 `[0NNN]` 이 통지서 **704/1,155(61%)** · "청구항 제" 가 **968/1,155** 에 등장하므로
+**지시의 추출은 가능**하다. 그러나 인용문헌 측 본문이 없다 — `~/Dev/sdkb/data/patents/
+fulltext_corpus.parquet`(3,154행)에 description 컬럼이 없고 **`claims` 컬럼은 평균 길이 0**이다.
+→ **O-5 진입 조건(`SemanticPathRecall`, 목표=Disclosure ≥60%)은 현 데이터에서 정의가 성립하지
+않는다.** 목표를 문헌 도달로 내리거나, 명세서 본문 수집을 선행 CR 로 건다. **이 조건이 1부↔2부
+연결의 유일한 게이트(부록 1)이므로 여기서 설계가 멈춘다.**
+
+**(c) 공리 유형별 표본이 편중돼 있다** (통지서 1,155건 중 해당 표현 포함 **문서** 수 · `grep -lE`).
+
+| 유형 | 문서 수 | 본문 §1.2(c) 대상 공리 |
+|---|---|---|
+| 결합 | 679 | `combinableWith` |
+| 설계변경 | 249 | 치환·설계변경 |
+| 임계적 의의 | 79 | `ProcessCondition` 구간 포섭 |
+| 치환 | 57 | `substitutableWith` |
+| 주지관용 | 56 | `isCommonKnowledge` |
+
+다섯 유형 중 실질 표본이 있는 것은 **둘**이다. `substitutableWith` 는 dev 분할로 다시 갈리고
+confirmed(결정서 생존)만 남기면 수십 건 규모이므로, **V3a/V3b 대비(부록 2 가 "문서 역할 구분
+가설의 검증치"라 부른 것)에 검정력이 있는지가 착수 전에 세어야 할 수다.**
+
+**(d) 본문 2.7·부록 3 의 E5 설계는 DP4 를 만족하지 못한다.**
+`v0.3 → claim-semantics` 교체는 **자원 번들과 점수식이 함께 바뀐다**(경로 유형·경로 가중치·IDF
+동시 신설). DP4 가 요구하는 것은 *문서집합·모델·가중치 고정 하에 자원만 교체*이므로, 이대로면
+**D-23 을 만든 바로 그 미구분이 재현된다.**
+→ 두 단계로 쪼갠다. **(i)** 점수식(경로 점수·IDF)만 신설하고 자원은 v0.3 유지 → 새 하네스
+기준선 확정(**§2 정지 게이트 4개**). **(ii)** 그 위에서 자원만 교체 → 이것이 T-gate 사례
+(**§2.1**). (i) 을 건너뛰고 (ii) 라 부르면 §2.1 의 안전장치("재실험이라는 이름으로 로직 변경을
+무검증 통과시키지 않는다")를 우회하게 된다.
+
+### -1.4 Phase 0 — 착수 조건 (코드 변경 0 · 이것부터 한다)
+
+**dev/test 패밀리 분할을 먼저 고정한 뒤**, dev 문서에서만 다음을 센다.
+
+1. 유형별 cue **문장** 수 (위 (c) 는 문서 수이지 문장 수가 아니다).
+2. 사람 100건 표본에서 `(본원 개념, 인용 개념)` 쌍이 **추출 가능한 문장의 비율**.
+3. 그 쌍 가운데 **양쪽 개념이 모두 개념 어휘로 해소되는** 비율.
+
+**1×2×3 이 수백 건 미만이면 1부를 재설계한다.** 이 판단을 O-2 구현 **뒤**에 하면 매몰비용이
+커지며, 그것이 이 Phase 를 앞에 두는 유일한 이유다.
+
+### -1.5 권고 단계 — 5단계를 3단계로 축소
+
+| 단계 | 내용 | 근거 |
+|---|---|---|
+| **Phase 1** | **O-1 · O-1.5 만.** `citationStatus` 파생은 원천 텍스트 없이 기존 CSV 2,749행으로 된다 | 누출 위험 0 · 비용 최저 · 본문 2.7 의 문서 유형 분포를 즉시 산출 |
+| **Phase 2** | O-2 채굴을 **`combinableWith` + 설계변경 둘로 한정.** O-3 는 기존 `corpus/concept_link.py` 경로를 재사용한다 | (c) 표본 편중 · 새로 짜면 질의/후보 비대칭 방지 구조(D-19 해소분)를 잃는다 |
+| **Phase 3** | **E1 · E2 만.** E3–E5 는 E2 에서 V2 > V1 이 관측된 뒤에 | V2 가 V1 을 넘지 못하면 E3–E5 는 잡음 측정이다 |
+
+O-4(`materialize_paths.py`)와 E3–E5 는 이 순서에서 조건부로 뒤로 밀린다.
+
+### -1.6 규약 경로 — 이 계획이 타는 게이트
+
+- **§1.5 qrel 등급 재정의는 주지표의 정답 집합을 바꾼다** → §1-3 동결 대상(주지표·봉인 qrel) 직격.
+  **재측정이 아니라 새 사전등록 아래의 새 실험**이며, 결과를 현 원고 §6 수치와 같은 표에 놓지 않는다.
+- **§1.2 의 신규 클래스·속성은 §1-6("어휘를 발명하지 않는다")에 걸린다.** 상류 CR + 사람 승인이
+  코드보다 먼저다.
+- **§2.6(절제 8→1) · §2.5(nDCG 강등) 는 후속 논문 안에서만 유효하다.** 현 원고에 적용하면
+  §2.2 이며, H4·H5 판정의 근거가 본문에서 사라진다.
+- 착수 시 **§2 정지 게이트 4개**를 탄다. §2.1(자원만 교체) 경로는 위 (d)-(ii) 에서만 쓴다.
+
+### -1.7 이관 수령 — PLAN-068 트랙 B (2×2 자원·점수식 가름 실험) · 2026-08-23 사용자 승인
+
+**설계 원문은 [archive/PLAN-068 §B-0~§B-5](../archive/PLAN-068-defensive-prose-reduction-and-cause-separation.md)
+에 있고 이 계획이 그것을 그대로 받는다.** 옮기는 것은 **귀속이지 설계가 아니다** — 2×2 · df 출처
+선택지 (a)/(b) · 금지 문구 · B-3 정지 게이트 · `src/` 무변경 제약은 하나도 바꾸지 않는다.
+
+**왜 여기로 왔는가.** 이 실험이 가르려는 미구분은 §-1.3(d) 가 지적한 것과 **같은 미구분**이다 —
+*자원 결함인가 점수식 결함인가*. 현 투고본은 트랙 A 프레임으로 마감하므로 새 실험·새 사전등록은
+그 임계 경로에 두지 않는다(§-1.1).
+
+**설계 요지 — 바뀌는 것은 ConceptOverlap 항의 가중 하나다.**
+
+| | 현행(비가중 Jaccard) | df 가중 |
+|---|---|---|
+| **O**(교정 전) | 0.4849 · **동결값**(`runsets/O_pre_linker`) | 신규 산출 |
+| **O′**(교정 후) | 0.4556 · **동결값**(`runsets/Oprime_2839afb`) | 신규 산출 |
+
+판정량은 `ΔR₁₀₀(현행) = −0.0293` 대 `ΔR₁₀₀(df)` 이며, 질의 단위 paired bootstrap 10,000회로 각각과
+**두 Δ의 차이**에 95 % 신뢰구간을 붙인다. 동결 칸 둘은 **재산출하지 않고 동결 run 을 읽는다.**
+
+**어느 결과가 나와도 실린다.** 저하가 **유지**되면 원인은 자원 쪽이고 DP1 의 근거 축이 확정된다.
+저하가 **소멸**하면 원인은 소비 방식 쪽이며, 자원 지표도 태스크 지표도 아닌 **결합 방식**이
+승인의 변수라는 더 강한 진술이 선다. **우월성은 어느 쪽에서도 주장하지 않는다** — A층·B층 두
+확증분할이 모두 개봉됐고 미개봉 확증 표본은 **0건**이므로(§2.1 안전장치), **원인 귀속이라는
+지위가 이 실험의 성립 조건 그 자체다.** 금지 문구는 사전등록에 박는다.
+
+**이 계획 안에서의 자리 — 1부·2부와 독립이며, 먼저 돌 수 있다.**
+이 실험은 **기존 자원 O/O′ 위에서 돌고 재구성된 온톨로지를 필요로 하지 않는다.** 따라서
+§-1.4 Phase 0 이나 §-1.5 의 어느 단계에도 종속되지 않으며, **후속 논문에서 가장 먼저 나올 수 있는
+결과**다. 나아가 이것이 성립하면 **§-1.3(d) 가 요구한 (i)/(ii) 분리의 방법론적 선례**가 된다 —
+*"점수식만 바꾸고 자원을 고정한 팔"* 이 실제로 성립함을 보이는 것이 (i) 의 내용이기 때문이다.
+
+**타는 게이트 (면제 없음).**
+
+1. **§2 정지 게이트 4개** — 코드 변경을 동반하므로 §2.1 이 아니다(PLAN-068 §B-4).
+2. **사전등록 발효** — `PLAN-068-prereg.md` 는 **끝내 만들어지지 않았다.** 이 계획 아래 새 번호로
+   발행하며, **df 출처는 (a)/(b) 가운데 하나만 동결한다**(둘 다 재고 좋은 쪽을 고르면 §1-2).
+3. **B-3 정지 게이트** — 재조립한 `ir_corpus`·`concept_axis` 의 sha256 이 매니페스트와 **바이트
+   일치하지 않으면 중단한다.** 근사 복원 위의 판정은 §1-1 위반이다.
+4. **`src/` 무변경** — 구현은 `scripts/` 하나로 한다(`CODE_PATHS` 밖 · 선례 `plan054_multilingual.py`).
+   `src/` 를 건드리면 기존 동결 runset 과의 O/O′ 비교가 **영구 실격**이다.
+5. **git worktree 에서 복원한다** — 현 작업 트리는 O′+B층 상태이며, 메모리
+   `disk-resource-is-oprime-manuscript-is-o-arm` 이 경고한 사고가 정확히 이 자리다.
+
+> **현 투고본은 이 이관으로 바뀌지 않는다.** PLAN-068 트랙 A(누적 −2,054자 · A-5a·A-5b 교정)는
+> **이미 반영된 완료분**이고, 원고에서 되돌리지 않는다. 이관된 것은 **미착수 실험 하나**다.
+
+---
+
+---
+
+> **아래는 2026-08-23 작성된 설계안 원문이다. -1 절의 결정과 실측은 원문을 수정하지 않고
+> 그 앞에 선다** — 원문은 그 시점의 설계 기록이므로 소급 수정하지 않는다.
+
+---
+
+# SDKB 선행기술조사 온톨로지 재구성 및 검색 실험 설계안 (통합본)
+
+대상 리포: `arkwith7/sdkb-prior-art-paper` (`data/external/sdkb`)
+작성일: 2026-08-23
+
+---
+
+## 0. 전제 진단 — 왜 재구성이 선행되어야 하는가 (리포 실측)
+
+| 항목 | 실측 | 함의 |
+|---|---|---|
+| ClaimFeature 개념 미매핑률 | **71.7%** (1,306,191행 중) | 한정요소 10개 중 7개가 온톨로지 밖 → 의미 경로 부재 |
+| 사용 개념 종류 | **109개**, `material:sio2`(74k)·`process:etch`(45k) 등 조립 개념 집중 | 대규모 동점 블록, 분별력 없음 |
+| 개념 유형 | Skill·FailureMode 등 전문가 매칭용 어휘 | 청구항 한정요소의 의미와 불일치 |
+| R-Box 공리 | TransitiveProperty 1개뿐 (chain·inverse·disjoint 0) | 추론으로 간접 경로가 생성될 여지 없음 |
+| 선행기술 연결 | `hasPriorArtExaminer`·`overPriorArt` 등 전부 정답 간선 | 마스킹하면 남는 의미 연결이 사실상 없음 |
+| 문서 유형 분포 | 의견제출통지서 2,060행 vs 거절결정서 689행 (§29① 262 vs 15) | 대비 논리의 실질 원천은 통지서 |
+| 문서 보유 구조 | 두 문서 모두 623건 / 통지서만 370건 / 라운드 최대 5차 | 심사경과(생존·철회) 신호 존재 |
+
+현재 상태는 "정답지 + 조립 태그"이며 지식체계가 아니다. 이 상태에서 검색 실험을
+하면 낮은 도달성은 검색 알고리즘이 아니라 자원 부적격의 결과이므로, 재구성(1부)이
+실험(2부)에 선행한다.
+
+---
+
+# 1부. 온톨로지 재구성 — T-Box · R-Box · A-Box
+
+## 1.1 설계 원칙: 행정문서를 '정답'이 아니라 '공리의 원천'으로
+
+> 거절통지 문서는 (거절특허 → 인용문헌) 링크가 아니라, **심사관이 두 기술적
+> 구성을 동일·상위·치환 가능·결합 용이하다고 판단한 기록**이다. 이 판단을
+> A-Box 정답 간선이 아니라 **T-Box/R-Box 공리**로 흡수하면, 직접 간선 없이도
+> 인용 선행기술(특허·비특허)의 주요 청구항/개시에 의미 경로로 도달할 수 있다.
+
+두 문서의 인식론적 역할을 구분한다.
+
+| 문서 | 역할 | 온톨로지에서의 지위 |
+|---|---|---|
+| **의견제출통지서** | 대비 논리의 원천 — 어느 인용발명의 어느 개시가 어느 한정요소에 대응·치환·결합되는가 | **후보 공리**(confidence=provisional)의 추출 재료 |
+| **거절결정서** | 출원인 반박·보정을 거치고 생존한 판단의 확정 | 후보 공리의 **확정 승격**(confidence=confirmed) |
+| 통지서에 있었으나 소멸한 인용 (Withdrawn) | 성립하지 않은 대응·치환의 기록 | **부정 증거** — 비치환 공리 후보, 공리 반례 카운트 |
+
+이로써 통지서→결정서→철회가 "공리의 생성→확정→반증"이라는 지식 생애주기가 되고,
+같은 구분이 그대로 qrel 등급과 평가 하위집단으로 이어진다.
+
+## 1.2 T-Box — 두 개의 신규 모듈
+
+기존 `sdkb-patent.ttl`은 유지하고 `sdkb-claim-semantics.ttl`을 추가한다
+(`owl:imports` 결합).
+
+### (a) 청구항 의미층 — 심사관의 독법(구성·작용·효과·조건)을 따름
+
+```turtle
+ont:TechnicalConcept          # skos:Concept 하위, 모든 청구항 개념의 공통 상위
+  ├ ont:StructuralElement     # 층·패턴·전극·게이트·스페이서·비아 등 구조물
+  ├ ont:ProcessStep           # 기존 Process/SubProcess 재사용 + 단계 세분
+  ├ ont:Material              # 기존 재사용, 조성·도핑 하위 확장
+  ├ ont:ProcessCondition      # 온도·압력·가스비·두께 (Parameter + 값 구간)
+  ├ ont:Function              # "~을 방지하기 위한", "~을 제어하는" 작용
+  ├ ont:TechnicalEffect       # 누설전류 감소, 스텝커버리지 향상
+  └ ont:TechnicalProblem      # 해결과제 (기존 Problem 재사용)
+
+ont:ClaimFeature
+  ont:featureRole    → {Means, Structure, Step, Material, Condition, Function, Effect}
+  ont:featureConcept → ont:TechnicalConcept    # 기존 union 범위를 교체
+  ont:qualifies      → ont:ClaimFeature        # '상기 X' 수식 (기존 dependsOnFeature)
+
+ont:ClaimProfile     # 독립항 1건의 의미 요약 — 질의·문헌 양쪽 공통 단위
+  ont:solvesProblem    → TechnicalProblem
+  ont:achievesEffect   → TechnicalEffect
+  ont:essentialConcept → TechnicalConcept      # 독립항 필수구성
+  ont:optionalConcept  → TechnicalConcept      # 종속항 부가구성
+```
+
+### (b) 심사경과층 — 문서·라운드·보정을 1급 객체로
+
+```turtle
+ont:ExaminationDocument  rdfs:subClassOf prov:Entity .
+ont:NotificationOfReasons   rdfs:subClassOf ont:ExaminationDocument .  # 의견제출통지서
+ont:FinalRejectionDecision  rdfs:subClassOf ont:ExaminationDocument .  # 거절결정서
+ont:NotificationOfReasons owl:disjointWith ont:FinalRejectionDecision .
+ont:examRound / ont:issuedDate / ont:concernsPatent
+
+ont:ClaimVersion         # 라운드 2+ 는 보정된 청구항을 대비 — 버전 없이는 오접지
+  ont:versionOf → ont:Claim ;  ont:atRound → xsd:integer ;
+  ont:amendedFrom → ont:ClaimVersion .
+
+# PriorArtJudgment 확장
+ont:assertedIn        → ont:ExaminationDocument
+ont:aboutClaimVersion → ont:ClaimVersion
+ont:citationStatus    → { ont:Provisional    # 통지서에만 등장
+                          ont:Maintained     # 거절결정서까지 생존/직접 등장
+                          ont:Withdrawn }    # 후속 문서에서 소멸
+```
+
+`citationStatus`는 문서 계열을 시간순 정렬해 **파생 계산**하는 값이다
+(`derive_citation_status.py`, 규칙 사전등록, `prov:wasGeneratedBy` 표시).
+
+### (c) 통지서에서 추출해 T-Box에 넣는 공리 (A-Box가 아님)
+
+| 통지서 표현 | 추출 공리 | OWL 표현 |
+|---|---|---|
+| "인용발명의 하드마스크 패턴은 본원의 식각 마스크에 대응" | 개념 동치/상하위 | `skos:exactMatch` / `rdfs:subClassOf` |
+| "주지관용기술에 불과" | 개념 속성 | `ont:isCommonKnowledge true` + 적용 기술군 |
+| "단순 설계변경 / 재료의 치환" | 치환 가능 집합 | `ont:substitutableWith` (Symmetric) |
+| "인용발명 1·2 결합에 곤란성 없음" | 결합 용이 쌍 | `ont:combinableWith` (Symmetric, 기술군 한정) |
+| "수치한정에 임계적 의의 없음" | 조건 구간 포섭 | `ProcessCondition` 구간 포함 규칙 |
+
+모든 채굴 공리는 다음 provenance를 필수로 갖는다.
+
+```turtle
+ont:substitutableWith_sio2_sion  a ont:MinedAxiom ;
+    ont:axiomConfidence "confirmed" ;         # provisional | confirmed
+    ont:supportCount 7 ; ont:counterCount 1 ; # 지지 / 반례(Withdrawn 유래) 건수
+    prov:wasDerivedFrom <reason_id...> ;      # 전부 dev 분할 문서
+    ont:sourceDocType ont:NotificationOfReasons .
+```
+
+## 1.3 R-Box — 간접 경로가 '추론으로 생기도록'
+
+OWL 2 RL 범위 안에서 다음을 선언한다. 경로 유형과 가중치가 검색 코드가 아니라
+**온톨로지 자원 번들의 일부**가 되므로 O→O′ 교체 시 변경이 TTL diff로 드러난다.
+
+```turtle
+# 역관계 — 문헌 쪽에서 질의 쪽으로 거슬러 오르는 경로 필수
+ont:featureOf         owl:inverseOf ont:hasFeature .
+ont:claimOf           owl:inverseOf ont:hasClaim .
+ont:conceptOfFeature  owl:inverseOf ont:featureConcept .
+
+# 전이 — 계층 확장
+ont:broaderConcept a owl:TransitiveProperty .
+ont:hasSubStep     a owl:TransitiveProperty .
+
+# 속성 체인 — 정답 간선 없이 문헌끼리 연결되는 파생 관계
+ont:sharesConceptWith owl:propertyChainAxiom
+  ( ont:hasFeature ont:featureConcept ont:conceptOfFeature ont:featureOf ) .
+ont:sharesSubstitutableConceptWith owl:propertyChainAxiom
+  ( ont:hasFeature ont:featureConcept ont:substitutableWith
+    ont:conceptOfFeature ont:featureOf ) .
+ont:sharesProblemWith owl:propertyChainAxiom
+  ( ont:solvesProblem ont:problemOf ) .
+ont:sharesBroaderConceptWith owl:propertyChainAxiom          # 상위 개념 1단계만
+  ( ont:hasFeature ont:featureConcept ont:broaderConcept
+    ont:conceptOfFeature ont:featureOf ) .
+
+# 상호배제 — 동점 블록 억제 + SHACL 오류 검출
+ont:StructuralElement owl:disjointWith ont:ProcessStep , ont:Material .
+ont:Function          owl:disjointWith ont:StructuralElement .
+```
+
+경로 가중치는 공리 confidence 차등(confirmed > provisional)을 포함해 자원
+번들 설정으로 선언한다.
+
+## 1.4 A-Box — 양쪽 문헌을 같은 해상도로, 목표 노드를 명시
+
+1. **인용 선행기술의 대상 개시 실체화**: `PriorArtJudgment`에
+   `ont:overDisclosure → ont:Disclosure`(인용특허의 청구항 또는 명세서 단락,
+   통지서의 "인용발명 1의 청구항 3 / 단락 [0025]")를 추가. 이 노드가 도달성
+   측정의 **목표 노드**다. 간선 자체는 정답 유래이므로 검색 시 마스킹하되,
+   평가 목표를 "문헌 도달"에서 "주요 청구항/개시 도달"로 올린다.
+2. **인용특허 측에도 동일 파이프라인으로 ClaimProfile 생성** (규칙+LLM 분해 →
+   featureRole → TechnicalConcept). 거절특허 측과 개념 해상도 동일 보장.
+3. **비특허문헌(NPL)**: `ont:NonPatentLiterature` 클래스 + 핵심 개시 단위의
+   동일 Profile 구조. `overPriorArt`에 range가 없는 이유를 노드 타입으로 해소.
+4. **ClaimProfile은 ClaimVersion 단위**로 생성 — 라운드 2+ 보정 반영, 대비된
+   버전에 접지.
+5. **개념 커버리지 목표**: 미매핑 71.7% → **20% 이하**. (a) CPC 서브그룹
+   정의문에서 TechnicalConcept 후보 추출, (b) 거절·인용특허 청구항 명사구
+   클러스터링 후 큐레이션, (c) 기존 v0.3 274노드는 `broaderConcept` 상위로
+   유지. 109개 → 최소 수백~천 단위 개념 필요.
+6. **개념 특이도(IDF)**: 개념별 df를 기록해 `material:sio2` 류가 경로 점수를
+   지배하지 않게 함 (concept_mapping.json CR-009 방침과 정합).
+
+## 1.5 qrel 등급 재정의 (기존 2점/1점/unknown 체계와 정합)
+
+| 등급 | 정의 | 근거 |
+|---|---|---|
+| **2 (강)** | citationStatus=Maintained | 출원인 반박을 거친 확정 판단 |
+| **1 (약)** | Provisional (통지서만, §29①/② 근거) | 심사관 1차 판단 — 여전히 양성 |
+| **별도 트랙** | Withdrawn | qrel 제외, **hard-negative 후보 풀**로 보관 (비관련 확정 아님 — 절차적 소멸 가능성) |
+
+절차적 사유(기재요건·단일성 등)에 딸린 인용은 qrel에서 배제:
+`ground ∈ {Rejection_Novelty, Rejection_Inventiveness, Rejection_ExpandedPriorFiling}`
+필터를 사전등록.
+
+진단 지표: "Withdrawn 문헌이 Maintained보다 위에 랭크되는 빈도" — 온톨로지가
+심사관의 최종 판단 구조를 반영하는지의 부차 신호.
+
+## 1.6 누출 규율 — 구축과 테스트 양쪽 사용의 조건
+
+1. **분할 축은 특허 패밀리. 문서 유형이 아님.** "통지서로 구축, 결정서로
+   테스트" 같은 문서 내부 분할은 같은 대비 논리를 양쪽에 두는 직접 누출이므로
+   금지 (두 문서 동시 보유 623건).
+2. dev 패밀리의 통지서·결정서 → 공리 추출 허용. **test 패밀리의 어떤
+   문서에서도 공리 추출 금지.** `check_leakage.py`가 모든 MinedAxiom의
+   `prov:wasDerivedFrom`을 역추적해 test reason_id 유래 0건 검증.
+3. 시간 적격성: 인용문헌 공개일 < 거절특허 출원일. 보정 청구항 질의 시 대비
+   문서의 `issuedDate` 기록.
+4. 검색 시 마스킹 대상: `hasPriorArt{,Examiner,Applicant}` · `overPriorArt` ·
+   `overDisclosure` · `overlappingFeature` · `NoveltyScore` · qrel 파생 링크 일체.
+
+## 1.7 질의 시점 동작 — 연구개발요약/청구항의 A-Box 인스턴스화
+
+질의 문서는 T-Box에 넣는 것이 아니라 **T-Box가 정의한 클래스의 임시 A-Box
+인스턴스(ClaimProfile)로 변환**되어 기존 문헌과 같은 의미 공간에서 경로
+점수로 비교된다.
+
+```
+연구개발요약 / 청구항 텍스트
+  │ ① 분해 (구축과 동일한 규칙+LLM 파이프라인)
+  ▼ ClaimFeature 목록 (featureRole 부여)
+  │ ② 개념 링킹 (표면형 사전 + 프로파일)
+  ▼ :query_001 a ont:ClaimProfile ; essentialConcept ... ; solvesProblem ...
+  │ ③ 경로 구체화·점수화 (동결된 경로 유형 × 가중치)
+  ▼ 후보 랭킹 + 후보별 의미 경로 근거 (설명 가능)
+```
+
+성립 조건 세 가지 = 2부 실험이 측정하는 바로 그것:
+① 개념 커버리지(미매핑이면 score=0), ② 공리 밀도(표현이 다른 문서를 잇는
+치환·상하위·문제공유 공리), ③ 코퍼스 범위(A-Box에 색인된 문헌만 검색).
+
+한계 두 가지(논문·제품 서술 공통):
+- 연구개발요약은 청구항보다 분해가 어려움 → 논문 질의 단위는
+  (거절특허, 독립청구항) 유지, 요약 질의는 제품(IPBridge) 확장으로 분리.
+  요약은 "유사 청구항 형태 정규화" 전처리 단계 추가.
+- 시스템 출력은 "선행기술 판정"이 아니라 **설명 가능한 후보 + 근거 경로**.
+  Recall@100이 지표인 이유: 검토 후보 100건 안에 진짜 선행기술이 들도록.
+
+구현: `build_claim_profiles.py`는 배치(구축)·단건 질의 양 모드를 지원하는
+단일 모듈로 — 재현성 보장.
+
+## 1.8 구현 단계와 게이트
+
+| 단계 | 산출물 | 검증 |
+|---|---|---|
+| O-1 | `sdkb-claim-semantics.ttl` (청구항 의미층 + 심사경과층) + SHACL | `owl:imports` 결합 일관성 통과 |
+| O-1.5 | `derive_citation_status.py` — Provisional/Maintained/Withdrawn 파생 | 분포 리포트 (문서유형×근거 교차표) |
+| O-2 | `mine_examiner_axioms.py` — 문서 유형 인지형: 통지서=후보, 결정서=승격, Withdrawn=부정 증거 | 사람 검토 후 승인분만 TTL화, provenance 필수, 문서유형별 공리 수율 리포트 |
+| O-3 | `build_claim_profiles.py` — rej/cited/NPL 공통, ClaimVersion 단위, 배치+단건 모드 | 미매핑률·개념 수·개념별 df 리포트 |
+| O-4 | `materialize_paths.py` — 체인·역관계·전이 구체화, confidence 전파 → `derived_paths.parquet` | 정답 간선 마스킹 상태 실행, `check_leakage.py` 0건 |
+| O-5 | 도달성 리포트 — grade 2/1 × 경로 유형 × 공리 confidence 3축 교차표 | **진입 조건**: SemanticPathRecall(독립항 기준) 유의 수준(예: ≥60%) 미달 시 2부 착수 금지 |
+
+---
+
+# 2부. 검색 실험 재설계 — 온톨로지끼리 먼저, 텍스트는 대조군으로
+
+## 2.1 단계 구조 (BM25 출발 구조를 뒤집음)
+
+| 단계 | 후보집합 | 시스템 | 유일한 질문 | 주 지표 |
+|---|---|---|---|---|
+| **E1 자원 적격성** | G0 | 그래프 쿼리 (검색기 없음) | 정답 간선 없이 의미 경로로 인용 선행기술의 주요 개시에 도달하는가 | SemanticPathRecall (경로 유형별, 목표=Disclosure), grade 2/1 분리 |
+| **E2 온톨로지 변형 비교** | G0 | Ontology-only V1~V4 | 어떤 의미 경로 조합이 알려진 인용을 상위에 올리는가 | R@20/50/100, qrel 중앙순위, score=0 비율 |
+| **E3 후보 확대 스트레스** | C0→C3 (G0+G1/G2) | E2 선택 1개 (동결) | 방해문서 증가에도 분별력이 유지되는가 | 동일 지표의 저하 형태 |
+| **E4 텍스트 대조·보완** | C3 | BM25 · Dense · Text∪Onto | 온톨로지가 텍스트가 놓친 qrel을 실제로 보완하는가 | 후보 기여도 4분류 (Text-only/Onto-only/Both/None) |
+| **E5 자원 교체 게이트** | C3 | S_gate = Text∪Onto (동결) | O→O′에서 알려진 인용 회수가 비열등한가 | T1(ΔR@100 LB>−ε), T2, BM25·Dense Δ=0 |
+
+## 2.2 E2 변형 — "온톨로지 대 온톨로지"가 본 실험
+
+경로 유형을 끄고 켜는 방식으로만 변형을 만든다.
+
+| 변형 | 구성 | 검증하는 것 |
+|---|---|---|
+| V1 | 분류코드 경로만 (CPC 공통·상위) | 최소 기준선 |
+| V2 | V1 + 개념 중첩 (`sharesConceptWith`, IDF 가중) | 청구항 의미층의 기여 |
+| V3a | V2 + 심사관 유래 **confirmed** 공리 경로 | 거절결정서 생존 판단의 기여 |
+| V3b | V2 + confirmed+**provisional** 공리 경로 | 의견제출통지서 풍부함의 기여 |
+| V4 | V3b + 계층 1단계 확장 | 확장의 득실 (하락 시 동점 블록 진단) |
+
+V1→V3로 상승하면 "통지서에서 추출한 공리가 의미 경로를 실제로 만든다"는
+1부 설계 주장의 직접 검증. 이것이 BM25 비교보다 논문 A의 주장에 닿는 실험이다.
+
+## 2.3 BM25·Dense의 역할 재정의 (E4·E5)
+
+경쟁자가 아니라 두 역할만:
+1. **불변성 대조군**: O→O′에서 BM25·Dense 결과 Δ=0 → 온톨로지 외 요소가
+   바뀌지 않았음의 증명 (통제 무결성).
+2. **보완성 분석**: 후보 기여도 4분류에서 Onto-only 진입 qrel 존재 여부 →
+   온톨로지가 텍스트를 실제로 보완하는가.
+
+후보 생성은 `TopK_text ∪ TopK_onto` 합집합 — 약 4만 문헌이면 **전량
+점수화**를 권장 (재순위 상한 문제 자체가 소멸).
+
+## 2.4 동결 규율 (사전등록, `config/S_gate.yaml`)
+
+dev에서 결정하고 test 개봉 전 고정: 경로 유형 집합 · 경로별 가중치(공리
+confidence 차등 포함) · 개념 IDF 테이블 버전 · 계층 확장 깊이(1) · 결합식
+`λ·text + (1−λ)·onto`의 λ · 동점 규칙(publication_id 오름차순) · K(전량) ·
+시드 · 자원 번들 SHA256. 변형 선택(E2)은 dev에서만, test에서는 선택된 1개만.
+
+## 2.5 지표 위계
+
+- **게이트**: known-anchor family Recall@100 (E1에서는 Disclosure 수준 별도 보고)
+- 부차: R@20/50/500, MRR, nDCG@20(등급 구조상 진단용으로 강등)
+- 진단: qrel 중앙순위, score=0 비율, 후보 기여도 4분류, 경로 유형별 기여,
+  Withdrawn>Maintained 역전 빈도
+- **T2 하위집단**: 언어 · 거절근거 · 기술군 · 어휘중첩 · 개념링크 보유 +
+  **인용 출처(Maintained/Provisional)** 추가. 최소 표본 미달 집단은 판정 불가 표기.
+
+## 2.6 절제 축소
+
+기존 8개 절제 → A1(온톨로지 특징 전부 제거 = Text와 동일해야 함, sanity
+check) 1개만 유지. 나머지는 E2의 V1~V4 변형표가 대신한다.
+
+## 2.7 기존 결과의 처리
+
+- P0·P1 결과 → "의미 경로 없는 온톨로지(미매핑 71.7%)에서의 reranking 특성"으로 재해석
+- **O_v0.3 → O_claim-semantics 전환 자체를 E5의 첫 실측 자원 교체 사례로 사용**
+  — 재구성 작업이 곧 T-gate의 첫 존재증명이 됨 (가장 설득력 있는 시나리오)
+- 유지: 198질의 2분할, 시간·패밀리 분리, paired bootstrap, T1·T2·T3 판정 틀,
+  결함주입(T3), Brick 이식(EP5)
+- 데이터 기여로 추가: 문서 유형별 인용·논거 분포표 (통지서 2,060 vs 결정서
+  689, §29① 262 vs 15) — "의견제출통지서가 선행기술 지식의 주 원천"이라는
+  발견 자체를 논문의 데이터셋 특성 기여로 주장
+
+## 2.8 논문이 최종적으로 주장하는 것 / 하지 않는 것
+
+**주장**: 심사관의 대비 논리를 통지서→결정서 생애주기로 공리화한 지식체계는,
+직접 정답 간선 없이 알려진 심사관 인용의 주요 개시에 의미 경로로 도달하며,
+동결된 하네스에서 자원 변경 전후의 하류 회수 차이를 측정·게이트할 수 있다.
+
+**주장하지 않음**: 온톨로지가 BM25보다 우수하다 / 전체 관련 선행기술을 높은
+정확도로 찾는다 / Recall 하락이 실제 관련성 하락이다 / 조사 시간·비용을
+줄였다.
+
+---
+
+## 부록. 1부↔2부 연결 규칙
+
+1. O-5의 SemanticPathRecall이 진입 임계 미달이면 E1 이후로 진행하지 않는다
+   (자원 부적격을 하네스 부적격으로 오독하는 것을 차단).
+2. E2에서 V3a/V3b의 차이가 곧 1.1의 문서 역할 구분 가설의 검증치다.
+3. E5의 첫 O→O′는 v0.3 자원 번들 → 본 설계 자원 번들 교체로 한다.
+4. 질의 인스턴스화(1.7)와 문헌 구축(O-3)은 동일 코드 경로를 공유한다.
