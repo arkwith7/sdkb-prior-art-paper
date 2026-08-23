@@ -483,3 +483,101 @@ R7-DF-CEILING (patent-text 프로파일 한정)
 ## 10. 3단계 정지 게이트 🛑
 
 위 설계의 승인을 요청한다. 승인 전까지 4단계(구현)로 넘어가지 않는다.
+
+---
+
+## 11. 4단계 구현 (2026-08-23 · 상류 CLAUDE.md §2 4단계 · 승인 범위 안)
+
+> **상류 커밋 `dc855e3`** (브랜치 `feat/cr-001b-ko-surface-harvest` · `main` 미변경). 이 세션이 §0.1 예외로 상류 역할을 맡아 넣었고, 상류 §2 의 단계 게이트를 그대로 탔다 — 1단계 요구정의 🛑 → 2단계 분석 🛑 → 3단계 설계 🛑 → 4단계 구현 → 5단계 검증 🛑.
+
+**바꾼 자리는 §9.1 이 적은 넷뿐이다.** TBox·shape·IRI 불변 · 신규 의존성 0 · 형태소 분석기
+미도입 · test·test_b 미열람.
+
+| 자리 | 상태 |
+|---|---|
+| `scripts/harvest_ko_surfaces.py` | 신규 — 후보 수확기(제안 파일만 · 사전을 쓰지 않는다) |
+| `data/sources/harvest_scope_dev_train.json` | 신규 — 수확 범위 입력. 하류 동결 분할에서 파생했고 그 sha256(`f93c18d2…`)과 파생 규칙을 자기 안에 담는다. **공개 트리에서 제외**(`data/sources/` DENY) |
+| `data/reports/ko_surface_candidates.json` · `ko_concept_proposals.json` | 신규 산출 — 표면형·빈도·통로·R7 판정만. 원문 문장 없음 |
+| `mappings/abox_term_aliases.json` | `_KO3` 큐레이션 15 표면형 + `_r7_grandfathered` 27 표면형 |
+| `scripts/build_concept_mapping.py` | R7-DF-CEILING · 표면형 단위 df(`surface_meta`) · schema_version 1.1 → **1.2** |
+| `mappings/concept_mapping.json` · `concept_df_report.json` · `PROVENANCE.json` | 재생성 |
+| `tests/test_cr001b_r7.py` | 신규 22 케이스 |
+
+### 11.1 수확 실측
+
+범위 질의 **800**(dev 200 · train 600) · 독립항 **2,478** · 범위 내 통지서 **935**(표 보유 31).
+후보 **404**(등재분 제외 후) · R7 통과 294 · R7 차단 110 · 씨앗 통로 경유 227.
+
+### 11.2 등재 결과 — 사전 크기
+
+`patent-text` 표면형 **635 → 649**(+14) · 쌍 652 → 666 · blocked 8 → **9**.
+`expert-tag` 는 **전량 불변**(표면형 630 · 쌍 643 · 차단 0) — 신규 등재를 전부
+`{"expert-tag": null, "patent-text": …}` 로 넣었기 때문이며, T3 회귀 위험을 구조로 막았다.
+
+등재 14 — 절연층 · 유전체 · 유전체막 · 유전막(→`material:dielectric`) · 폴리실리콘막
+(→`material:polysilicon`) · 성막(→`process:deposition`) · 성막(장치)·증착(장치)
+(→`equipment_class:deposition_tool`) · 인터포저(→`device:interposer`) ·
+패키지(→`subprocess:packaging`) · 압력(→`parameter:pressure`) · 유량(→`parameter:gas_flow`).
+R7 차단 1 — **온도**(→`parameter:temperature` · df 비율 **0.1024** · `rule_id`
+`R7-DF-CEILING` · 사유와 비율을 함께 발행).
+
+### 11.3 성공기준 판정
+
+| | 기준 | 실측 | 판정 |
+|---|---|---|---|
+| **①′** | 개념 0개 한정요소 비율 하락 | **아래 §11.4** — 사전 적용 기준 68.97 % → **64.00 %**(−4.97 pp · 전수 1,306,419) · **그러나 `claim_features.parquet` 의 71.7 % 는 움직이지 않는다** | **부분 · 조건부** |
+| **②′** | 기본 낱말 19 전량 판정 · 미판정 0 | 등재 3(유전체·압력·유량) · 차단 1(온도) · **제안 15** · 미판정 **0** | **충족(미판정 0) · 예고와 다름** |
+| **③** | 신규 표면형 df 전량 발행 · 결측 0 | `surface_meta.surfaces` 에 649 표면형 전량 · 결측 0 | 충족 |
+| **④** | 위양성 검수 100건 오해소 ≤ 5 | **미수행** — 등재가 14 표면형이라 100건 표본이 성립하지 않는다 | **미판정** |
+| **⑤** | 하류 B5 개선 ∧ P1 LB₉₅ > −ε | **미수행** — 새 스냅샷·`make vendor`·§2.1 사전등록이 선행한다 | **미판정** |
+
+**②′ 는 예고(entries 11 · blocked 8)와 다르게 나왔다.** 예고는 19 개가 전부 **어딘가에 붙는다**는
+가정 위에 있었는데, §5.6 실측대로 기존 IRI 에 정직하게 붙는 것은 넷뿐이었다(그중 감광막은 층위
+차이로 보류). 나머지 15 는 담을 축이 TBox 에 없어 **제안 목록**으로 나갔다 — 판정은 됐고 등재는
+되지 않았다. 갈래 ㉢ 을 택한 이상 이것이 그 귀결이며, 숫자를 맞추려고 축을 만들지 않았다.
+
+**④ 를 "충족"이라 적지 않는다.** 등재 표면형이 14 개뿐이라 100건 표본이 없다. 대신 명사구
+필터의 계약을 단위 테스트로 고정했고(`test_noun_like_filter` 외), 큐레이션은 전량 사람이 했다.
+
+### 11.4 ①′ 를 둘로 갈라 적는 이유 — 발행된 프로파일을 A-Box 생성기가 쓰지 않는다
+
+**측정 둘.**
+
+- **사전 적용 기준(전수 · 1,306,419 한정요소).** 발행된 `patent-text` 사전을 한정요소 본문에
+  참조 적용기(정규화 부분문자열)로 적용하면 개념 0개 비율이 **68.97 % → 64.00 %**(−4.97 pp)로
+  내려간다. 이것이 **하류가 실제로 보게 될 값의 방향**이다 — 하류는 이 사전을 자기 적용기로 쓴다.
+- **`mappings/claim_features.parquet`(71.7 % · 독립항 73.4 %).** **변하지 않는다.**
+
+**왜 갈리는가.** A-Box 생성기가 쓰는 `Bridge` 는 `load_aliases(self.ntype)` 를 인자 없이 부르고,
+그 기본값은 **`expert-tag`** 다(`scripts/build_abox_experts_problems.py:241` ·
+`scripts/sdkb_nb.py:96`). 즉 **특허 본문을 위해 만든 `patent-text` 프로파일이 특허 A-Box 생성에
+쓰인 적이 없다.** 증거는 산출물 자신에 있다 — `claim_features.parquet` 의 개념 축 상위에
+`skill:` 이 **171,417** 건 있는데, `patent-text` 였다면 R4(≤4자 한글 → 태스크 축 금지)가 그
+경로를 막는다. `_KO3` 는 `expert-tag: null` 이므로 이 생성기에 보이지 않고, 그래서 ①′ 의 원
+지표는 **이 CR 의 범위 안에서는 원리적으로 움직일 수 없다.**
+
+**이 자리를 이 CR 에서 고치지 않는다.** `Bridge` 에 프로파일을 주는 것은 A-Box 산출을 바꾸는
+코드 변경이고(featureConcept 이 통째로 달라진다), 그것은 §2 전 단계를 다시 타는 별도 CR 이다.
+**어휘 추가와 프로파일 전환을 한 델타에 섞으면 원인을 가를 수 없다** — DP4 가 금지하는 미구분이다.
+결함으로 등재했다(D-49).
+
+### 11.5 5단계 검증 (상류 §2 5단계 · 실제 출력)
+
+- **결정성**: `build_concept_mapping.py --check` 동일 · `harvest_ko_surfaces.py --check` 두 파일 동일.
+- **테스트**: `pytest` **278 통과 · 10 건너뜀 · 실패 0**(신규 22 포함). 자산 변경을 막던 세 검사가
+  먼저 **실패**했고(`test_schema_version_bumped` · `test_entries_changed_only_where_declared` ·
+  `test_asset_matches_generator`), 델타를 **선언**해 통과시켰다 — 조용한 변경이 불가능하다는
+  성질을 유지했다. `DECLARED_BLOCKED_ADDED` 를 신설한 이유는 R7 이 만든 것이 *제거*가 아니라
+  **들어오자마자 차단**이기 때문이다.
+- **릴리스 게이트**: `make owl convert validate` 통과(SHACL 3회 전량 conform) · 그래프 TTL 산출물
+  **바이트 불변**(그래프를 바꾸지 않았다).
+- **공개 경계**: `make public-release check-public` **적중 0** · 허용목록 밖 0 · 죽은 링크 0.
+  신규 파일의 허용 판정은 `is_allowed` 로 확인했다 — 리포트 둘과 수확기는 공개, **범위 파일은
+  비공개**(`data/sources/` DENY). 커밋 전이라 `git ls-files` 기반 공개 트리에는 아직 들어가지
+  않았으므로, **커밋 후 재실행이 필요하다.**
+
+### 11.6 이번 델타가 하류에 요구하는 것 (C0)
+
+`make vendor` → §2.1 사전등록 동결 → 무정지 연속 실행 → dev 재측정으로 ⑤ 판정.
+**원고의 판정과 수치는 이 CR 로 바뀌지 않는다** — 새 자원 위의 새 실험이다.
+파이프라인 서명이 움직이지 않으면 그 실행은 통과가 아니라 **비가시**다(하류 §2.1 2′ · D-43).
