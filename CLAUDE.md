@@ -902,6 +902,7 @@ make effort        # Effort@Recall·Candidate Reduction·깊이별 회수 곡선
 make rag           # 동결 run 상위 K → 컨텍스트 조립 → 생성 (모델·프롬프트 동결)
 make rageval       # 인용 정확도·환각률·근거 지역화 (결정적 채점)
 make gate          # L0–L3 + T1·T2·T3
+make concept-status # 개념·공리 계기판 (선언·실체화·작동 3층 · 읽기 전용 · 델타 표기)
 make faults        # 결함주입(교차태스크 포함) × 게이트 검출 매트릭스
 make ablation      # A1–A8 (A8 음성대조군)
 make figures       # 논문 그림 전량

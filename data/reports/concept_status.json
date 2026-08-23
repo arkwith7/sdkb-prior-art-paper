@@ -1,0 +1,240 @@
+{
+  "declared": {
+    "classes": 103,
+    "datatype_properties": 85,
+    "inferential_axioms": {
+      "owl:FunctionalProperty": 0,
+      "owl:InverseFunctionalProperty": 0,
+      "owl:Restriction": 0,
+      "owl:SymmetricProperty": 0,
+      "owl:TransitiveProperty": 2,
+      "owl:complementOf": 0,
+      "owl:disjointWith": 0,
+      "owl:equivalentClass": 1,
+      "owl:equivalentProperty": 0,
+      "owl:hasKey": 0,
+      "owl:intersectionOf": 0,
+      "owl:inverseOf": 0,
+      "owl:propertyChainAxiom": 0,
+      "swrl:rule": 0
+    },
+    "inferential_total": 3,
+    "object_properties": 99,
+    "prior_art_axis": {
+      "Claim": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "ClaimFeature": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "PriorArtJudgment": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "aboutClaim": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "dependsOnClaim": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "dependsOnFeature": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "featureConcept": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "hasClaim": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "hasFeature": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "hasJudgment": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "hasPriorArt": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "hasPriorArtExaminer": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "isIndependent": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "onGround": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "overPriorArt": {
+        "declared": true,
+        "inferential_axioms": []
+      },
+      "overlappingFeature": {
+        "declared": true,
+        "inferential_axioms": []
+      }
+    },
+    "prior_art_axis_with_axioms": 0,
+    "subclass_axioms": 36,
+    "tbox_files": {
+      "sdkb-commercialization.ttl": 104,
+      "sdkb-core.ttl": 719,
+      "sdkb-foresight.ttl": 107,
+      "sdkb-governance-kr.ttl": 60,
+      "sdkb-governance.ttl": 40,
+      "sdkb-patent.ttl": 465,
+      "sdkb-rbv.ttl": 82
+    },
+    "triples": 1577
+  },
+  "instantiated": {
+    "claim_features": {
+      "concept_zero_pct": 71.71,
+      "distinct_concepts": 109,
+      "features": 1306191,
+      "independent_concept_zero_pct": 73.44,
+      "independent_features": 520125,
+      "with_concept": 369586
+    },
+    "concepts": {
+      "axes": {
+        "Device": 34,
+        "Equipment": 41,
+        "EquipmentClass": 12,
+        "FailureMode": 25,
+        "Material": 31,
+        "Metrology": 3,
+        "Mitigation": 20,
+        "Organization": 2,
+        "Parameter": 5,
+        "Process": 12,
+        "RootCause": 20,
+        "Skill": 12,
+        "SubProcess": 38,
+        "TechnologyNode": 3,
+        "Vendor": 16
+      },
+      "from_patent_or_rejection": 0,
+      "from_patent_or_rejection_ids": [],
+      "nodes": 274,
+      "provenance_sources": {
+        "author": 40,
+        "author-defined": 11,
+        "bis_ccl": 11,
+        "fmea_framework": 60,
+        "irds": 8,
+        "jedec": 5,
+        "matkg": 20,
+        "semi_standards": 3,
+        "semikong": 49,
+        "vendor_public": 42,
+        "wikidata": 25
+      },
+      "synonyms": 203,
+      "synonyms_by_lang": {
+        "en": 110,
+        "ko": 93
+      }
+    },
+    "dictionary": {
+      "blocked_by_rule": {
+        "R4-SHORT-KO-TASK": 6,
+        "R6-SURFACE-SUPPRESS": 2
+      },
+      "concepts_covered": 274,
+      "schema_version": "1.1",
+      "surfaces": 635,
+      "surfaces_hangul": 154,
+      "surfaces_lang_ko": 93
+    },
+    "judgment_axis_vendored": {
+      "claim_features_ttl": false,
+      "note": "판단 인스턴스(PriorArtJudgment)는 사이드카 TTL 에만 있고 투영 parquet 에는 한정요소만 담긴다 — 하류는 판단을 직접 셀 수 없다.",
+      "projection_parquet": true
+    },
+    "snapshot": {
+      "source_commit": "0a7ff1537850264a06f9c31af0305efa86b3beb9",
+      "vendored_at": "2026-08-15T11:46:44+00:00"
+    }
+  },
+  "operative": {
+    "corpus": {
+      "concepts_per_doc_mean": 3.726,
+      "distinct_concepts_in_corpus": 199,
+      "docs": 41223,
+      "docs_with_zero_concepts": 670,
+      "top_concepts": [
+        [
+          "etch",
+          9228
+        ],
+        [
+          "deposition",
+          7474
+        ],
+        [
+          "dielectric",
+          6822
+        ],
+        [
+          "process_chamber",
+          6549
+        ],
+        [
+          "oxide",
+          6431
+        ],
+        [
+          "process_gas",
+          6175
+        ],
+        [
+          "lithography",
+          5177
+        ],
+        [
+          "eprom",
+          5148
+        ],
+        [
+          "sin",
+          4602
+        ],
+        [
+          "plasma_processing",
+          4452
+        ]
+      ]
+    },
+    "scoring": {
+      "P0_star": {
+        "alpha": 0.5,
+        "w_concept": 1.0,
+        "w_ipc": 0.0,
+        "w_path": 0.0
+      },
+      "P1": {
+        "alpha": 0.75,
+        "tau": 0.7,
+        "w_concept": 0.25,
+        "w_feature_coverage": 0.5,
+        "w_ipc": 0.25,
+        "w_path": 0.0
+      },
+      "axiom_derived_terms": 0,
+      "note": "FeatureCoverage 는 한정요소 원문의 임베딩 코사인이고 IPC 는 분류코드다. 온톨로지 고유 항은 개념 Jaccard 하나이며 df 무가중이다."
+    }
+  }
+}

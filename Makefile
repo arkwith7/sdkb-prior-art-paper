@@ -1,4 +1,4 @@
-.PHONY: style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check
+.PHONY: style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check concept-status
 
 setup:
 	uv sync --all-extras
@@ -150,6 +150,14 @@ index:
 
 eval:
 	uv run python -m sdkb_paper.analysis.metrics
+
+# 개념·공리 계기판 (2026-08-23) — 선언 · 실체화 · 작동 세 층을 한 페이지로 잰다.
+# **왜 있는가:** 세 층의 지표가 TTL·상류 리포트·코퍼스로 흩어져 있어 "공리 구현이 진척되고
+# 있는가"에 답하려면 매번 처음부터 다시 재야 했다. 읽기 전용이며 코퍼스·qrel·게이트·통계
+# 산출물을 하나도 쓰지 않는다. 재는 대상은 **동결 벤더 스냅샷과 하류 코퍼스·점수식**이다.
+# 산출: data/reports/concept_status.md(사람) + concept_status.json(다음 실행의 델타 기준).
+concept-status:
+	uv run python -m sdkb_paper.analysis.concept_status
 
 # 운용 효율 (PLAN-036 · 원고 §6.3 탐색적 표) — Effort@Recall · Candidate Reduction ·
 # 깊이별 회수 곡선 · 질의당 추가 발견 건수. 동결 팔(runsets/O_pre_linker)의 run 재판독이며
