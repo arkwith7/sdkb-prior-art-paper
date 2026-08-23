@@ -2,7 +2,7 @@
 
 > 제출처: `~/Dev/sdkb` · 양식: 상류 CLAUDE.md §2 **1단계 요구정의**
 > 근거: 이 문서 §2 실측 (2026-08-23) · [DEFECT-LEDGER](DEFECT-LEDGER.md) D-01 · D-47
-> 선행: **[CR-019](CR-019-rejection-source-absorption.md)** — 수확 원천이 상류에 와야 착수 가능
+> 선행: **[CR-019](archive/CR-019-rejection-source-absorption.md)** — 수확 원천이 상류에 와야 착수 가능
 > 우선순위: **P0**
 >
 > **이것은 CR-001 이 예고한 CR-001B 다.** CR-001 §분할(2026-07-31 결정 1)은 어휘분을

@@ -554,7 +554,7 @@
 > 거절결정서 442건 OCR 원문 스크럽 완료 · 외부 특허 본문·claim-features·B층 질의 TTL 전부
 > gitignore · 전문가 프로필 PII 제거 합성. **보수적 조치는 이미 상당히 들어가 있다.**
 >
-> **CR 둘을 발행했다(사용자 승인 3건).** [CR-015](../upstream/CR-015-public-release-boundary.md)
+> **CR 둘을 발행했다(사용자 승인 3건).** [CR-015](../upstream/archive/CR-015-public-release-boundary.md)
 > (공개본 경계 · D-36) · [CR-016](../upstream/CR-016-public-reproduction-path.md)(공개 재현 경로 ·
 > D-37). 둘 다 **P0 · 투고 게이트**이고 검증기준에 **하류 태스크 지표**를 걸었다(§0.1) —
 > CR-015 ③ 공개본 메타만으로 조립한 코퍼스 sha256 = `83eef760…` · CR-016 ③ 상류 CQ 통과율 =

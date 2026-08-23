@@ -127,7 +127,7 @@ confirmed(결정서 생존)만 남기면 수십 건 규모이므로, **V3a/V3b �
 **93개**뿐이고 `기판`·`웨이퍼`·`전극`·`게이트` 가 전부 미등재다(D-47).
 
 **따라서 착수 순서를 바꾼다 (2026-08-23 · 사용자 승인).** Phase 1 앞에
-**어휘 확충 선행분**을 둔다 — [CR-019](../../upstream/CR-019-rejection-source-absorption.md)
+**어휘 확충 선행분**을 둔다 — [CR-019](../../upstream/archive/CR-019-rejection-source-absorption.md)
 (원천 상류 흡수) → [CR-001B](../../upstream/CR-001B-korean-limitation-vocabulary.md)
 (한국어 한정요소 어휘 수확) → **Phase 0 재계수** → 그 결과로 문턱을 재판정한다.
 **두 CR 은 전부 상류 §2 1단계 🛑 이며 승인 전 착수하지 않는다.**
