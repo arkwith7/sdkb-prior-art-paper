@@ -54,6 +54,63 @@ def digits(s: str) -> str:
     return re.sub(r"\D", "", str(s))
 
 
+#: 문헌 종류코드(A1·B2·A) — 뒤에 붙은 숫자가 번호에 섞이면 색인이 어긋난다.
+KIND_CODE = re.compile(r"[A-Z]{1,2}[0-9]?$")
+#: 정의줄의 국가 표기 — 없으면 국내로 본다.
+COUNTRY_HINTS = ((r"일본|특개|특표|JP", "JP"), (r"미국|US", "US"), (r"유럽|EP", "EP"),
+                 (r"국제공개|국제출원|PCT|WO", "WO"), (r"중국|CN", "CN"))
+
+
+def country_of(line: str) -> str:
+    for pat, cc in COUNTRY_HINTS:
+        if re.search(pat, line):
+            return cc
+    return "KR"
+
+
+def number_keys(line: str) -> set[str]:
+    """정의줄에서 문헌번호 후보를 만든다 — 연도·일련번호 표기와 자릿수 변형을 함께 낸다."""
+    out: set[str] = set()
+    for m in re.finditer(r"(\d[\d\-–/]{3,})", line):
+        raw = m.group(1).strip("-–/")
+        parts = [x for x in re.split(r"[\-–/]", raw) if x]
+        joined = "".join(parts)
+        out |= {joined, joined.lstrip("0")}
+        if len(parts) == 2 and len(parts[0]) == 4:
+            year, serial = parts
+            out |= {year + serial.zfill(k) for k in (5, 6, 7)}
+    return {x for x in out if len(x) >= 5}
+
+
+def build_doc_index(doc_ids) -> tuple[dict[tuple[str, str], str], int]:
+    """(국가, 번호) → doc_id. **종류코드를 떼고** 숫자를 읽는다."""
+    idx: dict[tuple[str, str], str] = {}
+    ambiguous = 0
+    for d in doc_ids:
+        cc, rest = d.split("_", 1)
+        dg = digits(KIND_CODE.sub("", rest))
+        if not dg:
+            continue
+        for key in {dg, dg.lstrip("0")}:
+            k = (cc.upper(), key)
+            if k in idx and idx[k] != d:
+                ambiguous += 1
+                continue
+            idx[k] = d
+    return idx, ambiguous
+
+
+def resolve_doc(line: str, idx) -> str | None:
+    """정의줄 → 코퍼스 doc_id. 국가 일치를 먼저 보고, 없으면 유일한 타국 일치를 받는다."""
+    cc = country_of(line)
+    keys = number_keys(line)
+    for k in keys:
+        if (cc, k) in idx:
+            return idx[(cc, k)]
+    hits = {idx[(c, k)] for (c, k) in idx if k in keys}
+    return next(iter(hits)) if len(hits) == 1 else None
+
+
 @dataclass(frozen=True)
 class Unit:
     """판단 단위 — (원천 문서, 문단, 유형)."""
@@ -103,13 +160,15 @@ def read_sources(sdkb: Path, apps: list[str]) -> dict[str, list[tuple[str, str]]
 
 
 def cite_map(texts: list[tuple[str, str]]) -> dict[int, str]:
-    """인용발명 번호 → 식별자 숫자열. 출원 단위로 병합한다(결정서는 재정의하지 않는 일이 잦다)."""
+    """인용발명 번호 → **정의줄 원문**. 출원 단위로 병합한다(결정서는 재정의하지 않는 일이 잦다).
+
+    번호 해소는 `resolve_doc()` 가 한다 — 국가 표기와 자릿수 변형이 정의줄에만 남아 있기 때문이다.
+    """
     m: dict[int, str] = {}
     for _, t in texts:
         for hit in CITE_DEF.finditer(t):
-            nums = [digits(x.group(1)) for x in NUMS.finditer(hit.group(2))]
-            if nums:
-                m.setdefault(int(hit.group(1)), nums[0])
+            if number_keys(hit.group(2)):
+                m.setdefault(int(hit.group(1)), hit.group(2))
     return m
 
 
@@ -138,8 +197,8 @@ def build_units(apps, dev, sources, corpus, doc_by_digits) -> tuple[list[Unit], 
                 stat["두 지시 보유"] += 1
                 resolved = []
                 for n in dict.fromkeys(cref):
-                    d = cmap.get(n)
-                    doc = doc_by_digits.get(d) if d else None
+                    line = cmap.get(n)
+                    doc = resolve_doc(line, doc_by_digits) if line else None
                     if doc:
                         resolved.append(doc)
                     else:
@@ -187,11 +246,11 @@ def diagnose(apps, dev, sources, corpus, doc_by_digits, concepts, per_query):
                     continue
                 seen.add("두 지시")
                 for n in dict.fromkeys(cref):
-                    d = cmap.get(n)
-                    if not d:
+                    line = cmap.get(n)
+                    if not line:
                         seen.add("정의줄 없음")
                         continue
-                    doc = doc_by_digits.get(d)
+                    doc = resolve_doc(line, doc_by_digits)
                     if not doc:
                         seen.add("코퍼스 밖")
                         continue
@@ -306,14 +365,7 @@ def main() -> None:
     apps = [d.replace("kr_", "") for d in dev]
     dev_by_app = dict(zip(apps, dev))
     corpus = pd.read_parquet(repo / "data/processed/ir/ir_corpus_v09.parquet").set_index("doc_id")
-    doc_by_digits: dict[str, str] = {}
-    ambiguous = 0
-    for d in corpus.index:
-        k = digits(d)
-        if k in doc_by_digits:
-            ambiguous += 1
-            continue
-        doc_by_digits[k] = d
+    doc_by_digits, ambiguous = build_doc_index(corpus.index)
     concepts = load_concept_matcher(sdkb)
     sources = read_sources(sdkb, apps)
     rr = pd.read_csv(repo / "data/external/sdkb/rejection_reasons.csv")
