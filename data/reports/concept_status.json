@@ -101,12 +101,12 @@
   },
   "instantiated": {
     "claim_features": {
-      "concept_zero_pct": 71.71,
-      "distinct_concepts": 109,
+      "concept_zero_pct": 66.9,
+      "distinct_concepts": 122,
       "features": 1306191,
-      "independent_concept_zero_pct": 73.44,
+      "independent_concept_zero_pct": 68.4,
       "independent_features": 520125,
-      "with_concept": 369586
+      "with_concept": 432305
     },
     "concepts": {
       "axes": {
@@ -151,12 +151,13 @@
     "dictionary": {
       "blocked_by_rule": {
         "R4-SHORT-KO-TASK": 6,
-        "R6-SURFACE-SUPPRESS": 2
+        "R6-SURFACE-SUPPRESS": 2,
+        "R7-DF-CEILING": 1
       },
       "concepts_covered": 274,
-      "schema_version": "1.1",
-      "surfaces": 635,
-      "surfaces_hangul": 154,
+      "schema_version": "1.2",
+      "surfaces": 649,
+      "surfaces_hangul": 168,
       "surfaces_lang_ko": 93
     },
     "judgment_axis_vendored": {
@@ -165,8 +166,8 @@
       "projection_parquet": true
     },
     "snapshot": {
-      "source_commit": "0a7ff1537850264a06f9c31af0305efa86b3beb9",
-      "vendored_at": "2026-08-15T11:46:44+00:00"
+      "source_commit": "48971f8d36fdd07c3db72c3f15a638f9bc0383ac",
+      "vendored_at": "2026-08-23T12:30:02+00:00"
     }
   },
   "operative": {

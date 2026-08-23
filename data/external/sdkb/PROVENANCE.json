@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "0a7ff1537850264a06f9c31af0305efa86b3beb9",
-  "source_commit_date": "2026-08-15T20:28:58+09:00",
+  "source_commit": "48971f8d36fdd07c3db72c3f15a638f9bc0383ac",
+  "source_commit_date": "2026-08-23T21:15:54+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-08-15T11:46:44+00:00",
+  "vendored_at": "2026-08-23T12:30:02+00:00",
   "baseline_counts": {
     "nodes": 274,
     "edges": 312,
@@ -14,7 +14,7 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-08-15T11:46:39+00:00",
+    "checked_at": "2026-08-23T12:29:57+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -25,7 +25,7 @@
       "ontology/sdkb-core-data.ttl": [
         {
           "input": "scripts/convert_rdf.py",
-          "sha256": "dfb56dc3b037ae62e0e29ad0e896d6cd7dbbbe3ba2b80d7061b27fb328d4ae77"
+          "sha256": "9bb25835d00a8cd67ea6a0057b9fe89847ff4f2853ff114853c118837a182ffd"
         },
         {
           "input": "data/semiconductor_v0_3.json",
@@ -35,7 +35,7 @@
       "ontology/sdkb-abox-patents.ttl": [
         {
           "input": "scripts/build_abox_patents.py",
-          "sha256": "589dc47cd96ca09f0cdc95fe59800a59d43937cc65f44ad5b1474bae35993444"
+          "sha256": "96513cb715b465bcdbd340db88cc7619143a2cdc21800907de163ab3a3440d75"
         },
         {
           "input": "data/patents/rejected_patents_meta.parquet",
@@ -67,7 +67,7 @@
         },
         {
           "input": "ontology/sdkb-abox-patents.ttl",
-          "sha256": "974899fa414f7444f64e578399056b4b1d014b2cfdcfe120685cbb8af458fcf5"
+          "sha256": "42df5c57861f16edb8cc15b00b8a7180e3cd26e8aa11d7167037bb1d710f4e0d"
         }
       ],
       "ontology/sdkb-abox-prior-art.ttl": [
@@ -144,14 +144,14 @@
       "file": "sdkb-abox-patents.ttl",
       "source_path": "ontology/sdkb-abox-patents.ttl",
       "role": "ABox: SIRP 거절특허 1,000건 — H1 의 before 를 구성한다",
-      "sha256": "974899fa414f7444f64e578399056b4b1d014b2cfdcfe120685cbb8af458fcf5",
+      "sha256": "42df5c57861f16edb8cc15b00b8a7180e3cd26e8aa11d7167037bb1d710f4e0d",
       "license_restricted": true
     },
     {
       "file": "sdkb-abox-b-layer-queries.ttl",
       "source_path": "ontology/sdkb-abox-b-layer-queries.ttl",
       "role": "ABox: B층 제2 확증분할 질의 200건 (CR-012 · 인용 간선 0) — 판독 B 의 질의 측",
-      "sha256": "5581e9b508fcd2c1c83ee98281291c110478706c06fc5e5a0b9f44546ea1b64a",
+      "sha256": "2df0fe10b9c1a13075f7d653da1b562f637f96e9dcb007df4669d54bf89ed373",
       "license_restricted": true
     },
     {
@@ -170,7 +170,7 @@
       "file": "sdkb-abox-prior-art.ttl",
       "source_path": "ontology/sdkb-abox-prior-art.ttl",
       "role": "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지",
-      "sha256": "e96d987358206f75f2fe2b444753c33dfd4e972ee006d18bea3af9068d5ff76b",
+      "sha256": "51873ceb481286a1c9aecde2caf8e30fcc6a86350baaf1d297b25b81f9c338b9",
       "license_restricted": true
     },
     {
@@ -213,19 +213,19 @@
       "file": "concept_mapping.json",
       "source_path": "mappings/concept_mapping.json",
       "role": "매핑: 특허 본문 → 개념 링크 사전(patent-text 프로파일) — 개념 적용기의 입력",
-      "sha256": "cdf5fa5dc1dcc2b41eec61cae2c470b8c866d838eadb20ba38f93d4a4d4698f4"
+      "sha256": "d306d6a08e361a6448ed743492e05ee6f42bad0be7371b7dddbad2baf8779459"
     },
     {
       "file": "abox_term_aliases.json",
       "source_path": "mappings/abox_term_aliases.json",
       "role": "매핑: A-Box 별칭 사전 — 상류 개념 링크 생성의 표층형 원천(재현용)",
-      "sha256": "9c8bbeb2067beab4a0f592e54e6103906c2d95a47b6f14f0825d6b954d17030b"
+      "sha256": "8c40d760c9cac5caa6e9be79fd4176a0376e522bd29e0762fc80cd2dc6a9ae5f"
     },
     {
       "file": "claim_features.parquet",
       "source_path": "mappings/claim_features.parquet",
       "role": "매핑: 청구항 한정요소 투영 1,306,191행 (CR-017 · 원문 0 · featureConcept 529,151)",
-      "sha256": "2b21465cdad52a370e4c35a7653d6da9fad12559412feb14e0cf31f4eef9452c"
+      "sha256": "16f8300dbf15a42b1e8bb5ab38ee9fcb40e7d1ed50877159a7a202115aab9b3c"
     },
     {
       "file": "semiconductor_v0_3.json",
@@ -257,8 +257,8 @@
       "role": "파생: 거절근거 조항 인스턴스(CR-004R · 하위집단 전용 · 원문 0열 · 순위 입력 아님)",
       "sha256": "c0cecac96e8e47958363439213efb8bd578704431d9bd4acfa83ce7f6abbbd21",
       "derived": true,
-      "source_sha256": "71e053b80ff545096164b2f3ccd1c4fa0be3c4134346cd43226d43e082163d28",
-      "source_bytes": 899089081,
+      "source_sha256": "0528d776b2d1dde442801ef69fe9b32119e67954283bb1cea7f9f97f88460852",
+      "source_bytes": 905563337,
       "counts": {
         "reasons": 2749,
         "applications": 994,
