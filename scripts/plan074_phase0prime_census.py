@@ -156,6 +156,77 @@ def build_units(apps, dev, sources, corpus, doc_by_digits) -> tuple[list[Unit], 
     return units, stat
 
 
+def diagnose(apps, dev, sources, corpus, doc_by_digits, concepts, per_query):
+    """쌍을 하나도 얻지 못한 질의의 **첫 차단 단계**를 센다 (PLAN-074 §16).
+
+    진단은 계수 규칙을 바꾸지 않는다 — 같은 입력·같은 규칙 위에서 **어디서 끊겼는가**만 본다.
+    """
+    stages = ["원천 없음", "유형 문단 0", "두 지시 문단 0", "인용발명 정의줄 없음",
+              "식별자가 코퍼스에 없음", "청구항 번호 범위 밖", "인용 청구항 실물 없음(D1)",
+              "인용 개념 0", "본원 개념 0", "차단 없음(쌍 있음)"]
+    out: dict[str, str] = {}
+    for app, q in zip(apps, dev):
+        if per_query.get(q):
+            out[q] = "차단 없음(쌍 있음)"
+            continue
+        texts = sources[app]
+        if not texts:
+            out[q] = "원천 없음"
+            continue
+        cmap = cite_map(texts)
+        lines = claim_lines(corpus.at[q, "claims_full"]) if q in corpus.index else []
+        seen = set()
+        for _, t in texts:
+            for para in paragraphs(t):
+                if not any(re.search(v, para) for v in CUES.values()):
+                    continue
+                seen.add("유형 문단")
+                cref = [int(x.group(1)) for x in CITE_REF.finditer(para)]
+                qref = CLAIM_REF.search(para)
+                if not cref or not qref:
+                    continue
+                seen.add("두 지시")
+                for n in dict.fromkeys(cref):
+                    d = cmap.get(n)
+                    if not d:
+                        seen.add("정의줄 없음")
+                        continue
+                    doc = doc_by_digits.get(d)
+                    if not doc:
+                        seen.add("코퍼스 밖")
+                        continue
+                    seen.add("문헌 해소")
+                    cno = int(qref.group(1))
+                    if not (1 <= cno <= len(lines)):
+                        seen.add("청구항 범위 밖")
+                        continue
+                    seen.add("청구항 접지")
+                    txt = corpus.at[doc, "claims_full"] if doc in corpus.index else None
+                    if not (isinstance(txt, str) and txt.strip()):
+                        seen.add("인용 청구항 없음")
+                        continue
+                    seen.add("인용 청구항 있음")
+                    if not concepts(txt):
+                        seen.add("인용 개념 0")
+                        continue
+                    seen.add("인용 개념 있음")
+                    if not concepts(lines[cno - 1]):
+                        seen.add("본원 개념 0")
+        order = [("유형 문단", "유형 문단 0"), ("두 지시", "두 지시 문단 0"),
+                 ("문헌 해소", "정의줄 없음" if "정의줄 없음" in seen and "코퍼스 밖" not in seen
+                  else "식별자가 코퍼스에 없음"),
+                 ("청구항 접지", "청구항 번호 범위 밖"),
+                 ("인용 청구항 있음", "인용 청구항 실물 없음(D1)"),
+                 ("인용 개념 있음", "인용 개념 0")]
+        label = None
+        for need, fail in order:
+            if need not in seen:
+                label = "인용발명 정의줄 없음" if fail == "정의줄 없음" else fail
+                break
+        out[q] = label or "본원 개념 0"
+    return out, stages
+
+
 def census(units, corpus, concepts, dev_by_app, claims_cache, fallback: bool = False):
     """쌍 생성 (§12.3).
 
@@ -274,6 +345,10 @@ def main() -> None:
             f.write(f"{i}\t{u.typ}\t{'r1' if rounds.get(u.app,1)<=1 else 'r2+'}\t"
                     f"{p[0]}\t{p[1]}\t{u.text[:400].replace(chr(9),' ')}\n")
 
+    diag, stages = diagnose(apps, dev, sources, corpus, doc_by_digits, concepts, per_query)
+    diag_n = collections.Counter(diag.values())
+    fb_gain = sum(1 for q in dev if not per_query[q] and fb_per_q[q])
+
     top = collections.Counter((p[0], p[1]) for _, p in unit_pairs).most_common(10)
     lines = [
         "# PLAN-074 Phase 0′ 계수 결과",
@@ -309,6 +384,13 @@ def main() -> None:
         f"| 쌍 폐기 · {k} | {v:,} |" for k, v in dropped.items()
     ] + [
         f"| 식별자 중복으로 버린 코퍼스 행 | {ambiguous:,} |",
+        "",
+        "## Q_cov 차단 단계 (쌍이 0인 질의의 첫 차단점)",
+        "",
+        "| 단계 | 질의 |",
+        "|---|---|",
+    ] + [f"| {st} | {diag_n.get(st, 0):,} |" for st in stages] + [
+        f"| (참고) 폴백을 허용하면 회복되는 질의 | {fb_gain:,} |",
         "",
         "## 빈출 개념 쌍 상위 10",
         "",
