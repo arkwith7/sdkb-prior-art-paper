@@ -146,7 +146,9 @@ def audit_feature_sources() -> dict:
     bad: dict[str, list[str]] = {}
     checked = []
     for name, path in (("concept_axis", config.IR_CONCEPT_AXIS),
-                       ("feature_sidecar", config.IR_FEATURE_SIDECAR)):
+                       ("feature_sidecar", config.IR_FEATURE_SIDECAR),
+                       # PLAN-075 §12.4 — 신설 두 항의 입력도 같은 감사를 탄다.
+                       ("concept_rel", config.IR_CONCEPT_REL)):
         if not Path(path).exists():
             continue
         cols = list(pd.read_parquet(path).columns)

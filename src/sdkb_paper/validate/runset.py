@@ -76,6 +76,9 @@ PIPELINE_PARTS: tuple[tuple[str, str], ...] = (
     ("ir_corpus", "IR_CORPUS"),
     ("concept_axis", "IR_CONCEPT_AXIS"),
     ("graph_v1", "GRAPH_V1"),
+    # PLAN-075 §12.5 — 관계 항의 입력. **부품을 더하면 서명은 자동으로 움직이므로 그 이동을
+    # 도달의 증거로 쓰지 않는다**(§7 ① 의 증거는 항별 비영 비율이다).
+    ("concept_rel", "IR_CONCEPT_REL"),
 )
 
 

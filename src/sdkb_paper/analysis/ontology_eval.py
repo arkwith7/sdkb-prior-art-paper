@@ -166,6 +166,87 @@ def rerank_p1(cache, tau_idx: int, alpha: float, w4, k: int = 1000):
     return out
 
 
+# --- P2: 관계 항 `w_r` + 투영 항 `w_f2` (PLAN-075 §12.4) ---------------------
+# **기존 `component_cache_p1`·`rerank_p1` 을 고치지 않고 확장 함수를 새로 둔다.** 설계 §12 의
+# 원칙이며, PLAN-075 §7 ⑤(두 신설 가중 0 → 기존 P1 run 과 바이트 동일)를 실측이 아니라
+# **구조로** 만족시킨다 — 실측으로만 지키면 회귀는 언젠가 통과한다.
+
+def component_cache_p2(feats, mask, base_run, qids, fc_index, proj=None, taus=TAUS,
+                       pool_k=S.POOL_K, keep_axes=S.ALL_AXES, use_path=True, use_ipc=True):
+    """P1 캐시에 두 열을 더한다: `(rel, rel_ok, proj, proj_ok)`.
+
+    `*_ok` 는 **결측 판정**이다 — False 인 항은 0 으로 채우지 않고 가중 재정규화로 빠진다(§12.2).
+    """
+    from ..retrieval.claim_projection import ProjectionIndex
+
+    if proj is None:
+        pool_docs = {d for qid in qids for d in base_run.get(qid, [])[:pool_k]}
+        proj = ProjectionIndex(restrict_docs=pool_docs | set(qids))
+    qrows = _query_features(feats)
+    cache = {}
+    for qid in qids:
+        qrow = qrows.get(qid)
+        pool = [d for d in base_run.get(qid, []) if mask.is_allowed(qid, d)][:pool_k]
+        m = len(pool)
+        q_proj_ok = proj.has(qid)
+        rows = []
+        for rank0, d in enumerate(pool):
+            drow = feats.row.get(d)
+            tn = 1.0 - (rank0 / (m - 1)) if m > 1 else 1.0
+            if qrow is None or drow is None:
+                rows.append((d, tn, 0.0, 0.0, 0.0, tuple(0.0 for _ in taus),
+                             0.0, False, 0.0, False))
+                continue
+            qc = S._filter_concepts(feats, feats.concepts[qrow], keep_axes)
+            dc = S._filter_concepts(feats, feats.concepts[drow], keep_axes)
+            c = feats.concept_overlap(qc, dc)
+            p = feats.path_sim(qc, dc) if use_path else 0.0
+            ic = feats.ipc_sim(feats.ipc[qrow], feats.ipc[drow]) if use_ipc else 0.0
+            bs = fc_index.best_sims(qid, d)
+            fc = tuple(float((bs >= t).mean()) if bs.size else 0.0 for t in taus)
+            rel_ok = feats.has_rel(qc) and feats.has_rel(dc)
+            rel = feats.rel_sim(qc, dc) if rel_ok else 0.0
+            proj_ok = q_proj_ok and proj.has(d)
+            pv = proj.u2(qid, d) if proj_ok else 0.0
+            rows.append((d, tn, c, p, ic, fc, rel, rel_ok, pv, proj_ok))
+        cache[qid] = rows
+    return cache
+
+
+def rerank_p2(cache, tau_idx: int, alpha: float, w6, k: int = 1000):
+    """P2 재랭크: (1−α)text + α(w_c·c + w_h·p + w_i·ipc + w_f·fc[τ] + w_r·rel + w_f2·proj).
+
+    `w6 = (w_c, w_h, w_i, w_f, w_r, w_f2)`. 측정 불가한 신설 항은 재정규화로 빠진다(§12.2).
+    """
+    wc, wh, wi, wf, wr, wf2 = w6
+    out = {}
+    for qid, rows in cache.items():
+        scored = []
+        for d, tn, c, p, ic, fc, rel, rel_ok, pv, proj_ok in rows:
+            w = {"c": wc, "h": wh, "i": wi, "f": wf, "r": wr, "f2": wf2}
+            if wr or wf2:
+                w = S.renormalize(w, {"r": rel_ok or not wr, "f2": proj_ok or not wf2})
+            ont = (w["c"] * c + w["h"] * p + w["i"] * ic + w["f"] * fc[tau_idx]
+                   + w["r"] * rel + w["f2"] * pv)
+            scored.append(((1.0 - alpha) * tn + alpha * ont, d))
+        scored.sort(key=lambda x: (-x[0], x[1]))
+        out[qid] = [d for _, d in scored[:k]]
+    return out
+
+
+def lambda_grid(w4, lam_r: float = 0.0, lam_f2: float = 0.0) -> tuple:
+    """P1 의 네 항 **비율을 고정한 채** 신설 항의 몫 λ 만 떼어 준다(§12.6).
+
+    `w6 = ((1 − λ_r − λ_f2)·w4, λ_r, λ_f2)`. P1 을 재선택하지 않는 이유는 둘이다 — 동결된
+    구성이 흔들리면 원고가 인용하는 값이 흔들리고, 여섯 항을 한 번에 올리면 이득이 어느 항의
+    것인지 갈리지 않는다(D-23 이 이미 만든 미구분).
+    """
+    keep = 1.0 - lam_r - lam_f2
+    if keep < 0:
+        raise ValueError(f"λ 합이 1 을 넘는다: λ_r={lam_r} λ_f2={lam_f2}")
+    return (*(round(w * keep, 6) for w in w4), lam_r, lam_f2)
+
+
 def select_p1(cache, qrel, fam, taus=TAUS, k: int = 100) -> dict:
     """dev family R@k 최대 (τ, α, w4) 선택. 동률: 낮은 α → 사전순. P-3/P-4."""
     alphas = [0.25, 0.5, 0.75, 1.0]

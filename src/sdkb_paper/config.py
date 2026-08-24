@@ -124,6 +124,10 @@ IR_CONCEPT_AXIS = IR_DIR / "concept_axis.parquet"
 # **접두어(축) 붙은 정본 concept_id 는 여기에만 있다**(코퍼스 concepts 열은 지역명만 보관).
 # 재생성 가능 → gitignore. 코퍼스에 컬럼을 늘리지 않는 이유는 PLAN-034 §3.3 무작동 동치성.
 IR_CONCEPT_LINKS = IR_DIR / "concept_links.parquet"
+# 개념 쌍 관계 유사도 표 (PLAN-075 §12.5 · `w_r` 경로 항의 입력). 벤더 개념 그래프의
+# 무향 최단 홉을 γ 로 감쇠한 쌍 표 — 199×199 상한이라 사전 계산해 두면 질의당 비용은 조회뿐이다.
+# `ontology/concept_relations.py` 생성 · 결정적(정렬·반올림 고정) → 커밋 가능.
+IR_CONCEPT_REL = IR_DIR / "concept_rel.parquet"
 # 상류 CR-007 이 낸 개념 매핑 사전(벤더 스냅샷). 없으면 적용기는 무작동 — 그 상태가 O 팔이다.
 SDKB_CONCEPT_MAP = EXTERNAL_SDKB / "concept_mapping.json"
 # claim-feature sidecar (P1/P2 · PLAN-018 §7.5). central_axis.oxstore 에서 추출한 특허별 청구항 피처

@@ -39,6 +39,8 @@ class OntologyFeatures:
         self.ipc: list[frozenset[str]] = _sets("ipc")
         self.cpc: list[frozenset[str]] = _sets("cpc")
 
+        self._rel: dict[tuple[str, str], float] | None = None   # 관계 표(지연 적재 · §12.2)
+        self._rel_nodes: frozenset[str] | None = None            # 결측 판정용 노드 집합
         self.axis: dict[str, str] = load_axis()      # slug → axis_class
         tree = load_tree()
         self.depth: dict[str, int] = tree["depth"]
@@ -90,6 +92,46 @@ class OntologyFeatures:
             return 0.0
         inter = len(a & b)
         return inter / len(a | b) if inter else 0.0
+
+    # -- 관계 유사도 (PLAN-075 §12.2 · `w_r`) --
+    @property
+    def rel(self) -> dict[tuple[str, str], float]:
+        """개념 쌍 관계 표(지연 적재). 표가 없으면 빈 사전 → 항은 무작동이다."""
+        if self._rel is None:
+            from ..ontology.concept_relations import load_rel
+            self._rel = load_rel()
+        return self._rel
+
+    def has_rel(self, cs: frozenset[str]) -> bool:
+        """관계 표에 등장하는 개념을 하나라도 갖는가. **결측 판정용** — 갖지 못하면 이 항은
+        측정 불가이며, 0 이 아니라 **가중 재정규화로 제외**된다(§12.2)."""
+        if self._rel_nodes is None:
+            self._rel_nodes = frozenset(x for k in self.rel for x in k)
+        return bool(cs & self._rel_nodes)
+
+    def rel_sim(self, a: frozenset[str], b: frozenset[str]) -> float:
+        """mean_{qa} max_{db} s(qa,db). **정확 일치는 0** — 겹침은 ConceptOverlap 이 이미 센다.
+
+        이 항이 읽는 것은 *겹치지 않는데 관계로 이어진* 쌍뿐이다(§12.2). 그래서 이 항의 이득은
+        개념 겹침 항의 재계상이 아니라 새 정보로 해석할 수 있다.
+        """
+        rel = self.rel
+        if not a or not b or not rel:
+            return 0.0
+        tot = 0.0
+        for qa in a:
+            best = 0.0
+            for db in b:
+                if qa == db:
+                    continue                      # s(a,a) = 0 (설계 §12.2 · 이중 계상 금지)
+                key = (qa, db) if qa < db else (db, qa)
+                w = rel.get(key, 0.0)
+                if w > best:
+                    best = w
+                    if best >= 1.0:
+                        break
+            tot += best
+        return tot / len(a)
 
     def path_sim(self, a: frozenset[str], b: frozenset[str]) -> float:
         """mean_{qa} max_{db} WP(qa,db). 정확 겹침이면 WP=1 기여(자기클래스)."""
