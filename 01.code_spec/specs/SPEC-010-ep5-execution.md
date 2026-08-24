@@ -4,7 +4,7 @@
 > §3 의 권고 다섯이 그대로 승인되었고, 그 결정을 §6 에 기록한 뒤 구현한다. **이 문서는 홀드아웃(`ex-soda_brick.ttl`)을 열지 않았고,
 > 판정을 하나도 내리지 않았으며, 원고·판정·봉인을 건드리지 않는다.**
 >
-> 근거 문서는 [PLAN-064-prereg.md](../plans/PLAN-064-prereg.md)(발효·동결)와
+> 근거 문서는 [PLAN-064-prereg.md](../archive/PLAN-064-prereg.md)(발효·동결)와
 > [SPEC-009](SPEC-009-resource-agnostic-gate-profiles.md)(A-1 구현 기록)이다.
 
 ---

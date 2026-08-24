@@ -5,7 +5,7 @@
 > [D-51](../../upstream/DEFECT-LEDGER.md) 이 받았다 — 상류가 발행한 투영을 읽는 하류 검색 코드가
 > 0개여서 델타가 측정에 도달하지 않았다.
 > **이월: CR-020 ⑥ 재판정과 CR-020 종료 결정(① 배선 / ② 기준 개정)은
-> [`plans/PLAN-075`](../plans/PLAN-075-operative-channel-path-term-and-projection-wiring.md) 가 받는다.**
+> [`plans/PLAN-075`](PLAN-075-operative-channel-path-term-and-projection-wiring.md) 가 받는다.**
 > 이 문서는 사전등록 기록이므로 수정하지 않는다.
 
 

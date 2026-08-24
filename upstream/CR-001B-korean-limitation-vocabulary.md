@@ -590,7 +590,7 @@ R7 차단 1 — **온도**(→`parameter:temperature` · df 비율 **0.1024** ·
 ⑤ 는 `dev` 를 지정했고 측정은 `test` 에서 이루어졌다(§12.2). 그러므로 판정은
 **"조건 충족 · 명세 분할 아님"** 으로 적는다.
 
-측정의 근거는 하류 사전등록 [PLAN-072-prereg](../01.code_spec/plans/PLAN-072-prereg.md)이며,
+측정의 근거는 하류 사전등록 [PLAN-072-prereg](../01.code_spec/archive/PLAN-072-prereg.md)이며,
 스냅샷 `0a7ff153`(서명 `665c27d1c774`) → `48971f8`(서명 `c17e33f0d594`) 두 팔을 파이프라인
 동결 상태에서 짝지어 비교하였다.
 

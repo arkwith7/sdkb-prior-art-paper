@@ -2,7 +2,7 @@
 
 > **아카이빙 2026-08-23 — 2단계 관찰까지 완주 후 승계.** §10 dev 전용 관찰(U0–U3 변별력 · 상관 ·
 > 결측 32.4 % · 접두 정규화 · 비용)은 **전량 유효하며 다시 재지 않는다.**
-> **승계처: [`plans/PLAN-075`](../plans/PLAN-075-operative-channel-path-term-and-projection-wiring.md)**
+> **승계처: [`plans/PLAN-075`](PLAN-075-operative-channel-path-term-and-projection-wiring.md)**
 > — 대상이 하나(투영 배선)에서 둘(투영 배선 + **경로 점수 항**)로 늘어 번호를 새로 세웠다.
 > 미결이던 §1 순서 제약(2×2 · `src/` 무변경)과 §10.4 결정 다섯도 그 문서가 받는다.
 > **PLAN-073 번호는 재사용하지 않는다**(§0.5). 이 문서는 결정 기록이므로 수정하지 않는다.

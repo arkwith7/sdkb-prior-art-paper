@@ -33,7 +33,7 @@
 검정력 부족인지는 구분하지 못했다. 승인 안전성(변경 없는 파이프라인에서 O와 O′를 비교하는 검정)은
 본 원고의 자원에서는 **미검정**이며, 별도 사전등록(PLAN-035)의 1회 실검정에서는 기각되었다.
 제2 도메인 이식(EP5)의 사전등록은
-[PLAN-064-prereg](01.code_spec/plans/PLAN-064-prereg.md)이고 실행 기록은
+[PLAN-064-prereg](01.code_spec/archive/PLAN-064-prereg.md)이고 실행 기록은
 [SPEC-010](01.code_spec/specs/SPEC-010-ep5-execution.md)이다. **형식 층과 교차 태스크 층에 한정한
 판정**이며, 결함 명세는 대상 자원의 모델링 관습에 맞추어 재정의되어야 한다는 것이 그 결과다.
 

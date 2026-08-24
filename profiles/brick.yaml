@@ -98,7 +98,7 @@ protected_paths:
 
 # 동결 자원의 sha256 — 불일치면 로드 시점에 예외다(SPEC-009 §3.1.3).
 prereg:
-  document: 01.code_spec/plans/PLAN-064-prereg.md
+  document: 01.code_spec/archive/PLAN-064-prereg.md
   effective: "2026-08-22"
   sha256:
     "data/external/brick/Brick-v1.3.0.ttl": "a88a716d6ff90748e4847d99cae5e581f8dd9efd2c85e3f207110e59fbb44882"

@@ -300,7 +300,7 @@ O-4(`materialize_paths.py`)와 E3–E5 는 이 순서에서 조건부로 뒤로 
 4. **`src/` 무변경** — 구현은 `scripts/` 하나로 한다(`CODE_PATHS` 밖 · 선례 `plan054_multilingual.py`).
    `src/` 를 건드리면 기존 동결 runset 과의 O/O′ 비교가 **영구 실격**이다.
 
-   > **개정 — 이 규칙의 기준선이 이동한다 (2026-08-24 · [PLAN-075 §3](PLAN-075-operative-channel-path-term-and-projection-wiring.md)
+   > **개정 — 이 규칙의 기준선이 이동한다 (2026-08-24 · [PLAN-075 §3](../archive/PLAN-075-operative-channel-path-term-and-projection-wiring.md)
    > 선택지 ⓒ · 사용자 승인).** PLAN-075 의 통로 배선이 **먼저** 들어가므로 기존 동결 runset
    > (`O_pre_linker`·`Oprime_2839afb`)과의 O/O′ 비교는 이 실험에서 **더 이상 성립하지 않는다.**
    > **설계는 살아 있고 기준선만 바뀐다** — 2×2 · df 출처 (a)/(b) · 금지 문구 · B-3 정지 게이트는

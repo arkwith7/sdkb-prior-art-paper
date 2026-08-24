@@ -1,11 +1,45 @@
 # 진행 실적 (v0.9)
 
-*최종 갱신: 2026-08-23 25차 (**PLAN-075 요구정의 · 경로 항 퇴화 실측 · 아카이빙 2건**) · 이전: 2026-08-22 24차 (**EP5 사전등록 발효 · CQ 15 · 결함 3종 · 자원 sha256 동결**) · 이전: 2026-08-22 23차 (**PLAN-064 P0 교정 3건 + README · P1 압축 −1,704자 · A-0 Brick 실측**) · 이전: 2026-08-20 20차 (**D6 2단 규칙 · 분량 재배분 · L0 신선도 해소 · 종결 PLAN 3건 아카이빙**) · 이전: 2026-08-19 19차 (**PLAN-060 단계 C · 자격 심사 = 델타 0건 · 판정 산출 덮어쓰기 차단**) · 이전: 2026-08-19 18차 (**PLAN-060 단계 B 완주 · 외부 검토 반영 · DP 재등급**) · 이전: 2026-08-18 16차 (**PLAN-054 완주 · 다국어 기준선 B★ 확정과 원고 반영 · 살아 있는 계획 0**) · 기조: 설계과학(DSR) — 전환 완료*
+*최종 갱신: 2026-08-24 26차 (**O-6 종결 · 회귀 신호 복구 실행 → D-52 · 아카이빙 3건**) · 이전: 2026-08-23 25차 (**PLAN-075 요구정의 · 경로 항 퇴화 실측 · 아카이빙 2건**) · 이전: 2026-08-22 24차 (**EP5 사전등록 발효 · CQ 15 · 결함 3종 · 자원 sha256 동결**) · 이전: 2026-08-22 23차 (**PLAN-064 P0 교정 3건 + README · P1 압축 −1,704자 · A-0 Brick 실측**) · 이전: 2026-08-20 20차 (**D6 2단 규칙 · 분량 재배분 · L0 신선도 해소 · 종결 PLAN 3건 아카이빙**) · 이전: 2026-08-19 19차 (**PLAN-060 단계 C · 자격 심사 = 델타 0건 · 판정 산출 덮어쓰기 차단**) · 이전: 2026-08-19 18차 (**PLAN-060 단계 B 완주 · 외부 검토 반영 · DP 재등급**) · 이전: 2026-08-18 16차 (**PLAN-054 완주 · 다국어 기준선 B★ 확정과 원고 반영 · 살아 있는 계획 0**) · 기조: 설계과학(DSR) — 전환 완료*
+
+> ## 🔜 다음 세션이 할 일 — **상류 확인 한 건이 §2.1 앞에 선다** (2026-08-24 26차 인계)
+>
+> **O-6 은 종결됐다** — 봉인 원장 배선 교정이 커밋 `cdfbf3d` 로 들어갔다
+> ([PLAN-076](archive/PLAN-076-seal-ledger-wiring.md) · 15자리 배선 · 판정·수치 변경 0 · 원장 앞 25행 불변).
+>
+> **2순위(회귀 신호 복구)를 실행했더니 신호가 울렸다.** `make baseline` 재실행으로 L0 신선도는
+> 복구했으나, 재조립된 G₀ 가 동결 서명과 어긋난다 — **119,251 → 110,880(−8,371)** ·
+> `CitedPatent` 3,513 → **3,034**(CR-008 이 올린 479 건 그대로) · `concernsSkill` 2,182 → **277** ·
+> CQ01 커버 공정 20 → **23** · CQ18 10행 → **4행**. **T-Box 서명(99·85·103)은 불변**이므로
+> 순감은 A-Box 한 층이다. **벤더 사본과 상류 워킹트리의 sha256 이 동일하다**(`51873ceb…`) —
+> 벤더 시점 사고가 아니라 상류 산출물이 그렇게 생성됐다. 등재는 **D-52**(P0).
+>
+> **사용자 결정 (2026-08-24) — 보류 · 상류 확인 먼저.** 동결 상수와 발행 서명
+> (CANONICAL-INDEX §1 · DATASET-CARD · MANIFEST · S7)은 그대로 두었고, 그래서
+> `test_baseline_integration` **서명 4건은 실패로 남는다 — 그 실패가 회귀 신호다.**
+> `ir_panel` 기대값 기록도 함께 보류했다(arm `4d9c2b8382cf` · 라벨 없음 · dev P0★ 0.4054 → 0.4077 ·
+> **B3 0.377 불변**). 두 항목은 대장의 **O-8 · O-9** 다.
+>
+> **그러므로 CR-001B ⑤ · CR-020 ⑥ 의 §2.1 사전등록 동결은 이 확인 뒤에 선다** — 이 스냅샷 위에서
+> 동결하면 어휘·배선 델타와 A-Box 순감이 한 팔에 섞여 가를 수 없다(DP4 의 미구분).
+>
+> **아카이빙 3건.** [PLAN-064-prereg](archive/PLAN-064-prereg.md)(EP5 A-4 실행 · A-5 원고 반영 완주 ·
+> 상위 [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md) 는 DoD 6·7 과 D단계로
+> **살아 있다**) · [PLAN-075](archive/PLAN-075-operative-channel-path-term-and-projection-wiring.md)
+> (1~5단계 완주 · 커밋 `42ef759` · **남은 λ 선택은 새 사전등록이라 O-10 으로 이월**) ·
+> [PLAN-076](archive/PLAN-076-seal-ledger-wiring.md)(§2 게이트 4개 완주 · 커밋 `cdfbf3d`).
+> **삭제는 하지 않았다** — PLAN 은 지워지지 않는다(README). **번호는 재사용하지 않는다**(§0.5).
+>
+> **살아 있는 계획은 넷이다** — [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)(DoD 6·7 · D단계 영문) ·
+> [PLAN-069](plans/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
+> [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)(후속 논문) ·
+> [PLAN-074](plans/PLAN-074-part1-redesign-extraction-unit.md)(Phase 0′ · 판정 부분).
+> 열린 항목은 [plans/OPEN-ITEMS.md](plans/OPEN-ITEMS.md) — **O-8·O-9·O-10 신설 · O-6 종결**.
 
 > ## 🔜 다음 세션이 할 일 — **PLAN-075 §3 순서 결정이 먼저다. 코드는 그 뒤다** (2026-08-23 25차 인계)
 >
 > **작동 층 로드맵 1번(통로)의 요구정의를 세웠다** —
-> [PLAN-075](plans/PLAN-075-operative-channel-path-term-and-projection-wiring.md)(§2 1단계 🛑 ·
+> [PLAN-075](archive/PLAN-075-operative-channel-path-term-and-projection-wiring.md)(§2 1단계 🛑 ·
 > **승인 대기**). 대상은 둘이다 — ① **경로 점수 항** 신설 ② **한정요소 투영 배선**(PLAN-073 승계).
 > **판정·수치 변경 0 · 새 실험 0 · 봉인 개봉 0 · 원고 변경 0 · `src/` 무변경.**
 >
@@ -44,11 +78,11 @@
 > **PLAN-073 번호는 재사용하지 않는다**(§0.5).
 >
 > **살아 있는 계획은 다섯이다** — [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)
-> (+[사전등록](plans/PLAN-064-prereg.md) · **A-0~A-5·B 완주 · 남은 것은 DoD 6·7 과 D단계 영문**) ·
+> (+[사전등록](archive/PLAN-064-prereg.md) · **A-0~A-5·B 완주 · 남은 것은 DoD 6·7 과 D단계 영문**) ·
 > [PLAN-069](plans/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
 > [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)(후속 논문) ·
 > [PLAN-074](plans/PLAN-074-part1-redesign-extraction-unit.md)(Phase 0′ · **판정 부분**) ·
-> [PLAN-075](plans/PLAN-075-operative-channel-path-term-and-projection-wiring.md)(**신설 · 승인 대기**).
+> [PLAN-075](archive/PLAN-075-operative-channel-path-term-and-projection-wiring.md)(**신설 · 승인 대기**).
 > 열린 항목은 [plans/OPEN-ITEMS.md](plans/OPEN-ITEMS.md) — O-7(CR-020 ⑥)은 PLAN-075 로 **이관 종결**.
 
 > ## 📌 트랙 재분류 — **자원 품질 트랙에서 "(투고 후)" 를 걷어냈다** (2026-08-23 · 사용자 결정)
@@ -107,13 +141,13 @@
 > PLAN-071 의 2×2 사전등록 동결 전에 끝내거나 그 이후로는 착수하지 않는다**).
 >
 > **살아 있는 계획은 넷이다** — [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)
-> (+[사전등록](plans/PLAN-064-prereg.md) · **A-1 이 임계 경로**) ·
+> (+[사전등록](archive/PLAN-064-prereg.md) · **A-1 이 임계 경로**) ·
 > [PLAN-069](plans/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
 > [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)(후속 논문 · 착수 전).
 
 > ## 🔜 이전 인계 — **A-1(게이트 자원 비의존화)이 임계 경로다** (2026-08-22 24차 인계 · **A-1·A-4·A-5 완주로 종결** · 커밋 `04409e8`·`680e11a`·`fff745d`)
 >
-> **EP5 사전등록이 발효되었다 — [PLAN-064-prereg.md](plans/PLAN-064-prereg.md) 커밋이 §2.1 의
+> **EP5 사전등록이 발효되었다 — [PLAN-064-prereg.md](archive/PLAN-064-prereg.md) 커밋이 §2.1 의
 > 정지 게이트다.** 판정·수치 변경 0 · 봉인 개봉 0 · 원고 변경 0. 동결된 것은 자원과 평가 설계뿐이며
 > **SDKB 실험의 값은 하나도 건드리지 않았다.**
 >

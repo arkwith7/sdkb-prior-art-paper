@@ -4,7 +4,7 @@
 |---|---|
 | 지지하는 것 | **C3 진화안전**(게이트가 자원에 의존하지 않음의 코드 증거) · **C4 설계지식**(DP3 이전 가능성의 선행조건) |
 | 상위 계획 | [PLAN-064 §3](../plans/PLAN-064-second-domain-portability-and-aei-reframe.md) C1–C9 (+ 본 문서가 신설하는 C10·C11) |
-| 동결 문서 | [PLAN-064-prereg](../plans/PLAN-064-prereg.md) — **이 문서는 사전등록을 해석하지 않고 전사한다** |
+| 동결 문서 | [PLAN-064-prereg](../archive/PLAN-064-prereg.md) — **이 문서는 사전등록을 해석하지 않고 전사한다** |
 | 대상 | `src/sdkb_paper/config.py` · `validate/{cq_runner,t3_cross_task_cq,fault_inject,shacl_gate,t_gate,quarantine}.py` · `analysis/faults.py` · `Makefile` · `tests/` · `paper/verdicts.yaml` |
 | 단계 | §2 정지 게이트 — **1 요구정의 ✔승인(2026-08-22) · 2 분석 ✔ · 3 설계 = 이 문서 · 4 구현 · 5 검증** |
 

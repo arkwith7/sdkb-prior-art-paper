@@ -1,7 +1,7 @@
 # S8 · 제2 공학 온톨로지로의 이식(EP5) — 프로토콜과 판정 전문
 
 > 본문 §4.6·§5.5의 축약 이전 전문이다. **판정은 각 1회이며 재판정은 없다.** 사전등록은
-> [PLAN-064-prereg](../../01.code_spec/plans/PLAN-064-prereg.md)이고, 실행 기록과 설계 결정은
+> [PLAN-064-prereg](../../01.code_spec/archive/PLAN-064-prereg.md)이고, 실행 기록과 설계 결정은
 > [SPEC-010](../../01.code_spec/specs/SPEC-010-ep5-execution.md)이다. 아래 판정표는
 > `make ep5`가 생성한 [paper/tables/ep5_second_domain.md](../tables/ep5_second_domain.md)의
 > 사본이며 손으로 고치지 않는다.

@@ -3,7 +3,7 @@
 > 제출처: `~/Dev/sdkb` · 양식: 상류 CLAUDE.md §2 **1단계 요구정의**
 > 근거: 이 문서 §2 실측 (2026-08-23) · [DEFECT-LEDGER](DEFECT-LEDGER.md) D-46
 > 관련: [HANDOFF-QUEUE](HANDOFF-QUEUE.md) 13차(2026-08-09 · paper_data **코드** 흡수 완료) ·
-> [PLAN-071 §-1.3(a)](../01.code_spec/plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)
+> [PLAN-071 §-1.3(a)](../../01.code_spec/plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)
 > 우선순위: **P0** — CR-001B 의 어휘 수확과 후속 논문 O-2 채굴이 모두 이 원천 위에서만 성립한다
 >
 > **이 문서는 승인 요청이지 착수가 아니다.** 상류 §2 1단계 🛑 이며, 2단계(분석)·3단계(설계)는

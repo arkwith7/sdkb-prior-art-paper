@@ -6,7 +6,7 @@
 > §2.1(자원만 교체) 경로가 아니다** — 정지 게이트 4개를 전부 탄다.
 >
 > **위치.** 승인된 작동 층 로드맵(2026-08-23) 세 단계 가운데 **1번(통로)** 이다.
-> `통로(배선) → 공리(채굴·T-Box) → 자유 텍스트 평가셋`. 2번의 원료는 [PLAN-074](PLAN-074-part1-redesign-extraction-unit.md)
+> `통로(배선) → 공리(채굴·T-Box) → 자유 텍스트 평가셋`. 2번의 원료는 [PLAN-074](../plans/PLAN-074-part1-redesign-extraction-unit.md)
 > Phase 0′ 계수가 이미 만들고 있고, 3번은 평가셋이 0건이라 아직 설계 이전이다.
 >
 > **승계.** 이 문서는 [PLAN-073](../archive/PLAN-073-claim-feature-projection-wiring.md)(한정요소 투영
@@ -62,12 +62,12 @@ P1 run 과 바이트 동일**이어야 한다(§7 ⑤). ③ dev 에서의 가중
 
 ## 3. 순서 제약 — **미결이며 승인이 필요하다**
 
-[PLAN-071 §-1.7](PLAN-071-followup-paper-axiomatized-resource-redesign.md) 규칙 4 는 2×2
+[PLAN-071 §-1.7](../plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md) 규칙 4 는 2×2
 자원·점수식 가름 실험에 **`src/` 무변경**을 걸었다 — 동결 runset 과의 O/O′ 비교가 실격되기
 때문이다(`validate/runset.py:114`). **이 배선은 정의상 `src/` 를 바꾼다.**
 
 같은 제약이 **O-6(봉인 원장 배선 교정 · `analysis/metrics.py:52`)** 에도 걸려 있고, 그쪽은
-[OPEN-ITEMS O-6](OPEN-ITEMS.md) 가 *"PLAN-071 의 2×2 사전등록이 동결되기 전에 끝내거나 그 이후로는
+[OPEN-ITEMS O-6](../plans/OPEN-ITEMS.md) 가 *"PLAN-071 의 2×2 사전등록이 동결되기 전에 끝내거나 그 이후로는
 착수하지 않는다"* 로 규칙을 이미 박아 두었다. **`src/` 를 바꾸는 작업이 셋(이 배선 · O-6 · 2×2)
 이므로 순서를 한 번에 정하는 것이 옳다.**
 
@@ -78,8 +78,8 @@ P1 run 과 바이트 동일**이어야 한다(§7 ⑤). ③ dev 에서의 가중
 | **ⓒ** | 2×2 를 **후속 논문에서 배선 뒤 재설계**로 흡수(=사실상 ⓑ + 명시적 이관 기록) | PLAN-071 §-1.7 의 문안 수정이 필요하다 |
 
 > **결정: ⓒ · 2026-08-24 사용자 승인.** 2×2 가름 실험은 **후속 논문에서 배선 뒤 재설계로
-> 흡수**하고, 이 배선과 O-6 을 먼저 한다. 귀결 셋 — ① [PLAN-071 §-1.7](PLAN-071-followup-paper-axiomatized-resource-redesign.md)
-> 규칙 4(`src/` 무변경)의 문안을 이 결정에 맞추어 개정한다. ② [OPEN-ITEMS O-6](OPEN-ITEMS.md)
+> 흡수**하고, 이 배선과 O-6 을 먼저 한다. 귀결 셋 — ① [PLAN-071 §-1.7](../plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)
+> 규칙 4(`src/` 무변경)의 문안을 이 결정에 맞추어 개정한다. ② [OPEN-ITEMS O-6](../plans/OPEN-ITEMS.md)
 > 의 *"2×2 사전등록 동결 전에 끝내거나 그 이후로는 착수하지 않는다"* 규칙은 **해소**된다 —
 > 동결이 배선 뒤로 이동했으므로 O-6 은 지금 착수할 수 있다(§2 게이트 4개는 그대로 탄다).
 > ③ 동결 runset `O_pre_linker`·`Oprime_2839afb` 는 **폐기하지 않는다** — 현 원고 §6 의 출처이자

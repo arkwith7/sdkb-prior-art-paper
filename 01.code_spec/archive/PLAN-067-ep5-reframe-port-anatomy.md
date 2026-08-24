@@ -1,7 +1,7 @@
 # PLAN-067 — EP5 재프레이밍: 일반화 시험에서 **이식 해부**로
 
 > **위치.** [PLAN-064](../plans/PLAN-064-second-domain-portability-and-aei-reframe.md) 가 설계하고
-> [PLAN-064-prereg.md](../plans/PLAN-064-prereg.md) 가 동결한 EP5 의 **판정을 그대로 두고, 그 판정을 원고가
+> [PLAN-064-prereg.md](PLAN-064-prereg.md) 가 동결한 EP5 의 **판정을 그대로 두고, 그 판정을 원고가
 > 쓰는 방식**을 바꾸는 계획이다. **판정·수치·봉인 변경 0 · 새 실험 0 · 재실행 0.**
 >
 > **이 문서는 CLAUDE.md §2.2(원고 기조 변경)의 정지 게이트다.** 장 구성·주장·기여 문장이 바뀌므로
@@ -87,7 +87,7 @@ Dense 모델 · 토큰화 · 라벨 체계(RQ·EP·DP·L·T·A·B) · 게이트 
 | 21건 전량에서 **어느 층도** 검출하지 않음 | `detected` 전 층 False · `first_layer: null` | `data/processed/ep5_faults.json` |
 | **홀드아웃 관찰면이 절반 이하** | 역량질문 15개 중 **7개만 행 산출**(core 1/5 · fdd 3/5 · space 3/5) · 개발 모델은 15/15 | 같은 파일 `baseline.rows` · `data/cq_generations/brick/cq_d0.json` |
 | 결함 주입 자체가 불성립 | X2 후보 **0/9**(`hasPart` ↔ `isPartOf`) · X4 영향 트리플 1–2건 | 같은 파일 `instances[].stats` |
-| 회귀 정의가 신호 방향을 세지 않음 | X3 은 행 수가 **증가**하는 결함 · `monotone: up` 은 증가를 회귀로 세지 않음 | [PLAN-064-prereg.md](../plans/PLAN-064-prereg.md) §4.3 |
+| 회귀 정의가 신호 방향을 세지 않음 | X3 은 행 수가 **증가**하는 결함 · `monotone: up` 은 증가를 회귀로 세지 않음 | [PLAN-064-prereg.md](PLAN-064-prereg.md) §4.3 |
 | 델타 제약도 이식되지 않음 | 계보 10판정 중 **8판정이 L1 미충족** — S-D3 이 `rdfs:domain/range` 를 요구하나 Brick 은 SHACL 로 선언 | `data/processed/ep5_lineage.json` · `queries/brick/shapes/delta.ttl` |
 | 두 자원의 진화 실적이 상보적 | SDKB: 세 세대 T-Box 델타 **0**(D-12) · 자격 델타 1건 / Brick: 인접 5쌍 **전부** 실제 델타 | `upstream/DEFECT-LEDGER.md` §1.6 · `data/external/brick/brick_probe.json` |
 
