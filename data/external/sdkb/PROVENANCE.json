@@ -1,10 +1,10 @@
 {
   "source_repo": "https://github.com/arkwith7/semiconductor-knowledge-base.git",
-  "source_commit": "48971f8d36fdd07c3db72c3f15a638f9bc0383ac",
-  "source_commit_date": "2026-08-23T21:15:54+09:00",
+  "source_commit": "013854b052d9672fe7190f6d0201294f7e029d8f",
+  "source_commit_date": "2026-08-25T06:58:05+09:00",
   "source_dirty": false,
   "source_license": "CDLA-Permissive-2.0",
-  "vendored_at": "2026-08-23T12:30:02+00:00",
+  "vendored_at": "2026-08-24T22:00:09+00:00",
   "baseline_counts": {
     "nodes": 274,
     "edges": 312,
@@ -14,7 +14,7 @@
   },
   "freshness": {
     "checked": true,
-    "checked_at": "2026-08-23T12:29:57+00:00",
+    "checked_at": "2026-08-24T22:00:04+00:00",
     "artifacts": {
       "ontology/sdkb-core.ttl": [
         {
@@ -169,8 +169,8 @@
     {
       "file": "sdkb-abox-prior-art.ttl",
       "source_path": "ontology/sdkb-abox-prior-art.ttl",
-      "role": "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지",
-      "sha256": "51873ceb481286a1c9aecde2caf8e30fcc6a86350baaf1d297b25b81f9c338b9",
+      "role": "ABox: 심사관 인용 선행기술 3,513 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지",
+      "sha256": "7f0a4df6b29c2ee1232bd0f21b40e8178782672007eaac6b344405867011b13b",
       "license_restricted": true
     },
     {

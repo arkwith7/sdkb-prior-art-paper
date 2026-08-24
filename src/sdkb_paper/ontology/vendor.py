@@ -49,7 +49,7 @@ VENDOR_FILES: list[tuple[str, str]] = [
      "ABox: B층 제2 확증분할 질의 200건 (CR-012 · 인용 간선 0) — 판독 B 의 질의 측"),
     ("ontology/sdkb-abox-experts-problems.ttl", "ABox: 인력 110 · 소부장 실문제 226 — 인력·문제 축"),
     ("ontology/sdkb-abox-vendors.ttl", "ABox: KSIA 회원사 326 — 소부장 벤더 축"),
-    ("ontology/sdkb-abox-prior-art.ttl", "ABox: 심사관 인용 선행기술 3,034 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지"),
+    ("ontology/sdkb-abox-prior-art.ttl", "ABox: 심사관 인용 선행기술 3,513 노드(CitedPatent) + 개념링크 — 선행기술조사 정답지"),
     ("ontology/sdkb-commercialization.ttl", "TBox+ABox: 상용화 축(TRL·라이선싱·spinoff)"),
     ("ontology/sdkb-rbv.ttl", "TBox: 자원기반관점(VRIO·역량·진입장벽) — 핵심자원조합 축"),
     ("ontology/sdkb-governance.ttl", "TBox: 규제 코어(hasJurisdiction·controlLevel·subjectToControl·관할개념·EARRule 앵커) — RQ3 수출통제"),
@@ -89,7 +89,7 @@ SCHEMA_REPORT = "data/schema_report.json"
 # 사람이 넣은 메타데이터는 다음 재생성에서 사라진다. 코드가 박아야 남는다.
 LICENSE_RESTRICTED: frozenset[str] = frozenset({
     "sdkb-abox-patents.ttl",      # SIRP 거절특허 1,000건 (청구항·초록 원문)
-    "sdkb-abox-prior-art.ttl",    # 심사관 인용 선행기술 3,034 노드
+    "sdkb-abox-prior-art.ttl",    # 심사관 인용 선행기술 3,513 노드
     # B층 확증분할 질의 200 (CR-012). `abstractText`·`firstClaimText` 원문을 담으므로
     # 앞의 둘과 같은 등급이다 — 커밋하지 않는다(CLAUDE.md §1-5 · KIPRIS 비재배포).
     "sdkb-abox-b-layer-queries.ttl",
