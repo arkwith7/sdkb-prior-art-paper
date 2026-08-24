@@ -198,13 +198,13 @@ def score_all(gen_dir: Path | None = None, *, split: str = frozen.SPLIT,
     """생성 JSONL 전량 → 결정적 채점 보고. 시각·경로 절대값을 넣지 않는다."""
     import pandas as pd
 
-    from ..analysis.metrics import load_qrel, load_qrel_for_split
+    from ..analysis.metrics import load_qrel_for_split
 
     gen_dir = gen_dir or config.RAG_GEN_DIR
-    if split == frozen.SPLIT_B:
-        qrel = load_qrel_for_split(split, unseal=unseal, reason=reason or "C2′ 판독 B 채점")
-    else:
-        qrel = load_qrel(config.IR_QREL_TEST_SEALED)
+    qrel = load_qrel_for_split(
+        split, unseal=unseal,
+        reason=reason or ("C2′ 판독 B 채점" if split == frozen.SPLIT_B
+                          else f"A층 재판독(split={split} · rag.score)"))
     corpus = pd.read_parquet(config.IR_CORPUS, columns=["doc_id", "text_main"])
     doc_text = {str(d): ("" if t is None else str(t)) for d, t in zip(corpus["doc_id"], corpus["text_main"])}
 

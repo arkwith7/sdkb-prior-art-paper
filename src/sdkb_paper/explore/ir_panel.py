@@ -46,7 +46,7 @@ class IRDemo:
     def __init__(self) -> None:
         import pandas as pd
 
-        from ..analysis.metrics import load_qrel
+        from ..analysis.metrics import load_qrel_for_split
         from ..analysis.ontology_eval import (
             SELECTED_ALPHA,
             SELECTED_W,
@@ -63,7 +63,7 @@ class IRDemo:
         sp = pd.read_parquet(config.IR_SPLIT)
         dev = set(sp.loc[sp["split"] == SPLIT, "doc_id"].astype(str))
 
-        qrel_all = load_qrel()
+        qrel_all = load_qrel_for_split(SPLIT)
         self.qrel = {q: p for q, p in qrel_all.items() if q in dev and p}
         self.fam = load_family_map()
 

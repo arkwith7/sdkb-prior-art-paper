@@ -20,7 +20,7 @@ from ..retrieval import systems as S
 from ..retrieval.candidate import CandidateMask
 from ..retrieval.hybrid import RUN_B3
 from ..retrieval.ontology_rerank import OntologyFeatures, _query_features
-from .metrics import evaluate, load_qrel, load_run
+from .metrics import evaluate, load_qrel_for_split, load_run
 
 GRID_RES = 0.25
 
@@ -266,18 +266,14 @@ def select_p1(cache, qrel, fam, taus=TAUS, k: int = 100) -> dict:
 def master_table(split: str, sel_alpha: float = SELECTED_ALPHA,
                  sel_w: tuple = SELECTED_W, k: int = 100, write_runs: bool = False) -> dict:
     """B3(F10-masked)·B4·B5·P0(concept)·P0★ 를 같은 분할·family 수준서 비교 + 페어드 부트스트랩."""
-    import pandas as pd
 
     from ..collect.bq_family_ir import load_family_map
     from ..retrieval import systems as SS
     from .bootstrap import paired_bootstrap
 
     fam = load_family_map()
-    qrel = load_qrel()
-    if split != "all":
-        sp = pd.read_parquet(config.IR_SPLIT)
-        keep = set(sp.loc[sp["split"] == split, "doc_id"])
-        qrel = {q: p for q, p in qrel.items() if q in keep}
+    qrel = load_qrel_for_split(
+        split, reason=f"A층 재판독(split={split} · analysis.ontology_eval)")
     qids = [q for q, p in qrel.items() if p]
 
     feats = OntologyFeatures()
@@ -338,15 +334,11 @@ def main() -> None:
     if args.split == "test":
         print("⚠️  test 개봉 — 최종 비교 전이면 사전등록 위반(F9)")
 
-    import pandas as pd
 
     from ..collect.bq_family_ir import load_family_map
     fam = load_family_map()
-    qrel = load_qrel()
-    sp = pd.read_parquet(config.IR_SPLIT)
-    keep_q = set(sp.loc[sp["split"] == args.split, "doc_id"]) if args.split != "all" else None
-    if keep_q is not None:
-        qrel = {q: pos for q, pos in qrel.items() if q in keep_q}
+    qrel = load_qrel_for_split(
+        args.split, reason=f"A층 재판독(split={args.split} · analysis.ontology_eval)")
     qids = [q for q, pos in qrel.items() if pos]
 
     feats = OntologyFeatures()

@@ -145,10 +145,10 @@ def test_qids(split: str = frozen.SPLIT, *, unseal: bool = False, reason: str = 
 
     B층(`test_b`)은 **봉인 열람이므로 `unseal=True` 없이는 실패한다**(PLAN-047 §13.3).
     """
-    from ..analysis.metrics import load_qrel, load_qrel_for_split
+    from ..analysis.metrics import load_qrel_for_split
 
-    if split == frozen.SPLIT_B:
-        qrel = load_qrel_for_split(split, unseal=unseal, reason=reason or "C2′ 판독 B 채점")
-    else:
-        qrel = load_qrel(config.IR_QREL_TEST_SEALED)
+    qrel = load_qrel_for_split(
+        split, unseal=unseal,
+        reason=reason or ("C2′ 판독 B 채점" if split == frozen.SPLIT_B
+                          else f"A층 재판독(split={split} · rag.context)"))
     return sorted(q for q, pos in qrel.items() if pos)

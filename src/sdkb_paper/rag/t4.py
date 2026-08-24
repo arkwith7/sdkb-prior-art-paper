@@ -49,12 +49,12 @@ def per_query_counts(split: str, *, unseal: bool = False, reason: str = "") -> d
     """
     import pandas as pd
 
-    from ..analysis.metrics import load_qrel, load_qrel_for_split
+    from ..analysis.metrics import load_qrel_for_split
 
-    if split == frozen.SPLIT_B:
-        qrel = load_qrel_for_split(split, unseal=unseal, reason=reason or "C2′ T4 판정")
-    else:
-        qrel = load_qrel(config.IR_QREL_TEST_SEALED)
+    qrel = load_qrel_for_split(
+        split, unseal=unseal,
+        reason=reason or ("C2′ T4 판정" if split == frozen.SPLIT_B
+                          else f"A층 재판독(split={split} · rag.t4)"))
     corpus = pd.read_parquet(config.IR_CORPUS, columns=["doc_id", "text_main"])
     doc_text = {str(d): ("" if t is None else str(t))
                 for d, t in zip(corpus["doc_id"], corpus["text_main"])}

@@ -82,13 +82,19 @@ def compute(split: str | None = None, n: int = NGRAM_N, agg: str = AGG,
     """
     import pandas as pd
 
-    from .metrics import load_qrel
+    from .metrics import load_qrel_for_split
 
-    qrel = load_qrel() if qrel is None else dict(qrel)
-    if split:
-        sp = pd.read_parquet(config.IR_SPLIT)
-        keep = set(sp.loc[sp["split"] == split, "doc_id"])
-        qrel = {q: p for q, p in qrel.items() if q in keep}
+    if qrel is None:
+        # `split=None` 은 필터 없음 = 전량이며, 전량에는 A층 test 가 들어온다 —
+        # 통로에서 `all` 로 정규화되어 원장에 남는다(PLAN-076 §8.2).
+        qrel = load_qrel_for_split(
+            split or "all", reason=f"A층 재판독(split={split or 'all'} · analysis.overlap)")
+    else:
+        qrel = dict(qrel)
+        if split:
+            sp = pd.read_parquet(config.IR_SPLIT)
+            keep = set(sp.loc[sp["split"] == split, "doc_id"])
+            qrel = {q: p for q, p in qrel.items() if q in keep}
     qids = [q for q, p in qrel.items() if p]
     need = set(qids) | {d for q in qids for d in qrel[q]}
 

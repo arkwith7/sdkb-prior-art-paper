@@ -15,25 +15,21 @@ from __future__ import annotations
 
 import argparse
 
-from .. import config
 from ..retrieval import systems as S
 from ..retrieval.candidate import CandidateMask
 from ..retrieval.hybrid import RUN_B3
 from ..retrieval.ontology_rerank import OntologyFeatures, _query_features
 from .bootstrap import per_query_recall
-from .metrics import load_qrel, load_run
+from .metrics import load_qrel_for_split, load_run
 from .ontology_eval import component_cache, rerank_from_cache
 
 
 def _dev_setup(split="dev"):
-    import pandas as pd
 
     from ..collect.bq_family_ir import load_family_map
     fam = load_family_map()
-    qrel = load_qrel()
-    sp = pd.read_parquet(config.IR_SPLIT)
-    keep = set(sp.loc[sp["split"] == split, "doc_id"])
-    qrel = {q: p for q, p in qrel.items() if q in keep}
+    qrel = load_qrel_for_split(
+        split, reason=f"A층 재판독(split={split} · analysis.pathsim_diag)")
     qids = [q for q, p in qrel.items() if p]
     return fam, qrel, qids
 

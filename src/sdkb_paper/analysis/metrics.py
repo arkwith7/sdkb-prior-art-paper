@@ -44,33 +44,57 @@ def load_qrel(path: Path | None = None) -> dict[str, set[str]]:
     return qrel
 
 
-# --- 분할별 정답지 (PLAN-047 §13.3) -------------------------------------------
+# --- 분할별 정답지 (PLAN-047 §13.3 · PLAN-076 §8) ------------------------------
 SPLIT_B = "test_b"
+SPLIT_A_SEALED = "test"
+# **원장에 남기는 분할.** `test` 는 A층 봉인 그 자체이고, `all` 은 필터를 걸지 않으므로
+# test 479 엣지가 결과에 들어온다 — 빼면 `--split all` 이 배선을 우회하는 뒷문이 된다
+# (PLAN-076 §8.2). `dev`·`train` 은 봉인 대상이 아니므로 기록하지 않는다 — 개발 실행마다
+# 자라면 원장의 신호가 잡음에 묻힌다.
+LOGGED_A_SPLITS = frozenset({SPLIT_A_SEALED, "all"})
 
 
 def qrel_path_for_split(split: str) -> Path:
-    """분할 → qrel 경로. `test_b` 만 **B층 봉인**을 가리킨다."""
-    return Path(config.B_QREL_SEALED) if split == SPLIT_B else Path(config.QREL_EXAMINER)
+    """분할 → qrel 경로. 봉인 분할 둘은 **각 층의 봉인 파일**을 가리킨다.
+
+    `test` 가 전량 `QREL_EXAMINER` 가 아니라 A층 봉인 사본을 가리키는 이유는, 원장의
+    `sha256` 이 **무엇을 열었는지 지목**해야 하기 때문이다 — 전량을 가리키면 그 해시는
+    train·dev 를 포함한 값이 된다. 두 경로의 내용이 같음은 실측됐다(198질의·479엣지 ·
+    PLAN-076 §7.1 · 회귀 테스트 `test_seal_wiring.py::test_a_layer_set_identity`).
+    """
+    if split == SPLIT_B:
+        return Path(config.B_QREL_SEALED)
+    if split == SPLIT_A_SEALED:
+        return Path(config.IR_QREL_TEST_SEALED)
+    return Path(config.QREL_EXAMINER)
 
 
 def load_qrel_for_split(split: str, *, unseal: bool = False, reason: str = "") -> dict[str, set[str]]:
     """분할에 맞는 qrel 을 적재한다. **봉인 분할은 `unseal=True` 없이는 열리지 않는다.**
 
-    봉인 경로가 소비자에게 도달하는 통로는 이 함수 하나이며, 그 안에서 반드시
-    `validate.seal_audit.open_sealed()` 를 지난다(PLAN-047 §13.3 · G7).
+    **이 함수가 모든 분할의 유일한 적재 통로다**(PLAN-076 §8.1). 봉인 경로가 소비자에게
+    도달하려면 반드시 `validate.seal_audit.open_sealed()` 를 지나며, 두 층의 규율이 다르다 —
+    B층은 **허가 없이 열리지 않고**, A층은 **막지 않되 기록한다**(이미 1회 공표 개봉됐다).
     """
+    split = split or "all"
     path = qrel_path_for_split(split)
     if split == SPLIT_B:
         from ..corpus import qrel_b
         from ..validate.seal_audit import open_sealed
 
-        path = open_sealed(path, reason=reason or f"판독 B 평가(split={split})", allow=unseal)
+        path = open_sealed(path, reason=reason or f"판독 B 평가(split={split})", allow=unseal,
+                           layer="B", split=split)
         # B층 봉인은 **수집 형식**이라 그대로 못 읽는다(D-34). 변환은 파일을 만들지 않고
         # 메모리에서만 한다 — 파생본을 디스크에 남기면 봉인과 어긋날 자리가 생긴다.
         qrel = qrel_b.load_as_dict(path)
     else:
+        if split in LOGGED_A_SPLITS:
+            from ..validate.seal_audit import open_sealed
+
+            path = open_sealed(path, reason=reason or f"A층 재판독(split={split})", allow=True,
+                               layer="A", split=split)
         qrel = load_qrel(path)
-    if split in ("all", None):
+    if split == "all":
         return qrel
     import pandas as pd
 

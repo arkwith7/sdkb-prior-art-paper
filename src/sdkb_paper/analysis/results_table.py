@@ -26,7 +26,6 @@ from .metrics import (
     NDCG_K,
     SPLIT_B,
     evaluate,
-    load_qrel,
     load_qrel_for_split,
     load_run,
 )
@@ -47,17 +46,14 @@ KS = (50, 100, 500)
 
 
 def _split_qrel(split: str, *, unseal: bool = False, reason: str = "") -> dict[str, set[str]]:
-    """분할별 정답지. `test_b` 는 **봉인**이라 `unseal=True` 없이는 열리지 않는다(§13.3)."""
-    import pandas as pd
+    """분할별 정답지 — **통로(`load_qrel_for_split`)에 위임한다**(PLAN-076 §8.4).
 
-    if split == SPLIT_B:
-        return load_qrel_for_split(split, unseal=unseal, reason=reason)
-    qrel = load_qrel()
-    if split == "all":
-        return qrel
-    sp = pd.read_parquet(config.IR_SPLIT)
-    keep = set(sp.loc[sp["split"] == split, "doc_id"])
-    return {q: p for q, p in qrel.items() if q in keep}
+    `test_b` 는 봉인이라 `unseal=True` 없이는 열리지 않고, A층 `test`·`all` 접근은 열람
+    원장에 남는다. 이 함수가 분할 필터를 스스로 구현하던 것이 우회 경로였다.
+    """
+    return load_qrel_for_split(
+        split, unseal=unseal,
+        reason=reason or f"A층 재판독(split={split} · analysis.results_table)")
 
 
 def write_run(run: dict[str, list[str]], path: Path, tag: str) -> Path:

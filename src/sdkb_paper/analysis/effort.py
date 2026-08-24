@@ -35,7 +35,7 @@ import statistics as st
 from pathlib import Path
 
 from .. import config
-from .metrics import _fold, load_qrel, load_run
+from .metrics import _fold, load_qrel_for_split, load_run
 
 # ── 동결 상수 (PLAN-036 §10.1 · 결과를 본 뒤 바꾸지 않는다) ──────────────────────
 ARM_DIR = config.IR_RUNSETS_DIR / "O_pre_linker"   # 원고 §6 재현 팔 (§9.1)
@@ -64,7 +64,7 @@ def load_arm() -> tuple[dict[str, dict[str, list[str]]], dict[str, set[str]], li
     from ..collect.bq_family_ir import load_family_map
 
     fam = load_family_map()
-    qrel_doc = load_qrel(config.IR_QREL_TEST_SEALED)
+    qrel_doc = load_qrel_for_split(SPLIT, reason=f"A층 재판독(split={SPLIT} · analysis.effort)")
     qrel = {q: {fam.get(d, d) for d in pos} for q, pos in qrel_doc.items()}
     qids = sorted(q for q, pos in qrel.items() if pos)       # 정답≥1 (분모 규율 §0)
 

@@ -41,11 +41,22 @@ def test_r1_a_layer_run_paths_unchanged():
         assert layers.run_path_for_layer(base, layers.LAYER_A) == base
 
 
-def test_r1_a_layer_qrel_resolver_unchanged():
-    """A층 분할의 정답지는 examiner qrel 그대로 — 봉인 통로를 타지 않는다."""
-    for split in ("train", "dev", "test", "all"):
+def test_r1_a_layer_qrel_resolver_is_not_b_sealed():
+    """A층 분할의 정답지는 **B층 봉인이 아니다** — 두 층이 섞이지 않는다.
+
+    **계약이 개정됐다 (2026-08-24 · PLAN-076 · O-6 · 사용자 승인).** 구 계약은
+    *"A층은 examiner qrel 그대로"* 였고, 그래서 A층 `test` 접근이 열람 원장에 한 줄도
+    남지 않았다. 이제 `test` 는 A층 봉인 사본을 가리키며 접근이 기록된다.
+    **두 경로의 내용이 같음은 실측·고정돼 있다**(198질의·479엣지 ·
+    `test_seal_wiring.py::test_a_layer_set_identity`) — R1 이 지키려던 *"B층 개봉이 A층
+    배관을 오염시키지 않는다"* 는 그대로다.
+    """
+    for split in ("train", "dev", "all"):
         assert metrics.qrel_path_for_split(split) == Path(config.QREL_EXAMINER)
+    assert metrics.qrel_path_for_split("test") == Path(config.IR_QREL_TEST_SEALED)
     assert metrics.qrel_path_for_split("test_b") == Path(config.B_QREL_SEALED)
+    for split in ("train", "dev", "test", "all"):
+        assert metrics.qrel_path_for_split(split) != Path(config.B_QREL_SEALED)
 
 
 # --- R2 · qid 원천은 분할이지 정답이 아니다 -----------------------------------
@@ -60,9 +71,10 @@ def test_r2_build_runs_b_layer_does_not_read_qrel(monkeypatch):
     def boom(*a, **kw):   # noqa: ANN002, ANN003
         raise AssertionError("판독 B 의 run 산출이 qrel 을 읽었다 — G7 위반(PLAN-047 §13.1)")
 
-    monkeypatch.setattr(results_table, "load_qrel", boom)
+    # `results_table.load_qrel` 은 PLAN-076 으로 사라졌다 — 그 모듈은 이제 통로만 부른다.
     monkeypatch.setattr(results_table, "load_qrel_for_split", boom)
     monkeypatch.setattr(metrics, "load_qrel", boom, raising=False)
+    monkeypatch.setattr(metrics, "load_qrel_for_split", boom, raising=False)
 
     called: dict[str, object] = {}
 

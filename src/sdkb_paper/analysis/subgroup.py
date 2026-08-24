@@ -26,7 +26,7 @@ from pathlib import Path
 
 from .. import config
 from .bootstrap import per_query_recall
-from .metrics import SPLIT_B, load_qrel, load_qrel_for_split, load_run
+from .metrics import SPLIT_B, load_qrel_for_split, load_run
 
 MIN_N = 20   # 하위집단 최소 질의수(미달 = 확정결론 금지)
 # B층 질의에는 공정군·거절근거 라벨의 **원천이 없다**(PLAN-047 §12.3). A층 공정군은 파생값이
@@ -242,11 +242,9 @@ def main() -> None:
         # **δ 판정을 내지 않는다.** T2 는 A층 판정 전용이다(PLAN-045 D5).
         qrel = load_qrel_for_split(args.split, unseal=args.unseal, reason=args.reason)
     else:
-        qrel = load_qrel()
-        if args.split != "all":
-            sp = pd.read_parquet(config.IR_SPLIT)
-            keep = set(sp.loc[sp["split"] == args.split, "doc_id"])
-            qrel = {q: pos for q, pos in qrel.items() if q in keep}
+        qrel = load_qrel_for_split(
+            args.split,
+            reason=args.reason or f"A층 재판독(split={args.split} · analysis.subgroup)")
     labels = query_labels(qrel, split=args.split if args.table else None,
                           lex_qrel=qrel if args.split == SPLIT_B else None)
     pa = args.a or run_path("P1", args.split)

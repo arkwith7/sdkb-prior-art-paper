@@ -89,6 +89,23 @@ def scannable(lines: list[str], exempt_headers: list[str]) -> list[tuple[int, st
     return out
 
 
+# --- 스펙 키 엄격 검사 (PLAN-076 C-3 · O-6) ------------------------------------
+# **왜 있는가.** 허용 문구 키는 `allowed` 가 아니라 `composite_allowed` 이고, 오타로 적으면
+# 검사기가 그 규칙을 **조용히 무시한다** — EP5 에서 실제로 그렇게 됐다. 규칙이 없는 것과
+# 규칙이 무시되는 것은 다르며, 뒤쪽은 통과처럼 보인다. 그래서 미지 키를 rc 2 로 멈춘다.
+META_KEYS = frozenset({"plan", "frozen_date", "scan_targets", "exempt_tables_with_header"})
+VERDICT_KEYS = frozenset({"forbidden", "composite_allowed", "exempt_line", "scan_raw", "record"})
+
+
+def unknown_keys(cfg: dict) -> list[tuple[str, str]]:
+    """(자리, 미지 키) 목록. 빈 목록이면 스펙의 키가 전부 알려진 것이다."""
+    out: list[tuple[str, str]] = []
+    out += [("meta", k) for k in (cfg.get("meta") or {}) if k not in META_KEYS]
+    for label, spec in (cfg.get("verdicts") or {}).items():
+        out += [(f"verdicts.{label}", k) for k in (spec or {}) if k not in VERDICT_KEYS]
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--yaml", default="paper/verdicts.yaml")
@@ -106,6 +123,15 @@ def main() -> int:
         print(f"SSOT 없음: {cfg_path}", file=sys.stderr)
         return 2
     cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
+
+    unknown = unknown_keys(cfg)
+    if unknown:
+        for where, key in unknown:
+            print(f"{cfg_path}: 미지 키 '{key}' ({where}) — 오타면 규칙이 조용히 무시된다",
+                  file=sys.stderr)
+        print("허용 키: meta=" + ", ".join(sorted(META_KEYS))
+              + " · verdicts.<라벨>=" + ", ".join(sorted(VERDICT_KEYS)), file=sys.stderr)
+        return 2
 
     meta = cfg.get("meta", {}) or {}
     targets = iter_targets(root, meta.get("scan_targets", []) or [])

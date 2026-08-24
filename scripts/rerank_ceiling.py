@@ -28,7 +28,7 @@ from __future__ import annotations
 import json
 
 from sdkb_paper import config
-from sdkb_paper.analysis.metrics import load_qrel, load_run
+from sdkb_paper.analysis.metrics import load_qrel_for_split, load_run
 from sdkb_paper.retrieval.systems import POOL_K
 
 RUNS = config.PROCESSED / "ir" / "runs"
@@ -39,7 +39,7 @@ OUT = config.PROCESSED / "ir" / "rerank_ceiling_test.json"
 
 
 def main() -> None:
-    qrel = load_qrel(QREL)
+    qrel = load_qrel_for_split("test", reason="A층 재판독(split=test · scripts.rerank_ceiling)")
     b3 = load_run(B3)
     b5 = load_run(B5)
 

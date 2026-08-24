@@ -28,7 +28,7 @@ from __future__ import annotations
 import argparse
 
 from .. import config
-from .metrics import _fold, load_qrel, load_run
+from .metrics import _fold, load_qrel_for_split, load_run
 from .results_table import SYSTEM_LABELS, run_path
 
 K = 100                       # 주지표와 같은 검토 깊이(F1)
@@ -57,14 +57,8 @@ def doc_lang_map() -> dict[str, str]:
 
 
 def split_qrel(split: str) -> dict[str, set[str]]:
-    import pandas as pd
-
-    qrel = load_qrel()
-    if split == "all":
-        return qrel
-    sp = pd.read_parquet(config.IR_SPLIT)
-    keep = set(sp.loc[sp["split"] == split, "doc_id"].astype(str))
-    return {q: p for q, p in qrel.items() if q in keep}
+    return load_qrel_for_split(
+        split, reason=f"A층 재판독(split={split} · analysis.lang_recall)")
 
 
 def gold_lang_recall(run: dict[str, list[str]], qrel: dict[str, set[str]],

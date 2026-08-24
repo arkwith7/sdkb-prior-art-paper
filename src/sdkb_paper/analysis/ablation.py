@@ -29,7 +29,7 @@ from ..retrieval.candidate import CandidateMask
 from ..retrieval.hybrid import RUN_B3
 from ..retrieval.ontology_rerank import OntologyFeatures
 from .bootstrap import paired_bootstrap
-from .metrics import SPLIT_B, evaluate, load_qrel, load_qrel_for_split, load_run
+from .metrics import SPLIT_B, evaluate, load_qrel_for_split, load_run
 from .ontology_eval import component_cache, rerank_from_cache
 
 # (id, 설명, ablation 인자) — component_cache 를 각 구성으로 재계산(6종만)
@@ -58,7 +58,6 @@ def holm(pairs: list[tuple[str, float]], alpha: float = 0.05) -> dict[str, bool]
 
 def _qrel_qids_run(split: str, *, unseal: bool, reason: str):
     """분할별 (qrel, qids, B3 run 경로). B층은 봉인이라 `unseal` 이 필요하다(PLAN-047 §13)."""
-    import pandas as pd
 
     from ..retrieval import layers
 
@@ -66,11 +65,8 @@ def _qrel_qids_run(split: str, *, unseal: bool, reason: str):
         qrel = load_qrel_for_split(split, unseal=unseal, reason=reason)
         qids = [q for q in layers.split_qids(split) if qrel.get(q)]
         return qrel, qids, layers.run_path_for_layer(RUN_B3, layers.LAYER_B)
-    qrel = load_qrel()
-    if split != "all":
-        sp = pd.read_parquet(config.IR_SPLIT)
-        keep = set(sp.loc[sp["split"] == split, "doc_id"])
-        qrel = {q: pos for q, pos in qrel.items() if q in keep}
+    qrel = load_qrel_for_split(
+        split, reason=reason or f"A층 재판독(split={split} · analysis.ablation)")
     return qrel, [q for q, pos in qrel.items() if pos], RUN_B3
 
 

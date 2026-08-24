@@ -15,7 +15,7 @@ import argparse
 from pathlib import Path
 
 from .. import config
-from .metrics import _fold, load_qrel, load_run
+from .metrics import _fold, load_qrel_for_split, load_run
 
 
 def per_query_recall(
@@ -125,14 +125,11 @@ def main() -> None:
     ap.add_argument("--split", choices=["train", "dev", "test", "all"], default="dev")
     args = ap.parse_args()
 
-    qrel = load_qrel()
-    if args.split != "all":
-        import pandas as pd
-        sp = pd.read_parquet(config.IR_SPLIT)
-        keep = set(sp.loc[sp["split"] == args.split, "doc_id"])
-        qrel = {q: pos for q, pos in qrel.items() if q in keep}
-        if args.split == "test":
-            print("⚠️  test 개봉 — 최종 비교 전이면 사전등록 위반")
+    qrel = load_qrel_for_split(
+        args.split, reason=f"A층 재판독(split={args.split} · analysis.bootstrap)")
+    if args.split == "test":
+        # 사람이 읽는 경고 — 기계가 남기는 원장과 목적이 다르므로 둘 다 남긴다.
+        print("⚠️  test 개봉 — 최종 비교 전이면 사전등록 위반")
     fam = None
     if args.family:
         from ..collect.bq_family_ir import load_family_map
