@@ -78,7 +78,7 @@
 | 온톨로지를 실제 일에 꽂아 결과로 재는 평가 | 과제 기반 평가 | **task-based (application-based) evaluation** | 이미 원고에 병기됨 |
 | 여러 온톨로지 중 하나를 **고르는 잣대** | — | **selection criterion** | 계보 3단계의 1단 |
 | 승인식 안의 한 항 | 승인식의 항 | **term in the acceptance rule** | 수식의 term |
-| 문서·설정을 다 고정하고 **자원만 갈아 끼우기** | 통제된 자원 교체 | **controlled resource substitution** | **DP4의 이름** — 흔들면 설계원리 표가 깨진다 |
+| 문서·설정을 다 고정하고 **자원만 갈아 끼우기** | 통제된 자원 교체 | **controlled resource substitution** | 작업 정본의 **DP4** · 투고본에서는 §4 서두의 방법론적 요구로 싣는다(S6 §4) |
 | 성능이 떨어지지 않았는지 보는 검사 | 비열등성 검정 | **non-inferiority test** | T1의 정의 |
 | 다른 갈래가 뒷걸음치지 않았는지 | 교차 태스크 비회귀 | **cross-task non-regression** | T3의 정의 |
 

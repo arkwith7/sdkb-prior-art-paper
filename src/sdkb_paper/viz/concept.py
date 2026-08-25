@@ -130,7 +130,7 @@ def fig_overview(out: Path | None = None) -> Path:
          f"정상 델타 오거부 {v['ep2.false_positive']}"),
         (0.500, "EP3 · 통제된 자원 교체", "ΔG → A2 판정",
          f"자원만 교체 → T1 {FAIL_MARK}\n승인 = 0"),
-        (0.686, "EP4 · 검색 효용과 경계", "T1 의 주 지표",
+        (0.686, "EP4 · 검색 이득의 범위", "T1 의 주 지표",
          f"질의 {v['ep4.n_queries']} · 확증 분할 둘\nfamily Recall@100"),
         # 다섯째 상자의 아래 줄은 **검출 수가 아니라 관찰면**이다. 분모가 없는 0 을 적으면
         # 그림이 "게이트가 놓쳤다"고 말하게 된다(§0.8 판정 문구 사전과 같은 규율).
@@ -574,7 +574,7 @@ def fig_ep_gate_matrix(out: Path | None = None) -> Path:
           (NONE_MARK, "")],
          "자원 지표가 개선되고 형식 검증을 통과한 변경을 성능 조건\n"
          "하나가 차단하였다. 승인식은 곱이므로 승인 결과는 거부이다."),
-        ("EP4", "검색 효용과 경계", "확증 · 분할 둘",
+        ("EP4", "검색 이득의 범위", "확증 · 분할 둘",
          [(NONE_MARK, ""), (NONE_MARK, ""),
           (PASS_MARK, f"A {_sig(v['ep4.p1_gain.delta'])}\n"
                       f"B {_sig(v['ep4b.p1_gain.delta'])}"),

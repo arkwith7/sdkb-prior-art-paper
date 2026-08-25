@@ -7269,7 +7269,7 @@ z
     </g>
    </g>
    <g id="text_32">
-    <!-- EP4 · 검색 효용과 경계 -->
+    <!-- EP4 · 검색 이득의 범위 -->
     <g style="fill: #1a202c" transform="translate(387.055613 312.071952) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Bold-f6b5" d="M 2157 0 
@@ -7325,110 +7325,66 @@ L 4365 3955
 L 3347 3955 
 z
 " transform="scale(0.015625)"/>
-      <path id="NotoSansCJKjp-Bold-e4a3" d="M 2925 3046 
-C 3674 3046 4064 2886 4064 2554 
-C 4064 2227 3674 2074 2925 2074 
-C 2182 2074 1786 2227 1786 2554 
-C 1786 2886 2182 3046 2925 3046 
+      <path id="NotoSansCJKjp-Bold-c2d8" d="M 269 2560 
+L 269 1882 
+L 5626 1882 
+L 5626 2560 
+L 269 2560 
 z
-M 2925 3699 
-C 1683 3699 922 3277 922 2554 
-C 922 2170 1146 1869 1542 1677 
-L 1542 698 
-L 262 698 
-L 262 13 
-L 5632 13 
-L 5632 698 
-L 4320 698 
-L 4320 1677 
-C 4717 1875 4934 2170 4934 2554 
-C 4934 3277 4166 3699 2925 3699 
+M 851 1382 
+L 851 710 
+L 4141 710 
+L 4141 -576 
+L 4992 -576 
+L 4992 1382 
+L 851 1382 
 z
-M 2381 698 
-L 2381 1453 
-C 2547 1434 2733 1421 2925 1421 
-C 3123 1421 3315 1434 3488 1453 
-L 3488 698 
-L 2381 698 
-z
-M 2509 5293 
-L 2509 4621 
-L 493 4621 
-L 493 3942 
-L 5376 3942 
-L 5376 4621 
-L 3360 4621 
-L 3360 5293 
-L 2509 5293 
+M 915 5165 
+L 915 3027 
+L 5037 3027 
+L 5037 3706 
+L 1760 3706 
+L 1760 4486 
+L 4986 4486 
+L 4986 5165 
+L 915 5165 
 z
 " transform="scale(0.015625)"/>
-      <path id="NotoSansCJKjp-Bold-d4a4" d="M 2925 1581 
-C 1645 1581 870 1190 870 506 
-C 870 -179 1645 -570 2925 -570 
-C 4205 -570 4986 -179 4986 506 
-C 4986 1190 4205 1581 2925 1581 
+      <path id="NotoSansCJKjp-Bold-ca8f" d="M 1350 3584 
+L 2477 3584 
+L 2477 2848 
+L 1350 2848 
+L 1350 3584 
 z
-M 2925 941 
-C 3718 941 4122 800 4122 506 
-C 4122 205 3718 70 2925 70 
-C 2131 70 1728 205 1728 506 
-C 1728 800 2131 941 2925 941 
+M 1267 1683 
+L 1267 -506 
+L 5222 -506 
+L 5222 1683 
+L 1267 1683 
 z
-M 2938 4627 
-C 3750 4627 4205 4467 4205 4134 
-C 4205 3808 3750 3648 2938 3648 
-C 2131 3648 1677 3808 1677 4134 
-C 1677 4467 2131 4627 2938 4627 
+M 4384 1018 
+L 4384 166 
+L 2106 166 
+L 2106 1018 
+L 4384 1018 
 z
-M 2938 5274 
-C 1632 5274 794 4845 794 4134 
-C 794 3750 1037 3450 1466 3258 
-L 1466 2547 
-L 256 2547 
-L 256 1882 
-L 5619 1882 
-L 5619 2547 
-L 4397 2547 
-L 4397 3251 
-C 4838 3443 5088 3744 5088 4134 
-C 5088 4845 4250 5274 2938 5274 
-z
-M 2310 2547 
-L 2310 3040 
-C 2502 3014 2714 3002 2938 3002 
-C 3155 3002 3360 3014 3546 3034 
-L 3546 2547 
-L 2310 2547 
-z
-" transform="scale(0.015625)"/>
-      <path id="NotoSansCJKjp-Bold-baf7" d="M 506 4774 
-L 506 4096 
-L 2720 4096 
-C 2720 3571 2701 2931 2566 2086 
-L 3398 2016 
-C 3558 3002 3558 3712 3558 4288 
-L 3558 4774 
-L 506 4774 
-z
-M 288 627 
-C 1312 627 2643 653 3840 858 
-L 3802 1478 
-C 3264 1408 2682 1370 2106 1350 
-L 2106 3078 
-L 1274 3078 
-L 1274 1325 
-L 211 1318 
-L 288 627 
-z
-M 4070 5363 
-L 4070 -563 
-L 4915 -563 
-L 4915 2278 
-L 5715 2278 
-L 5715 2982 
-L 4915 2982 
-L 4915 5363 
-L 4070 5363 
+M 4365 5357 
+L 4365 3962 
+L 3315 3962 
+L 3315 5024 
+L 2477 5024 
+L 2477 4237 
+L 1350 4237 
+L 1350 5024 
+L 506 5024 
+L 506 2182 
+L 3315 2182 
+L 3315 3277 
+L 4365 3277 
+L 4365 1926 
+L 5222 1926 
+L 5222 5357 
+L 4365 5357 
 z
 " transform="scale(0.015625)"/>
      </defs>
@@ -7441,12 +7397,12 @@ z
      <use xlink:href="#NotoSansCJKjp-Bold-ba7b" transform="translate(291.8125 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-cec4" transform="translate(383.8125 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-1" transform="translate(475.8125 0)"/>
-     <use xlink:href="#NotoSansCJKjp-Bold-e4a3" transform="translate(498.515625 0)"/>
-     <use xlink:href="#NotoSansCJKjp-Bold-d4a4" transform="translate(590.515625 0)"/>
-     <use xlink:href="#NotoSansCJKjp-Bold-baf7" transform="translate(682.515625 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-d56f" transform="translate(498.515625 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-c2d8" transform="translate(590.515625 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-d553" transform="translate(682.515625 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-1" transform="translate(774.515625 0)"/>
-     <use xlink:href="#NotoSansCJKjp-Bold-bab8" transform="translate(797.21875 0)"/>
-     <use xlink:href="#NotoSansCJKjp-Bold-babf" transform="translate(889.21875 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-ca8f" transform="translate(797.21875 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-d4ff" transform="translate(889.21875 0)"/>
     </g>
    </g>
    <g id="text_33">
