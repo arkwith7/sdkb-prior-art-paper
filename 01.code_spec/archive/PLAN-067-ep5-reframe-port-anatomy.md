@@ -1,6 +1,6 @@
 # PLAN-067 — EP5 재프레이밍: 일반화 시험에서 **이식 해부**로
 
-> **위치.** [PLAN-064](../plans/PLAN-064-second-domain-portability-and-aei-reframe.md) 가 설계하고
+> **위치.** [PLAN-064](PLAN-064-second-domain-portability-and-aei-reframe.md) 가 설계하고
 > [PLAN-064-prereg.md](PLAN-064-prereg.md) 가 동결한 EP5 의 **판정을 그대로 두고, 그 판정을 원고가
 > 쓰는 방식**을 바꾸는 계획이다. **판정·수치·봉인 변경 0 · 새 실험 0 · 재실행 0.**
 >

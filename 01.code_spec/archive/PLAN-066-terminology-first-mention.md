@@ -4,7 +4,7 @@
 > **남은 항목 둘(차단 승격 · 용어집 `en` 열 24항)은 [`plans/OPEN-ITEMS.md`](../plans/OPEN-ITEMS.md) O-2·O-3 으로 이월했다.**
 > 이 문서는 사전등록·결정 기록이므로 수정하지 않는다.
 
-> **위치.** [PLAN-064](../plans/PLAN-064-second-domain-portability-and-aei-reframe.md) §4 의 **B 프레이밍
+> **위치.** [PLAN-064](PLAN-064-second-domain-portability-and-aei-reframe.md) §4 의 **B 프레이밍
 > 재구성** 안에 **B-1′(용어집 초안 + 검사)** 와 **B-3′(정의 삽입 + 식별자 치환)** 두 항을 끼워 넣는
 > 계획이다. PLAN-064 의 EP5 설계·판정식·금지 문구·DoD 는 하나도 바꾸지 않는다. **판정·수치·봉인
 > 변경 0.** 바뀌는 것은 정보를 제시하는 **순서**와 용어의 **첫 등장 꼴**뿐이다.
