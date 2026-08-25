@@ -1,6 +1,35 @@
 # 진행 실적 (v0.9)
 
-*최종 갱신: 2026-08-25 32차 (**O-1 영문 본문 번역 완주 — 2장~6.7절 · 표 1–13 · 그림 1–7**) · 이전: 2026-08-25 31차 (**PLAN-069 ④⑤ 완주 — 본문 −4,399자 · D6 임계 원복 · `glossary-check` 차단 승격**) · 이전: 2026-08-25 30차 (**PLAN-069 트랙 A ③″ 완주 — §4.3 역할 표 · 우위 셋 본문 이동 · 세대 규율**) · 이전: 2026-08-25 29차 (**O-8 종결 — 세대 편입 · 동결 상수 갱신 · D-53 등재**) · 이전: 2026-08-25 28차 (**O-8 ② 종결 — B층 479건 복원 · 상류 `013854b` · 재벤더 완료**) · 이전: 2026-08-24 27차 (**O-8 ① 종결 — A-Box 순감은 재생성 누락 · 복원은 승인 대기**) · 이전: 2026-08-24 26차 (**O-6 종결 · 회귀 신호 복구 실행 → D-52 · 아카이빙 3건**) · 이전: 2026-08-23 25차 (**PLAN-075 요구정의 · 경로 항 퇴화 실측 · 아카이빙 2건**) · 이전: 2026-08-22 24차 (**EP5 사전등록 발효 · CQ 15 · 결함 3종 · 자원 sha256 동결**) · 이전: 2026-08-22 23차 (**PLAN-064 P0 교정 3건 + README · P1 압축 −1,704자 · A-0 Brick 실측**) · 이전: 2026-08-20 20차 (**D6 2단 규칙 · 분량 재배분 · L0 신선도 해소 · 종결 PLAN 3건 아카이빙**) · 이전: 2026-08-19 19차 (**PLAN-060 단계 C · 자격 심사 = 델타 0건 · 판정 산출 덮어쓰기 차단**) · 이전: 2026-08-19 18차 (**PLAN-060 단계 B 완주 · 외부 검토 반영 · DP 재등급**) · 이전: 2026-08-18 16차 (**PLAN-054 완주 · 다국어 기준선 B★ 확정과 원고 반영 · 살아 있는 계획 0**) · 기조: 설계과학(DSR) — 전환 완료*
+*최종 갱신: 2026-08-25 33차 (**아카이빙 2건 · O-11 신설 · 미동결 초안 추적 해제**) · 이전: 2026-08-25 32차 (**O-1 영문 본문 번역 완주 — 2장~6.7절 · 표 1–13 · 그림 1–7**) · 이전: 2026-08-25 31차 (**PLAN-069 ④⑤ 완주 — 본문 −4,399자 · D6 임계 원복 · `glossary-check` 차단 승격**) · 이전: 2026-08-25 30차 (**PLAN-069 트랙 A ③″ 완주 — §4.3 역할 표 · 우위 셋 본문 이동 · 세대 규율**) · 이전: 2026-08-25 29차 (**O-8 종결 — 세대 편입 · 동결 상수 갱신 · D-53 등재**) · 이전: 2026-08-25 28차 (**O-8 ② 종결 — B층 479건 복원 · 상류 `013854b` · 재벤더 완료**) · 이전: 2026-08-24 27차 (**O-8 ① 종결 — A-Box 순감은 재생성 누락 · 복원은 승인 대기**) · 이전: 2026-08-24 26차 (**O-6 종결 · 회귀 신호 복구 실행 → D-52 · 아카이빙 3건**) · 이전: 2026-08-23 25차 (**PLAN-075 요구정의 · 경로 항 퇴화 실측 · 아카이빙 2건**) · 이전: 2026-08-22 24차 (**EP5 사전등록 발효 · CQ 15 · 결함 3종 · 자원 sha256 동결**) · 이전: 2026-08-22 23차 (**PLAN-064 P0 교정 3건 + README · P1 압축 −1,704자 · A-0 Brick 실측**) · 이전: 2026-08-20 20차 (**D6 2단 규칙 · 분량 재배분 · L0 신선도 해소 · 종결 PLAN 3건 아카이빙**) · 이전: 2026-08-19 19차 (**PLAN-060 단계 C · 자격 심사 = 델타 0건 · 판정 산출 덮어쓰기 차단**) · 이전: 2026-08-19 18차 (**PLAN-060 단계 B 완주 · 외부 검토 반영 · DP 재등급**) · 이전: 2026-08-18 16차 (**PLAN-054 완주 · 다국어 기준선 B★ 확정과 원고 반영 · 살아 있는 계획 0**) · 기조: 설계과학(DSR) — 전환 완료*
+
+> ## 🔜 다음 세션이 할 일 — **살아 있는 계획은 셋이다** (2026-08-25 33차 인계)
+>
+> **아카이빙 2건.** [PLAN-069](archive/PLAN-069-axiomatization-reframe.md)(트랙 A ②③③′③″④⑤ 완주 ·
+> 트랙 B·C 는 PLAN-071 로 이관 종결) · [PLAN-078-prereg](archive/PLAN-078-prereg-snapshot-013854b.md)
+> (실행 완주 · §7 기록). **삭제는 하지 않았다** — PLAN 은 지워지지 않으며 번호도 재사용하지
+> 않는다. `git mv` 2건 · 이동으로 생긴 죽은 링크 **0**(교정 14건 · STATUS 6 · OPEN-ITEMS 4 ·
+> DEFECT-LEDGER 2 · PLAN-071 1 · 초안 1).
+>
+> **이월 1건 — [O-11](plans/OPEN-ITEMS.md).** PLAN-069 DoD 6 의 미달분 둘(본문 약 63,000자 ·
+> §5.2+§5.3 비중 상승)이며, **감량으로는 닿지 않는다.** 남은 6,600자는 표·그림이나 절에 있고
+> 그것을 덜어내는 것은 §2.2 구성 변경이다. **63,000자가 여전히 유효한 목표인지부터 사용자
+> 결정이 필요하다** — 그 값은 본문 70,985자 시점에 세운 것이고, 그 뒤 용어 정의(PLAN-066)와
+> EP5 재프레이밍(PLAN-067)이 규율의 요구로 본문에 들어왔다.
+>
+> **정정 1건 — 미동결 초안이 커밋에 섞였다.** 32차의 `git add -A … 01.code_spec` 가
+> `PLAN-079-prereg`(미동결)를 함께 담았고(커밋 `eb08b8b`), 이번에 추적에서 제외했다.
+> **§2.1 에서 커밋은 곧 동결**이므로 이 사고는 사실과 다른 지위를 만들 뻔했다 — 다만 **그
+> 사이에 실행된 측정은 없다**(파이프라인 0 · 판정 0 · 봉인 접근 0). 초안 머리말에도 그 경위를
+> 적었다.
+>
+> **살아 있는 계획은 셋이다** — [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)
+> (DoD 6·7 · D단계 D-1·D-4·D-6) · [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)
+> (후속 논문 · 착수 전) · [PLAN-074](plans/PLAN-074-part1-redesign-extraction-unit.md)(Phase 0′ ·
+> 사람 결정 대기). 열린 항목은 [OPEN-ITEMS](plans/OPEN-ITEMS.md) 열하나 가운데 **O-1(문체 정리
+> 잔여) · O-3 · O-9 · O-10 · O-11** 이다.
+>
+> **검사.** 한국어 계열 다섯 전량 통과 · 문서 pytest 43건 통과 · **판정·수치 변경 0 · 원고 변경 0 ·
+> 봉인 접근 0.**
 
 > ## 🔜 다음 세션이 할 일 — **영문 문체 정리와 산출 경로 승격** (2026-08-25 32차 인계)
 >
@@ -29,7 +58,7 @@
 > ## 🔜 다음 세션이 할 일 — **트랙 A 종료 · 남은 것은 영문화다** (2026-08-25 31차 인계)
 >
 > **PLAN-069 트랙 A 가 종료되었다** — ②③③′③″④⑤ 전부. ④(감량)와 ⑤(D6 원복)를 한 작업으로
-> 묶은 이유는 ⑤ 가 ④ 의 결과로만 가능하기 때문이다(반영 기록은 [PLAN-069 §11](plans/PLAN-069-axiomatization-reframe.md)).
+> 묶은 이유는 ⑤ 가 ④ 의 결과로만 가능하기 때문이다(반영 기록은 [PLAN-069 §11](archive/PLAN-069-axiomatization-reframe.md)).
 >
 > | 지표 | 착수 | 완료 |
 > |---|---:|---:|
@@ -60,7 +89,7 @@
 > [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)(DoD 6·7 · D단계) ·
 > [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md) ·
 > [PLAN-074](plans/PLAN-074-part1-redesign-extraction-unit.md) 다.
-> **[PLAN-079-prereg](plans/PLAN-079-prereg-measurement-013854b.md) 는 여전히 미동결 초안이다.**
+> **`PLAN-079-prereg` 는 여전히 미동결 초안이며 git 추적 대상이 아니다**(§2.1 — 커밋이 곧 동결).
 
 > ## 🔜 다음 세션이 할 일 — **트랙 A 는 감량만 남았다** (2026-08-25 30차 인계)
 >
@@ -69,10 +98,10 @@
 > 목적)이고, T3 은 원고의 게이트 수치가 구 세대(`d578bf3`)에서 났으므로 D-53 자신이 *"원고
 > 수치에는 영향이 없다"* 고 적어 두었다. [CLAUDE.md §6](../CLAUDE.md) 의 집행 조항대로
 > **어느 표·그림·검정에 들어가는지 답할 수 없는 산출은 돌리지 않는다.**
-> **[PLAN-079-prereg](plans/PLAN-079-prereg-measurement-013854b.md) 는 초안으로 남겼다 — 커밋하지
+> **`PLAN-079-prereg` 는 초안으로 남겼다 — 커밋하지
 > 않았으므로 동결되지 않았다**(승인 필요 넷은 그 문서 §9).
 >
-> **[PLAN-069](plans/PLAN-069-axiomatization-reframe.md) 트랙 A ③″ 를 완주했다**(§10 반영 기록).
+> **[PLAN-069](archive/PLAN-069-axiomatization-reframe.md) 트랙 A ③″ 를 완주했다**(§10 반영 기록).
 > 대상은 산문 소스 하나이고 파생본은 `make submission-stage3` 로 재조립했다.
 >
 > | ③″ 항목 | 자리 | 내용 |
@@ -130,7 +159,7 @@
 >
 > **O-8 ② 가 종결됐다 — 복원과 재벤더를 완주했다.** 이 세션은 사용자 승인으로 **상류 역할**을
 > 맡아 상류 §2 정지 게이트(1·2·3 승인 → 4 구현 → 5 검증)를 그대로 탔다.
-> 상류 커밋 `013854b` · 하류 사전등록 [PLAN-078-prereg](plans/PLAN-078-prereg-snapshot-013854b.md)
+> 상류 커밋 `013854b` · 하류 사전등록 [PLAN-078-prereg](archive/PLAN-078-prereg-snapshot-013854b.md)
 > (**측정 없음 · 검정 0 · 확증 0 · 봉인 접근 0**) · 하류 커밋 `eb77e6c`.
 >
 > **고친 것은 산출물이 아니라 진입점이다.** `--population`·`--extra-enriched` 의 기본값을 B층
@@ -213,7 +242,7 @@
 > **삭제는 하지 않았다** — PLAN 은 지워지지 않는다(README). **번호는 재사용하지 않는다**(§0.5).
 >
 > **살아 있는 계획은 넷이다** — [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)(DoD 6·7 · D단계 영문) ·
-> [PLAN-069](plans/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
+> [PLAN-069](archive/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
 > [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)(후속 논문) ·
 > [PLAN-074](plans/PLAN-074-part1-redesign-extraction-unit.md)(Phase 0′ · 판정 부분).
 > 열린 항목은 [plans/OPEN-ITEMS.md](plans/OPEN-ITEMS.md) — **O-8·O-9·O-10 신설 · O-6 종결**.
@@ -261,7 +290,7 @@
 >
 > **살아 있는 계획은 다섯이다** — [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)
 > (+[사전등록](archive/PLAN-064-prereg.md) · **A-0~A-5·B 완주 · 남은 것은 DoD 6·7 과 D단계 영문**) ·
-> [PLAN-069](plans/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
+> [PLAN-069](archive/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
 > [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)(후속 논문) ·
 > [PLAN-074](plans/PLAN-074-part1-redesign-extraction-unit.md)(Phase 0′ · **판정 부분**) ·
 > [PLAN-075](archive/PLAN-075-operative-channel-path-term-and-projection-wiring.md)(**신설 · 승인 대기**).
@@ -324,7 +353,7 @@
 >
 > **살아 있는 계획은 넷이다** — [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)
 > (+[사전등록](archive/PLAN-064-prereg.md) · **A-1 이 임계 경로**) ·
-> [PLAN-069](plans/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
+> [PLAN-069](archive/PLAN-069-axiomatization-reframe.md)(트랙 A ③″·④·⑤) ·
 > [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)(후속 논문 · 착수 전).
 
 > ## 🔜 이전 인계 — **A-1(게이트 자원 비의존화)이 임계 경로다** (2026-08-22 24차 인계 · **A-1·A-4·A-5 완주로 종결** · 커밋 `04409e8`·`680e11a`·`fff745d`)

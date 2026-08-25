@@ -12,7 +12,7 @@
 
 ### -1.1 결정
 
-**현 투고본은 [PLAN-069](PLAN-069-axiomatization-reframe.md) 트랙 A 프레임(선언 → 실체화 →
+**현 투고본은 [PLAN-069](../archive/PLAN-069-axiomatization-reframe.md) 트랙 A 프레임(선언 → 실체화 →
 작동)으로 마감한다. 아래 본문(1부·2부)의 설계 전체는 후속 논문으로 분리한다.**
 
 | | 귀속 | 근거 |
