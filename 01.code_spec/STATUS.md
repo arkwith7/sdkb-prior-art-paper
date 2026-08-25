@@ -16,11 +16,12 @@
 > 결정이 필요하다** — 그 값은 본문 70,985자 시점에 세운 것이고, 그 뒤 용어 정의(PLAN-066)와
 > EP5 재프레이밍(PLAN-067)이 규율의 요구로 본문에 들어왔다.
 >
-> **정정 1건 — 미동결 초안이 커밋에 섞였다.** 32차의 `git add -A … 01.code_spec` 가
-> `PLAN-079-prereg`(미동결)를 함께 담았고(커밋 `eb08b8b`), 이번에 추적에서 제외했다.
-> **§2.1 에서 커밋은 곧 동결**이므로 이 사고는 사실과 다른 지위를 만들 뻔했다 — 다만 **그
-> 사이에 실행된 측정은 없다**(파이프라인 0 · 판정 0 · 봉인 접근 0). 초안 머리말에도 그 경위를
-> 적었다.
+> **정정 1건 — `PLAN-079-prereg` 의 지위를 문서 안에 못박았다.** 32차의 `git add -A` 가 이
+> 초안을 함께 담았고(커밋 `eb08b8b`), 추적 해제를 시도했으나 같은 명령에 다시 뒤집혔다.
+> **선례를 확인한 결과 사전등록은 저장소에 두는 것이 규약이고**(PLAN-072-prereg 는 *동결 대기*
+> 상태로, PLAN-078-prereg 는 *동결* 상태로 커밋됐다), **동결을 만드는 것은 파일의 존재가 아니라
+> 승인**이다. 그러므로 파일은 두되 머리말에 **"§9 승인 넷 미승인 · 동결 아님 · 실행된 측정 0"**
+> 을 적었다. 동결하려면 승인 뒤 그 사실을 밝힌 커밋을 따로 세운다.
 >
 > **살아 있는 계획은 셋이다** — [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)
 > (DoD 6·7 · D단계 D-1·D-4·D-6) · [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)
@@ -89,7 +90,8 @@
 > [PLAN-064](plans/PLAN-064-second-domain-portability-and-aei-reframe.md)(DoD 6·7 · D단계) ·
 > [PLAN-071](plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md) ·
 > [PLAN-074](plans/PLAN-074-part1-redesign-extraction-unit.md) 다.
-> **`PLAN-079-prereg` 는 여전히 미동결 초안이며 git 추적 대상이 아니다**(§2.1 — 커밋이 곧 동결).
+> **[PLAN-079-prereg](plans/PLAN-079-prereg-measurement-013854b.md) 는 여전히 초안이다** — §9 의
+> 승인 넷이 나지 않았으므로 **동결이 아니며 실행된 측정도 0** 이다.
 
 > ## 🔜 다음 세션이 할 일 — **트랙 A 는 감량만 남았다** (2026-08-25 30차 인계)
 >
@@ -98,7 +100,7 @@
 > 목적)이고, T3 은 원고의 게이트 수치가 구 세대(`d578bf3`)에서 났으므로 D-53 자신이 *"원고
 > 수치에는 영향이 없다"* 고 적어 두었다. [CLAUDE.md §6](../CLAUDE.md) 의 집행 조항대로
 > **어느 표·그림·검정에 들어가는지 답할 수 없는 산출은 돌리지 않는다.**
-> **`PLAN-079-prereg` 는 초안으로 남겼다 — 커밋하지
+> **[PLAN-079-prereg](plans/PLAN-079-prereg-measurement-013854b.md) 는 초안으로 남겼다 — 커밋하지
 > 않았으므로 동결되지 않았다**(승인 필요 넷은 그 문서 §9).
 >
 > **[PLAN-069](archive/PLAN-069-axiomatization-reframe.md) 트랙 A ③″ 를 완주했다**(§10 반영 기록).
