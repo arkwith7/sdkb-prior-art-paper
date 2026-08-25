@@ -86,6 +86,48 @@ CAPTIONS: dict[str, str] = {
           "(§3.5.1).",
     "T1": "**Table 1. Position relative to prior work — the contribution is the combination and the "
           "experimental design, not primacy.**",
+    "F2alt": "Figure 2. The indicator structure of the three layers and the three misalignments "
+             "observed between them.",
+    "F2": "**Figure 2.** Cross-layer metric misalignment. The left side shows the indicator "
+          "structure of the resource, retrieval, and generation layers; the right side shows what "
+          "was actually observed between them. The number on each arrow at the left corresponds to "
+          "the numbered observation at the right, and (ii) alone points not to the next layer but "
+          "to a different unit within the same layer, the number of documents reviewed. "
+          "Observation (i) is presented in §5.3, (ii) in §5.4.3, and (iii) in §3.5.1 and §6.5; the "
+          "interpretation is in §6.1.",
+    "T2": "**Table 2. Stages of design science research and how they were carried out in this "
+          "study.**",
+    "T3": "**Table 3. Evaluation episodes — EP is a new label and does not collide with the "
+          "preregistration labels.**",
+    "F3alt": "Figure 3. Three task views on one shared T-Box and the channels of cross-task "
+             "coupling.",
+    "T6": "**Table 6. The preregistered evaluation checks and their verdicts — the evidence and the "
+          "full text are in Section 5 and in supplementary S5.**",
+    "T5": "**Table 5. Control roles of the comparison configurations — the response each must show "
+          "when only the resource is substituted.**",
+    "F5alt": "Figure 5. Correspondence between the procedure of prior-art search in practice and "
+             "the configuration of this experiment, and the two places where it fails.",
+    "F5": "**Figure 5.** Correspondence between practice and the experimental configuration. The "
+          "left column lists the stages of practice and the right column the configuration of this "
+          "experiment at each stage. The two notes in the right margin mark where the correspondence "
+          "fails, and the band at the bottom states the premise under which the numbers of this "
+          "section hold.",
+    "T4": "**Table 4. The 31 competency questions by purpose — the gate denominator is 28 and the "
+          "representation-audit denominator is 31.**",
+    "F4alt": "Figure 4. The order of the acceptance procedure, the handling of each unmet term, and "
+             "the actual verdicts in the controlled resource substitution.",
+    "F4": "**Figure 4.** The T-gate procedure and the actual verdicts. The left column is the order "
+          "of the acceptance procedure and reads downward. The middle column is the handling when a "
+          "term is not met, and the right column is the verdict each term actually produced in the "
+          "controlled resource substitution (§5.3). The right column shows that a change passing "
+          "every formal layer was rejected on one performance condition.",
+    "F3": "**Figure 3.** The shared T-Box and three task views. The three boxes at the top give the "
+          "main classes of each view, a representative competency question, the A-Box evidence, and "
+          "the status of that view in this paper. The three channels in the middle are vocabulary "
+          "used by two or more views, and the dashed lines from each channel show the two views it "
+          "joins. The box at the bottom gives the shared core and the number of competency "
+          "questions per suite that the gate observes. That the three views are not exclusive "
+          "modules is why the cross-task regression of §1 can occur.",
 }
 
 # 셀 사전 — 한국어 셀 **전체**를 키로 하는 완전 일치 치환. 부분 문자열 치환을 쓰지 않는 이유는
@@ -93,6 +135,155 @@ CAPTIONS: dict[str, str] = {
 # 지표·게이트·라벨 이름(L0–L3 · T1–T4 · Recall@100 · P0★ · B3 · EP1–EP4)은 이미 라틴 문자이며
 # 바꾸면 다른 것을 가리키므로 사전에 없다. 숫자만 든 셀도 없다 — 손대지 않는다.
 CELLS: dict[str, str] = {
+    "§5.4.1 (패널 A · B)": "§5.4.1 (panels A and B)",
+    "[S5](../supplementary/S5-submission-full-v2.md) 부록 A":
+        "[S5](../../supplementary/S5-submission-full-v2.md), Appendix A",
+    # ── 표 6 · 사전등록된 평가 점검 ──────────────────────────────────────────
+    "평가 점검": "Evaluation check",
+    "결과를 보기 전에 동결한 예측": "Prediction frozen before results were seen",
+    "사전등록별 판정 기록 · 첫 확증 분할(A)":
+        "Verdict recorded per preregistration · first confirmatory split (A)",
+    "사전등록별 판정 기록 · 두 번째 확증 분할(B)":
+        "Verdict recorded per preregistration · second confirmatory split (B)",
+    "근거": "Evidence",
+    "**점검 1 · 검색 유용성**": "**Check 1 · retrieval utility**",
+    "확증": "Confirmatory",
+    "온톨로지 보강 검색은 최강 텍스트 기준선보다 **Recall@100 과 nDCG@20 이 모두** 높고, 그 개선폭은 질의–정답의 어휘 중첩이 **낮은** 집단에서 더 크다":
+        "Ontology-enriched retrieval exceeds the strongest text baseline on **both Recall@100 and "
+        "nDCG@20**, and the improvement is larger in the subgroup with **low** lexical overlap "
+        "between query and positives",
+    "**부분 지지 — 주 지표에 한정** (R@100 은 P1 에서 유의 개선 · nDCG 조항 미충족 · 사전 지정 주 구성 비유의 · 저중첩 조건 반증)":
+        "**supported for the primary metric only** (R@100 improved significantly on P1; the nDCG "
+        "clause was not met; the prespecified primary configuration did not reach significance; the "
+        "low-overlap clause was contradicted)",
+    "**미지지** (R@100 은 개선되나 nDCG 조항이 깨졌다 · 주 구성 비유의)":
+        "**not supported** (R@100 improved but the nDCG clause was not met; the primary "
+        "configuration did not reach significance)",
+    "**점검 2 · 계층 특이성**": "**Check 2 · layer specificity**",
+    "게이트 태스크와 무관한 전문가 매칭 전용 계층(`Skill`·`ExpertCase`·`Mitigation`)의 제거는 검색 성능을 **유의하게 바꾸지 않는다**":
+        "Removing the expert-matching-only layers (`Skill`, `ExpertCase`, `Mitigation`), which are "
+        "unrelated to the gate task, **does not change retrieval performance significantly**",
+    "**기각 → 교차 태스크 의존성 관측** (제거가 검색을 유의하게 악화)":
+        "**rejected — an observed cross-task dependency** (removal degraded retrieval "
+        "significantly)",
+    '**재현되지 않음 — 판정 불가** (같은 절제의 값이 0.0000 · "영향 없음"과 "뺄 것이 없음"을 가르지 못한다)':
+        "**not reproduced; no verdict can be issued** (the same ablation gave 0.0000, which does "
+        "not separate no effect from nothing to remove)",
+    "**점검 3 · 전달**": "**Check 3 · transfer**",
+    "확증 평가 (게이트 조건 T4)": "Confirmatory evaluation (gate condition T4)",
+    "검색 구성만 교체하고 생성기를 고정하였을 때 **인용 정확도가 떨어지지 않고 환각률이 오르지 않는다**(마진 동결)":
+        "With only the retrieval configuration replaced and the generator fixed, **citation accuracy "
+        "does not decrease and the hallucination rate does not increase** (margin frozen)",
+    "*(탐색적 평가 — 평가 절차 동결이 목적 · 판정 없음)*":
+        "*(exploratory evaluation — the purpose was to freeze the procedure; no verdict)*",
+    "**판정 1회 = 실패 — 전달을 확증하지 못했다** (점추정은 제안 구성이 앞서나 신뢰구간 하한이 마진보다 낮았다 · 원인 미구분)":
+        "**1 verdict issued, failed — we could not confirm transfer** (the point estimate favored the "
+        "proposed configuration, but the lower bound fell below the margin; the cause is not "
+        "separated)",
+    # ── 표 5 · 비교 구성의 통제상 역할 ───────────────────────────────────────
+    "구성": "Configuration",
+    "통제상 역할": "Control role",
+    "요구되는 관측": "Required observation",
+    "BM25(B0) · Dense(B2) · CPC/IPC(B4)": "BM25 (B0), Dense (B2), CPC/IPC (B4)",
+    "통제 무결성 대조군": "Control-integrity reference",
+    "자원만 교체한 두 조건에서 순위가 동일하여야 한다. 달라지면 통제가 성립하지 않는다":
+        "The rankings must be identical across the two conditions in which only the resource was "
+        "substituted; if they differ, the control does not hold",
+    "Text Hybrid(B3)": "Text Hybrid (B3)",
+    "음성 대조군": "Negative control",
+    "온톨로지 자원의 변경에 반응하지 않아야 한다":
+        "It must not respond to a change in the ontology resource",
+    "Ontology-only(B5)": "Ontology-only (B5)",
+    "노출 대조군": "Exposure reference",
+    "자원 변경에 가장 직접 반응하는 구성이다":
+        "It is the configuration that responds most directly to a resource change",
+    "Text+Ontology(P0) · +ClaimFeature(P1)": "Text+Ontology (P0), +ClaimFeature (P1)",
+    "하류 센서": "Downstream sensor",
+    "조건 T1의 판정이 이 두 구성에서 산출된다":
+        "The verdict of condition T1 is produced on these two configurations",
+    # ── 표 4 · 역량질문 구분 ─────────────────────────────────────────────────
+    "구분": "Group",
+    "개수": "Count",
+    "용도": "Purpose",
+    "G0 통과": "G0 pass",
+    "L3 주 태스크 스위트 (pa)": "L3 primary-task suite (pa)",
+    "선행기술조사 태스크의 기능 검증": "Functional validation of the prior-art search task",
+    "T3 스위트 (em 6 · tf 5 · core 12)": "T3 suites (em 6, tf 5, core 12)",
+    "다른 태스크와 공유 코어의 비회귀": "Non-regression of the other tasks and the shared core",
+    "**게이트 관찰 소계**": "**Gate-observed subtotal**",
+    "승인식의 판정 분모": "Denominator of the acceptance rule",
+    "사이드카 청구항 질의 (CQ29–31)": "Sidecar claim queries (CQ29–31)",
+    "청구항 수준 측정 전용 · 승인식 미편입":
+        "Claim-level measurement only; not part of the acceptance rule",
+    "**표현 감사 전량**": "**Representation audit, all**",
+    "EP1 표현 감사의 분모": "Denominator of the EP1 representation audit",
+    # ── 표 2 · 설계과학연구 단계 ──────────────────────────────────────────────
+    "단계": "Stage",
+    "본 연구의 실행": "How it was carried out here",
+    "절": "Section",
+    "문제 식별": "Problem identification",
+    "형식 검증을 통과한 변경 이후의 태스크 성능 회귀":
+        "Task performance regressed after a change that passed formal validation",
+    "목표 정의": "Objective definition",
+    "승인 조건을 한 층 아래 태스크에서 확인":
+        "Verify the acceptance condition on the task one layer below",
+    "설계·개발": "Design and development",
+    "산출물 A1(SDKB)과 A2(T-gate)": "Artifacts A1 (SDKB) and A2 (the T-gate)",
+    "1차 평가": "Evaluation round 1",
+    "초기 결함주입에서 게이트 판별력이 **기각**":
+        "Discriminative power of the gate was **rejected** in the initial fault injection",
+    "설계 개선": "Design revision",
+    "L3와 T3의 관찰 범위 분리": "Separation of the observation scopes of L3 and T3",
+    "재평가": "Re-evaluation",
+    "판정한 적 없는 홀드아웃 결함 45건으로 다시 측정하였다":
+        "Measured again with 45 previously unadjudicated holdout faults",
+    "실제 개정 기반 통제 평가": "Controlled evaluation on a real revision",
+    "자원의 실제 개정에 대한 게이트의 거부(Accept = 0)":
+        "The gate rejected a real revision of the resource (Accept = 0)",
+    "이식 판정": "Port verdict",
+    "제2 공학 온톨로지에 형식 층과 교차 태스크 층을 이식하여 동일 절차로 판정":
+        "Ported the formal layers and the cross-task layer to engineering ontology 2 and "
+        "adjudicated with the same procedure",
+    "설계지식": "Design knowledge",
+    "코어 원리 DP1–DP4 · 범위 원리 DP5·DP6·DP7":
+        "Core principles DP1–DP4 and scope principles DP5, DP6, and DP7",
+    # ── 표 3 · 평가 에피소드 ─────────────────────────────────────────────────
+    "에피소드": "Episode",
+    "묻는 것": "Question",
+    "판정 방식": "How it is adjudicated",
+    "지위": "Status",
+    "결과": "Results",
+    "**표현 감사**": "**Representation audit**",
+    "세 태스크의 어휘·관계·CQ가 자원에 **실재하는가**":
+        "Do the vocabulary, relations, and CQs of the three tasks **exist** in the resource?",
+    "계수와 CQ 통과 여부 (결정론적)": "Counts and CQ pass/fail (deterministic)",
+    "관측 사실": "Observed fact",
+    "**게이트 판별력**": "**Discriminative power of the gate**",
+    "의도적으로 주입한 결함을 게이트가 **검출하는가**, 정상 변경을 **거부하지는 않는가**":
+        "Does the gate **detect** deliberately injected faults without **rejecting** sound changes?",
+    "아직 판정한 적 없는 홀드아웃 결함 · 사전 지정한 세 조건":
+        "Previously unadjudicated holdout faults and three prespecified conditions",
+    "게이트 판별력에 대한 홀드아웃 산출물 평가 (확증 점검 목록에는 포함되지 않는다 · §4.5)":
+        "Holdout artifact evaluation of the gate (not part of the confirmatory checks · §4.5)",
+    "**통제된 자원 교체**": "**Controlled resource substitution**",
+    "문서집합·설정을 고정하고 **자원만 교체하였을 때** 게이트의 판정은 무엇인가":
+        "With documents and settings fixed and **only the resource replaced**, what is the verdict?",
+    "사전등록된 승인식(T1·T2·T3)의 적용":
+        "Application of the preregistered acceptance rule (T1, T2, T3)",
+    "별도 사전등록 아래의 판정": "Verdict under a separate preregistration",
+    "**검색 효용과 경계**": "**Retrieval utility and its boundary**",
+    "온톨로지 보강이 강한 텍스트 기준선을 **개선하는가, 어디까지인가**":
+        "Does ontology enrichment **improve** a strong text baseline, and **how far**?",
+    "봉인 분할에 대한 사전등록된 확증 평가 — 모든 접근을 열람 원장에 기록 (비중복 확증 분할 둘)":
+        "Preregistered confirmatory evaluation on sealed splits — all accesses were recorded in the "
+        "access ledger (two non-overlapping confirmatory splits)",
+    "확증 + 탐색적 진단": "Confirmatory plus exploratory diagnosis",
+    "**이식 판정**": "**Port verdict**",
+    "형식 층과 교차 태스크 층이 **자원을 바꾸어도 동일하게 작동하는가**":
+        "Do the formal layers and the cross-task layer **behave the same on a different resource**?",
+    "별도 사전등록 아래 홀드아웃 결함 21건과 실제 릴리스 계보 10판정 (승인식은 완성되지 않는다 · T1·T2 미이식)":
+        "21 holdout faults and 10 verdicts on the real release lineage under a separate "
+        "preregistration (the acceptance rule is not completed · T1 and T2 not ported)",
     # ── 표 1 · 관련연구 대비 위치 ────────────────────────────────────────────
     "연구 흐름": "Research strand",
     "대표 문헌": "Representative work",
