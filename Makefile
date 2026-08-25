@@ -60,10 +60,12 @@ style-check-en:
 # style-check 가 어체의 표류를, verdicts 가 판정 강도의 표류를 막듯 이것은 **정보 제시 순서의
 # 표류**를 막는다 — 절을 옮기거나 S5 로 이관하면 정의가 사용 뒤로 밀리는 일이 재구성마다
 # 재발했다(PLAN-066 §1 실측: 파생본 위반 25건). 대상은 투고 파생본 계열뿐이다(style-check 와 같다).
-# **경고 모드로 시작한다**(`--warn`) — 착수 시점의 위반이 0 이 아니므로 차단으로 올리면 B 단계의
-# 모든 커밋이 막힌다. B 단계 종료(PLAN-066 DoD 4)에서 차단으로 승격한다(verdicts 가 밟은 경로).
+# **차단으로 승격하였다 (2026-08-25 · PLAN-066 DoD 3 충족 · O-2 종결).** 착수 시점 25건이던
+# G1·G2·G5 위반은 B-2·B-3′ 반영으로 0 이 되었고, 승격 시점 실측도 0 이다 — 켜면서 고친 문장은
+# 없다. **G4(식별자 산문 사용)는 설계상 경고로 남는다**(CLAUDE.md §2.3-5). 승격 경로는
+# verdicts·style-check 가 밟은 것과 같다.
 glossary-check:
-	uv run python scripts/check_glossary.py --warn
+	uv run python scripts/check_glossary.py
 
 # 용어별 첫 등장·정의 위치 대장 — PLAN-066 실측표와 glossary.md §J 의 원천. 손으로 세지 않는다.
 glossary-inventory:

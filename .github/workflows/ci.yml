@@ -56,9 +56,10 @@ jobs:
       # 용어 첫 등장 규율 (paper/glossary-terms.yaml · CLAUDE.md §8.1 V1·V2 · PLAN-066).
       # 어체를 style-check 가, 판정 강도를 verdicts 가 막는 자리에서 이것은 **정보 제시 순서**를
       # 막는다 — 절 재배치·supplementary 이관은 정의를 사용 뒤로 미는 부작용이 있고, 그 표류는
-      # 재구성마다 재발했다. **경고 모드** — 착수 시점 위반 25건. 차단 승격은 PLAN-066 DoD 3.
-      - name: Glossary first-mention check (warn)
-        run: uv run python scripts/check_glossary.py --warn
+      # 재구성마다 재발했다. **차단 모드** — PLAN-066 DoD 3 충족(위반 25건 → 0)으로 2026-08-25
+      # 승격하였다. G4(식별자 산문 사용)는 설계상 경고로 남는다.
+      - name: Glossary first-mention check
+        run: uv run python scripts/check_glossary.py
 
       # 단위 + 통합 테스트. 통합 테스트가 커밋된 스냅샷에서 baseline 을 재조립해
       # 관측 단위 수(Process 8 / SubProcess 12)·특허 0건·결정성·CQ 서명을 검증한다.
