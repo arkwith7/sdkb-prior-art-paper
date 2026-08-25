@@ -101,6 +101,29 @@ CAPTIONS: dict[str, str] = {
           "preregistration labels.**",
     "F3alt": "Figure 3. Three task views on one shared T-Box and the channels of cross-task "
              "coupling.",
+    "F6alt": "Figure 6. The five evaluation episodes mapped onto the terms of the acceptance rule, "
+             "with the verdict for each term.",
+    "F6": "**Figure 6.** Evaluation episodes mapped onto the terms of the acceptance rule. Rows are "
+          "episodes and columns are terms of the rule; only the leftmost column is the resource "
+          "rather than the gate. The symbol in each cell is the verdict and the line beneath it the "
+          "evidence. A blank cell means that the episode did not examine that term. T4 is marked "
+          "with an asterisk because it is not part of the acceptance rule.",
+    "T9": "**Table 9. Subgroups and ablation in the first confirmatory split** (test, 198 queries, "
+          "family R@100, query-level paired bootstrap with 10,000 resamples; `Difference` in the "
+          "ablation row is the **removal loss** (full − ablated; positive = layer contribution); "
+          "Holm m=8; all 17 rows are in S5).",
+    "T8": "**Table 8. Retrieval performance in the two confirmatory splits (2 panels) — the "
+          "baseline is the Text Hybrid (B3) of each panel; Δ and the win/loss/tie counts summarize "
+          "the original sample paired per query, and the 95% confidence intervals and two-sided "
+          "*p* values come from a query-level paired bootstrap with 10,000 resamples.**",
+    "F7alt": "Figure 7. System by metric — improvement in deep recall and no improvement in "
+             "top-of-ranking ordering.",
+    "F7": "**Figure 7.** System by metric. (a) the primary metric family Recall@100; (b) the "
+          "difference of each auxiliary metric against B3 with 95% confidence intervals. Ontology "
+          "reranking retrieves more known positives within a review depth of 100 but does not "
+          "improve the ordering quality of the top 20.",
+    "T7": "**Table 7. Retrieval performance when only the resource bundle is substituted (test, 198 "
+          "queries, family Recall@100).**",
     "T6": "**Table 6. The preregistered evaluation checks and their verdicts — the evidence and the "
           "full text are in Section 5 and in supplementary S5.**",
     "T5": "**Table 5. Control roles of the comparison configurations — the response each must show "
@@ -135,6 +158,32 @@ CAPTIONS: dict[str, str] = {
 # 지표·게이트·라벨 이름(L0–L3 · T1–T4 · Recall@100 · P0★ · B3 · EP1–EP4)은 이미 라틴 문자이며
 # 바꾸면 다른 것을 가리키므로 사전에 없다. 숫자만 든 셀도 없다 — 손대지 않는다.
 CELLS: dict[str, str] = {
+    # ── 표 9 · 하위집단과 절제 ──────────────────────────────────────────────
+    "집단/제거 계층": "Subgroup / removed layer",
+    "질의 수": "Queries",
+    "qrel 수": "qrel",
+    "제안법 R@100": "Proposed R@100",
+    "차이": "Difference",
+    "정답 전량 한국어": "All positives Korean",
+    "정답에 외국어 포함": "Positives include a foreign language",
+    "**-Expert layer (A8, 음성 대조군)**": "**-Expert layer (A8, negative control)**",
+    "**[+0.0105,+0.0560]** (p=0.002·Holm 유의)":
+        "**[+0.0105,+0.0560]** (p=0.002, significant after Holm)",
+    # ── 표 8 · 두 확증 분할의 검색 성능 ──────────────────────────────────────
+    "시스템": "System",
+    "승/패/동": "Win/loss/tie",
+    "Text+Ontology (P0★ · 사전지정 주)": "Text+Ontology (P0★, prespecified primary)",
+    "다국어 융합 기준선 (B★ · 탐색적)": "Multilingual fusion baseline (B★, exploratory)",
+    "서지 조건 모사 기준선 (B10 · 탐색적)": "Bibliographic-condition baseline (B10, exploratory)",
+    # ── 표 7 · 자원 번들 교체 ────────────────────────────────────────────────
+    "시스템 (test 198질의 · family R@100)": "System (test, 198 queries, family R@100)",
+    "O (교정 전)": "O (before correction)",
+    "O′ (교정 후)": "O′ (after correction)",
+    "B0·B2·B3 텍스트 · B4 분류": "B0, B2, B3 text; B4 classification",
+    "불변": "unchanged",
+    "0 (텍스트를 변경하지 않았으므로)": "0 (the text side was not changed)",
+    "**B5 온톨로지 단독**": "**B5 ontology-only**",
+    "**P1 (교체 대상 구성)**": "**P1 (the substituted configuration)**",
     "§5.4.1 (패널 A · B)": "§5.4.1 (panels A and B)",
     "[S5](../supplementary/S5-submission-full-v2.md) 부록 A":
         "[S5](../../supplementary/S5-submission-full-v2.md), Appendix A",
@@ -397,6 +446,13 @@ def block_from_korean(korean: list[str], head_re: re.Pattern[str], kind: str, n:
     i = starts[0]
     out = [korean[i]]
     j = i + 1
+    # 캡션이 여러 줄인 표가 있다(표 9). 캡션 줄바꿈은 조판 사정이고 구조가 아니므로, 표·그림
+    # 본체가 시작되기 전까지의 연속 산문 줄은 **캡션 한 줄로 접는다**. 접지 않고 남겨 두면
+    # 영문 캡션이 첫 줄만 대체하고 나머지 한국어 줄이 그대로 남아 수치가 두 번 세어진다.
+    while (j < len(korean) and korean[j].strip()
+           and not korean[j].lstrip().startswith(("|", "!["))):
+        out[0] = out[0].rstrip() + " " + korean[j].strip()
+        j += 1
     while j < len(korean) and not korean[j].strip():      # 캡션과 본체 사이의 빈 줄 하나
         out.append(korean[j])
         j += 1
