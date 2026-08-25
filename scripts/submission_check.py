@@ -24,6 +24,13 @@
   목표가 헐거워진다(움직이는 골대).
 - **D7·D8 은 투고처 규정이므로 협상 대상이 아니다**(D6 의 축약 목표는 우리가 정한 페이지 목표라
   성격이 다르다). 규정이 바뀌면 상수를 고치고 출처를 주석에 남긴다.
+- **2026-08-26 · 투고처가 바뀌었고 새 규정을 확인했다**(PLAN-081 §5-② 종결). 1지망은
+  `Results in Engineering` 이며 Guide for Authors 실측 결과 **D7·D8 의 값은 바뀌지 않는다** —
+  초록 *"does not exceed 250 words"* · 키워드 *"1 to 7 keywords"*. 우연이 아니라 두 저널이
+  같은 Elsevier 표준을 쓴다. **두 상수는 이제 잠정값이 아니라 확정값이며 출처만 바뀌었다.**
+- **같은 규정이 D5·D6 의 성격을 바꾼다.** 이 저널은 *"no strict formatting requirements
+  (on length restrictions or reference formatting, for example)"* 를 명시한다. 곧 분량·표·그림
+  상한은 **투고처 규정이 아니라 전부 우리가 정한 편집 목표**다(D7·D8 과 성격이 다르다).
 - **D9 는 §2.3 의 "이관은 삭제가 아니다"를 절 참조로 확장한 것**이다. 파생본은 장 구성을 접으며
   만들어지므로(PLAN-048 2단계: 11장 → 8장) 산문에 남은 옛 절 번호가 조용히 죽은 링크가 된다.
   파일 링크만 검사하면 이것을 놓친다 — 실제로 놓쳤다(§4.8·§4.9·§4.9.1).
@@ -101,7 +108,9 @@ MAX_TABLES = 14                     # D5
 # 영향을 받지 않는다. 규격은 paper/FIGURE-SPEC.md.
 FIGURE_RANGE = (4, 8)               # D5
 
-MAX_ABSTRACT_WORDS = 250            # D7 — AEI Guide for Authors (투고처 규정)
+# D7·D8 — **확정값**(2026-08-26 · PLAN-081 · Results in Engineering Guide for Authors 실측).
+# 초록 "does not exceed 250 words" · 키워드 "1 to 7 keywords". 구 출처(AEI)와 값이 같다.
+MAX_ABSTRACT_WORDS = 250            # D7 — Results in Engineering Guide for Authors (투고처 규정)
 MAX_KEYWORDS = 7                    # D8 — 위와 같음
 
 PLACEHOLDERS = [                    # D2 — verdicts.yaml PLACEHOLDERS 와 이중 방어
@@ -236,7 +245,7 @@ def check_file(path: Path, root: Path, warns: list[str] | None = None) -> list[s
         if n_words > MAX_ABSTRACT_WORDS:
             fails.append(
                 f"{path}:{abs_start + 1}: [D7] 영문 초록 {n_words}단어 > 상한 "
-                f"{MAX_ABSTRACT_WORDS} (−{n_words - MAX_ABSTRACT_WORDS}단어 필요 · AEI 규정)"
+                f"{MAX_ABSTRACT_WORDS} (−{n_words - MAX_ABSTRACT_WORDS}단어 필요 · 투고처 규정)"
             )
 
     # D8 · 키워드 개수
@@ -249,7 +258,7 @@ def check_file(path: Path, root: Path, warns: list[str] | None = None) -> list[s
         parts = [p for p in parts if p]
         if len(parts) > MAX_KEYWORDS:
             fails.append(
-                f"{path}:{i}: [D8] 키워드 {len(parts)}개 > 상한 {MAX_KEYWORDS} (AEI 규정)"
+                f"{path}:{i}: [D8] 키워드 {len(parts)}개 > 상한 {MAX_KEYWORDS} (투고처 규정)"
             )
 
     # D9 · §참조 도달성 — 축약·재배열로 사라진 절을 가리키면 실패한다.
