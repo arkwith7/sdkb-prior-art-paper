@@ -59,7 +59,10 @@ BANNED_LEXICON: list[tuple[str, str]] = [
     (r"\binstruments?\b(?=[^.]{0,25}\b(evaluation|measure)\b)", "evaluation procedure"),
     (r"\bsanity checks?\b", "preliminary check"),
     (r"\bladder\b", "reachability by observation level"),
-    (r"\bceiling\b(?![^.]{0,60}\breranking ceiling\b)", "reranking ceiling (첫 등장에 정의 1회)"),
+    # `reranking ceiling` 자체를 잡던 오탐을 막는다 (2026-08-25). 규격이 요구하는 형태가
+    # `reranking ceiling` 인데, 앞선 정규식은 그 안의 `ceiling` 을 매치한 뒤 **뒤쪽 60자에서**
+    # 같은 구를 다시 찾아 실패했다. 규칙의 뜻은 "홑 `ceiling` 을 쓰지 말라"이므로 선행어로 본다.
+    (r"(?<!reranking )\bceiling\b", "reranking ceiling (첫 등장에 정의 1회)"),
     (r"\bresolution\b", "concept density · observation level · matching unit · check granularity"),
     (r"\bentanglement\b|\bentangled\b", "cross-task dependency"),
 ]

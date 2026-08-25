@@ -108,6 +108,17 @@ CAPTIONS: dict[str, str] = {
           "rather than the gate. The symbol in each cell is the verdict and the line beneath it the "
           "evidence. A blank cell means that the episode did not examine that term. T4 is marked "
           "with an asterisk because it is not part of the acceptance rule.",
+    "T11": "**Table 11. Decision stability — the point at which each verdict switches under the "
+           "frozen thresholds.**",
+    "T12": "**Table 12. Core design principles DP1–DP4.**",
+    "T13": "**Table 13. Nine deficits in validation strength and generalizability — every remedy "
+           "is the object of a new preregistration.**",
+    "T10": "**Table 10. Release-lineage verdicts on engineering ontology 2 — confined to "
+           "the formal layers and the cross-task layer.** d0–d5 are releases v1.3.0, v1.4.0, "
+           "v1.4.1, v1.4.2, v1.4.3, and v1.4.4; migration condition R places the original instances "
+           "unchanged and N places them after applying the official migration rules. Because the "
+           "acceptance rule is not completed, `accept` is not recorded in any row and only partial "
+           "acceptance remains.",
     "T9": "**Table 9. Subgroups and ablation in the first confirmatory split** (test, 198 queries, "
           "family R@100, query-level paired bootstrap with 10,000 resamples; `Difference` in the "
           "ablation row is the **removal loss** (full − ablated; positive = layer contribution); "
@@ -158,6 +169,143 @@ CAPTIONS: dict[str, str] = {
 # 지표·게이트·라벨 이름(L0–L3 · T1–T4 · Recall@100 · P0★ · B3 · EP1–EP4)은 이미 라틴 문자이며
 # 바꾸면 다른 것을 가리키므로 사전에 없다. 숫자만 든 셀도 없다 — 손대지 않는다.
 CELLS: dict[str, str] = {
+    # ── 표 13 · 결손 아홉 ───────────────────────────────────────────────────
+    "결손": "Deficit",
+    "현 상태 (보고 위치)": "Current state (where reported)",
+    "해소하는 측정": "Measurement that removes it",
+    "실제 자원 변경의 거부 사례가 1회": "Only 1 rejection of a real resource change",
+    "통제된 자원 교체 1회에서 T1 미충족에 따른 승인 거부 (§5.3)":
+        "Acceptance refused on an unmet T1 in 1 controlled resource substitution (§5.3)",
+    "자격 있는 델타 3–5건을 순차 투입하고 판정의 분포를 보고":
+        "Submit 3–5 eligible deltas in sequence and report the distribution of verdicts",
+    "승인된 변경의 사후 안전성 미검정": "Post-acceptance safety of an approved change not tested",
+    "심사한 델타가 승인되지 않아 비교가 성립하지 않았다 (§6.5)":
+        "The adjudicated delta was not accepted, so the comparison did not arise (§6.5)",
+    "승인된 델타를 릴리스한 뒤 다음 세대의 봉인 분할에서 재측정":
+        "Release an accepted delta and re-measure on the sealed split of the next generation",
+    "교차 태스크 검출의 임계 민감성": "Threshold sensitivity of cross-task detection",
+    "τ=0.05에서 T3 단독 검출 12/45이나 τ=0.10에서는 4/45, τ=0.00에서는 17/45 (§5.2)":
+        "At τ=0.05 detection by T3 alone is 12/45, at τ=0.10 it is 4/45, and at τ=0.00 it is 17/45 "
+        "(§5.2)",
+    "τ 격자 전반의 검출률·위양성률 곡선을 사전등록하고 동시 보고":
+        "Preregister and report jointly the detection-rate and false-positive curves across the τ "
+        "grid",
+    "임계 셋의 실무적 근거 부재": "No practical basis for the three thresholds",
+    "ε=0.02·δ=0.05·τ=0.05는 동결한 규범적 선택이며 보정을 거치지 않았다 (§3.5)":
+        "ε=0.02, δ=0.05, and τ=0.05 are frozen normative choices and were not calibrated (§3.5)",
+    "재색인 반복의 회수 변동폭 측정과 실무자 허용 한계 조사":
+        "Measure recall variation across repeated reindexing and survey practitioner tolerance",
+    "승인 게이트를 완전히 평가할 수 있는 자원의 부재":
+        "No resource on which the acceptance gate can be evaluated in full",
+    "**부분 해소** — 형식 층과 교차 태스크 층은 제2 공학 온톨로지에서 동일 절차로 판정하였다 (§4.6 · §5.5). 게이트 전체의 평가는 릴리스 델타 계보와 하류 태스크 벤치마크를 동시에 갖춘 자원을 요구하나, 본 연구의 자원은 뒤의 것만 제2 자원은 앞의 것만 갖추었다":
+        "**partly removed** — the formal layers and the cross-task layer were adjudicated on "
+        "engineering ontology 2 with the same procedure (§4.6 · §5.5). Evaluating the whole gate "
+        "requires a resource that holds both a release delta lineage and a downstream task "
+        "benchmark, whereas our resource holds only the latter and resource 2 only the former",
+    "두 조건을 동시에 갖춘 자원의 확보, 또는 제2 자원의 태스크 벤치마크를 구축한 뒤 T1·T2를 적용":
+        "Obtain a resource holding both conditions, or build a task benchmark on resource 2 and "
+        "then apply T1 and T2",
+    "질의 언어와 정답 언어의 불일치": "Mismatch between query language and ground-truth language",
+    "질의는 전량 한국어이고 알려진 양성의 41%는 비한국어 (§6.5)":
+        "The queries are entirely Korean and 41% of known positives are non-Korean (§6.5)",
+    "질의 측 번역 구성을 추가하여 언어별 회수를 분해 재측정":
+        "Add a query-side translation configuration and re-measure recall decomposed by language",
+    "강한 다국어 기준선의 부재": "No strong multilingual baseline",
+    "**부분 해소** — 다국어 융합 기준선을 별도 사전등록으로 추가하였고 기준선 강도는 유의하게 변하지 않았다 (§4.3 · §5.4.3 · 표 8). 다만 두 인코더가 같은 백본 계열이므로 **계열 다양성은 미달성**":
+        "**partly removed** — a multilingual fusion baseline was added under a separate "
+        "preregistration and baseline strength did not change significantly (§4.3 · §5.4.3 · "
+        "Table 8). The two encoders share a backbone family, however, so **family diversity was "
+        "not achieved**",
+    "계열이 다른 인코더를 포함한 재평가": "Re-evaluate including an encoder from a different family",
+    "전문가 관련성 판정 미수행": "Expert relevance judgment not performed",
+    "프로토콜은 동결하였으나 판정은 수행하지 않았다 (§4.4). 취약도는 판정 전환 최소 건수로 계량하고 외생 라벨 병합으로 **부분 축소**하였다 (§5.4.1)":
+        "The protocol was frozen but the judgment was not performed (§4.4). The vulnerability was "
+        "quantified by the minimum number of judgment reversals and **partly reduced** by merging "
+        "exogenous labels (§5.4.1)",
+    "상위 미인용 후보의 **표적 표본**에 대한 2인 가림 독립 판정과 κ 보고":
+        "2-rater blinded independent judgment on a **targeted sample** of highly ranked uncited "
+        "candidates, with κ reported",
+    "결함 명세의 자원 간 이전": "Transfer of the fault specification between resources",
+    "제2 도메인의 홀드아웃 모델에서 포함관계 역전 결함의 주입 후보가 0건이어서 21건 중 9건이 판정에 이르지 못하였다 (§5.5)":
+        "In domain 2 the holdout model had 0 injection sites for the containment-inversion fault, "
+        "so 21 faults yielded 9 without a verdict (§5.5)",
+    "대상 자원의 술어 방향을 실측하고 그 관습에 맞추어 결함 명세를 재정의한 뒤 새 사전등록으로 재판정":
+        "Measure the predicate direction of the target resource, redefine the fault specification "
+        "for that convention, and adjudicate again under a new preregistration",
+    # ── 표 11 · 결정 안정성 ─────────────────────────────────────────────────
+    "조건": "Condition",
+    "동결 임계": "Frozen threshold",
+    "관측": "Observed",
+    "판정": "Verdict",
+    "판정이 전환되는 지점": "Switching point",
+    "T1 · 검색 비열등": "T1 · retrieval non-inferiority",
+    "미충족": "not met",
+    "충족": "met",
+    "ε > 0.0542 이어야 충족으로 바뀐다": "becomes met only if ε > 0.0542",
+    "T2 · 하위집단 안전": "T2 · subgroup safety",
+    "최대 하락 = +0.0401": "maximum drop = +0.0401",
+    "δ ≤ 0.0401 이면 미충족으로 바뀐다": "becomes not met if δ ≤ 0.0401",
+    "T3 · 교차 태스크 검출 (EP2 분포 검사)": "T3 · cross-task detection (EP2 distribution check)",
+    "τ = 0.05 (사전 지정)": "τ = 0.05 (prespecified)",
+    "T3 단독 검출 17/45 · *p* < .0001": "detection by T3 alone 17/45 · *p* < .0001",
+    "T3 단독 검출 12/45 · *p* < .0001": "detection by T3 alone 12/45 · *p* < .0001",
+    "T3 단독 검출 4/45 · *p* = .3438": "detection by T3 alone 4/45 · *p* = .3438",
+    "사전 동결 격자 안의 평가": "evaluation within the frozen grid",
+    "T4 · 하류 생성 층": "T4 · downstream generation layer",
+    "ε_T4 > 0.0205 이어야 충족으로 바뀐다": "becomes met only if ε_T4 > 0.0205",
+    # ── 표 12 · 코어 설계원리 ───────────────────────────────────────────────
+    "설계원리": "Design principle",
+    "근거 (실측)": "Evidence (measured)",
+    "설계 시점": "Design time",
+    "확인 시점": "Confirmation time",
+    "등급": "Grade",
+    "**층별 검증** — 온톨로지 내부 품질과 하류 태스크 성능은 **별도 층에서** 평가한다":
+        "**Layered validation** — internal ontology quality and downstream task performance are "
+        "evaluated **at separate layers**",
+    "§5.3 — 문서당 개념 1.545 → 3.779(2.4배)인데 교체 대상 구성(P1)의 Recall@100 은 −0.0293 · **성립한 자원 델타는 1건**":
+        "§5.3 — concepts per document rose 1.545 → 3.779 (2.4×) while the substituted configuration "
+        "(P1) shows Recall@100 −0.0293 · **1 established resource delta**",
+    "확인이 먼저": "Confirmation first",
+    "**경험적 지지** (확인 선행)": "**empirically supported** (confirmation preceded)",
+    "**한 층 아래 승인** — 자원 변경은 자원 지표가 아니라 **다음 사용 층의 비회귀 결과**로 승인한다":
+        "**Acceptance one layer below** — a resource change is accepted on **the non-regression "
+        "result of the next layer of use**, not on resource indicators",
+    "§5.3 — 형식 검증 L0–L3 를 **전부 통과한** 델타를 성능 조건 T1 이 거부(Accept = 0)":
+        "§5.3 — a delta that **passed all** of L0–L3 was rejected by the performance condition T1 "
+        "(Accept = 0)",
+    "**§3.5 설계 시점**": "**§3.5, at design time**",
+    "**사전 설계 · 실증 지지**": "**designed in advance and empirically supported**",
+    "**교차 태스크 감시** — 공유 T-Box 에서는 **주 태스크 성능만으로** 변경을 승인하지 않는다":
+        "**Cross-task monitoring** — on a shared T-Box, a change is not accepted on **primary-task "
+        "performance alone**",
+    "**§3.5 설계 시점**(T3)": "**§3.5, at design time** (T3)",
+    "§5.2 — 교차 결함을 T3 만 단독 검출(12/45 · 단측 *p*=.0001) · §5.4.2 — 음성 대조군(A8) 제거가 검색 성능을 0.0316 저하시켰고(제거 손실 +0.0316), 다만 **§5.4.1 두 번째 분할에서는 0.0000 으로 서로 달랐다** · §5.5 — 제2 도메인에서는 판정이 가능한 12건에서 단독 검출 0 (근거를 늘리지 않는다)":
+        "§5.2 — a cross-task fault detected by T3 alone (12/45, one-sided *p*=.0001) · §5.4.2 — "
+        "removing the negative control (A8) degraded retrieval performance by 0.0316 (removal loss "
+        "+0.0316), while **§5.4.1 the second split gave 0.0000 and the two differed** · §5.5 — in "
+        "domain 2 the 12 adjudicable faults gave 0 detections by the cross-task condition alone "
+        "(this does not extend the evidence)",
+    "**사전 설계 · 실증 지지** — 근거는 결함주입 T3 단독 검출이 진다. A8 근거는 **두 표본에서 서로 달랐음을 그대로 적는다**(경쟁 설명 §6.5)":
+        "**designed in advance and empirically supported** — the evidence rests on detection by T3 "
+        "alone in fault injection. For the A8 evidence we state **that the two samples differed** "
+        "(competing explanations in §6.5)",
+    "**통제된 자원 교체** — 문서집합·모델·가중치를 고정하고 **자원 번들만 교체**해야 온톨로지 중심 자원 변경의 효과가 판별된다":
+        "**Controlled resource substitution** — the effect of an ontology-centered resource change "
+        "is identified only by fixing documents, model, and weights and **substituting the resource "
+        "bundle alone**",
+    "§3.2 · §5.3 — T-Box 가 한 번도 바뀌지 않아 승인 안전성을 **원리적으로 측정할 수 없었다** · 두 조건이 처음 성립한 뒤에야 판정이 나왔다 · **성립 사례는 1건**":
+        "§3.2 · §5.3 — the T-Box never changed, so acceptance safety **could not be measured in "
+        "principle** · a verdict followed only after the two conditions first held · **1 "
+        "established case**",
+    "**경험적 지지** (확인 선행 · 방법론적 요구사항)":
+        "**empirically supported** (confirmation preceded; a methodological requirement)",
+    # ── 표 10 · 제2 자원의 릴리스 계보 판정 ─────────────────────────────────
+    "인접 쌍": "Adjacent pair",
+    "이행": "Migration",
+    "Δ 추가": "Δ added",
+    "Δ 제거": "Δ removed",
+    "**실패**": "**fail**",
+    "통과": "pass",
     # ── 표 9 · 하위집단과 절제 ──────────────────────────────────────────────
     "집단/제거 계층": "Subgroup / removed layer",
     "질의 수": "Queries",
