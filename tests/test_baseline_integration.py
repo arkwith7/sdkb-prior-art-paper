@@ -108,8 +108,30 @@ SNAPSHOT_OBSERVATIONS = {
     # 공개 릴리스와 디스크는 99/85 였고, 트리플만 감시하던 `scripts/check_signatures.py` 는 그
     # 표류를 통과시켰다(D-45). 관측치로 올려 두면 `test_baseline_tbox_signature` 가 디스크에서
     # 실측해 고정하고, 서명 검사기가 CANONICAL-INDEX §1 을 이 값에 정박시킨다.
-    "current": {"triples": 119251, "process": 12, "subprocess": 38, "device": 34,
-                "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84,
+    "post_cr014_annotations": {"triples": 119251, "process": 12, "subprocess": 38, "device": 34,
+                               "steps": 50, "covered": 20, "uncovered": 30, "mapping_rules": 84,
+                               "object_properties": 99, "datatype_properties": 85, "classes": 103},
+    # 현행 스냅샷(상류 `013854b` · CR-020 축 교정 + D-52 복원 · PLAN-078-prereg) —
+    # 아래 EXPECTED_* 의 원천. **두 세대가 한 항목에 겹쳐 있다. 갈라서 읽어야 한다.**
+    #
+    # ⓐ **CR-020 의 의도된 축 교정**(상류 `48971f8`). `patent-text` 프로파일이 A-Box 어휘에
+    #    처음 걸리면서 축 범주 오류가 걷혔다 — `concernsSkill` 2,182 → 277(특허 630 → 14 ·
+    #    인용문헌 1,364 → 262 · 상류 검증 ② 가 전량 귀속). 같은 교정이 개념 링크를 늘려
+    #    (`involvesMaterial` +1,395 · `realizesEquipmentClass` +453 · `realizesProcess` +511)
+    #    **커버 공정이 20 → 23 으로 올랐고**, `concernsSkill` 순감이 **CQ18 을 10행 → 4행**
+    #    으로 내렸다. 둘 다 되돌릴 대상이 아니다.
+    # ⓑ **D-52 복원**(상류 `013854b`). CR-008 이 채운 B층 인용문헌 479 건이 재생성에서 빠졌다가
+    #    되돌아왔다 — `CitedPatent` 3,034 → 3,513 · `claimText` 2,197 → 2,479.
+    #
+    # 그래서 트리플이 119,251 → **120,147** 로 **동결값을 초과**한다(+896): ⓑ 가 더한 양이
+    # ⓐ 가 덜어낸 양보다 많다. **T-Box 는 불변이므로**(99·85·103) process·subprocess·device·
+    # steps·mapping_rules 는 하나도 안 움직인다 — 그 불변이 "A-Box 한 층만 바뀌었다"의 증거다.
+    #
+    # **CQ18 4행을 정상으로 고정하는 것이 무엇을 미루는지 함께 적는다.** 그 축은 T3 교차 태스크
+    # 비회귀의 자원 측 전제이고, 순감이 T3 에 무엇을 하는지는 **아직 재지 않았다** — 등재는
+    # `upstream/DEFECT-LEDGER.md` D-53 이며 측정은 다음 사전등록에서 선다.
+    "current": {"triples": 120147, "process": 12, "subprocess": 38, "device": 34,
+                "steps": 50, "covered": 23, "uncovered": 27, "mapping_rules": 84,
                 "object_properties": 99, "datatype_properties": 85, "classes": 103},
 }
 _CURRENT = SNAPSHOT_OBSERVATIONS["current"]
@@ -200,9 +222,9 @@ CQ_MUST_ANSWER = {
 # 응답하지 못하면 온톨로지 결함이지 "G₁ 이 고칠 CQ" 가 아니다 (SPEC-004 §6).
 
 # 완전성 지표의 before 값. G₁ 과 비교되는 수치이므로 여기서 고정한다.
-EXPECTED_CONCEPTS_WITHOUT_RECENT = 59   # CQ06 — 개념 84개 중 2021년 이후 출원 전무.
-                            # 구 58(개념 83 · 그 전 61). +1 은 신규 plasma_processing 이며
-                            # 특허가 0건이라 "최근 출원 없음"에 그대로 들어온다.
+EXPECTED_CONCEPTS_WITHOUT_RECENT = 55   # CQ06 — 개념 84개 중 2021년 이후 출원 전무.
+                            # 구 59(그 전 58 · 개념 83 · 그 전 61). 59 → 55 는 상류 CR-020 의 축
+                            # 교정으로 개념 링크가 늘어 네 개념이 최근 출원을 갖게 된 결과다.
 EXPECTED_PATENTS_WITH_APPLICANT = 1000  # 출원인 없는 특허는 포트폴리오 분석에 쓸 수 없다
 
 # G₀ 의 **어휘 검증 커버리지** 서명 (논문 §3.4.2 지표 ii · §4.2 · SPEC-004).
@@ -239,19 +261,24 @@ EXPECTED_IPRD_ROWS = {
     "CQ15_failure_causal_chain": 6,
     "CQ16_material_incompatibility": 3,
     "CQ17_material_problem_expert": 35,
-    "CQ18_patents_by_skill": 10,
+    # 구 10행. 상류 CR-020 의 축 범주 교정으로 `concernsSkill` 이 2,182 → 277 로 줄며 4행이 됐다
+    # (의도된 감소 · 되돌리지 않는다). **T3 자원 측 전제에 대한 영향은 미측정** — D-53.
+    "CQ18_patents_by_skill": 4,
     "CQ19_process_control_and_metrology": 6,
     "CQ20_experts_by_equipment": 395,  # 2026-07-21 정렬 기반 링크 + EquipmentModel 노드로
                                        # 전문가↔장비 경험이 대폭 풍부해졌다(15→395 · vendor·
                                        # equipment_class·equipment_model 세 축).
     "CQ21_process_hierarchy_portfolio": 38,
-    "CQ22_patent_equipment_and_technode": 9,
+    # 구 9행. 상류 CR-020 이 `realizesEquipmentClass` 를 17 → 470 으로 늘리며 204행이 됐다 —
+    # 장비 축이 A-Box 어휘에 처음 제대로 걸린 결과다(의도된 증가).
+    "CQ22_patent_equipment_and_technode": 204,
     # PLAN-015 · 규제·수출통제 축 (2026-07-15). RQ3 IP-R&D 산출물 4(라이선싱·기술이전 심사).
     # gov: 축이라 어휘 커버리지 측정(ont: 한정) 밖이지만, CQ 로 기능 검증한다.
     "CQ23_concept_export_control": 37,           # 개념↔통제 링크 전량
     "CQ24_national_core_technology": 12,         # 국가핵심기술(NCT) 지정 개념
     "CQ25_critical_control_concepts": 7,         # CRITICAL 수준 통제 개념
-    "CQ26_patent_export_control_exposure": 1324, # 수출통제 대상 공정·소자를 구현하는 거절특허
+    # 구 1,324. 상류 CR-020 의 축 교정으로 개념 링크가 늘며 노출 특허가 7건 더 잡힌다.
+    "CQ26_patent_export_control_exposure": 1331, # 수출통제 대상 공정·소자를 구현하는 거절특허
 }
 CQ_MUST_ANSWER |= set(EXPECTED_IPRD_ROWS)
 

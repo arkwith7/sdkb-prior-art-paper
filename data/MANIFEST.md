@@ -193,7 +193,7 @@ Semiconductor Energy Lab 42 · TSMC 29 · Applied Materials 26 · Toshiba 28 · 
 
 | 그래프 | 트리플 | 만드는 법 | 게이트 |
 |---|---:|---|---|
-| `graph_v0` (G₀) | **119,251** (구 115,095 · 105,713 · 105,588) | `make baseline` (상류 `2839afb` 스냅샷 · 미반영 SDKB 온톨로지 전량 반영: 선행기술 ABox·상용화·RBV 편입) | L1(완화)·L2·L3 27/28 |
+| `graph_v0` (G₀) | **120,147** (구 119,251 · 110,880 · 115,095 · 105,713 · 105,588) | `make baseline` (상류 `013854b` 스냅샷 · CR-020 축 교정 + D-52 B층 복원 · PLAN-078-prereg) | L1(완화)·L2·L3 27/28 |
 | `delta_v1` | 370,077 | `make merge` 1단계 — 특허 24,179건 | L1(엄격): 개념 ≥1 |
 | `graph_v1` (G₁) | **924,814** | `make merge` 2단계 (+ §G1 Phase A 청구항 축 · Phase C 문제층 · baseline 재반영) | L1 통과 · **L2 HermiT consistent=True** · L3 CQ |
 | `delta_v2` (소부장) | 385,577 | `make merge CORPUS=ksia-equipment` 1단계 — 특허 **12,339건** · 초록·청구항 포함 | L1(엄격): 개념 ≥1 |
