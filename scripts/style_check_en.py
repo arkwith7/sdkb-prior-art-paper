@@ -38,6 +38,24 @@ IMPERSONAL = re.compile(
     r"\b(it (was|is|has been) (found|observed|shown|noted|seen)( that)?"
     r"|it (can|could|may|should) be (seen|noted|observed|argued)( that)?)\b", re.I)
 
+# S3 의 길이는 **저자가 쓴 산문**만 센다 — 규격 STYLE-EN §S3 이 명시한 배제를 구현한다:
+# *"서지 인용 `(Lupu & Hanbury, 2013)`, 수식, 괄호 안의 기호·수치는 길이에서 제외한다"*.
+# 한국어 검사기의 `visible_len()` 이 원어 병기에 대해 하는 일과 같다 — V1 이 요구하는 병기가
+# S3 을 위반하게 만들면 두 규칙이 서로를 무효화하듯, 서지 인용을 세면 인용이 많은 문장일수록
+# 문체가 나쁜 것으로 판정된다. **배제 대상은 셋뿐이고 산문 삽입구는 그대로 센다.**
+CITATION_PAREN = re.compile(r"\((?=[^()]*(?:\b\d{4}[a-z]?\b|et al\.))[^()]*\)")
+NUMERIC_PAREN = re.compile(r"\((?=[^()]*\d)(?=[^()]*[=<>±Δ%†]|[^()]*\bCI\b|[^()]*\bp\s*[=<>])[^()]*\)")
+MATH_SPAN = re.compile(r"\\\((?:[^\\]|\\(?!\)))*\\\)|\\\[(?:[^\\]|\\(?!\]))*\\\]")
+
+
+def countable_words(sent: str) -> list[str]:
+    """S3 이 세는 단어 — 수식·서지 인용·괄호 속 수치를 뺀 나머지."""
+    s = MATH_SPAN.sub(" ", sent)
+    s = CITATION_PAREN.sub(" ", s)
+    s = NUMERIC_PAREN.sub(" ", s)
+    return re.findall(r"[A-Za-z][A-Za-z'’\-]*", s)
+
+
 # T6 — 강조 부사. significantly 는 같은 문장에 p/CI 가 없을 때만 위반.
 INTENSIFIERS = re.compile(
     r"\b(clearly|obviously|very|quite|extremely|importantly|interestingly|remarkably|notably|"
@@ -207,7 +225,7 @@ def check_file(path: Path, fails: list[str], warns: list[str]) -> None:
 
         # 산문 전용
         for sent in (text.split("\n") if is_bullet else sentences(text)):
-            words = [w for w in re.findall(r"[A-Za-z][A-Za-z'’\-]*", sent)]
+            words = countable_words(sent)
             if len(words) > MAX_SENT_WORDS:
                 fails.append(f"{loc}: [S3] 문장 {len(words)}단어 > {MAX_SENT_WORDS} — “{sent[:60].strip()}…”")
             if IMPERSONAL.search(sent):

@@ -51,7 +51,7 @@ the manuscript and draft prose. After using this tool, the author reviewed and e
 needed and takes full responsibility for the content of the publication. The research questions,
 data scope, numerical results, citations, experimental code and their correctness were verified by
 the author against the source data and execution logs. The generative AI assistant did not execute
-data analysis and did not substitute for legal prior-art judgement.
+data analysis and did not substitute for legal prior-art judgment.
 
 ## Ethics
 

@@ -13,7 +13,7 @@ products, processes and equipment they describe change. Current practice admits 
 passes structural and logical validation. That test is silent on the question a maintainer actually
 faces — whether the change preserves the performance of the tasks the ontology serves — and the
 silence is costly when several tasks share one vocabulary, because a change justified by one task's
-score can break another task's query paths.
+score can disrupt another task's query paths.
 
 **What we contribute.** Following design science research, we present two artifacts and an
 evaluation environment, and we report what evaluating them taught us. SDKB is a semiconductor domain

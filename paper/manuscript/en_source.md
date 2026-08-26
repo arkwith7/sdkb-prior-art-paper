@@ -1061,8 +1061,8 @@ Across the two panels the effect size shrank to about two thirds in panel B.
 **Verdicts of the two confirmatory checks.** The verdicts of both splits are given per split in
 Table 6. The preregistration of the retrieval-utility check required two conditions: improvement in
 both R@100 and nDCG@20, and a larger improvement in the subgroup with low lexical overlap. In the
-first split R@100 improved significantly on the secondary configuration, but the nDCG clause was not
-met. The primary configuration did not reach significance and the low-overlap clause was
+first split R@100 improved significantly on the secondary configuration under the paired bootstrap,
+but the nDCG clause was not met. The primary configuration did not reach significance and the low-overlap clause was
 contradicted (Table 8, Table 9). Under the first preregistration the verdict recorded for that split
 was "supported for the primary metric only". In the second split the same structure appeared, but
 the preregistration required simultaneous improvement on both metrics, so the verdict is not
