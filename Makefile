@@ -1,4 +1,4 @@
-.PHONY: concept-rel style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check concept-status
+.PHONY: figures-en concept-rel style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check concept-status
 
 setup:
 	uv sync --all-extras
@@ -518,6 +518,12 @@ figure-data:
 figures:
 	uv run python -m sdkb_paper.viz.figures
 	uv run python -m sdkb_paper.viz.concept
+
+# 영문 본문 그림 7종 — 라벨만 영어이고 그리기 코드·수치는 한국어판과 같은 한 벌이다
+# (PLAN-082). 넘치는 라벨이 있으면 **그리지 않고 실패한다**.
+figures-en:
+	uv run python -m sdkb_paper.viz.concept --lang en
+	uv run python -m sdkb_paper.viz.figures --lang en
 
 # --- 온톨로지 탐색·모니터링 로컬 웹앱 (읽기 전용) ---
 serve:

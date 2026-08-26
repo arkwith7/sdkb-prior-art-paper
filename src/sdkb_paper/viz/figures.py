@@ -92,6 +92,69 @@ GOLD = "#B7791F"
 GRID = "#E2E8F0"
 
 
+# ── 폭 인식 그리기 (PLAN-082 A-2) ─────────────────────────────────────────────
+# **넘친 그림을 내보내느니 멈춘다.** `_rbox` 는 텍스트를 한 점에 그리고 넘침을 잘라내지
+# 않으므로, 상자 폭은 손으로 맞춰져 있다. 영문 라벨은 같은 내용에서 렌더 폭이 **중앙값
+# 1.56배**(최대 2.64배)라 그 상자를 조용히 벗어난다 — SVG 를 열어 보지 않으면 사람도
+# 검사기도 보지 못한다. 그래서 폭을 재고, 넘치면 바닥 크기까지 줄이고, 그래도 넘치면
+# **그리지 않고 실패한다.** 개념 그림이 수치 불일치에서 이미 택한 규율과 같다(규격 F6).
+#
+# 한국어 산출물은 지금 전부 상자 안에 들어가므로 이 장치는 **한국어에서 무동작**이다 —
+# 그것이 회귀 방어(PLAN-082 G2)의 조건이다.
+FIT_FLOOR = 6.5          # 축소 바닥(pt). 이보다 작으면 인쇄에서 읽히지 않는다
+FIT_TOLERANCE = 1.02     # 반올림·자간 오차를 흡수하는 여유
+
+
+class TextOverflow(RuntimeError):
+    """상자 폭을 넘는 라벨 — 라벨을 줄여야 한다(그림 기하는 이 작업의 대상이 아니다)."""
+
+
+def _text_width(ax, s: str, fontsize: float) -> float:
+    """정규좌표(0–1) 기준 최대 줄 폭."""
+    fig = ax.figure
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    inv = fig.transFigure.inverted()
+    widest = 0.0
+    for line in s.split("\n"):
+        if not line:
+            continue
+        art = ax.text(0.5, 0.5, line, fontsize=fontsize)
+        bb = art.get_window_extent(renderer=renderer)
+        art.remove()
+        widest = max(widest, inv.transform((bb.x1, 0))[0] - inv.transform((bb.x0, 0))[0])
+    return widest
+
+
+def _fit_size(ax, s: str, fontsize: float, max_w: float, where: str) -> float:
+    """상자에 들어가는 글자 크기. 바닥까지 줄여도 넘치면 실패한다.
+
+    **한국어에서는 무동작이다.** 한국어판은 눈으로 검수를 마친 **동결 기준선**이고,
+    그 기하(상자 폭·글자 크기·자리)는 이 작업의 대상이 아니다(PLAN-082 §5 비목표).
+    실제로 한국어판에는 선언한 폭을 넘겨 그리는 자리가 이미 있으며, 거기에 이 장치를
+    걸면 글자 크기가 줄어 **산출물이 바뀐다** — 그것은 회귀 방어(G2)의 위반이다.
+    이 장치가 지키는 것은 **새로 들어오는 언어가 기준선의 기하 안에 머무는 것**이다.
+    """
+    from sdkb_paper.viz.labels import lang
+    if not s or max_w <= 0 or lang() == "ko":
+        return fontsize
+    size = fontsize
+    while size >= FIT_FLOOR:
+        if _text_width(ax, s, size) <= max_w * FIT_TOLERANCE:
+            return size
+        size -= 0.2
+    raise TextOverflow(
+        f"{where}: 라벨이 폭 {max_w:.3f} 를 넘는다 — {FIT_FLOOR}pt 로 줄여도 "
+        f"{_text_width(ax, s, FIT_FLOOR):.3f}. 라벨을 줄여라.\n  {s.splitlines()[0][:70]}"
+    )
+
+
+def _fit_text(ax, x: float, y: float, s: str, max_w: float, *, where: str,
+              fontsize: float = 9, **kw):
+    """폭을 지키며 그리는 `ax.text`. 넘치면 줄이고, 바닥에서도 넘치면 실패한다."""
+    return ax.text(x, y, s, fontsize=_fit_size(ax, s, fontsize, max_w, where), **kw)
+
+
 def _rbox(
     ax,
     x: float,
@@ -117,13 +180,16 @@ def _rbox(
     )
     ha = "left" if align == "left" else "center"
     tx = x + (0.018 if align == "left" else w / 2)
+    inner = w - 0.030          # 좌우 안여백 — 글자가 테두리에 닿지 않게 한다
     if title:
         ax.text(tx, y + h - 0.028, title, ha=ha, va="top",
-                fontsize=ts, fontweight="bold", color=tcolor)
+                fontsize=_fit_size(ax, title, ts, inner, "상자 제목"),
+                fontweight="bold", color=tcolor)
     if body:
         dy = 0.028 + 0.045 * (title.count("\n") + 1) + 0.008
         ax.text(tx, y + h - dy, body, ha=ha, va="top",
-                fontsize=bs, color=MUTE, linespacing=1.4)
+                fontsize=_fit_size(ax, body, bs, inner, "상자 본문"),
+                color=MUTE, linespacing=1.4)
 
 
 def _arrow(ax, x1, y1, x2, y2, color=INK, lw=2.0, style="-|>", ms=16) -> None:
@@ -613,9 +679,11 @@ def fig_h2_timeseries(ts: pd.DataFrame, leads: pd.DataFrame, out: Path | None = 
 # ═══════════════════════════════════════════════════════════════════════════
 IR_CSV = PROCESSED / "ir"
 _ORDER = ["B0_bm25", "B2_dense", "B3_rrf", "B4_ipc", "B5_concept", "P0star", "P1"]
-_SHORT = {"B0_bm25": "B0\nBM25", "B2_dense": "B2\nDense", "B3_rrf": "B3\nText Hybrid",
-          "B4_ipc": "B4\nIPC only", "B5_concept": "B5\nOntology only",
-          "P0star": "P0★\n+온톨로지", "P1": "P1\n+ClaimFeature"}
+def _short() -> dict[str, str]:
+    """축 라벨. `P0★` 만 한국어를 품으므로 그 한 칸을 라벨 표에서 읽는다."""
+    return {"B0_bm25": "B0\nBM25", "B2_dense": "B2\nDense", "B3_rrf": "B3\nText Hybrid",
+            "B4_ipc": "B4\nIPC only", "B5_concept": "B5\nOntology only",
+            "P0star": T("irmetrics.p0_short"), "P1": "P1\n+ClaimFeature"}
 
 
 def fig_ir_increment(out: Path | None = None) -> Path:
@@ -659,6 +727,12 @@ def fig_ir_increment(out: Path | None = None) -> Path:
     return _save(fig, out)
 
 
+def T(key: str, **extra):
+    """그림 라벨 — 값은 `viz.labels` 가 진다(순환 임포트를 피해 호출 시점에 읽는다)."""
+    from sdkb_paper.viz.labels import T as _T
+    return _T(key, **extra)
+
+
 def fig_ir_metrics(out: Path | None = None) -> Path:
     """**그림 3** — 시스템 × 지표: 깊은 회수는 오르고 상위 정밀도는 오르지 않는다 (§6.2).
 
@@ -678,9 +752,9 @@ def fig_ir_metrics(out: Path | None = None) -> Path:
         a1.text(i, v + 0.008, f"{v:.3f}", ha="center", fontsize=8.5, color=INK)
     a1.axhline(df.loc["B3_rrf", "R@100"], color=TOBE, ls="--", lw=1.0)
     a1.set_xticks(range(len(df)))
-    a1.set_xticklabels([_SHORT[s] for s in df.index], fontsize=8)
+    a1.set_xticklabels([_short()[s] for s in df.index], fontsize=8)
     a1.set_ylabel("family Recall@100")
-    a1.set_title("(a) 주지표 — 깊은 회수", fontsize=11, color=INK)
+    a1.set_title(T("irmetrics.panel_a"), fontsize=11, color=INK)
     a1.grid(axis="y", color=GRID, lw=0.8)
     a1.set_axisbelow(True)
 
@@ -694,15 +768,15 @@ def fig_ir_metrics(out: Path | None = None) -> Path:
         hi = [sub.loc[sys_, m.replace("d_", "ub_")] for m, _ in metrics]
         pos = [x + (off - 0.5) * 0.34 for x in xs]
         a2.bar(pos, vals, width=0.3, color=col,
-               label="P0★ (사전지정 주)" if sys_ == "P0star" else "P1")
+               label=T("irmetrics.legend_p0") if sys_ == "P0star" else "P1")
         a2.errorbar(pos, vals, yerr=[[v - lo_ for v, lo_ in zip(vals, lo)],
                                      [hi_ - v for v, hi_ in zip(vals, hi)]],
                     fmt="none", ecolor=INK, elinewidth=1.0, capsize=3)
     a2.axhline(0, color=INK, lw=1.0)
     a2.set_xticks(list(xs))
     a2.set_xticklabels([lbl for _, lbl in metrics], fontsize=9)
-    a2.set_ylabel("Δ vs B3 (텍스트 기준선)")
-    a2.set_title("(b) 보조지표까지 — 상위 정밀도는 오르지 않는다", fontsize=11, color=INK)
+    a2.set_ylabel(T("irmetrics.ylabel"))
+    a2.set_title(T("irmetrics.panel_b"), fontsize=11, color=INK)
     a2.legend(fontsize=9, frameon=False)
     a2.grid(axis="y", color=GRID, lw=0.8)
     a2.set_axisbelow(True)
@@ -815,7 +889,26 @@ def fig_ir_effort_curve(out: Path | None = None) -> Path:
 
 
 def main() -> None:
-    """CSV·상수에서 논문 그림 전량을 SVG 로 결정적으로 재생성한다."""
+    """CSV·상수에서 논문 그림 전량을 SVG 로 결정적으로 재생성한다.
+
+    `--lang en` 은 **본문에 자리가 있는 그림만** 영문으로 낸다(현재 `ir_metrics` 하나).
+    나머지 플롯과 S-시리즈 도식은 본문에 실리지 않으므로 영문화 대상이 아니다
+    (PLAN-082 §5 비목표 · CLAUDE.md §6 *"논문에 자리 없는 산출은 돌리지 않는다"*).
+    """
+    import argparse
+
+    from sdkb_paper.viz import labels
+    ap = argparse.ArgumentParser(description="논문 그림 생성")
+    ap.add_argument("--lang", default="ko", choices=list(labels.LANGS))
+    args = ap.parse_args()
+    labels.set_lang(args.lang)
+    if args.lang != "ko":
+        d = FIGURES / args.lang
+        d.mkdir(parents=True, exist_ok=True)
+        p = fig_ir_metrics(d / "ir_metrics.svg")
+        print(f"  ✓ {p.relative_to(ROOT)}")
+        print(f"1 figure — {args.lang} · 본문 그림만 (PLAN-082 §5)")
+        return
     made: list[Path] = []
     for fn in (fig_gap_and_model, fig_pipeline,
                fig_vacuous_gate, fig_rq3_portability, fig_summary_matrix):

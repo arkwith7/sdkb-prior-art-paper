@@ -561,6 +561,10 @@ def translate_line(line: str) -> str:
         src = m.group(2)
         if src.startswith("../") and not src.startswith("../../"):
             src = "../" + src
+        # 영문본은 영문 라벨판을 가리킨다 — `paper/figures/en/` (PLAN-082 A-④).
+        # 파일 이름은 두 언어가 같으므로 디렉터리 한 칸만 끼운다. 사람이 경로를 손으로
+        # 적지 않는다는 규율은 깊이 보정과 같은 자리에서 지킨다.
+        src = src.replace("/figures/", "/figures/en/", 1)
         return f"![{alt}]({src})"
     m = FIG_CAP.match(line)
     if m:

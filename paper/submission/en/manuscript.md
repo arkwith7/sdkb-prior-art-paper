@@ -145,7 +145,7 @@ Section 3 the artifacts and the design and evaluation procedure. Section 4 sets 
 design, Section 5 the results of the five episodes, and Section 6 the discussion, the lessons and
 the limitations. Section 7 concludes.
 
-![Figure 1. Study overview — two artifacts and one evaluation environment, the release approval procedure, and what the five episodes measure.](../../figures/concept_overview.svg)
+![Figure 1. Study overview — two artifacts and one evaluation environment, the release approval procedure, and what the five episodes measure.](../../figures/en/concept_overview.svg)
 
 **Figure 1.** Study overview. The top band is artifact A1, a resource placing three task views on one shared T-Box; the middle band is artifact A2, the release gate that reviews a resource change before it ships; the bottom band is evaluation environment E1, the five episodes and what each measures. The middle band reads left to right, and a failed stage stops the ones behind it. T4, shown dashed, is not part of the approval rule (§3.5.1).
 
@@ -284,7 +284,7 @@ metrics and generation quality has varied with the pipeline (Samuel et al., 2026
 the next as **cross-layer metric misalignment**. The three cases we observed and their
 interpretation are collected in §6.1.
 
-![Figure 2. The indicator structure of the three layers and the three misalignments observed between them.](../../figures/concept_layer_mismatch.svg)
+![Figure 2. The indicator structure of the three layers and the three misalignments observed between them.](../../figures/en/concept_layer_mismatch.svg)
 
 **Figure 2.** Cross-layer metric misalignment. The left side shows the indicator structure of the resource, retrieval, and generation layers; the right side shows what was actually observed between them. The number on each arrow at the left corresponds to the numbered observation at the right, and (ii) alone points not to the next layer but to a different unit within the same layer, the number of documents reviewed. Observation (i) is presented in §5.1, (ii) in §5.4.3, and (iii) in §3.5.1 and §6.4; the interpretation is in §6.1.
 
@@ -427,7 +427,7 @@ Expert matching uses the same `Equipment` instance as evidence of competence, an
 uses it as evidence of a technical element. Third, a shared identifier both enables links between
 tasks and serves as the propagation path of a regression.
 
-![Figure 3. Three task views on one shared T-Box and the channels of cross-task coupling.](../../figures/concept_tbox_views.svg)
+![Figure 3. Three task views on one shared T-Box and the channels of cross-task coupling.](../../figures/en/concept_tbox_views.svg)
 
 **Figure 3.** The shared T-Box and three task views. The three boxes at the top give the main classes of each view, a representative competency question, the A-Box evidence, and the status of that view in this paper. The three channels in the middle are vocabulary used by two or more views, and the dashed lines from each channel show the two views it joins. The box at the bottom gives the shared core and the number of competency questions per suite that the gate observes. That the three views are not exclusive modules is why the cross-task regression of §1 can occur.
 
@@ -592,7 +592,7 @@ therefore apply in the same form to a change of system configuration. The accept
 resource change is the single case in §5.1, and the verdict in §5.4.1 is a dry run that applies the
 rule to a change of system configuration.
 
-![Figure 4. The order of the acceptance procedure, the handling of each unmet term, and the actual verdicts in the controlled resource substitution.](../../figures/concept_gate_flow.svg)
+![Figure 4. The order of the acceptance procedure, the handling of each unmet term, and the actual verdicts in the controlled resource substitution.](../../figures/en/concept_gate_flow.svg)
 
 **Figure 4.** The T-gate procedure and the actual verdicts. The left column is the order of the acceptance procedure and reads downward. The middle column is the handling when a term is not met, and the right column is the verdict each term actually produced in the controlled resource substitution (§5.1). The right column shows that a change passing every formal layer was rejected on one performance condition.
 
@@ -706,7 +706,7 @@ corresponding to bibliographic conditions in practice is not fused into the prim
 second is that reranking in this experiment does not enlarge the candidate pool. The effect of these
 two constraints is treated in §4.3 and §6.2, respectively.
 
-![Figure 5. Correspondence between the procedure of prior-art search in practice and the configuration of this experiment, and the two places where it fails.](../../figures/concept_experiment_flow.svg)
+![Figure 5. Correspondence between the procedure of prior-art search in practice and the configuration of this experiment, and the two places where it fails.](../../figures/en/concept_experiment_flow.svg)
 
 **Figure 5.** Correspondence between practice and the experimental configuration. The left column lists the stages of practice and the right column the configuration of this experiment at each stage. The two notes in the right margin mark where the correspondence fails, and the band at the bottom states the premise under which the numbers of this section hold.
 
@@ -958,7 +958,7 @@ episode is in Table 3, and the verdicts of the preregistered checks are in Table
 maps the five episodes onto the terms of the acceptance rule of §3.5 and gives the verdict for each.
 Every section of this chapter elaborates one row of that map.
 
-![Figure 6. The five evaluation episodes mapped onto the terms of the acceptance rule, with the verdict for each term.](../../figures/concept_ep_gate_matrix.svg)
+![Figure 6. The five evaluation episodes mapped onto the terms of the acceptance rule, with the verdict for each term.](../../figures/en/concept_ep_gate_matrix.svg)
 
 **Figure 6.** Evaluation episodes mapped onto the terms of the acceptance rule. Rows are episodes and columns are terms of the rule; only the leftmost column is the resource rather than the gate. The symbol in each cell is the verdict and the line beneath it the evidence. A blank cell means that the episode did not examine that term. T4 is marked with an asterisk because it is not part of the acceptance rule.
 
@@ -1141,7 +1141,7 @@ result shows the effect of combining the ontology with a text ranking.
 
 Across the two panels the effect size shrank to about two thirds in panel B.
 
-![Figure 7. System by metric — improvement in deep recall and no improvement in top-of-ranking ordering.](../../figures/ir_metrics.svg)
+![Figure 7. System by metric — improvement in deep recall and no improvement in top-of-ranking ordering.](../../figures/en/ir_metrics.svg)
 
 **Figure 7.** System by metric. (a) the primary metric family Recall@100; (b) the difference of each auxiliary metric against B3 with 95% confidence intervals. Ontology reranking retrieves more known positives within a review depth of 100 but does not improve the ordering quality of the top 20.
 

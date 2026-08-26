@@ -120,10 +120,10 @@
 2. `make style-check-en` **위반 0 · `--warn` 제거**(Makefile · CI 동시).
 3. `paper/glossary.md` 와 `paper/glossary-terms.yaml` 의 `en` 열 **불일치 0건**.
 4. 본문 그림 7종의 **영문판이 코드로 생성**된다(`viz/figures.py` · 손편집 0 · §1-7).
-   **요구정의는 [PLAN-082](PLAN-082-figure-en.md) 로 분리했다 (2026-08-26)** — 코드 변경이므로
+   **[PLAN-082](PLAN-082-figure-en.md) 로 분리했고 2026-08-26 종결했다** — 코드 변경이므로
    §2.3 의 게이트 하나가 아니라 §2 전체(요구정의 🛑 → 분석 🛑 → 설계 🛑 → 구현 → 검증 🛑)를
-   탄다. 실측: 개념 도식 6종(`viz/concept.py` 한글 리터럴 183) + 데이터 플롯 1종
-   (`fig_ir_metrics` 한글 UI 4).
+   탔다. 산출은 `paper/figures/en/` 7종이고 `make figures-en` 이 낸다. 성공기준 G1–G7 충족 —
+   특히 **한국어판 7종은 바이트 단위로 불변**이며 그 해시는 테스트로 동결했다.
 5. `TARGET` = `paper/submission/en/manuscript.md` 이고 **D2·D3·D7·D8·D9 와 링크 검사 통과**.
 6. `build_submission_en.py` 의 **수치 불변 검사 통과 · 한글 잔존 0**.
 
