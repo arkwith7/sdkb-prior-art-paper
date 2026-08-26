@@ -164,8 +164,8 @@ L 611.793 52.572096
 " clip-path="url(#p91b36f6844)" style="fill: none; stroke: #cbd5e0; stroke-linecap: square"/>
    </g>
    <g id="text_1">
-    <!-- Resource A1 -->
-    <g style="fill: #1a202c" transform="translate(108.0618 36.46128) scale(0.096 -0.096)">
+    <!-- Resource ART-1 -->
+    <g style="fill: #1a202c" transform="translate(100.46355 36.46128) scale(0.096 -0.096)">
      <defs>
       <path id="NotoSansCJKjp-Bold-33" d="M 1530 2541 
 L 1530 3987 
@@ -297,6 +297,24 @@ L 2598 1952
 L 1472 1952 
 z
 " transform="scale(0.015625)"/>
+      <path id="NotoSansCJKjp-Bold-35" d="M 1523 0 
+L 2470 0 
+L 2470 3949 
+L 3808 3949 
+L 3808 4742 
+L 192 4742 
+L 192 3949 
+L 1523 3949 
+L 1523 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="NotoSansCJKjp-Bold-e" d="M 314 1491 
+L 2061 1491 
+L 2061 2170 
+L 314 2170 
+L 314 1491 
+z
+" transform="scale(0.015625)"/>
       <path id="NotoSansCJKjp-Bold-f6b2" d="M 525 0 
 L 3373 0 
 L 3373 768 
@@ -322,7 +340,10 @@ z
      <use xlink:href="#NotoSansCJKjp-Bold-46" transform="translate(392.984375 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-1" transform="translate(451.078125 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-22" transform="translate(473.78125 0)"/>
-     <use xlink:href="#NotoSansCJKjp-Bold-f6b2" transform="translate(537.875 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-33" transform="translate(537.875 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-35" transform="translate(604.171875 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-e" transform="translate(659.171875 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-f6b2" transform="translate(696.171875 0)"/>
     </g>
    </g>
    <g id="text_2">
@@ -736,19 +757,6 @@ z
    <g id="text_5">
     <!-- T1 -->
     <g style="fill: #1a202c" transform="translate(224.1774 36.46128) scale(0.096 -0.096)">
-     <defs>
-      <path id="NotoSansCJKjp-Bold-35" d="M 1523 0 
-L 2470 0 
-L 2470 3949 
-L 3808 3949 
-L 3808 4742 
-L 192 4742 
-L 192 3949 
-L 1523 3949 
-L 1523 0 
-z
-" transform="scale(0.015625)"/>
-     </defs>
      <use xlink:href="#NotoSansCJKjp-Bold-35"/>
      <use xlink:href="#NotoSansCJKjp-Bold-f6b2" transform="translate(62.5 0)"/>
     </g>
