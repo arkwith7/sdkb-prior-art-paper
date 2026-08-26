@@ -12,7 +12,7 @@
 
 평가는 다섯 에피소드로 수행하였다. 첫째는 SHACL과 역량질문 31개에 의한 표현 감사이고, 둘째는 아직 판정한 적 없는 결함 45건에 대한 홀드아웃 결함주입이다. 셋째는 문서집합·코드·설정을 전부 동결하고 자원 번들만 교체한 통제된 자원 교체이다. 넷째는 거절 특허 1,000건과 심사관 인용을 부분 정답으로 사용한 누출 통제 검색 비교이며, 겹치지 않는 확증 분할 2개(각 198질의)에서 수행하였다. 다섯째는 형식 층과 교차 태스크 층을 제2 공학 온톨로지(건물 메타데이터)에 이식하여 동일 절차로 판정한 이식 평가이다.
 
-주요 결과는 넷이다. 첫째, 자원 교체에서는 문서당 개념 수를 2.4배로 증가시키고 형식 검증 네 층을 모두 통과한 실제 변경이 검색 회수를 저하시켰다(family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]). 조건 T1은 그 변경을 거부하였다. 이는 형식 검증이 놓치는 회귀를 태스크 조건이 검출한 실증 사례이다. 둘째, 홀드아웃 결함주입에서는 교차 태스크 결함 45건 중 12건을 T3만이 검출하였고, 정상 변경 27건에 대한 오경보는 0건이었다. 셋째, 검색 유용성은 그 경계와 함께 관측되었다. 온톨로지·한정요소 재순위화는 깊은 회수를 두 분할 모두에서 개선하였으나(+0.0534 · +0.0343), 사전 지정한 주 구성은 유의에 이르지 못하였고 상위 정렬(nDCG@20)은 개선되지 않았다. 넷째, 이식한 두 층은 코드 변경 없이 실행되어 정상 변경 30건을 하나도 거부하지 않았다. 다만 동결한 결함 명세는 판정 가능한 12건에서 교차 결함을 검출하지 못하였다.
+주요 결과는 넷이다. 첫째, 자원 교체에서는 문서당 개념 수를 2.4배로 증가시키고 형식 검증 네 층을 모두 통과한 실제 변경이 검색 회수를 저하시켰다(family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]). 자격을 갖춘 변경 1건에 대하여 조건 T1은 그 변경을 거부하였다. 이는 형식 검증이 놓치는 회귀를 태스크 조건이 검출한 실증 사례이다. 둘째, 홀드아웃 결함주입에서는 교차 태스크 결함 45건 중 12건을 T3만이 검출하였고, 정상 변경 27건에 대한 오경보는 0건이었다. 셋째, 검색 유용성은 그 경계와 함께 관측되었다. 온톨로지·한정요소 재순위화는 깊은 회수를 두 분할 모두에서 개선하였으나(+0.0534 · +0.0343), 사전 지정한 주 구성은 유의에 이르지 못하였고 상위 정렬(nDCG@20)은 개선되지 않았다. 넷째, 이식한 두 층은 코드 변경 없이 실행되어 정상 변경 30건을 하나도 거부하지 않았다. 다만 동결한 결함 명세는 판정 가능한 12건에서 교차 결함을 검출하지 못하였다. 곧 이 한 건의 이식에서 절차는 이전되었고 결함 명세는 이전되지 않았다.
 
 본 연구는 이 평가로부터 한 층 아래 승인, 교차 태스크 감시, 후보생성 분리라는 교훈 셋을 후속 연구가 검정할 가설의 형태로 제시한다. 한계도 명확하다. 태스크 성능을 측정한 대상은 단일 도메인이고, 승인 거부의 실제 사례는 1회이며, 그 원인이 자원에 있는지 점수 계산식에 있는지는 구분하지 못하였다. 전문가 관련성 판정은 수행하지 않았으며, 그 취약도는 계량하고 외생 라벨로 부분 축소하였다. 다국어 융합 기준선을 별도 점검으로 추가하였으나 기준선 강도는 유의하게 변하지 않았다. 질의는 이미 온톨로지에 등재된 특허로 한정되므로, 자유 텍스트 질의를 처리하는 텍스트–개념 매핑 단계와 결손 아홉의 해소 명세는 후속 과제로 제시한다.
 
@@ -20,7 +20,7 @@
 
 ## Abstract
 
-Engineering ontologies keep changing after release, and whether a change passing structural and logical checks preserves task performance is a question resource-level evaluation leaves open. The risk grows where several tasks share one vocabulary. Following design science research, we present two artifacts and a benchmark. SDKB (Semiconductor Domain Knowledge Base) carries three tasks as views on one shared schema (T-Box). A task-aware release gate adds three conditions to four formal validation layers (L0–L3): retrieval non-inferiority (T1), a subgroup guardrail (T2), and cross-task competency-question non-regression (T3). Five episodes follow: a representation audit; holdout fault injection (45 unjudged faults); a controlled resource swap; a leakage-controlled comparison over two non-overlapping 198-query splits anchored on examiner citations; and a port of those two layers to a second engineering ontology (building metadata). In the swap, a change raising concepts per document 2.4-fold and passing every formal layer reduced retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]), and T1 rejected it. T3 alone detected 12 of 45 cross-task faults, with no false alarm in 27. The pre-registered composite prediction held in neither split: deep recall improved in both (+0.0534, +0.0343), the primary configuration and nDCG@20 did not improve. In the port, the layers ran unchanged and rejected none of 30 normal deltas, yet the frozen fault specification detected nothing in 12 judgeable instances. Procedures transfer across resources; fault specifications do not. We derive four core and two scope design principles. Limits: task performance measured in one domain, one refusal of undistinguished cause, no expert relevance judgments.
+Engineering ontologies keep changing after release, and whether a change passing structural and logical checks preserves task performance is a question resource-level evaluation leaves open. The risk grows where tasks share one vocabulary. Following design science research, we present two artifacts and a benchmark. SDKB (Semiconductor Domain Knowledge Base) carries three tasks as views on one shared schema (T-Box). A task-aware release gate adds three conditions to four formal validation layers (L0–L3): retrieval non-inferiority (T1), a subgroup guardrail (T2), and cross-task competency-question non-regression (T3). Five episodes follow: a representation audit; holdout fault injection (45 unjudged faults); a controlled resource swap; a leakage-controlled comparison over two non-overlapping 198-query splits anchored on examiner citations; and a port to a second engineering ontology (building metadata). In the swap, a change raising concepts per document 2.4-fold and passing every formal layer reduced retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]); T1 rejected this one qualifying change. T3 alone detected 12 of 45 cross-task faults, with no false alarm in 27. The pre-registered composite prediction held in neither split: deep recall improved in both (+0.0534, +0.0343), the primary configuration and nDCG@20 did not improve. The ported layers ran unchanged and rejected none of 30 normal deltas, yet the frozen fault specification detected nothing in 12 judgeable instances. In this single port, procedures transferred while fault specifications did not. We state three lessons and two follow-up hypotheses for later testing. Limits: task performance measured in one domain, one refusal of undistinguished cause, no expert relevance judgments.
 
 **Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
@@ -88,6 +88,13 @@ Engineering ontologies keep changing after release, and whether a change passing
 `Skill` 을 변별하는 능력이 저하된다. 본 논문은 이 현상을 **교차 태스크 회귀(cross-task regression)** 라
 정의한다.
 
+형식 검증이 이 둘을 검출하지 못하는 데에는 자원 측의 이유도 있다. 본 연구의 T-Box에는 선행기술
+판단에 관한 논리 공리가 사실상 없다. 서로소나 카디널리티 같은 제약이 선언되어 있지 않으므로,
+논리 일관성 검사 층이 검사할 대상 자체가 적다(§5.2). 이는 이 자원에 국한된 사정이 아니다. 본
+연구가 이식 대상으로 삼은 제2 공학 온톨로지도 술어의 정의역과 치역을 논리 공리가 아니라 제약
+언어로 선언한다(§5.5). 곧 산업에서 운용되는 공학 온톨로지에서 공리의 희소성은 드문 조건이
+아니며, 형식 검증만으로 승인하는 절차가 취약해지는 이유가 여기에 있다.
+
 두 현상이 검출되지 않는 이유는 같다. 온톨로지를 수정하는 주체는 대개 자원 측 지표, 곧 어휘의
 증가나 **문서당 개념 수(concepts per document)**, 곧 문서 하나에 연결된 온톨로지 개념의 평균
 개수를 관찰한다. 여기서 **자원(resource)** 은 응용에 투입되기 이전 상태의 데이터셋
@@ -111,19 +118,21 @@ Engineering ontologies keep changing after release, and whether a change passing
 - **RQ3** — 산출물 평가에서 어떤 이득과 실패 경계, 그리고 층간 지표 불일치가 관측되며, 거기에서
   어떤 이전 가능한 교훈이 도출되는가? (EP3 · EP4 · EP5 · §6)
 
-본 연구의 기여는 세 가지이다. 첫째는 **산출물**로서의 온톨로지 데이터셋 SDKB이다. 세 반도체 지식
-태스크를 공통 식별자와 공유 T-Box로 연결하고 태스크별 뷰·역량질문·검증 자산을 제공한다.
-둘째는 **방법**으로서의 변경 승인 게이트(T-gate)이다. 이 게이트는 형식적 유효성에 더하여 주
-태스크의 비열등성과 하위집단 비회귀 방호, 교차 태스크 기능 보존을 승인 조건으로 결합한다.
-판별력은 판정식을 동결한 뒤 처음 판정하는 **홀드아웃(hold-out)** 결함주입과 실제 자원 교체로
-평가한다. 셋째는 **교훈**이다. 자원 지표가 개선되고 형식 검증을 통과한 변경이 오히려 검색
-성능을 저하시킬 수 있음을 통제된 교체로 제시한다. 그 관측에서 한 층 아래 승인이라는 교훈을 후속
-연구가 검정할 가설의 형태로 도출한다. 나아가 그 게이트를 표현 관습이 다른 제2 공학 온톨로지에 형식 층과
-교차 태스크 층의 범위로 적용한다. 이 적용은 무엇이 함께 이전되고 무엇이 재접지를 요구하는지를
-가른다.
+본 연구의 기여는 세 가지이다. 첫째는 **산출물**이다. 데이터셋 SDKB는 세 반도체 지식 태스크를
+공통 식별자와 공유 T-Box로 연결하고 태스크별 뷰·역량질문·검증 자산을 제공한다. 변경 승인
+게이트(T-gate)는 형식적 유효성에 더하여 주 태스크의 비열등성과 하위집단 비회귀 방호, 교차 태스크
+기능 보존을 승인 조건으로 결합한다. 두 산출물과 평가 자산은 검증 가능한 형태로 공개한다.
 
-뒤의 두 기여는 설계 자체보다 그 설계의 필요성을 보이는 실측에 무게가 있다. 따라서 검색 유용성은
-그 경계를 함께 밝힌 형태로만 보고하며, 생성 단계 전달 평가는 별도의 기여로 제시하지 않는다.
+둘째는 **통제된 거부 사례 1건**이다. 문서집합·코드·설정·가중치를 전부 동결하고 자원 번들만
+교체하였다. 그 조건에서 자원 지표를 전부 향상시키고 형식 검증 네 층을 전부 통과한 실제 변경이
+태스크 조건 하나에서 거부되었다. 본 연구는 그 판정의 기록과 그것을 산출한 절차를 함께 제시한다.
+자격을 갖춘 자원 변경이 1건이므로, 이 기여는 그러한 거부가 빈번하다는 주장이 아니라 그것이
+일어날 수 있음을 통제된 조건에서 보인 존재 증명이다.
+
+셋째는 **교훈 셋**이다. 근거는 위 사례와 결함주입, 그리고 검색 이득의 경계 측정이다. 여기서
+결함주입은 판정식을 동결한 뒤 처음 판정하는 **홀드아웃(hold-out)** 평가이다. 교훈은 근거의
+크기에 맞추어 후속 연구가 검정할 가설의 형태로 진술한다. 같은 이유로 검색 이득은 그 경계를
+함께 밝힌 형태로만 보고하며, 생성 단계 전달 평가는 별도의 기여로 제시하지 않는다.
 
 이후의 구성은 다음과 같다. 2장은 선행연구와 연구 공백을, 3장은 산출물과 설계·평가 절차를 다룬다.
 4장은 평가 설계를, 5장은 다섯 에피소드의 결과를, 6장은 논의와 교훈, 한계를 다루며 7장이 결론이다.
@@ -1393,7 +1402,7 @@ CDLA-Permissive-2.0, 코드 계층은 Apache-2.0, 문서는 CC-BY-4.0으로 배�
 게이트를 다른 자원으로 옮길 때 기제는 이전되지만 명세는 재접지를 요구한다는 명제이다. 근거가
 자격을 갖춘 자원 델타 1건과 이식 사례 1건이므로 확립된 원리로 제시하지 않는다.
 
-**기여와 한계.** 기여는 검증 자산을 포함한 SDKB와 변경 승인 게이트, 그리고 위의 교훈 셋이다. 다만 태스크 성능을 측정한 대상은 단일 도메인이고 실제 변경의 거부 사례는 1회이며,
+**기여와 한계.** 기여는 검증 자산을 포함한 SDKB와 변경 승인 게이트, 자격을 갖춘 변경 1건에 대한 통제된 거부 사례, 그리고 위의 교훈 셋이다. 다만 태스크 성능을 측정한 대상은 단일 도메인이고 실제 변경의 거부 사례는 1회이며,
 저하 원인과 생성 단계 전달 여부도 확정하지 못하였다. 제2 자원에서 판정한 범위는 형식 층과 교차
 태스크 층이고 이식 사례는 1건이다. 자유 텍스트 질의를 개념에 연결하는 단계와 §6.4의 결손을
 해소하는 외부 검증이 후속 연구로 남는다.
