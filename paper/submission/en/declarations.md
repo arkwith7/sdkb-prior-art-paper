@@ -38,10 +38,10 @@ CC-BY-4.0. Per-file SHA-256 for all published assets is recorded in `provenance/
 
 Patent full text obtained from KIPRIS is not redistributable under that database's academic-use
 terms. Identifiers and a refetch procedure are published in its place. Reproducibility therefore
-falls into three levels, which the paper states rather than averages: assets reproducible from the
-published files alone; assets reproducible approximately after refetching full text with the
-reader's own KIPRIS key; and assets that can only be audited, because their decomposition input is
-the non-redistributable text. The claim-feature layer and the four competency questions that depend
+falls into three levels, which the paper states rather than averages. The first level holds assets
+reproducible from the published files alone. The second holds assets reproducible approximately
+after refetching full text with the reader's own KIPRIS key. The third holds assets that can only be
+audited, because their decomposition input is the non-redistributable text. The claim-feature layer and the four competency questions that depend
 on it are in the third level.
 
 ## Declaration of generative AI and AI-assisted technologies in the writing process
