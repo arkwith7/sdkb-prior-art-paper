@@ -56,6 +56,34 @@
     "pipeline_sig": "156c0ccd36f537a1ecb4816ea9162ffa15ad67a577c782bbfb7f5a775be431cf",
     "source": "구 테스트 상수 (M4 1차 실험 · 커밋 355144b · dev) — 당시 단언하지 않은 항목은 null. 이 팔로 되돌려 재측정한 값이 아니므로 새로 채우지 않는다(§1-1)."
   },
+  "4d9c2b8382cf": {
+    "arm": null,
+    "example": {
+      "gold": {
+        "jp_JP07091636B2": {
+          "n_shared_concepts": 0,
+          "rank_b3": null,
+          "rank_p0": null
+        },
+        "kr_KR100208898B1": {
+          "n_shared_concepts": 2,
+          "rank_b3": 82,
+          "rank_p0": 164
+        },
+        "kr_KR1020040035486A": {
+          "n_shared_concepts": 8,
+          "rank_b3": 148,
+          "rank_p0": 86
+        }
+      },
+      "n_gold": 3,
+      "qid": "kr_1020170018545"
+    },
+    "mean_b3": 0.377,
+    "mean_p0": 0.4077,
+    "n_queries": 197,
+    "pipeline_sig": "4d9c2b8382cf05b65d3d01e106a4c858ab94a2bf112c56c2424312010d893237"
+  },
   "6eb4ca6da015": {
     "arm": "O_post_CR013",
     "example": {
