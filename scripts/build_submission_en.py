@@ -40,12 +40,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PROSE = ROOT / "paper" / "manuscript" / "en_source.md"
 KOREAN = ROOT / "paper" / "submission" / "manuscript.md"
-# **본문이 완성되기 전까지는 초안 경로로 낸다.** `paper/submission/**` 는 `submission_check` 의
-# 대상이고, 절이 아직 없는 원고는 D9(절 참조 도달성)에서 정당하게 실패한다. 미완성 산출물을
-# 검사 대상 트리에 두고 게이트를 빨갛게 만들면, 다음 세션은 그 빨강을 정상으로 여기게 된다.
-# 본문 번역이 끝나면 이 경로를 `paper/submission/en/manuscript.md` 로 바꾼다 — 그때 D2·D3·D7·
-# D8·D9 와 링크 검사가 영문 원고에도 걸린다.
-TARGET = ROOT / "paper" / "manuscript" / "en_draft.md"
+# **승격 완료 (2026-08-26 · PLAN-080 A-④).** 초안 경로(`paper/manuscript/en_draft.md`)는
+# *"절이 아직 없는 원고를 검사 대상 트리에 두면 다음 세션이 그 빨강을 정상으로 여긴다"* 는
+# 이유로 두었던 것이고, 그 조건은 해소됐다 — 영문 본문이 국문 정본과 절 단위로 정합하고
+# (STYLE-EN §S5 절 대응 · 전 절 차이 0), `style_check_en` 위반이 0 이다. 이제 산출은
+# `paper/submission/en/manuscript.md` 이며 **D2·D3·D7·D8·D9 와 내부 링크 검사가 함께 걸린다.**
+TARGET = ROOT / "paper" / "submission" / "en" / "manuscript.md"
 
 TABLE_RE = re.compile(r"\{\{TABLE:(\d+)\}\}")
 FIGURE_RE = re.compile(r"\{\{FIGURE:(\d+)\}\}")
@@ -492,7 +492,7 @@ CELLS: dict[str, str] = {
     "질의 인용 간선 마스킹과 시점·패밀리 분리 위에서, 검색 성능을 자원 변경의 승인 조건으로 "
     "사용하고 그 결합의 **성능 상한**까지 보고":
         "On top of query-citation masking and time/family separation, retrieval performance becomes "
-        "an approval condition for resource change, and the **performance ceiling** of that "
+        "an approval condition for resource change, and the **upper bound on performance** of that "
         "coupling is reported",
     "온톨로지 품질·진화 검증": "Ontology quality and evolution validation",
     "변경이 온톨로지를 훼손하는가만 보고, 태스크를 훼손하는가는 보지 않는다":
@@ -533,6 +533,17 @@ FIG_IMG = re.compile(r"^!\[그림 (\d+)\.[^\]]*\]\((.*)\)\s*$")
 FIG_CAP = re.compile(r"^\*\*그림 (\d+)\.\*\*")
 
 
+# 복사한 블록의 상대 링크는 한 단계 깊어진다 — 원본은 `paper/submission/`, 영문본은
+# `paper/submission/en/` 이다. 그림 경로에는 이미 같은 보정이 있었으나 **표 셀 안의 링크에는
+# 없어서** 승격과 함께 `submission_check` 의 링크 검사가 정당하게 실패했다(2026-08-26).
+# 깊이 차이는 배선이 알고 있으므로 사람이 세지 않는다 — CELLS 에 경로를 손으로 적지 않는다.
+REL_LINK = re.compile(r"\]\((\.\./(?!\.\./)[^)]*)\)")
+
+
+def deepen_links(line: str) -> str:
+    return REL_LINK.sub(lambda m: f"](../{m.group(1)})", line)
+
+
 def translate_line(line: str) -> str:
     m = TABLE_CAP.match(line)
     if m:
@@ -555,8 +566,8 @@ def translate_line(line: str) -> str:
     if m:
         return CAPTIONS.get(f"F{m.group(1)}", line)
     if line.lstrip().startswith("|"):
-        return "|".join(CELLS.get(p.strip(), p) for p in line.split("|"))
-    return CELLS.get(line.strip(), line)
+        return deepen_links("|".join(CELLS.get(p.strip(), p) for p in line.split("|")))
+    return deepen_links(CELLS.get(line.strip(), line))
 
 
 def translate(text: str) -> str:

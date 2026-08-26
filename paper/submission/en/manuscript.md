@@ -320,7 +320,7 @@ performance while monitoring that the control does not degrade the other tasks.
 
 |Research strand|Representative work|Remaining gap|What this study adds|
 |---|---|---|---|
-|Patent prior-art retrieval and the use of graphs| Lupu & Hanbury (2013); Krestel et al. (2021); Mahdabi & Crestani (2014); Siddharth et al. (2022) |The graph serves as an input representation for performance; controlling change in the graph itself is not addressed|On top of query-citation masking and time/family separation, retrieval performance becomes an approval condition for resource change, and the **performance ceiling** of that coupling is reported|
+|Patent prior-art retrieval and the use of graphs| Lupu & Hanbury (2013); Krestel et al. (2021); Mahdabi & Crestani (2014); Siddharth et al. (2022) |The graph serves as an input representation for performance; controlling change in the graph itself is not addressed|On top of query-citation masking and time/family separation, retrieval performance becomes an approval condition for resource change, and the **upper bound on performance** of that coupling is reported|
 |Ontology quality and evolution validation| Kontokostas et al. (2014); Keet & Ławrynowicz (2016); W3C (2017); Zablith et al. (2015) |Asks only whether a change damages the ontology, not whether it damages a task|A 3-condition task gate and a non-inferiority merge rule on top of formal validation|
 |Task-based and downstream evaluation| Porzel & Malaka (2004); Brank et al. (2005); Heist et al. (2023) |Used as a **criterion** for comparing and selecting ontologies, or as a post-hoc comparison once construction is finished|The same task performance becomes a term in the approval rule applied **before** release|
 |The practice of treating resource indicators as proxies for utility| Strathern (1997); Chiu et al. (2016); Thomas & Uminsky (2020) |The mismatch is reported at the level of correlation; **a controlled case and a decision taken on it** are rare|Controlled confirmation in two conditions differing only in the resource bundle, and an **approval verdict** (§5.1)|
@@ -368,7 +368,7 @@ for design knowledge were frozen before results were seen and are stated in §6.
 |Problem identification|Task performance regressed after a change that passed formal validation| §1 · §2.2 |
 |Objective definition|Verify the acceptance condition on the task one layer below| §3.5 |
 |Design and development|Artifacts A1 (SDKB) and A2 (the T-gate)| §3.1–3.6 |
-|Evaluation round 1|Discriminative power of the gate was **rejected** in the initial fault injection| §5.2 · [S2](../supplementary/S2-fault-injection-v09.md) |
+|Evaluation round 1|Discriminative power of the gate was **rejected** in the initial fault injection| §5.2 · [S2](../../supplementary/S2-fault-injection-v09.md) |
 |Design revision|Separation of the observation scopes of L3 and T3| §3.4 · §5.2 |
 |Re-evaluation|Measured again with 45 previously unadjudicated holdout faults| §5.2 |
 |Controlled evaluation on a real revision|The gate rejected a real revision of the resource (Accept = 0)| §5.1 |

@@ -51,10 +51,11 @@ style-check:
 # 규칙 셋**(주어 we 허용 · 단문 허용 ≤30단어 · 종결어미 대신 시제 규약)을 따로 본다.
 # 판정 강도는 verdicts.yaml 이 한국어만 보므로, 영문 관용구(partial support · replicated ·
 # did not transfer 등)의 금지열은 STYLE-EN §4 가 맡는다.
-# **경고 모드로 시작한다**(`--warn`) — 영문 본문 번역이 끝나기 전에 차단으로 올리면 번역
-# 커밋이 전부 막힌다. 본문 완성 시점에 `--warn` 을 떼고 차단으로 승격한다(style-check 가 밟은 경로).
+# **차단으로 승격했다 (2026-08-26 · PLAN-080 A-⑤).** 경고로 시작한 이유는 *"영문 본문이
+# 끝나기 전에 차단으로 올리면 번역 커밋이 전부 막힌다"* 였고 그 조건은 해소됐다 — 승격 시점
+# 실측은 **위반 0 건**(en_source · 파생 산출물 · cover-letter · declarations)이다.
 style-check-en:
-	uv run python scripts/style_check_en.py --warn
+	uv run python scripts/style_check_en.py
 
 # 용어 첫 등장 규율 검사 (paper/glossary-terms.yaml · STYLE V1·V2 · PLAN-066).
 # style-check 가 어체의 표류를, verdicts 가 판정 강도의 표류를 막듯 이것은 **정보 제시 순서의

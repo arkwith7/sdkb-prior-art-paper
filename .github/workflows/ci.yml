@@ -51,7 +51,7 @@ jobs:
       # **경고 모드** — 영문 본문 번역이 끝나기 전이라 위반 0 이 아니다. 본문 완성 시점에
       # `--warn` 을 떼고 차단으로 승격한다 (한국어 규격이 밟은 경로 · CLAUDE.md §2.3).
       - name: Academic style check — English (warn)
-        run: uv run python scripts/style_check_en.py --warn
+        run: uv run python scripts/style_check_en.py
 
       # 용어 첫 등장 규율 (paper/glossary-terms.yaml · CLAUDE.md §8.1 V1·V2 · PLAN-066).
       # 어체를 style-check 가, 판정 강도를 verdicts 가 막는 자리에서 이것은 **정보 제시 순서**를

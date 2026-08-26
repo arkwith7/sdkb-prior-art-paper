@@ -223,6 +223,21 @@ def check_file(path: Path, fails: list[str], warns: list[str]) -> None:
         if is_table:
             continue
 
+        # 표·그림 캡션은 산문이 아니라 라벨이다 — 길이(S3)·볼드(T5)의 대상이 아니다. 한국어
+        # 검사기가 같은 자리에서 하는 일과 같다(`style_check.py` 의 `is_caption`). **어휘
+        # 규칙은 그대로 적용한다**(T6·T7·T9·V) — 캡션의 구어체는 사각지대로 두지 않는다.
+        # 이 분기는 산출 경로를 `paper/submission/en/` 으로 승격하며 필요해졌다(2026-08-26):
+        # 그전까지 캡션은 검사 대상 트리 밖의 초안 파일에만 있었다.
+        if re.match(r"\*\*(Table|Figure)\s*\d", text.strip()):
+            for sent in sentences(text):
+                for pat, hint in BANNED_LEXICON:
+                    m = re.search(pat, sent, re.I)
+                    if m:
+                        fails.append(f"{loc}: [T7] 구어·은유 “{m.group(0)}” → {hint}")
+                if CONTRACTIONS.search(sent):
+                    fails.append(f"{loc}: [T9] 축약형 “{CONTRACTIONS.search(sent).group(0)}”")
+            continue
+
         # 산문 전용
         for sent in (text.split("\n") if is_bullet else sentences(text)):
             words = countable_words(sent)
