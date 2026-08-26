@@ -329,15 +329,15 @@ This section describes what we built and the criteria by which we evaluated it. 
 artifacts and one evaluation environment that measures them. **A1 · the SDKB ontology dataset** is a
 semiconductor domain resource that arranges three task views on one shared T-Box (§3.1–3.3).
 **A2 · the release acceptance gate** combines the formal layers L0–L3 with the task conditions
-T1, T2, and T3 into a pre-merge acceptance rule; T4 sits outside that rule (§3.4–3.5).
+T1, T2, and T3 into a pre-merge acceptance rule; T4 is a design outside that rule (§3.4–3.6).
 **E1 · the multi-layer evaluation benchmark** takes examiner citations as its reference, blocks
 leakage, and connects retrieval evaluation to generation-layer evaluation (§4).
 
 The three correspond to the three research questions of §1. The design of A1 answers the
 representational structure asked by RQ1, and EP1 audits it. The design of A2 answers the acceptance
 condition asked by RQ2; EP2 examines its discriminative power and EP3 the verdict on a change that
-arose in a real revision of the resource (§3.0). RQ3 asks which design principles follow from the
-results of EP3 and EP4, and the answer is in §6.4.
+arose in a real revision of the resource (§3.0). RQ3 asks which lessons follow from the results of
+EP3 and EP4, and the answer is in §6.3.
 
 In design science research, design and evaluation alternate in a cycle. A resource revision is
 adjudicated by the gate, what the gate misses is exposed by the evaluation environment, and that
@@ -345,9 +345,9 @@ deficit feeds back into the next revision. Evaluation in such a cycle separates 
 different purposes (Venable et al., 2016). Our cycle also did not end after one pass. Table 2 maps
 that cycle onto the stages of design science research and states the section in which each stage was
 carried out. At the center of the table are the rejection of the gate's discriminative power in the
-first evaluation and the redesign that followed, and this history of iterative design is the basis
-of the design knowledge. The promotion criteria for design knowledge were frozen before results were
-seen and are stated in §6.4, where the principles are presented.
+first evaluation and the redesign that followed. This history of iterative design is the basis of
+the lessons. The promotion criteria for design knowledge were frozen before results were seen and
+are stated in §6.3, where the lessons are presented.
 
 {{TABLE:2}}
 
@@ -355,7 +355,8 @@ There are five evaluation episodes, and they are distinguished on three axes: wh
 adjudicates it, and whether the result is confirmatory or exploratory (Table 3). All five were
 conducted under controlled conditions, and none is a field evaluation in an operating environment.
 The fifth is a port verdict that applies the same procedure to a different resource (§4.6). The
-results chapter (§5) follows the same order.
+order of sections in the results chapter (§5) differs from this one, and the reason is stated at the
+opening of that chapter.
 
 {{TABLE:3}}
 
@@ -401,6 +402,22 @@ Shared vocabulary is the channel along which cross-task dependency forms (Fig. 3
 relation exists in the T-Box does not mean that every view is populated to the same degree, so the
 counts are produced automatically from a fixed release commit.
 
+This structure was chosen against an alternative. One could hold the three tasks as separate
+ontologies and join them by alignment mappings. That arrangement lets each schema evolve
+independently per task. The mapping must then be maintained as an asset of its own, and the effect
+of a change in one ontology on another task is hidden behind that mapping. Our purpose is to observe
+that effect before release, so we chose a shared core. The price is coupling. Shared vocabulary
+becomes the propagation path of a regression, which is why the cross-task condition T3 is needed in
+the acceptance rule (§3.5).
+
+The second decision was to define the boundary of a view by query path rather than by an exclusive
+partition of classes. On a semiconductor site the same equipment, process and material vocabulary is
+used by equipment engineering, patent practice and technology planning alike, and it does not split
+along organizational lines. Replicating classes per view would give the same object different
+identifiers and would remove the links between tasks altogether. The dataset instead shares
+identifiers and separates views by query, and which view lost function is identified by the per-view
+CQ suite.
+
 Competency questions follow the same structure. We separate a CQ suite per task, and questions that
 link two or more views, such as supply chain or regulation (CQ13, CQ14, CQ19, CQ21), are assigned to
 the **shared core (CQ-CORE)** suite (§3.4, Table 4). Of the three views only prior-art search holds
@@ -441,7 +458,7 @@ measurement in this paper was performed (upstream snapshot `d578bf3`).
 > only. All 2,211 examiner-citation positives lie inside G0, and 0 positives exist only in G1 or G2.
 > Excluding them shrinks the candidate corpus from 40,552 to 4,034 documents, at which point the
 > condition of a large candidate pool no longer holds. Because the T-Box never changed, no change
-> eligible for testing acceptance safety could exist in this lineage (§6.5). These counts are also
+> eligible for testing acceptance safety could exist in this lineage (§6.4). These counts are also
 > those of the measurement generation stated above (upstream snapshot `d578bf3`).
 
 The rejected-patent axis consists of `hasPriorArtExaminer` (examiner citation; **the relation
@@ -483,7 +500,7 @@ The release is partitioned into five parts to block ground truth from leaking in
 releasable core, development and validation qrel, test judgments sealed until evaluation (hash
 pinned, access logged), derived features generated independently of qrel, and provenance. The
 dataset release is **pinned** by commit SHA and sha256, and the evaluation protocol and thresholds
-are **frozen** before unsealing; pinning does not constrain later improvement of the dataset (§6.6).
+are **frozen** before unsealing; pinning does not constrain later improvement of the dataset (§6.5).
 
 ## 3.4 The validation gate as a whole
 
@@ -531,7 +548,7 @@ Because the rule is a product, a single zero term makes the acceptance zero.
 
 The object of the rule is the graph delta \(\Delta G\), but T1 and T2 compare two rankings and
 therefore apply in the same form to a change of system configuration. The acceptance verdict on a
-resource change is the single case in §5.3, and the verdict in §5.4.1 is a dry run that applies the
+resource change is the single case in §5.1, and the verdict in §5.4.1 is a dry run that applies the
 rule to a change of system configuration.
 
 {{FIGURE:4}}
@@ -562,7 +579,7 @@ The three thresholds are \(\epsilon = 0.02\) (non-inferiority margin), \(\delta 
 (subgroup drop limit), and \(\tau = 0.05\) (threshold of the distribution check), all fixed before
 the evaluation set was unsealed. They are normative choices taken from testing convention and are
 not calibrated against reindexing variation or a practitioner-tolerated drop, so this deficit and
-the method of calibration appear in Table 13 (iv).
+the method of calibration appear in Table 12 (iv).
 
 T2 carries a conservatism that we stated before results were seen. T2 compares the maximum subgroup
 drop against \(\delta\) by a deterministic rule and does not use the lower bound of a per-subgroup
@@ -586,11 +603,42 @@ condition.
 > temperature, the seed, and the context size K.
 
 T4 is not part of the acceptance rule above. The margin and the hallucination threshold were frozen
-in a commit made before unsealing, and the verdict was issued once and failed (§6.5). The
+in a commit made before unsealing, and the verdict was issued once and failed (§6.4). The
 preconditions for a formal evaluation are met, but adopting the condition into the rule requires
 repeated validation. Revising a release rule on the strength of a single failure would be an
 overclaim in the opposite direction. The full statement of thresholds and evaluation conditions is
 in S5, Appendix A.
+
+## 3.6 Release operation in a continuous integration pipeline
+
+The two preceding sections describe the rule of acceptance; this section describes the procedure in
+which that rule is executed. The acceptance gate sits where ontology maintenance meets the operation
+of the retrieval service. Rather than demanding a full manual review for every added concept alias
+or altered classification mapping, we execute the formal layers and the task conditions in a
+**continuous integration (CI)** pipeline.
+
+The unit of operation is a candidate release delta. Once a delta is proposed, it enters the pipeline
+before it is merged. The pipeline begins with pinning the snapshot, formal validation L0–L3, and
+rebuilding the leakage-blocked index. T1 and T2 then run against a frozen retrieval regression set,
+and T3 against the cross-task suites. A failed stage stops the stages behind it (§3.4). Only a delta
+that passes every stage is merged, and we provide no bypass path.
+
+Each run leaves its verdict as an artifact. The per-file hash of the snapshot, the corpus signature
+and the per-term verdicts are recorded together, so a verdict can be reproduced. Tracking the
+per-subgroup drop (T2) and the CQ pass rates of the other tasks (T3) across releases makes visible
+both the local failures that hide under an average and the erosion between tasks. An exception to T3
+is admitted only by an explicit waiver token, and the cumulative count is reported.
+
+We measured the cost of a run in the port verdict (§5.5). On a graph of 55,887 triples with 15
+competency questions, the mean runtime per layer was 124 s for L1, 12.5 s for L2, and 1.6 s for
+L3 with T3. Peak resident memory was 595 MB. The formal layers and the cross-task layer together
+therefore take about 138 s. This value is a statement about feasibility at that scale, not evidence
+of scalability. T1 and T2 include rebuilding the retrieval index and are not included in it.
+
+We also bound what this procedure covers in operation. A per-term score is information that supports
+review prioritization; it does not replace a legal judgment. The three tasks are not validated to
+the same depth either. The expert-matching view and the foresight view are objects of T3 regression
+monitoring, and the retrieval performance of those two views is not claimed in this study.
 
 ---
 
