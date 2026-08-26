@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Engineering ontologies keep changing after release. Whether a change passing structural and logical checks preserves task performance is a question resource-level evaluation leaves open. When tasks share a vocabulary, a change approved on one task's score can disrupt another's query paths. Following design science research, we present two artifacts and an evaluation environment. SDKB (Semiconductor Domain Knowledge Base) carries expert matching, prior-art search and foresight as task views on one shared schema (T-Box). A task-aware release gate adds three conditions to four formal validation layers (L0–L3): retrieval non-inferiority (T1), subgroup non-regression guardrail (T2), and non-regression of other tasks' competency questions (T3). A multi-layer benchmark evaluates both in four episodes: a representation audit (SHACL, 31 competency questions); holdout fault injection on 45 unjudged faults; a controlled resource swap with documents, code and settings frozen; and a leakage-controlled retrieval comparison over two non-overlapping splits of 198 queries, anchored on examiner citations for 1,000 rejected patents. In the swap, a change raising concepts per document 2.4-fold and passing every formal layer reduced retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]); T1 rejected it. T3 alone detected 12 of 45 cross-task faults, with no false alarms in 27. The pre-registered composite prediction held in neither split: deep recall improved in both (+0.0534, +0.0343), while the pre-specified primary configuration and nDCG@20 did not. We derive four core and two scope design principles, and state the limits: one domain, one refusal of undistinguished cause, no expert relevance judgments, and queries confined to patents in the graph.
+Engineering ontologies keep changing after release, and whether a change passing structural and logical checks preserves task performance is a question resource-level evaluation leaves open. The risk grows where tasks share one vocabulary. Following design science research, we present two artifacts and a benchmark. SDKB (Semiconductor Domain Knowledge Base) carries three tasks as views on one shared schema (T-Box). A task-aware release gate adds three conditions to four formal validation layers (L0–L3): retrieval non-inferiority (T1), a subgroup guardrail (T2), and cross-task competency-question non-regression (T3). Five episodes follow: a representation audit; holdout fault injection (45 unjudged faults); a controlled resource swap; a leakage-controlled comparison over two non-overlapping 198-query splits anchored on examiner citations; and a port to a second engineering ontology (building metadata). In the swap, a change raising concepts per document 2.4-fold and passing every formal layer reduced retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]); T1 rejected this one qualifying change. T3 alone detected 12 of 45 cross-task faults, with no false alarm in 27. The pre-registered composite prediction held in neither split: deep recall improved in both (+0.0534, +0.0343), the primary configuration and nDCG@20 did not improve. The ported layers ran unchanged and rejected none of 30 normal deltas, yet the frozen fault specification detected nothing in 12 judgeable instances. In this single port, procedures transferred while fault specifications did not. We state three lessons and two follow-up hypotheses for later testing. Limits: task performance measured in one domain, one refusal of undistinguished cause, no expert relevance judgments.
 
 **Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
@@ -10,115 +10,147 @@ Engineering ontologies keep changing after release. Whether a change passing str
 
 Abbreviations are given in full at first use and abbreviated thereafter. The names of gates and
 metrics (L0–L3, T1–T4, Recall@100, nDCG@20) are used verbatim throughout: replacing them with
-paraphrases would change what they refer to.
+paraphrases would change what they refer to. The table also lists the five label systems the text
+uses.
 
-| Abbreviation | Expansion |
+| Symbol | Meaning (where defined) |
 |---|---|
 | A-Box | assertional box — the instance layer of an ontology (§3.1) |
+| A1–A8 | ablation conditions; A8 is the negative control (§4.4) |
+| B0–B5 / P0–P2 | comparison systems — baselines / proposed systems (§4.3) |
+| BM25 | Okapi Best Matching 25 — a lexical ranking function |
 | CQ | competency question — a question the ontology must be able to answer (§3.1) |
+| CQ-PA / CQ-EM / CQ-TF / CQ-CORE | per-task CQ suites — prior-art search / expert matching / foresight / shared core (§3.1) |
 | DSR | design science research (§1) |
-| EP1–EP4 | the four evaluation episodes (§4, §5) |
-| DP1–DP6 | the design principles derived in §6.4 |
+| EP1–EP5 | evaluation episodes — representation audit, gate discriminating power, resource swap, scope of the retrieval gain, port verdict (§3) |
+| G0 / G1 / G2 | the SDKB graph lineage — reference graph / two candidate populations (§3.2) |
 | IPC / CPC | International / Cooperative Patent Classification |
 | KIPRIS | Korea Intellectual Property Rights Information Service |
 | L0–L3 | the four formal validation layers: freshness, structure, logic, function (§3.4) |
+| Lessons ①–③ | the lessons of this study, stated as hypotheses for later testing (§6.3) |
 | nDCG@20 | normalized discounted cumulative gain at rank 20 |
 | Recall@100 | recall at retrieval depth 100, computed at patent-family level |
+| RQ | research question — the label of a design question (§1) |
 | RRF | reciprocal rank fusion |
 | SHACL | Shapes Constraint Language |
 | SPARQL | SPARQL Protocol and RDF Query Language |
 | T-Box | terminological box — the schema layer of an ontology (§3.1) |
-| T1–T4 | the task conditions of the release gate (§3.5) |
+| T1–T4 | the task conditions — retrieval non-inferiority, subgroup non-regression guardrail, cross-task CQ non-regression, downstream generation-layer non-regression (§3.5) |
+| \(\epsilon\), \(\delta\) | the non-inferiority margin 0.02 and the subgroup drop limit 0.05 (§3.5) |
 
 ---
 
 # 1. Introduction
 
-The arrival of large language models (LLMs) and retrieval-augmented generation (RAG) in engineering
-practice has widened, not narrowed, the role of explicit knowledge representation (Lewis et al.,
-2020; Pan et al., 2024). What constrains a model that generates something untrue is not a larger
-model but a verifiable knowledge structure. Engineering informatics has pursued the same line,
-integrating design assets and processes into knowledge graphs (Bharadwaj & Starly, 2022). The demand
-is strongest in domains such as semiconductors, where process, device, material, equipment and
-organization are densely coupled: the same physical phenomenon is named differently depending on
-context, so retrieval that relies on string matching leaves connections unreached.
+Engineering organizations accumulate domain knowledge in ontologies and knowledge graphs and
+operate retrieval and analysis services on top of them (Bharadwaj & Starly, 2022; Lewis et al.,
+2020; Pan et al., 2024). The accumulation is largest in domains such as semiconductors, where
+process, device, material, equipment and organization are densely coupled. One physical phenomenon
+is named differently depending on context, so retrieval by string matching leaves connections
+unreached. Such a knowledge base is not a finished asset, however. It keeps changing, and the
+procedure that decides whether a change may be released is far less developed than the accumulation
+itself.
 
-Semiconductor knowledge is not used by a single task. An equipment defect must be traced from a
+Semiconductor knowledge serves more than one task. An equipment defect must be traced from a
 failure mode through root causes to the people and skills that address it. Patent analysis must run
-from claims through their limitations to a prior-art judgment, and technology planning must connect
-technology nodes to scenarios and investment options. These three are not separate repositories but
-different uses of the same knowledge, sharing a vocabulary of processes, devices, materials,
-equipment and organizations. **SDKB** (Semiconductor Domain Knowledge Base) is a semiconductor
-domain ontology dataset that grew by admitting these three requirements in turn.
+from claims through their limitations to a prior-art judgment. Technology planning must connect
+technology nodes to scenarios and investment options. These are not three repositories but three
+uses of the same knowledge, sharing a vocabulary of processes, devices, materials, equipment and
+organizations. **SDKB** (Semiconductor Domain Knowledge Base) is a semiconductor domain ontology
+dataset that grew by admitting these three requirements in turn.
 
-**Task-extensible**, here, does not mean that one ontology performs equally well on every task. It
-means that classes, relations, constraints, competency questions (CQs) and instances (the A-Box) can
-be added for each task while the shared schema (T-Box) and the identifiers are preserved — and that
-those additions do not damage the existing structure. What an ontology can *represent* and how far
-its performance has been *verified* must therefore be stated separately.
+**Task-extensible** here names a property: per-task assets can be added without damaging the
+existing structure, while the shared schema (T-Box) and the identifiers are preserved. Per-task
+assets are the classes, relations, constraints, competency questions (CQs) and instances (the
+A-Box) that the task requires. The property does not imply that one ontology performs equally well
+on every task. What an ontology can represent and how far its performance has been verified must
+therefore be described separately.
 
-Among the three tasks, prior-art retrieval sits at the front end of research and development and is
-also amenable to quantitative measurement. Pre-filing novelty and inventive-step judgments and
-search reports depend on it, and the documents an examiner actually cited supply an external
-scoring standard. Relevant prior art, however, may describe the same invention in different terms
-and at a different level of abstraction. Semantic connections that cross vocabulary boundaries are
-therefore required, and that is precisely why an ontology is coupled to this task. Yet patent
-retrieval research and ontology quality validation have developed with little reference to each
-other (§2), and passing the ontology-side checks does not guarantee retrieval performance.
+Among the three tasks, prior-art retrieval sits at the front end of research and development and
+also admits quantitative measurement. Pre-filing novelty and inventive-step judgments and the
+writing of search reports depend on it, and the documents an examiner actually cited supply an
+external scoring standard. That external standard is why we measure this task rather than the other
+two.
 
-This mismatch takes two forms. First, a change can pass all four conventional layers of ontology
-change validation — freshness, structure, logic and function (L0–L3) — and still degrade retrieval
-on a sealed evaluation set. We call this **task-semantic regression**. Second, when one vocabulary
-supports three tasks, a change that favours one task can damage another task's query paths. Merging
-two similar concepts to raise recall, for instance, degrades the ability to discriminate `Skill` in
-expert matching. We call this **cross-task regression**.
+The problem we address is therefore one of knowledge-base operation rather than of ontology theory.
+A semiconductor knowledge base keeps acquiring vocabulary, mappings and instances after release,
+and each change reaches the retrieval service that uses the same vocabulary at once. The practical
+question is whether that change may be released. Patent retrieval research and ontology quality
+validation have nevertheless developed with little reference to each other (§2), and passing the
+ontology-side checks does not guarantee retrieval performance.
 
-Both arise from one cause. Whoever edits an ontology usually observes resource-side indicators: the
-growth of the vocabulary, the number of concepts per document, the number of links repaired. By
-**resource** we mean the dataset in its state before it enters an application — the T-Box, the A-Box
-and the document-to-concept links. Evaluation, however, has three layers — resource, retrieval and
-generation (§2.3) — and whether an indicator at one layer represents performance at the next cannot
-be known before it is measured.
+This mismatch between ontology checks and task performance takes two forms. First, a change can
+pass the four conventional layers of ontology change validation — freshness, structure, logic and
+function (L0–L3) — and still degrade retrieval on a sealed evaluation set. We call this
+**task-semantic regression**. Second, where one vocabulary supports three tasks, a change that
+favours one task can damage the query paths of another. Merging two similar concepts to raise
+recall, for instance, degrades the ability to discriminate `Skill` in expert matching. We call this
+**cross-task regression**.
 
-The question this study raises is therefore a single one. When an ontology dataset that represents
+That formal validation detects neither has a cause on the resource side as well. The T-Box of this
+study carries essentially no logical axiom about prior-art judgment. Constraints such as
+disjointness and cardinality are not declared, so the logical consistency layer has little to check
+(§5.2). This is not peculiar to our resource. The second engineering ontology we ported to also
+declares the domain and range of its predicates in a constraint language rather than in logical
+axioms (§5.5). Axiom scarcity is thus not a rare condition among engineering ontologies operated in
+industry, and that is where a procedure approving changes by formal validation alone becomes
+fragile.
+
+The two regressions escape detection for one reason. Whoever edits an ontology usually observes
+resource-side indicators: growth of the vocabulary, or **concepts per document**, the mean number
+of ontology concepts linked to one document. By **resource** we mean the dataset in the state
+before it enters an application, comprising the T-Box, the A-Box and the document-to-concept links.
+Evaluation, however, has three layers: resource, retrieval and generation (§2.3). We call it
+**cross-layer metric misalignment** when an indicator at one layer does not represent performance
+at the next. Whether it represents cannot be known before measurement, so checks at the resource
+layer alone observe neither regression.
+
+The question this study raises is therefore a single one. When an ontology dataset representing
 three tasks grows, does it preserve the performance of the primary task without damaging the
-function of the others — and how can that be established *before* release?
-
-We address the question as design science research (DSR; Hevner et al., 2004; Gregor & Hevner,
-2013). What we ask is not whether a hypothesis is accepted, but how the artifacts were designed and
-evaluated and what transferable design knowledge follows.
+function of the others? And how can that be established before release? We treat the question as
+design science research (DSR; Hevner et al., 2004; Gregor & Hevner, 2013). In that frame our
+interest is not whether a hypothesis is accepted, but how the artifacts were designed and evaluated
+and what transferable design knowledge follows. The research questions are the following three,
+each shown with the **evaluation episodes (EPs)** that answer it (composition in §3.0).
 
 - **RQ1** — How can one design an ontology dataset that represents three tasks on a single shared
   T-Box while remaining extensible per task? (§3 · EP1)
 - **RQ2** — How can one design a gate that evaluates, before release, whether a formally valid
   change damages downstream task performance or the function of the other tasks? (§3 · EP2 · EP3)
-- **RQ3** — What utility, failure boundaries and cross-layer indicator mismatches are observed in
-  evaluating the artifacts, and what transferable design principles follow? (EP3 · EP4 · §6)
+- **RQ3** — What gains, failure boundaries and cross-layer metric misalignments are observed in
+  evaluating the artifacts, and what transferable lessons follow? (EP3 · EP4 · EP5 · §6)
 
-The contribution is threefold. The first is the **artifact**: SDKB, an ontology dataset that
-connects three semiconductor knowledge tasks through common identifiers and a shared T-Box and
-supplies per-task views, competency questions and validation assets. The second is the **method**: a
-release gate (T-gate) that adds to formal validity the non-inferiority of the primary task, subgroup
-safety, and preservation of cross-task function as conditions of release approval, together with an
-evaluation of its discriminating power by holdout fault injection and by an actual resource swap.
-The third is **design knowledge**: a controlled substitute which a change that improved the resource
-indicators and passed every formal check nevertheless degraded retrieval, and from that observation
-the transferable principles of layered validation and approval one layer down.
+The contribution is threefold. The first is the **artifact**. SDKB connects three semiconductor
+knowledge tasks through common identifiers and a shared T-Box, and supplies per-task views,
+competency questions and validation assets. The release gate (T-gate) adds to formal validity three
+conditions of approval: non-inferiority of the primary task, a subgroup non-regression guardrail,
+and preservation of cross-task function. We release both artifacts and the evaluation assets in a
+verifiable form.
 
-The weight of the latter two contributions lies less in the design itself than in the measurements
-that show the design to be necessary. Retrieval utility is therefore reported only with its
-boundaries stated, and the evaluation of whether retrieval gains transfer to the generation layer is
-not presented as a separate contribution. The deficits in validation strength and generalizability
-are set out as a specification in §6.5.
+The second is **one controlled rejection**. We froze the document set, the code, the settings and
+the weights, and substituted the resource bundle alone. Under that condition an actual change that
+improved every resource indicator and passed all four formal layers was rejected by one task
+condition. We report the record of that verdict together with the procedure that produced it.
+Qualifying resource changes number one, so this contribution is not a claim that such rejections
+are frequent. It is an existence proof, under controlled conditions, that one can occur.
 
-The remainder is organized as follows. Section 2 states the research gap; Section 3 the artifacts
-and the design and evaluation procedure; Section 4 the evaluation design. Section 5 reports the four
-episodes, and Section 6 the design principles, limitations and conclusion.
+The third is **three lessons**. Their evidence is the case above, the fault injection, and the
+measurement of the boundary of the retrieval gain. Fault injection here is a **hold-out**
+evaluation: the decision rule is frozen first and the faults are judged for the first time
+afterwards. We state the lessons at the size of that evidence, in the form of hypotheses for later
+studies to test. For the same reason we report the retrieval gain only with its boundary stated,
+and we do not present the generation-layer transfer evaluation as a separate contribution.
+
+The remainder is organized as follows. Section 2 reviews prior work and the research gap, and
+Section 3 the artifacts and the design and evaluation procedure. Section 4 sets out the evaluation
+design, Section 5 the results of the five episodes, and Section 6 the discussion, the lessons and
+the limitations. Section 7 concludes.
 
 {{FIGURE:1}}
 
 The full text of abridged sections, the appendices and the auxiliary tables are reproduced verbatim
-in the supplementary material [S5](../../supplementary/S5-submission-full-v2.md).
+in the supplementary material [S5](../../supplementary/S5-submission-full-v2.md), referred to as S5
+below.
 
 ---
 
