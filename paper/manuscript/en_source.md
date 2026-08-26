@@ -1209,7 +1209,7 @@ verdicts for every fault instance and the frozen lists are in
 
 ---
 
-# 6. Discussion, design knowledge, and conclusion
+# 6. Discussion and lessons
 
 ## 6.1 Cross-layer metric misalignment — the central observation
 
@@ -1221,12 +1221,12 @@ status and are not read with equal weight.
 substituted into the same pipeline a change whose prespecified resource coverage indicators had all
 improved. Concepts per document rose 2.4× in that change. Recall of the substituted configuration
 (P1) fell as a result (−0.0293, 95% CI [−0.0542, −0.0053]). The performance condition T1 rejected
-that change although it passed formal validation L0–L3 in full (§5.3; the development-split case is
+that change although it passed formal validation L0–L3 in full (§5.1; the development-split case is
 in S5).
 
 **(ii) Retrieval layer → operational unit (exploratory descriptive statistics).** The gain that
-reached significance on the primary metric (*p* = .008) vanishes when converted into the number of documents reviewed
-(median reduction 0.0%; win/tie/loss 62/16/64; §5.4.3).
+reached significance on the primary metric vanishes when converted into the number of documents
+reviewed (median reduction 0.0%; win/tie/loss 62/16/64; §5.4.3).
 
 **(iii) Retrieval layer → generation layer (one verdict).** We measured twice with only the
 retrieval configuration replaced and the generator fixed. The configuration including the ontology
@@ -1257,7 +1257,7 @@ nominate cannot be recovered by any ontology feature. Queries whose vocabulary d
 exactly the queries whose candidate set is impoverished (baseline R@100 of 0.1975 in the low-overlap
 subgroup against 0.4685 in the high-overlap subgroup). The observed pattern therefore does not mean
 that the ontology is semantically powerless; it exposes the **reranking ceiling**, the performance
-reranking ceiling, the performance limit that arises from not enlarging the candidate set.
+limit that arises from not enlarging the candidate set.
 
 Two revised claims follow. The value of an ontology combined by reranking does not lie in resolving
 lexical mismatch. It lies in raising, into the review depth, documents that share the same technical
@@ -1266,29 +1266,64 @@ knowledge hierarchy does not automatically become a retrieval gain. For claim-le
 contribute to ranking, a matching function at the same unit as the evaluation target is required.
 This reranking ceiling was observed most strongly on the cross-lingual axis (§5.4.3).
 
-## 6.3 Task coupling and cross-task dependency
+## 6.3 Lessons — three hypotheses for later studies to test
 
-Ablation showed that a layer designed for one task can bear on the performance of another. The
-verdict is definite while the cause is not separated, and the observation is conditional on one
-confirmatory split and on the module arrangement of this release.
+This section treats which of the observations above can be transferred to another resource. The
+evidence is one qualifying resource delta and one port case, so we state them as hypotheses for
+later studies to test rather than as established principles. Each lesson is stated with its evidence
+and with the observation that would weaken its necessity. The full promotion criteria and grading
+scheme, and the correspondence with the original labels, are in
+[S5](../../supplementary/S5-submission-full-v2.md) and
+[S6](../../supplementary/S6-preregistration-crosswalk.md).
+
+**Lesson ① · Acceptance one layer below.** A resource change is accepted on the non-regression
+result of the next layer of use rather than on resource indicators. The evidence is the verdict of
+§5.1: a change that improved every resource indicator and passed formal validation L0–L3 in full was
+rejected by one performance condition (Accept = 0). This form was already stated when the gate was
+designed, and it was supported by an actual rejection. Without that arrangement the change of §5.1
+would have been accepted on the strength of uniformly improved resource indicators and complete
+formal validation. The lesson weakens if formal validation alone predicts downstream non-regression
+and the task conditions never change an acceptance decision. The breadth of the evidence is one
+qualifying resource delta.
+
+**Lesson ② · Cross-task monitoring.** On a shared T-Box, a change is not accepted on the performance
+of the primary task alone. The evidence is the holdout fault injection. Faults missed by both formal
+validation and the retrieval performance check but detected by T3 alone number 12 of 45 (one-sided
+*p* = .0001 · §5.2), and false positives among 27 sound deltas were 0. The lesson weakens if the
+detection rate of the primary-task check equals that of T3 and detection by T3 alone is 0.
+
+The supporting evidence for this lesson was observed in the ablation, and its status differs from
+the evidence above. A layer designed for one task was observed to bear on the performance of
+another. The verdict is definite while the cause is not separated, and the observation is
+conditional on one confirmatory split and on the module arrangement of this release.
 
 The negative control is the expert-matching-only layers, designed to be theoretically unrelated to
 retrieval. Removing them degraded retrieval performance significantly (removal loss +0.0316,
-*p* = .002, the only ablation of the eight that remained significant after the Holm correction). The
+*p* = .002, the only ablation of the eight to remain significant after the Holm correction). The
 damage was not visible in formal validation L0–L3. The two branches stated in advance were
 establishing specificity and observing coupling, and what we observed is the latter. What is
 observed is the existence of an influence, and this experiment does not answer its path. A resource
 audit after unsealing measured two simpler mechanisms. No experiment separates the two, so we do not
-fix the cause; the evidence is in S5 and the testable prediction in §6.5. In the second confirmatory
+fix the cause; the evidence is in S5 and the testable prediction in §6.3. In the second confirmatory
 split the same ablation gave exactly 0.0000, so this observation was not reproduced (§5.4.2), and
 the cause of the divergence between the two samples is not separated either.
 
-This divergence does not invalidate the grounds for the cross-task condition, but it changes their
-priority. The case in which T3 alone detected a fault missed by both formal validation and the
-retrieval performance check is 12 of 45 holdout faults (one-sided *p* = .0001 · §5.2). The principal
-ground for the monitoring principle is therefore the fault-injection result, and the negative-control
-result is confined to supporting evidence that includes the divergence between the two samples. The
-current grade of this observation is a **design diagnosis**.
+The divergence does not invalidate the grounds for the cross-task condition, but it changes their
+priority. The principal ground for this lesson is therefore the fault-injection result, and the
+negative-control result is confined to supporting evidence that includes the divergence between the
+two samples. The current grade of that observation is a **design diagnosis**. The verdict on the
+second engineering ontology did not widen the evidence either, because detection by T3 alone was 0
+in the 12 adjudicable faults (§5.5). That 0, however, is not the result of the weakening condition
+above being met. In that sample the four formal layers and the cross-task condition were alike
+non-detecting, so the object of a detection-rate comparison did not exist. The denominator of the 0
+is 12 rather than 21, and the remaining 9 did not reach a verdict because the fault was not
+injected.
+
+**Lesson ③ · Separation of candidate generation.** Reranking cannot recover documents outside the
+candidate pool, so it is evaluated separately from candidate generation. The evidence is that, with
+no cap on review depth, the proportion of queries not reached is identical across the three systems
+(half of the positives 26.8%, full recovery 55.1% · §5.4.3). The lesson weakens if reranking alone
+reduces that proportion.
 
 **Stability region of the verdicts.** All four gate verdicts are decided by comparison against a
 threshold, and those thresholds are normative choices taken from testing convention (§3.5). We
@@ -1304,106 +1339,11 @@ loses support at the upper end of the frozen grid.
 The thresholds are exactly those frozen in §3.5, and what the table reports is the distance between
 each verdict and its switching point.
 
-## 6.4 Design principles — four core principles and the scope of application
-
-This section treats which of the observations above can be transferred. Calling an observation a
-design principle carries the claim beyond the boundary of the artifact, so the promotion criteria
-must be fixed before results are seen. We froze five criteria before results were seen. The first
-three are that the evidence is the output of executed code, that the exclusion or non-exclusion of
-competing explanations is stated, and that the principle is expressed in a form transferable outside
-the artifact. The other two are that a refuting condition is stated with it, and that the design
-time and the confirmation time are each recorded. A principle failing any one of the five is
-classified as a proposition. A principle meeting all five is divided, by the last criterion, into
-"designed in advance and empirically supported" when the design preceded and "empirically
-supported" when the confirmation preceded. Proposition and empirical support are grades matching the
-level of evidence rather than failures, and the full criteria are in S5.
-
-Seven principles were derived. The four **core principles** in the table below constitute the heart
-of the acceptance gate, and the three **scope principles** at the end of this section fix the
-boundary of application. The distinction is one of place of application, not of evidence grade.
-
-{{TABLE:12}}
-
-The design-time column of the table is the device that prevents reverse derivation. DP2 and DP3 were
-already stated in that form when the gate was designed, and the other two were preceded by the
-observation. Describing a principle preceded by the observation as having been designed that way
-from the start is post hoc adjustment in design science research. DP1 and DP4 remain at empirical
-support because only one resource delta was established and the post-acceptance safety of an
-approved change was not tested (§6.4).
-
-DP1 and DP4 are guidance of different kinds. DP1 concerns how indicators are separated; without that
-arrangement, the change of §5.3 would have been accepted on the strength of uniformly improved
-resource indicators and complete formal validation. DP4 concerns the design of the evaluation and
-has the character of a methodological requirement. Identifying the effect of a resource change
-requires substituting only the resource bundle with documents, model, and weights fixed, and in this
-study three generations without a T-Box change had to pass before that condition held (§3.2).
-The evidence for DP3 did not grow with the verdict on engineering ontology 2, because detection by
-T3 alone was 0 in the 12 adjudicable faults (§5.5). That 0, however, is not the result of the
-challenge condition below being met. In that sample the four formal layers and the cross-task
-condition were alike non-detecting, so the object of a detection-rate comparison did not exist. This
-episode therefore did not adjudicate the challenge condition and does not change the grade. The
-denominator of the 0 is 12 rather than 21, and the remaining 9 did not reach a verdict because the
-fault was not injected.
-
-Each principle carries an **empirical challenge condition** that would weaken its necessity. DP1
-weakens when resource indicators and task indicators move together consistently across several
-generations. DP2 weakens when formal validation alone predicts downstream non-regression and the
-task conditions never change an acceptance decision. DP4 weakens when the effect of a resource
-bundle can be separated even in a comparison in which the document set also changed. DP3 weakens
-when the detection rate of the primary-task check equals that of T3 and detection by T3 alone is 0.
-The 12 faults of the second domain had 0 discordant pairs between layers, however, so that condition
-was not adjudicated.
-
-**Scope of application.** The three scope principles fix the range of application of the four above,
-and their grades are exactly as the criteria set them. **DP5 · separation of candidate generation**
-holds that reranking cannot recover documents outside the candidate pool, so candidate generation
-must be evaluated separately; its grade is empirical support. The evidence is the observation that,
-with no cap on review depth, the proportion of queries not reached is identical across the three
-systems (half of the positives 26.8%, full recovery 55.1% · §5.4.3). This principle weakens if
-reranking alone reduces that proportion. **DP6 · verification of transfer** holds that an
-improvement in retrieval metrics is not generalized automatically to review efficiency or generation
-quality; its grade is proposition. The verdict itself runs in the direction that supports the
-principle. However, whether the failure arose from absence of transfer or from insufficient power is
-not separated (criterion (ii) unmet; the width of the failure is in Table 11), and separating them
-requires a new preregistration. The principle weakens if improvements in retrieval metrics transfer
-consistently to review counts or generation quality. The evidence tables for the three principles
-are in S5.
-
-**DP7 · port-layer separation** distinguishes what transfers from what must be regrounded. When an
-acceptance gate is moved to another resource, the mechanism made of the layer structure, the
-decision rule, and the execution transfers. The specification made of delta constraints, fault
-definitions, and competency questions must instead be regrounded on the representational conventions
-and the instance observable surface of the target resource. Its grade is empirical support, and the
-confirmation preceded the design. The evidence is three places observed on the second resource. The
-frozen delta constraint requires domains and ranges to be declared in schema vocabulary, whereas the
-target resource declares them in a constraint language. As a result, 8 of the 10 release-lineage
-verdicts were unmet on that rule. The frozen fault definition expresses containment with a predicate
-in one direction, whereas the holdout model uses the opposite direction, so 9 of 21 faults were not
-injected. Of the 15 competency questions, 7 returned rows on the holdout (§5.5). The port case
-numbers 1, so the breadth of the evidence is confined accordingly. The principle weakens if
-detection power holds after a specification is carried unchanged to a resource with different
-conventions and instance composition.
-
-This principle changes how the earlier results are read. Reading the 0 detections on the second
-resource as a failure of the gate would blur the distinction between a principle and its
-implementation. What the measurements indicate is that the mechanism and the specification depend on
-different things (§6.1).
-
-**Transfer into operation.** The gate connects ontology maintenance to the operation of a retrieval
-service. Instead of demanding a full manual review for every concept alias or classification mapping
-change, L0–L3, the frozen retrieval regression set, and the three CQ suites run in the continuous
-integration pipeline. Tracking subgroup drops (T2) and the CQ pass rates of the other tasks (T3) per
-version reduces both failures hidden under an average and erosion between tasks. A per-term score is
-information that supports review priority and does not replace a legal judgment. The validation
-levels of the three tasks are not equal, however. The expert-matching view is placed only as input
-to T3 regression monitoring and as the negative control of ablation, and the technology-foresight
-view only as evidence of reuse of the same T-Box.
-
-## 6.5 Limitations, competing explanations, and a specification of the deficits
+## 6.4 Limitations, competing explanations, and a specification of the deficits
 
 **Acceptance safety.** The safety of accepted changes was not tested. Eligibility for the comparison
 belongs only to a T-Box delta or a concept-layer delta, and the T-Box of G0, G1, and G2 is identical,
-so no eligible change existed in the lineage (§3.2). The verdict in §5.3, where eligibility first
+so no eligible change existed in the lineage (§3.2). The verdict in §5.1, where eligibility first
 held, was a rejection. The capacity to reject was therefore observed once, and the post-acceptance
 safety of an approved change was not observed.
 
@@ -1411,7 +1351,7 @@ safety of an approved change was not observed.
 measured value is recovery of that set (§2.1). Expert relevance judgment was not performed, so the
 actual relevance of highly ranked uncited candidates is unobserved. This constrains statements about
 absolute performance. Paired differences apply the same ground truth and are less affected, but the
-mitigation is partial (Table 13 (viii)).
+mitigation is partial (Table 12 (viii)).
 
 **Reranking and the absence of a mapping stage.** The first constraint arises from the reranking
 design (§6.2). The measured value is the improvement obtainable under reranking as the combination
@@ -1431,7 +1371,7 @@ this paper was produced in the generation that reads concept links only from the
 **Language and validity in general.** The queries are entirely Korean and the candidate corpus is
 multilingual (Korean 39,246, English 1,189, Japanese 117), so the recall reported here is close to
 recall over the Korean subpool. Generalization to other jurisdictions, languages, or fields was not
-tested (Table 13 (vi)).
+tested (Table 12 (vi)).
 
 **Gate-induced drift.** If the retrieval non-inferiority condition accumulates over generations, the
 ontology may drift toward a retrieval bias. Cross-task non-regression is the first brake, but a CQ
@@ -1452,7 +1392,7 @@ degraded, but the reliability of the coding fell short of the criterion fixed in
 (observed 0.000–0.172). The result table was therefore moved to S5 as prescribed, and we present no
 claim based on that typology.
 
-**Competing explanations.** The observation of §5.3, that retrieval performance fell although the
+**Competing explanations.** The observation of §5.1, that retrieval performance fell although the
 resource improved 2.4×, admits five competing explanations, and this experiment does not separate
 them.
 The five are **resource deficit**, **the scoring function** (absence of document-frequency
@@ -1466,12 +1406,33 @@ improvement, not the necessity of the acceptance rule.
 **Specification of the deficits.** The table below lists the nine deficits that constrain validation
 strength and generalization, with the specification for removing each.
 
-{{TABLE:13}}
+{{TABLE:12}}
 
 These deficits constrain the scope of the claims rather than the verdicts themselves. The priorities
 are two-rater blinded judgment on a targeted sample of highly ranked uncited candidates, and
 external validation on an eligible delta; both are separate experiments requiring a new
 preregistration.
+
+**Two follow-up hypotheses.** Two of the deficits above can be stated as hypotheses for later
+studies to test. The first is verification of transfer: an improvement in retrieval metrics is not
+generalized automatically to review efficiency or to the quality of generated answers. Our verdict
+runs in that direction, but whether the failure arose from absence of transfer or from insufficient
+power is not separated (the width of the failure is in Table 11). The hypothesis weakens if
+improvements in retrieval metrics transfer consistently to review counts or generation quality. The
+second is **port-layer separation**. When an acceptance gate is moved to another resource, the
+mechanism made of the layer structure, the decision rule and the execution transfers. The
+specification made of delta constraints, fault definitions and competency questions must instead be
+regrounded on the representational conventions and the instance observable surface of the target
+resource. The evidence is three places observed on the second resource. The frozen delta constraint
+requires domains and ranges to be declared in schema vocabulary, whereas the target resource
+declares them in a constraint language, so 8 of the 10 release-lineage verdicts were unmet on that
+rule. The frozen fault definition expresses containment with a predicate in one direction whereas
+the holdout model uses the opposite direction, so 9 of 21 faults were not injected. Of the 15
+competency questions, 7 returned rows on the holdout (§5.5). The port case numbers 1, so the breadth
+of the evidence is confined accordingly. The hypothesis weakens if detection power holds after a
+specification is carried unchanged to a resource with different conventions and instance
+composition. This distinction also changes how the earlier results are read: reading the 0
+detections on the second resource as a failure of the gate would blur mechanism and specification.
 
 **Conclusion rules.** We apply the conclusion rules frozen before unsealing, and their full text is
 in S5. The advantage of the proposed systems is an improvement in deep recall of known positives,
@@ -1480,7 +1441,7 @@ cost. A performance drop after resource indicators improve means cross-layer mis
 necessity of a performance condition; it does not mean that ontology enrichment is useless. An
 improvement in retrieval metrics does not mean an improvement in the quality of generated answers.
 
-## 6.6 Data and code availability
+## 6.5 Data and code availability
 
 The SDKB dataset and the evaluation harness are released at
 [https://github.com/arkwith7/sdkb-dataset](https://github.com/arkwith7/sdkb-dataset). The version
@@ -1525,17 +1486,20 @@ of the frozen generation while the release reflects later upstream corrections, 
 asset and the comparison between the two generations are in
 [S7](../../supplementary/S7-release-crosswalk.md).
 
-## 6.7 Conclusion
+---
+
+# 7. Conclusion
 
 **Dataset.** We present SDKB as a task-extensible ontology dataset that connects three views through
-a shared T-Box. The representational scope of the three views was confirmed with the T-Box, SHACL,
+a shared T-Box. The representational scope of the three views was confirmed with the T-Box, SHACL
 and CQs, and quantitative performance evaluation was confined to prior-art retrieval, where weak
 ground truth exists. The other two views are monitored for functional degradation by cross-task CQs.
 
-**Evaluation results.** Condition T3 alone detected 12/45 cross-task faults that formal validation
-and the primary-task check both missed. A real change that improved resource indicators 2.4× and
-passed all formal validation was rejected by T1. The verdict on retrieval utility reads as follows.
-The preregistered composite prediction held in neither split; deep recall improved in both.
+**Evaluation results.** Condition T3 alone detected 12 of 45 cross-task faults that formal
+validation and the primary-task check both missed. A real change that improved resource indicators
+2.4-fold and passed all formal validation was rejected by T1. The verdict on retrieval utility reads
+as follows. The preregistered composite prediction held in neither split, and deep recall improved
+in both.
 
 **Scope of the results.** The retrieval benefit is confined to deep recall, and no improvement was
 confirmed on the prespecified primary configuration or in top-of-ranking ordering. The
@@ -1543,19 +1507,28 @@ negative-control result differed across the two samples and is retained as a des
 The post-acceptance safety of an approved change also remains untested; what was observed is one
 rejection of an unsafe change.
 
-**Design knowledge.** Improving resource indicators and passing formal validation did not guarantee
+**Lessons.** Improving resource indicators and passing formal validation did not guarantee
 performance at the next stage of use. An ontology change must therefore be accepted on the actual
-task, separately from checks internal to the resource. From this observation we derive four core
-principles: layered validation, acceptance one layer below, cross-task monitoring, and controlled
-resource substitution. Three principles fix the scope of application: separation of candidate
-generation, verification of transfer, and port-layer separation. The last states that when a gate
-moves to another resource the mechanism transfers while the specification requires regrounding, and
-we observed it in the verdict on engineering ontology 2.
+task, separately from checks internal to the resource. From this observation we state three lessons
+as hypotheses for later studies to test: acceptance one layer below, cross-task monitoring, and
+separation of candidate generation. We add two follow-up hypotheses, verification of transfer and
+port-layer separation, the latter holding that when a gate moves to another resource the mechanism
+transfers while the specification requires regrounding. The evidence is one qualifying resource
+delta and one port case, so we do not present them as established principles.
 
 **Contributions and limitations.** The contributions are SDKB with its validation assets, the change
-acceptance gate, and transferable design principles. Task performance was measured on a single
-domain, however, the rejection of a real change numbers 1, and neither the cause of the drop nor the
-transfer to the generation stage was settled. The range adjudicated on the second resource is the
-formal layers and the cross-task layer, and the port case numbers 1. Connecting free-text queries to
-concepts, and external validation that removes the deficits of §6.5, remain for future work.
+acceptance gate, a controlled rejection of one qualifying change, and the three lessons above. Task
+performance was measured on a single domain, the rejection of a real change numbers 1, and neither
+the cause of the drop nor the transfer to the generation stage was settled. The range adjudicated on
+the second resource is the formal layers and the cross-task layer, and the port case numbers 1.
+Connecting free-text queries to concepts, and external validation that removes the deficits of §6.4,
+remain for future work.
 
+---
+
+# Declaration of generative AI use
+
+We used generative AI as an aid in restructuring this manuscript and in drafting sentences. The
+accuracy of the research questions, hypotheses, data scope, numbers, citations, experimental code
+and results is verified by the authors against the raw data and the execution logs. Generative AI
+neither ran the data analysis nor substituted for a legal prior-art judgment.

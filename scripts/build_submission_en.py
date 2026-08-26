@@ -77,11 +77,11 @@ def measurements(text: str) -> list[str]:
 # 기계는 그 캡션의 수치가 한국어 캡션과 같은지만 본다. 표는 `T<n>`, 그림은 `F<n>` 키다.
 CAPTIONS: dict[str, str] = {
     "F1alt": "Figure 1. Study overview — two artifacts and one evaluation environment, the release "
-             "approval procedure, and what the four episodes measure.",
+             "approval procedure, and what the five episodes measure.",
     "F1": "**Figure 1.** Study overview. The top band is artifact A1, a resource placing three task "
           "views on one shared T-Box; the middle band is artifact A2, the release gate that reviews "
           "a resource change before it ships; the bottom band is evaluation environment E1, the "
-          "four episodes and what each measures. The middle band reads left to right, and a failed "
+          "five episodes and what each measures. The middle band reads left to right, and a failed "
           "stage stops the ones behind it. T4, shown dashed, is not part of the approval rule "
           "(§3.5.1).",
     "T1": "**Table 1. Position relative to prior work — the contribution is the combination and the "
@@ -93,7 +93,7 @@ CAPTIONS: dict[str, str] = {
           "was actually observed between them. The number on each arrow at the left corresponds to "
           "the numbered observation at the right, and (ii) alone points not to the next layer but "
           "to a different unit within the same layer, the number of documents reviewed. "
-          "Observation (i) is presented in §5.3, (ii) in §5.4.3, and (iii) in §3.5.1 and §6.5; the "
+          "Observation (i) is presented in §5.1, (ii) in §5.4.3, and (iii) in §3.5.1 and §6.4; the "
           "interpretation is in §6.1.",
     "T2": "**Table 2. Stages of design science research and how they were carried out in this "
           "study.**",
@@ -110,8 +110,7 @@ CAPTIONS: dict[str, str] = {
           "with an asterisk because it is not part of the acceptance rule.",
     "T11": "**Table 11. Decision stability — the point at which each verdict switches under the "
            "frozen thresholds.**",
-    "T12": "**Table 12. Core design principles DP1–DP4.**",
-    "T13": "**Table 13. Nine deficits in validation strength and generalizability — every remedy "
+    "T12": "**Table 12. Nine deficits in validation strength and generalizability — every remedy "
            "is the object of a new preregistration.**",
     "T10": "**Table 10. Release-lineage verdicts on engineering ontology 2 — confined to "
            "the formal layers and the cross-task layer.** d0–d5 are releases v1.3.0, v1.4.0, "
@@ -153,7 +152,7 @@ CAPTIONS: dict[str, str] = {
     "F4": "**Figure 4.** The T-gate procedure and the actual verdicts. The left column is the order "
           "of the acceptance procedure and reads downward. The middle column is the handling when a "
           "term is not met, and the right column is the verdict each term actually produced in the "
-          "controlled resource substitution (§5.3). The right column shows that a change passing "
+          "controlled resource substitution (§5.1). The right column shows that a change passing "
           "every formal layer was rejected on one performance condition.",
     "F3": "**Figure 3.** The shared T-Box and three task views. The three boxes at the top give the "
           "main classes of each view, a representative competency question, the A-Box evidence, and "
@@ -174,12 +173,12 @@ CELLS: dict[str, str] = {
     "현 상태 (보고 위치)": "Current state (where reported)",
     "해소하는 측정": "Measurement that removes it",
     "실제 자원 변경의 거부 사례가 1회": "Only 1 rejection of a real resource change",
-    "통제된 자원 교체 1회에서 T1 미충족에 따른 승인 거부 (§5.3)":
-        "Acceptance refused on an unmet T1 in 1 controlled resource substitution (§5.3)",
+    "통제된 자원 교체 1회에서 T1 미충족에 따른 승인 거부 (§5.1)":
+        "Acceptance refused on an unmet T1 in 1 controlled resource substitution (§5.1)",
     "자격 있는 델타 3–5건을 순차 투입하고 판정의 분포를 보고":
         "Submit 3–5 eligible deltas in sequence and report the distribution of verdicts",
     "승인된 변경의 사후 안전성 미검정": "Post-acceptance safety of an approved change not tested",
-    "심사한 델타가 승인되지 않아 비교가 성립하지 않았다 (§6.5)":
+    "심사한 델타가 승인되지 않아 비교가 성립하지 않았다 (§6.4)":
         "The adjudicated delta was not accepted, so the comparison did not arise (§6.5)",
     "승인된 델타를 릴리스한 뒤 다음 세대의 봉인 분할에서 재측정":
         "Release an accepted delta and re-measure on the sealed split of the next generation",
@@ -206,7 +205,7 @@ CELLS: dict[str, str] = {
         "Obtain a resource holding both conditions, or build a task benchmark on resource 2 and "
         "then apply T1 and T2",
     "질의 언어와 정답 언어의 불일치": "Mismatch between query language and ground-truth language",
-    "질의는 전량 한국어이고 알려진 양성의 41%는 비한국어 (§6.5)":
+    "질의는 전량 한국어이고 알려진 양성의 41%는 비한국어 (§6.4)":
         "The queries are entirely Korean and 41% of known positives are non-Korean (§6.5)",
     "질의 측 번역 구성을 추가하여 언어별 회수를 분해 재측정":
         "Add a query-side translation configuration and re-measure recall decomposed by language",
@@ -442,8 +441,7 @@ CELLS: dict[str, str] = {
         "Ported the formal layers and the cross-task layer to engineering ontology 2 and "
         "adjudicated with the same procedure",
     "설계지식": "Design knowledge",
-    "코어 원리 DP1–DP4 · 범위 원리 DP5·DP6·DP7":
-        "Core principles DP1–DP4 and scope principles DP5, DP6, and DP7",
+    "교훈 셋과 후속 가설 둘": "Three lessons and two follow-up hypotheses",
     # ── 표 3 · 평가 에피소드 ─────────────────────────────────────────────────
     "에피소드": "Episode",
     "묻는 것": "Question",
@@ -468,7 +466,7 @@ CELLS: dict[str, str] = {
     "사전등록된 승인식(T1·T2·T3)의 적용":
         "Application of the preregistered acceptance rule (T1, T2, T3)",
     "별도 사전등록 아래의 판정": "Verdict under a separate preregistration",
-    "**검색 효용과 경계**": "**Retrieval utility and its boundary**",
+    "**검색 이득의 범위와 경계**": "**The scope of the retrieval gain and its boundary**",
     "온톨로지 보강이 강한 텍스트 기준선을 **개선하는가, 어디까지인가**":
         "Does ontology enrichment **improve** a strong text baseline, and **how far**?",
     "봉인 분할에 대한 사전등록된 확증 평가 — 모든 접근을 열람 원장에 기록 (비중복 확증 분할 둘)":
@@ -512,17 +510,17 @@ CELLS: dict[str, str] = {
     "어긋남이 상관 분석 수준에서 보고될 뿐 **통제된 사례와 그에 대한 결정**은 드물다":
         "The mismatch is reported at the level of correlation; **a controlled case and a decision "
         "taken on it** are rare",
-    "자원 번들만 교체한 두 조건에서의 통제된 확인과 **승인 판정**(§5.3)":
+    "자원 번들만 교체한 두 조건에서의 통제된 확인과 **승인 판정**(§5.1)":
         "Controlled confirmation in two conditions differing only in the resource bundle, and an "
-        "**approval verdict** (§5.3)",
+        "**approval verdict** (§5.1)",
     "공학 정보학의 의미 표현·검증과 응용":
         "Semantic representation, validation and application in engineering informatics",
     "표현의 표준화·구조 준수·응용 성능은 제시되나 **변경의 승인 규칙**은 다루지 않는다":
         "Standardized representation, structural conformance and application performance are "
         "shown; **a rule for approving change** is not addressed",
-    "사용 가능성이 아니라 **변경 수용 가능성**을 판정하고 실제 심사 기록을 제시(§5.3)":
+    "사용 가능성이 아니라 **변경 수용 가능성**을 판정하고 실제 심사 기록을 제시(§5.1)":
         "Judges **whether a change may be accepted** rather than whether the resource is usable, "
-        "and reports an actual review (§5.3)",
+        "and reports an actual review (§5.1)",
     "공유 그래프의 교차 도메인 활용": "Cross-domain use of a shared graph",
     "도메인 사이의 영향을 **관찰**하는 데 머문다":
         "Stops at **observing** influence between domains",
