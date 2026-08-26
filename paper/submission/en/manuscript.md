@@ -884,7 +884,7 @@ sealing, and unsealing is in S5.
 
 |Evaluation check|Status|Prediction frozen before results were seen|Verdict recorded per preregistration · first confirmatory split (A)|Verdict recorded per preregistration · second confirmatory split (B)|Evidence|
 |---|---|---|---|---|---|
-|**Check 1 · retrieval utility**|Confirmatory|Ontology-enriched retrieval exceeds the strongest text baseline on **both Recall@100 and nDCG@20**, and the improvement is larger in the subgroup with **low** lexical overlap between query and positives|**supported for the primary outcome only** (R@100 improved significantly on P1; the nDCG clause was not met; the prespecified configuration did not reach significance; the low-overlap clause was contradicted)|**not supported** (R@100 improved but the nDCG clause was not met; the primary configuration did not reach significance)|§5.4.1 (panels A and B)|
+|**Check 1 · retrieval utility**|Confirmatory|Ontology-enriched retrieval exceeds the strongest text baseline on **both Recall@100 and nDCG@20**, and the improvement is larger in the subgroup with **low** lexical overlap between query and positives|**supported for the primary outcome only** (R@100 improved significantly on P1; the nDCG clause was not met; the prespecified configuration did not reach significance; the low-overlap clause was contradicted)|**not supported** (R@100 improved but the nDCG clause was not met; the primary outcome improved only in the secondary configuration, and the prespecified configuration did not reach significance)|§5.4.1 (panels A and B)|
 |**Check 2 · layer specificity**|Confirmatory|Removing the expert-matching-only layers (`Skill`, `ExpertCase`, `Mitigation`), which are unrelated to the gate task, **does not change retrieval performance significantly**|**rejected — an observed cross-task dependency** (removal degraded retrieval significantly)|**not reproduced; no verdict can be issued** (the same ablation gave 0.0000, which does not separate no effect from nothing to remove)| §5.4.2 · §5.4.1 · §6.3 |
 |**Check 3 · transfer**|Confirmatory evaluation (gate condition T4)|With only the retrieval configuration replaced and the generator fixed, **citation accuracy does not decrease and the hallucination rate does not increase** (margin frozen)|*(exploratory evaluation — the purpose was to freeze the procedure; no verdict)*|**1 verdict issued, failed — we could not confirm transfer** (the point estimate favored the proposed configuration, but the lower bound fell below the margin; the cause is not separated)|[S5](../../supplementary/S5-submission-full-v2.md), Appendix A|
 
@@ -951,7 +951,7 @@ number of documents reviewed (§5.4.1 · §5.4.3). Fifth, the formal layers and 
 ran on a second engineering ontology without code changes. The frozen fault specification, however,
 had to be redefined for the modeling conventions of that resource (§5.5).
 
-The order of presentation follows the weight of the findings rather than the episode numbers. The
+The presentation prioritizes the weight of the findings over episode order. The
 record of the acceptance rule rejecting a real delta comes first, and the representation audit that
 confirms the presence of the vocabulary in the resource comes third. The first paragraph of each
 section states both the conclusion and the confirmatory status of that section. The status of each
@@ -970,7 +970,7 @@ resource-side indicator. This is the record of the acceptance rule of §3.5 reje
 and it shows that formal validation cannot stand in for the task conditions.
 
 This section reports a verdict under a separate preregistration, and its resource snapshot is a
-post-correction generation. The confirmatory verdicts of §5.4 are therefore not changed by this
+post-correction generation. This difference does not change the confirmatory verdicts of §5.4,
 section, and the verdict on acceptance safety is in §6.4.
 
 The change under review is the first T-Box predicate delta in this study, and it arose from an
@@ -1014,11 +1014,11 @@ explained by a difference in the pipeline or in the evaluation sample. Which com
 bundle produced the drop, however, is not separated by this comparison alone.
 
 We first examine whether the verdict can be read as a false rejection. That a defect in the scoring
-function produced the drop is not excluded. What the acceptance rule rejected, however, is not the
-resource in itself but the deployment of that resource into that pipeline. The unit of release
+function produced the drop is not excluded. The acceptance rule rejected the deployment of the
+resource in that pipeline, not the resource in isolation. The unit of release
 approval is the deployment, so the object of the rejection and the object of the verdict coincide.
 The ontology-only configuration in fact improved by 27% under the same substitution. This result is
-therefore not evidence that ontology enrichment is useless. It is evidence that a change that
+not evidence that ontology enrichment is useless. It shows that a change that
 improves resource-side indicators and passes formal validation can still degrade performance.
 
 We state the two remaining points together. First, the cause of the drop is not separated. A
@@ -1026,8 +1026,8 @@ We state the two remaining points together. First, the cause of the drop is not 
 High-frequency general concepts in the source data—`식각` (etching) in 6,974 documents and `챔버`
 (chamber) in 6,462—also form tie blocks without discriminative power. Whether this is a defect of the resource or of the scoring
 function is not separated by this experiment. Separating them requires document-frequency weighting,
-which is a new method rather than a re-measurement. Second, this run is an application of the
-acceptance rule rather than a re-confirmation of superiority (§4.5).
+which requires a new method, not a remeasurement. Second, this run applies the acceptance rule; it
+does not reconfirm superiority (§4.5).
 
 What this case indicates for operation is confined to one statement. In this single instance, had
 the task conditions been absent, a resource bundle degraded by 0.0293 in family Recall@100 would
@@ -1046,8 +1046,8 @@ prespecified conditions were met (detection by T3 alone 12/45; one-sided McNemar
 positives 0/27). In the three new families, the manipulated predicates have an empty intersection
 with the 20 predicates referenced by the focal-task CQs, which secures cross-task character by
 construction. The CQ that regressed also points to a different task in each fault family (F13→CQ11,
-F11→CQ18, F14→CQ28, F15→CQ13). T3 therefore identifies not only that damage occurred but which
-specification of which task was damaged.
+F11→CQ18, F14→CQ28, F15→CQ13). T3 identifies both the occurrence and the affected task suite,
+thereby specifying which task was damaged.
 
 This discriminative power was secured after one rejection. The form first preregistered stated that
 a fault changing another task is detected by T3 alone, and it was rejected on the 108 development
@@ -1099,7 +1099,7 @@ query path and a non-empty response; it does not validate the accuracy of the th
 earlier-generation report that expanding process links raised the candidates of one CQ from 8 to 90
 (S5) is a value about candidate generation, not about ranking quality. The T-Box of G0, G1 and G2 is
 identical, and pass-rate variation follows from how far the A-Box is populated. The numbers in this
-section are therefore not evidence of generation safety (§6.4).
+section do not establish generation safety (§6.4).
 
 ## 5.4 EP4 · The scope of the retrieval gain and its boundary
 
@@ -1206,7 +1206,7 @@ The remaining twelve rows were moved to S5, and two of them are summarized here.
 check was rejected. The prediction that removing the feature and rejection-ground layers costs more
 than removing the classification signal did not hold. The configuration with all ontology features
 removed (A7) produces the same ranking as the text-only baseline. The contribution of the ontology
-as a whole is therefore stated by the comparison between configurations in Table 8 rather than by a
+as a whole is stated by the comparison between configurations in Table 8, not by a
 separate ablation row.
 
 We also state the scope of the claims that Table 9 supports. The proposed configurations do not
@@ -1215,7 +1215,7 @@ within that pool. That most ablations do not reach significance admits two expla
 contribution and pressure from the reranking ceiling effect, and the two are not separated. The
 rejection-ground axis also carries a resource limit. Of the 1,000 upstream records, 400 cite
 inventive step and 14 cite novelty, and rejections on novelty alone number 0. The contrast between
-novelty and inventive step that we had anticipated therefore cannot be tested on this resource. The
+novelty and inventive step that we had anticipated cannot be tested on this resource. The
 two cross-lingual rows cannot be interpreted on their own either (§5.4.3).
 
 In the ablation of the second confirmatory split, A8 is exactly 0.0000, and removing ClaimFeature
@@ -1242,7 +1242,7 @@ positive recall of the Ontology-only configuration is 0.109 (14/128), the highes
 configurations (Text Hybrid 0.047; lexical alone 0.000). This is an observation of the
 language-neutral concept identifier working as a path across the vocabulary barrier. Second, because
 the proportion of Japanese candidate documents holding a concept link is 0.0%, the Japanese recall of
-0 follows from a resource deficit rather than from a failure of ranking. Third, the candidate pool
+0 reflects a resource deficit, not a ranking failure. Third, the candidate pool
 of the text baseline holds 289/479 (60.3%) of the positives, and adding the 45 positives that the
 concept-only configuration recovered outside that pool raises the reranking ceiling to 334/479 (69.7%).
 
@@ -1251,7 +1251,7 @@ candidate subpool is 72.5% against 3.3% for Korean. Distractors are scarce in th
 subpool, so any cross-lingual gain is structurally overstated. Second, in the second confirmatory
 split the classification-only configuration (0.3012) is ahead of the Ontology-only configuration
 (0.1470). Third, concept density in this generation is 1.545 per document. What the values of this
-section support is therefore a single statement: the concept path reaches documents different from
+section supports one statement: the concept path reaches documents different from
 those the text path reaches. Superiority of the concept path is not supported by them.
 
 ## 5.5 EP5 · Port verdict on a second engineering ontology
@@ -1271,13 +1271,13 @@ this 0 from being read as a detection failure. First, we call the range over whi
 question actually returns rows on the target instances its **observable surface**. The observable
 surface of the holdout model was 7 of the 15 competency questions, and a question returning 0 rows
 cannot show a regression under any fault. In the development model all 15 returned rows, so this
-deficit is the population range of the holdout instances rather than a defect of the questions. The
+deficit lies in the population range of the holdout instances, not in the questions. The
 preregistration instructed us to report such a case as a holdout shortfall. Second, in all 21
 instances the four formal layers and the cross-task condition were alike non-detecting. This sample
-is therefore not one in which condition T3 can be compared against the other layers. The cause is
+does not permit comparison of T3 against the other layers. The cause is
 the direction of the predicate. The development model expresses containment with `brick:hasPart`,
 which gave 90 injection sites and detected faults, whereas the holdout model expresses the same
-relation with `brick:isPartOf`. A fault specification must therefore be redefined for the modeling
+relation with `brick:isPartOf`. A fault specification must be redefined for the modeling
 conventions of the target resource. We do not convert this observation into a statement that the
 gate missed cross-task faults.
 
@@ -1286,9 +1286,9 @@ conditions (Table 10). Partial acceptance holds in two verdicts, and the pair th
 v1.4.1 → v1.4.2, which the preregistration had named in advance as a negative control. The remaining
 eight verdicts were all unmet at the delta-structure check, and the cross-task condition passed in
 all ten verdicts. What was unmet is a declaration convention of the resource: it declares domains
-and ranges of predicates in SHACL rather than in `rdfs`, so the frozen delta rule fires repeatedly.
+and ranges of predicates in SHACL instead of `rdfs`, so the frozen delta rule fires repeatedly.
 The two migration conditions did not produce different results, because only 1 of the 246
-deprecations had a machine-applicable alias and the migration rewrite was therefore 0.
+deprecations had a machine-applicable alias, and the migration rewrite was 0.
 
 Operational cost is recorded as exploratory. On a graph of 55,887 triples with 15 competency
 questions, mean execution time per layer was 124 s for L1, 12.5 s for L2 and 1.6 s for L3+T3. Peak
