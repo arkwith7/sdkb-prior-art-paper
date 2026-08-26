@@ -1,8 +1,8 @@
-# A Task-Aware Release Gate for Shared Engineering Ontologies with Multiple Task Views: A Design Science Study in Semiconductor Prior-Art Retrieval
+# A Task-Aware Release Gate for Evolving Shared Engineering Ontologies: Evidence from Semiconductor Prior-Art Retrieval
 
 ## Abstract
 
-Engineering ontologies keep changing after release, and whether a change passing structural and logical checks preserves task performance is a question resource-level evaluation leaves open. The risk grows where tasks share one vocabulary. Following design science research, we present two artifacts and a benchmark. SDKB (Semiconductor Domain Knowledge Base) carries three tasks as views on one shared schema (T-Box). A task-aware release gate adds three conditions to four formal validation layers (L0–L3): retrieval non-inferiority (T1), a subgroup guardrail (T2), and cross-task competency-question non-regression (T3). Five episodes follow. The first three are a representation audit, holdout fault injection (45 unjudged faults) and a controlled resource swap. The last two are a leakage-controlled comparison over two non-overlapping 198-query splits anchored on examiner citations, and a port to a second engineering ontology (building metadata). In the swap, a change raising concepts per document 2.4-fold and passing every formal layer reduced retrieval (family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]); T1 rejected this one qualifying change. T3 alone detected 12 of 45 cross-task faults, with no false alarm in 27. The pre-registered composite prediction held in neither split: deep recall improved in both (+0.0534, +0.0343), the primary configuration and nDCG@20 did not improve. The ported layers ran unchanged and rejected none of 30 normal deltas, yet the frozen fault specification detected nothing in 12 judgeable instances. In this single port, procedures transferred while fault specifications did not. We state three lessons and two follow-up hypotheses for later testing. Limits: task performance measured in one domain, one refusal of undistinguished cause, no expert relevance judgments.
+Conventional resource-level evaluation does not establish whether a formally valid ontology change preserves downstream task performance, particularly when several tasks share a vocabulary. We present the Semiconductor Domain Knowledge Base (SDKB), which supports three task-specific views on a shared schema, and a task-aware release gate. The gate augments four formal validation layers with retrieval non-inferiority, a subgroup guardrail, and cross-task competency-question non-regression. We evaluated the artifacts through controlled resource substitution, holdout fault injection, two non-overlapping 198-query retrieval splits, and a port to a building-metadata ontology. A real change increased concepts per document 2.4-fold and passed every formal layer but reduced family Recall@100 by 0.0293 (95% CI [−0.0542, −0.0053]); the gate rejected it. The cross-task condition alone detected 12 of 45 faults missed by the formal layers and retrieval check, with no false positives among 27 sound deltas. The preregistered composite prediction held in neither retrieval split. Deep recall improved in both (+0.0534 and +0.0343), but neither the prespecified configuration nor nDCG@20 improved. On the second ontology, the validation procedure ran unchanged and accepted all 30 sound deltas, but the frozen fault specification detected none of 12 adjudicable faults. The procedure transferred, whereas the specification required regrounding. This evidence is limited to one domain, one rejected real change whose causal component could not be isolated, and an evaluation without expert relevance judgments.
 
 **Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
@@ -17,6 +17,7 @@ uses.
 |---|---|
 | A-Box | assertional box — the instance layer of an ontology (§3.1) |
 | A1–A8 | ablation conditions; A8 is the negative control (§4.4) |
+| ART-1 / ART-2 | research artifacts — the SDKB ontology dataset / release acceptance gate (§3) |
 | B0–B5 / P0–P2 | comparison systems — baselines / proposed systems (§4.3) |
 | BM25 | Okapi Best Matching 25 — a lexical ranking function |
 | CQ | competency question — a question the ontology must be able to answer (§3.1) |
@@ -83,7 +84,7 @@ This mismatch between ontology checks and task performance takes two forms. Firs
 pass the four conventional layers of ontology change validation — freshness, structure, logic and
 function (L0–L3) — and still degrade retrieval on a sealed evaluation set. We call this
 **task-semantic regression**. Second, where one vocabulary supports three tasks, a change that
-favours one task can damage the query paths of another. Merging two similar concepts to raise
+favors one task can damage the query paths of another. Merging two similar concepts to raise
 recall, for instance, degrades the ability to discriminate `Skill` in expert matching. We call this
 **cross-task regression**.
 
@@ -105,7 +106,7 @@ the next. Whether it represents cannot be known before measurement, so resource-
 observe neither regression.
 
 The question this study raises is therefore a single one. When an ontology dataset representing
-three tasks grows, does it preserve the performance of the primary task without damaging the
+three tasks grows, does it preserve the performance of the focal task without damaging the
 function of the others? And how can that be established before release? We treat the question as
 design science research (DSR; Hevner et al., 2004; Gregor & Hevner, 2013). In that frame our
 interest is not whether a hypothesis is accepted, but how the artifacts were designed and evaluated
@@ -122,19 +123,19 @@ each shown with the **evaluation episodes (EPs)** that answer it (composition in
 The contribution is threefold. The first is the **artifact**. SDKB connects three semiconductor
 knowledge tasks through common identifiers and a shared T-Box, and supplies per-task views,
 competency questions and validation assets. The release gate (T-gate) adds three conditions of
-approval to formal validity: non-inferiority of the primary task, a subgroup non-regression
+approval to formal validity: non-inferiority of the focal task, a subgroup non-regression
 guardrail, and preservation of cross-task function. We release both artifacts and the evaluation
 assets in a verifiable form.
 
 The second is **one controlled rejection**. We froze the document set, the code, the settings and
 the weights, and substituted the resource bundle alone. Under that condition an actual change that
 improved every resource indicator and passed all four formal layers was rejected by one task
-condition. We report that verdict together with the procedure that produced it. Qualifying resource changes number one,
-so this is not a claim that such rejections are frequent. It is an existence proof, under controlled
-conditions, that one can occur.
+condition. We report that verdict together with the procedure that produced it. Only one resource
+change met the eligibility criteria, so we do not claim that such rejections are frequent. The case
+is a controlled demonstration that such a regression can occur.
 
 The third is **three lessons**, evidenced by the case above, the fault injection, and the
-measurement of the boundary of the retrieval gain. Fault injection here is a **hold-out** evaluation:
+measurement of the boundary of the retrieval gain. Fault injection here is a **holdout** evaluation:
 the decision rule is frozen first and the faults are judged for the first time afterwards. We state
 the lessons at the size of that evidence, as hypotheses for later studies to test. For the same
 reason we report the retrieval gain only with its boundary stated, and we do not present the
@@ -165,7 +166,7 @@ there is no procedure that decides, before release, whether a change may be acce
 
 Prior-art search retrieves, without omission, the small set of documents that may bear on the
 novelty or inventive step of a given claim. It is not a task of browsing broadly similar documents.
-The primary metric is therefore recall to a sufficient depth (Recall@K) rather than precision over
+The primary outcome is recall to a sufficient depth (Recall@K), not precision over
 the first few hits (Lupu & Hanbury, 2013; Shalaby & Zadrozny, 2019). Benchmarks in this line settled
 on examiner citations as ground truth (Piroi & Hanbury, 2019; Risch et al., 2020). Methods developed
 along three strands: lexical ranking functions, patent-specific semantic representations (Bekamiri
@@ -177,8 +178,8 @@ relevance signal observed in institutional review. A document that is not cited 
 than non-relevant. Examiner citations and applicant citations differ in meaning (Alcácer &
 Gittelman, 2006), and the examiner search itself is bounded by time, classification, and
 jurisdiction (USPTO, 2023). Recall@K therefore measures the recovery of known positives, not the
-recovery of every legally relevant document. We call this ground truth **examiner-validated weak
-ground truth**. The score sheet that records which documents are relevant for each query is the list
+recovery of every legally relevant document. We call these labels **examiner-citation-based
+positive-only relevance judgments**. The score sheet that records which documents are relevant for each query is the list
 of **relevance judgments (qrel)**, and ours holds relevant documents only, that is, it is
 **positive-only**.
 
@@ -326,15 +327,15 @@ transfers when such a design is ported to a resource with different representati
 # 3. Artifacts — the SDKB dataset and the T-gate
 
 This section describes what we built and the criteria by which we evaluated it. There are two
-artifacts and one evaluation environment that measures them. **A1 · the SDKB ontology dataset** is a
+artifacts and one evaluation environment that measures them. **ART-1 · the SDKB ontology dataset** is a
 semiconductor domain resource that arranges three task views on one shared T-Box (§3.1–3.3).
-**A2 · the release acceptance gate** combines the formal layers L0–L3 with the task conditions
+**ART-2 · the release acceptance gate** combines the formal layers L0–L3 with the task conditions
 T1, T2 and T3 into a pre-merge acceptance rule. T4 is a design outside that rule (§3.4–3.6).
 **E1 · the multi-layer evaluation benchmark** takes examiner citations as its reference, blocks
 leakage, and connects retrieval evaluation to generation-layer evaluation (§4).
 
-The three correspond to the three research questions of §1. The design of A1 answers the
-representational structure asked by RQ1, and EP1 audits it. The design of A2 answers the acceptance
+The three correspond to the three research questions of §1. The design of ART-1 answers the
+representational structure asked by RQ1, and EP1 audits it. The design of ART-2 answers the acceptance
 condition asked by RQ2. EP2 examines its discriminative power, and EP3 the verdict on a change that
 arose in a real revision of the resource (§3.0). RQ3 asks which lessons follow from the results of
 EP3 and EP4, and the answer is in §6.3.
@@ -502,7 +503,7 @@ are **frozen** before unsealing; pinning does not constrain later improvement of
 
 ## 3.4 The validation gate as a whole
 
-This section begins the description of the second artifact (A2). The evaluation and acceptance
+This section begins the description of the second artifact (ART-2). The evaluation and acceptance
 procedure is fail-fast: a failed stage stops the stages behind it. The order is graph delta →
 **formal and functional validation L0–L3** → leakage-blocked retrieval index → **T1 retrieval
 non-inferiority and T2 subgroup non-regression** → **T3 cross-task CQ non-regression** →
@@ -517,7 +518,7 @@ denominator.
 
 {{TABLE:4}}
 
-L3 and T3 observe disjoint sets. L3 observes the primary-task suite (5 pa questions), and T3 the
+L3 and T3 observe disjoint sets. L3 observes the focal-task suite (5 pa questions), and T3 the
 other tasks and the shared core (23 em, tf and core questions). The union of the two sets is the
 whole of the 28 gate-observed CQs. The separation fixes attribution rather than detection strength.
 Under the earlier definition `L3 ⊇ T3` held, so a hypothesis claiming detection by T3 alone could
@@ -703,7 +704,7 @@ alone.
 
 Four configurations carry the verdicts in this paper. They are **B3** Text Hybrid (**the strongest
 text baseline**), **B5** Ontology-only (concept path alone), **P0** Text+Ontology (**the
-prespecified primary configuration**) and **P1** +ClaimFeature (**the secondary configuration**).
+prespecified configuration**) and **P1** +ClaimFeature (**the secondary configuration**).
 The claim that B3 is the strongest text baseline decomposes into three configurations: lexical alone
 (B0), dense alone (B2) and classification alone (B4). Their values, practice-stage correspondence,
 input text, code entry point, output ranking files and scoring paths are in S5. B1 (BM25-Fielded)
@@ -757,8 +758,8 @@ the final adjudication is not confirmatory. We therefore preregistered and injec
 instances that had never been adjudicated, with the rule held fixed (holdout confirmation). They
 comprise 18 repeated-axis instances, 27 instances of three new cross-fault families, and 27 sound
 deltas. The three new families change only predicates whose intersection with those referenced by
-the primary-task CQs is empty. Cross-task character is therefore secured by construction rather than
-by interpretation of the result. This property and the decision rule (detection by T3 alone ≥1,
+the focal-task CQs is empty. Cross-task character is secured by construction, not inferred from
+the result. This property and the decision rule (detection by T3 alone ≥1,
 one-sided **McNemar test** *p*<.05, false-positive rate ≤5%) were fixed before execution
 ([S2](../../supplementary/S2-fault-injection-v09.md)).
 
@@ -782,7 +783,7 @@ claims constrained by its absence, together with the specification for removing 
 
 ## 4.5 Metrics, statistics, and preregistration
 
-The primary metric is **family-level Recall@100**. It measures how many known related documents
+The primary outcome is **family-level Recall@100**. It measures how many known related documents
 appear within the top 100, counting foreign counterparts of the same invention once. A searcher
 reviews to a fixed depth, so the absence of omissions within that depth matters more than the
 precision of the ordering above it.
@@ -882,7 +883,7 @@ layer. The only lesson whose evidence it can widen is cross-task monitoring (§6
 
 This section reports five findings. First, a real resource change that passed all four formal layers
 was rejected by the performance condition T1 (§5.1). Second, condition T3 alone detected a
-cross-task fault that both formal validation and the primary-task performance check missed (§5.2).
+cross-task fault that both formal validation and the focal-task performance check missed (§5.2).
 Third, the gain from ontology reranking lies in deep recall and was observed in both non-overlapping
 confirmatory splits (§5.4.1). Fourth, the boundary of that gain was quantified in the same
 experiment. Ordering at the top did not improve, and the benefit vanishes when converted into the
@@ -890,7 +891,7 @@ number of documents reviewed (§5.4.1 · §5.4.3). Fifth, the formal layers and 
 ran on a second engineering ontology without code changes. The frozen fault specification, however,
 had to be redefined for the modeling conventions of that resource (§5.5).
 
-The order of presentation follows the weight of the findings rather than the episode numbers. The
+The presentation prioritizes the weight of the findings over episode order. The
 record of the acceptance rule rejecting a real delta comes first, and the representation audit that
 confirms the presence of the vocabulary in the resource comes third. The first paragraph of each
 section states both the conclusion and the confirmatory status of that section. The status of each
@@ -907,7 +908,7 @@ resource-side indicator. This is the record of the acceptance rule of §3.5 reje
 and it shows that formal validation cannot stand in for the task conditions.
 
 This section reports a verdict under a separate preregistration, and its resource snapshot is a
-post-correction generation. The confirmatory verdicts of §5.4 are therefore not changed by this
+post-correction generation. This difference does not change the confirmatory verdicts of §5.4,
 section, and the verdict on acceptance safety is in §6.4.
 
 The change under review is the first T-Box predicate delta in this study, and it arose from an
@@ -944,20 +945,20 @@ explained by a difference in the pipeline or in the evaluation sample. Which com
 bundle produced the drop, however, is not separated by this comparison alone.
 
 We first examine whether the verdict can be read as a false rejection. That a defect in the scoring
-function produced the drop is not excluded. What the acceptance rule rejected, however, is not the
-resource in itself but the deployment of that resource into that pipeline. The unit of release
+function produced the drop is not excluded. The acceptance rule rejected the deployment of the
+resource in that pipeline, not the resource in isolation. The unit of release
 approval is the deployment, so the object of the rejection and the object of the verdict coincide.
 The ontology-only configuration in fact improved by 27% under the same substitution. This result is
-therefore not evidence that ontology enrichment is useless. It is evidence that a change that
+not evidence that ontology enrichment is useless. It shows that a change that
 improves resource-side indicators and passes formal validation can still degrade performance.
 
-We state the two remaining points together. First, the cause of the drop is not separated. When
-concepts per document rise 2.4-fold, the denominator of the unweighted Jaccard grows, and
-high-frequency general concepts (`식각` etching in 6,974 documents, `챔버` chamber in 6,462) form tie
-blocks without discriminative power. Whether this is a defect of the resource or of the scoring
+We state the two remaining points together. First, the cause of the drop is not separated. A
+2.4-fold increase in concepts per document enlarges the denominator of the unweighted Jaccard.
+High-frequency general concepts in the source data—`식각` (etching) in 6,974 documents and `챔버`
+(chamber) in 6,462—also form tie blocks without discriminative power. Whether this is a defect of the resource or of the scoring
 function is not separated by this experiment. Separating them requires document-frequency weighting,
-which is a new method rather than a re-measurement. Second, this run is an application of the
-acceptance rule rather than a re-confirmation of superiority (§4.5).
+which requires a new method, not a remeasurement. Second, this run applies the acceptance rule; it
+does not reconfirm superiority (§4.5).
 
 What this case indicates for operation is confined to one statement. In this single instance, had
 the task conditions been absent, a resource bundle degraded by 0.0293 in family Recall@100 would
@@ -967,17 +968,17 @@ neither the frequency of blocked incidents nor a general preventive effect.
 
 ## 5.2 EP2 · Discriminative power of the gate — a holdout artifact evaluation
 
-Condition T3 alone detected a cross-task fault that both formal validation and the primary-task
+Condition T3 alone detected a cross-task fault that both formal validation and the focal-task
 performance check missed. This section reports a holdout evaluation carried out with the rule
 frozen, and it is not one of the three confirmatory checks of §4.5.
 
 With the rule unchanged, we injected 45 cross-task faults and 27 sound deltas, and all three
 prespecified conditions were met (detection by T3 alone 12/45; one-sided McNemar *p* = .0001; false
 positives 0/27). In the three new families, the manipulated predicates have an empty intersection
-with the 20 predicates referenced by the primary-task CQs, which secures cross-task character by
+with the 20 predicates referenced by the focal-task CQs, which secures cross-task character by
 construction. The CQ that regressed also points to a different task in each fault family (F13→CQ11,
-F11→CQ18, F14→CQ28, F15→CQ13). T3 therefore identifies not only that damage occurred but which
-specification of which task was damaged.
+F11→CQ18, F14→CQ28, F15→CQ13). T3 identifies both the occurrence and the affected task suite,
+thereby specifying which task was damaged.
 
 This discriminative power was secured after one rejection. The form first preregistered stated that
 a fault changing another task is detected by T3 alone, and it was rejected on the 108 development
@@ -1029,7 +1030,7 @@ query path and a non-empty response; it does not validate the accuracy of the th
 earlier-generation report that expanding process links raised the candidates of one CQ from 8 to 90
 (S5) is a value about candidate generation, not about ranking quality. The T-Box of G0, G1 and G2 is
 identical, and pass-rate variation follows from how far the A-Box is populated. The numbers in this
-section are therefore not evidence of generation safety (§6.4).
+section do not establish generation safety (§6.4).
 
 ## 5.4 EP4 · The scope of the retrieval gain and its boundary
 
@@ -1065,17 +1066,17 @@ Across the two panels the effect size shrank to about two thirds in panel B.
 Table 6. The preregistration of the retrieval-utility check required two conditions: improvement in
 both R@100 and nDCG@20, and a larger improvement in the subgroup with low lexical overlap. In the
 first split R@100 improved significantly on the secondary configuration under the paired bootstrap,
-but the nDCG clause was not met. The primary configuration did not reach significance and the low-overlap clause was
+but the nDCG clause was not met. The prespecified configuration did not reach significance, and the low-overlap clause was
 contradicted (Table 8, Table 9). Under the first preregistration the verdict recorded for that split
-was "supported for the primary metric only". In the second split the same structure appeared, but
+was "supported for the primary outcome only". In the second split the same structure appeared, but
 the preregistration required simultaneous improvement on both metrics, so the verdict is not
 supported. We do not retract either verdict.
 
 The preregistration of the layer-specificity check required that removing the expert-matching-only
 layers (A8), designed to be unrelated to the gate task, would leave retrieval performance unchanged.
 In the first split that removal was the only one of the eight ablations to remain significant after
-the Holm correction (Table 9). The verdict is therefore rejected, that is, an observed cross-task
-dependency. In the second split the same ablation gave exactly 0.0000 and the verdict is not
+the Holm correction (Table 9). The preregistered hypothesis was therefore rejected, indicating an
+observed cross-task dependency. In the second split the same ablation gave exactly 0.0000 and was not
 reproduced. That value does not separate the case of no effect from the case of nothing to remove
 (§6.3).
 
@@ -1096,7 +1097,7 @@ metric was changed on that basis (full text in S5).
 **Certainty conditions for the effect.** We fixed five conditions before unsealing under which an
 effect may be described as certain. One is met: (iii) the lower bound of the effect-size interval
 > 0, on P1. Condition (i), observation in both non-overlapping splits, is partly met. Condition
-(ii), significance on the prespecified primary configuration, is not met, and (iv), sign stability
+(ii), significance on the prespecified configuration, is not met, and (iv), sign stability
 across the sensitivity grid, was not run. For (v), the leakage audit returned 0 and all accesses to
 the seal of the second split were recorded in the access ledger. No condition was changed after
 results were seen. The full unsealing history and the reasons for the two aborted attempts are in
@@ -1113,7 +1114,7 @@ The remaining twelve rows were moved to S5, and two of them are summarized here.
 check was rejected. The prediction that removing the feature and rejection-ground layers costs more
 than removing the classification signal did not hold. The configuration with all ontology features
 removed (A7) produces the same ranking as the text-only baseline. The contribution of the ontology
-as a whole is therefore stated by the comparison between configurations in Table 8 rather than by a
+as a whole is stated by the comparison between configurations in Table 8, not by a
 separate ablation row.
 
 We also state the scope of the claims that Table 9 supports. The proposed configurations do not
@@ -1122,7 +1123,7 @@ within that pool. That most ablations do not reach significance admits two expla
 contribution and pressure from the reranking ceiling effect, and the two are not separated. The
 rejection-ground axis also carries a resource limit. Of the 1,000 upstream records, 400 cite
 inventive step and 14 cite novelty, and rejections on novelty alone number 0. The contrast between
-novelty and inventive step that we had anticipated therefore cannot be tested on this resource. The
+novelty and inventive step that we had anticipated cannot be tested on this resource. The
 two cross-lingual rows cannot be interpreted on their own either (§5.4.3).
 
 In the ablation of the second confirmatory split, A8 is exactly 0.0000, and removing ClaimFeature
@@ -1135,7 +1136,7 @@ because this split has no source for those labels.
 ### 5.4.3 Exploratory diagnosis of cross-lingual recall and operational efficiency
 
 Korean lexical retrieval recovered no English positive at all (0/128 in the confirmatory split), and
-the gain on the primary metric vanishes when converted into the number of documents reviewed. Both
+the gain on the primary outcome vanishes when converted into the number of documents reviewed. Both
 observations arise from the same cause, that the proposed systems do not enlarge the candidate pool
 (the reranking ceiling defined in §6.2). Every value in this section is exploratory descriptive statistics
 and does not enter a confirmatory verdict.
@@ -1149,7 +1150,7 @@ positive recall of the Ontology-only configuration is 0.109 (14/128), the highes
 configurations (Text Hybrid 0.047; lexical alone 0.000). This is an observation of the
 language-neutral concept identifier working as a path across the vocabulary barrier. Second, because
 the proportion of Japanese candidate documents holding a concept link is 0.0%, the Japanese recall of
-0 follows from a resource deficit rather than from a failure of ranking. Third, the candidate pool
+0 reflects a resource deficit, not a ranking failure. Third, the candidate pool
 of the text baseline holds 289/479 (60.3%) of the positives, and adding the 45 positives that the
 concept-only configuration recovered outside that pool raises the reranking ceiling to 334/479 (69.7%).
 
@@ -1158,7 +1159,7 @@ candidate subpool is 72.5% against 3.3% for Korean. Distractors are scarce in th
 subpool, so any cross-lingual gain is structurally overstated. Second, in the second confirmatory
 split the classification-only configuration (0.3012) is ahead of the Ontology-only configuration
 (0.1470). Third, concept density in this generation is 1.545 per document. What the values of this
-section support is therefore a single statement: the concept path reaches documents different from
+section supports one statement: the concept path reaches documents different from
 those the text path reaches. Superiority of the concept path is not supported by them.
 
 ## 5.5 EP5 · Port verdict on a second engineering ontology
@@ -1178,13 +1179,13 @@ this 0 from being read as a detection failure. First, we call the range over whi
 question actually returns rows on the target instances its **observable surface**. The observable
 surface of the holdout model was 7 of the 15 competency questions, and a question returning 0 rows
 cannot show a regression under any fault. In the development model all 15 returned rows, so this
-deficit is the population range of the holdout instances rather than a defect of the questions. The
+deficit lies in the population range of the holdout instances, not in the questions. The
 preregistration instructed us to report such a case as a holdout shortfall. Second, in all 21
 instances the four formal layers and the cross-task condition were alike non-detecting. This sample
-is therefore not one in which condition T3 can be compared against the other layers. The cause is
+does not permit comparison of T3 against the other layers. The cause is
 the direction of the predicate. The development model expresses containment with `brick:hasPart`,
 which gave 90 injection sites and detected faults, whereas the holdout model expresses the same
-relation with `brick:isPartOf`. A fault specification must therefore be redefined for the modeling
+relation with `brick:isPartOf`. A fault specification must be redefined for the modeling
 conventions of the target resource. We do not convert this observation into a statement that the
 gate missed cross-task faults.
 
@@ -1193,9 +1194,9 @@ conditions (Table 10). Partial acceptance holds in two verdicts, and the pair th
 v1.4.1 → v1.4.2, which the preregistration had named in advance as a negative control. The remaining
 eight verdicts were all unmet at the delta-structure check, and the cross-task condition passed in
 all ten verdicts. What was unmet is a declaration convention of the resource: it declares domains
-and ranges of predicates in SHACL rather than in `rdfs`, so the frozen delta rule fires repeatedly.
+and ranges of predicates in SHACL instead of `rdfs`, so the frozen delta rule fires repeatedly.
 The two migration conditions did not produce different results, because only 1 of the 246
-deprecations had a machine-applicable alias and the migration rewrite was therefore 0.
+deprecations had a machine-applicable alias, and the migration rewrite was 0.
 
 Operational cost is recorded as exploratory. On a graph of 55,887 triples with 15 competency
 questions, mean execution time per layer was 124 s for L1, 12.5 s for L2 and 1.6 s for L3+T3. Peak
@@ -1210,9 +1211,8 @@ every fault instance and the frozen lists are in [S8](../../supplementary/S8-sec
 
 ## 6.1 Cross-layer metric misalignment — the central observation
 
-That improving the quality of an ontology improves retrieval performance seems self-evident, yet we
-observed the opposite between three layers (Fig. 2). The three observations differ in confirmatory
-status and are not read with equal weight.
+Improved ontology indicators did not consistently correspond to better outcomes at the retrieval
+and generation layers (Fig. 2).
 
 **(i) Resource layer → retrieval layer (application of the preregistered acceptance rule).** We
 substituted into the same pipeline a change whose prespecified resource coverage indicators had all
@@ -1222,7 +1222,7 @@ that change although it passed formal validation L0–L3 in full (§5.1; the dev
 in S5).
 
 **(ii) Retrieval layer → operational unit (exploratory descriptive statistics).** The gain that
-reached significance on the primary metric vanishes when converted into the number of documents
+reached significance on the primary outcome vanishes when converted into the number of documents
 reviewed (median reduction 0.0%; win/tie/loss 62/16/64; §5.4.3).
 
 **(iii) Retrieval layer → generation layer (one verdict).** We measured twice with only the
@@ -1231,17 +1231,15 @@ led on the point estimate of citation accuracy in both evaluations. The verdict 
 frozen margin nevertheless failed (§3.5.1 · §6.4), and whether the cause is absence of transfer or
 insufficient power is not separated.
 
-One proposition runs through all three. A change that improves resource-side indicators and passes
-formal validation does not guarantee performance at the next layer, because the two layers measure
-different objects. The acceptance condition must therefore be verified on the task one layer below.
-The claim of this section is not that performance at the next layer always falls; it is that the
-result at the next layer must be measured. By the same distinction, a CQ acquires the role of a
+The three observations support one bounded proposition: resource-side improvement and formal
+validity do not establish performance at the next layer. Release approval must therefore measure
+that layer directly. A CQ likewise serves as a
 regression suite that checks functional preservation of a task that cannot be evaluated
 quantitatively (§2.4 · T3).
 
 ## 6.2 Sources of the retrieval gain and the limits of reranking
 
-The improvement on the primary metric was observed, but its shape differed from the prediction. What
+The improvement on the primary outcome was observed, but its shape differed from the prediction. What
 contributed was the concepts shared by query and document rather than the depth of the hierarchy.
 That signal raised documents already found by text retrieval into the review range but did not
 improve the ordering quality of the top documents. The hierarchy of the T-Box is shallow, so the
@@ -1284,10 +1282,10 @@ and the task conditions never change an acceptance decision. The breadth of the 
 qualifying resource delta.
 
 **Lesson ② · Cross-task monitoring.** On a shared T-Box, a change is not accepted on the performance
-of the primary task alone. The evidence is the holdout fault injection. Faults missed by both formal
+of the focal task alone. The evidence is the holdout fault injection. Faults missed by both formal
 validation and the retrieval performance check but detected by T3 alone number 12 of 45 (one-sided
 *p* = .0001 · §5.2), and false positives among 27 sound deltas were 0. The lesson weakens if the
-detection rate of the primary-task check equals that of T3 and detection by T3 alone is 0.
+detection rate of the focal-task check equals that of T3 and detection by T3 alone is 0.
 
 The supporting evidence for this lesson was observed in the ablation, and its status differs from
 the evidence above. A layer designed for one task was observed to bear on the performance of
@@ -1372,7 +1370,7 @@ is a specification-based check, so fine-grained drift remains.
 
 **Limits of the generation-layer transfer evaluation.** We evaluated twice whether a retrieval gain
 carries into the generation stage (full text in S5, Appendix A). In the second split the verdict
-under the frozen margin was that non-inferiority was not met. Yet the point estimate favoured the
+under the frozen margin was that non-inferiority was not met. Yet the point estimate favored the
 proposed configuration (Δ citation accuracy +0.0236), the lower bound fell below the margin by only
 0.0005 (−0.0205 against −0.02), and the hallucination-rate condition passed. The accurate statement
 is therefore that we could not confirm transfer, and absence of transfer is not distinguished from
@@ -1415,8 +1413,8 @@ specification made of delta constraints, fault definitions and competency questi
 regrounded on the representational conventions and the instance observable surface of the target
 resource. The evidence is three places observed on the second resource. The frozen delta constraint requires domains and ranges to be declared in schema vocabulary, whereas the target resource declares them in a constraint language. As a result, 8 of the 10 release-lineage verdicts were unmet on that rule. The frozen fault definition expresses containment with a predicate in one direction whereas
 the holdout model uses the opposite direction, so 9 of 21 faults were not injected. Of the 15
-competency questions, 7 returned rows on the holdout (§5.5). The port case numbers 1, so the breadth
-of the evidence is confined accordingly. The hypothesis weakens if detection power holds after a
+competency questions, 7 returned rows on the holdout (§5.5). The evidence is limited to a single
+port. The hypothesis weakens if detection power holds after a
 specification is carried unchanged to a resource with different conventions and instance
 composition. This distinction also changes how the earlier results are read: reading the 0
 detections on the second resource as a failure of the gate would blur mechanism and specification.
@@ -1481,13 +1479,13 @@ and CQs, and quantitative performance evaluation was confined to prior-art retri
 ground truth exists. The other two views are monitored for functional degradation by cross-task CQs.
 
 **Evaluation results.** Condition T3 alone detected 12 of 45 cross-task faults that formal
-validation and the primary-task check both missed. A real change that improved resource indicators
+validation and the focal-task check both missed. A real change that improved resource indicators
 2.4-fold and passed all formal validation was rejected by T1. The verdict on retrieval utility reads
 as follows. The preregistered composite prediction held in neither split, and deep recall improved
 in both.
 
 **Scope of the results.** The retrieval benefit is confined to deep recall, and no improvement was
-confirmed on the prespecified primary configuration or in top-of-ranking ordering. The
+confirmed on the prespecified configuration or in top-of-ranking ordering. The
 negative-control result differed across the two samples and is retained as a design diagnosis alone.
 The post-acceptance safety of an approved change also remains untested; what was observed is one
 rejection of an unsafe change.
@@ -1502,16 +1500,25 @@ transfers while the specification requires regrounding. The evidence is one qual
 delta and one port case, so we do not present them as established principles.
 
 **Contributions and limitations.** The contributions are SDKB with its validation assets, the change
-acceptance gate, a controlled rejection of one qualifying change, and the three lessons above. Task performance was measured on a single domain and the rejection of a real change numbers 1. Neither the cause of the drop nor the transfer to the generation stage was settled. The range adjudicated on
-the second resource is the formal layers and the cross-task layer, and the port case numbers 1.
+acceptance gate, a controlled rejection of one qualifying change, and the three lessons above. Task
+performance was measured in one domain, and only one real change was rejected. Neither the cause of
+the drop nor transfer to the generation stage was established. On the second resource, we
+adjudicated only the formal and cross-task layers, and the evidence is limited to a single port.
 Connecting free-text queries to concepts, and external validation that removes the deficits of §6.4,
 remain for future work.
 
 ---
 
-# Declaration of generative AI use
+# Declaration of Generative AI and AI-assisted technologies in the writing process
 
-We used generative AI as an aid in restructuring this manuscript and in drafting sentences. The
-accuracy of the research questions, hypotheses, data scope, numbers, citations, experimental code
-and results is verified by the authors against the raw data and the execution logs. Generative AI
-neither ran the data analysis nor substituted for a legal prior-art judgment.
+During preparation of this manuscript, the authors used OpenAI Codex to assist with restructuring
+and English-language editing. The authors reviewed and edited all generated text and verified the
+research questions, hypotheses, data scope, numerical results, citations, and experimental claims
+against the source data and execution logs. The authors take full responsibility for the content of
+the manuscript. The tool did not perform the data analysis or make legal prior-art judgments.
+
+---
+
+# References
+
+{{BIB}}

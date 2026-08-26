@@ -78,8 +78,8 @@ def measurements(text: str) -> list[str]:
 CAPTIONS: dict[str, str] = {
     "F1alt": "Figure 1. Study overview — two artifacts and one evaluation environment, the release "
              "approval procedure, and what the five episodes measure.",
-    "F1": "**Figure 1.** Study overview. The top band is artifact A1, a resource placing three task "
-          "views on one shared T-Box; the middle band is artifact A2, the release gate that reviews "
+    "F1": "**Figure 1.** Study overview. The top band is artifact ART-1, a resource placing three task "
+          "views on one shared T-Box; the middle band is artifact ART-2, the release gate that reviews "
           "a resource change before it ships; the bottom band is evaluation environment E1, the "
           "five episodes and what each measures. The middle band reads left to right, and a failed "
           "stage stops the ones behind it. T4, shown dashed, is not part of the approval rule "
@@ -128,7 +128,7 @@ CAPTIONS: dict[str, str] = {
           "*p* values come from a query-level paired bootstrap with 10,000 resamples.**",
     "F7alt": "Figure 7. System by metric — improvement in deep recall and no improvement in "
              "top-of-ranking ordering.",
-    "F7": "**Figure 7.** System by metric. (a) the primary metric family Recall@100; (b) the "
+    "F7": "**Figure 7.** System by metric. (a) the primary outcome, family Recall@100; (b) the "
           "difference of each auxiliary metric against B3 with 95% confidence intervals. Ontology "
           "reranking retrieves more known positives within a review depth of 100 but does not "
           "improve the ordering quality of the top 20.",
@@ -179,7 +179,7 @@ CELLS: dict[str, str] = {
         "Submit 3–5 eligible deltas in sequence and report the distribution of verdicts",
     "승인된 변경의 사후 안전성 미검정": "Post-acceptance safety of an approved change not tested",
     "심사한 델타가 승인되지 않아 비교가 성립하지 않았다 (§6.4)":
-        "The adjudicated delta was not accepted, so the comparison did not arise (§6.5)",
+        "The adjudicated delta was not accepted, so the comparison did not arise (§6.4)",
     "승인된 델타를 릴리스한 뒤 다음 세대의 봉인 분할에서 재측정":
         "Release an accepted delta and re-measure on the sealed split of the next generation",
     "교차 태스크 검출의 임계 민감성": "Threshold sensitivity of cross-task detection",
@@ -206,7 +206,7 @@ CELLS: dict[str, str] = {
         "then apply T1 and T2",
     "질의 언어와 정답 언어의 불일치": "Mismatch between query language and ground-truth language",
     "질의는 전량 한국어이고 알려진 양성의 41%는 비한국어 (§6.4)":
-        "The queries are entirely Korean and 41% of known positives are non-Korean (§6.5)",
+        "The queries are entirely Korean and 41% of known positives are non-Korean (§6.4)",
     "질의 측 번역 구성을 추가하여 언어별 회수를 분해 재측정":
         "Add a query-side translation configuration and re-measure recall decomposed by language",
     "강한 다국어 기준선의 부재": "No strong multilingual baseline",
@@ -275,7 +275,7 @@ CELLS: dict[str, str] = {
     "**§3.5 설계 시점**": "**§3.5, at design time**",
     "**사전 설계 · 실증 지지**": "**designed in advance and empirically supported**",
     "**교차 태스크 감시** — 공유 T-Box 에서는 **주 태스크 성능만으로** 변경을 승인하지 않는다":
-        "**Cross-task monitoring** — on a shared T-Box, a change is not accepted on **primary-task "
+        "**Cross-task monitoring** — on a shared T-Box, a change is not accepted on **focal-task "
         "performance alone**",
     "**§3.5 설계 시점**(T3)": "**§3.5, at design time** (T3)",
     "§5.2 — 교차 결함을 T3 만 단독 검출(12/45 · 단측 *p*=.0001) · §5.4.2 — 음성 대조군(A8) 제거가 검색 성능을 0.0316 저하시켰고(제거 손실 +0.0316), 다만 **§5.4.1 두 번째 분할에서는 0.0000 으로 서로 달랐다** · §5.5 — 제2 도메인에서는 판정이 가능한 12건에서 단독 검출 0 (근거를 늘리지 않는다)":
@@ -319,7 +319,7 @@ CELLS: dict[str, str] = {
     # ── 표 8 · 두 확증 분할의 검색 성능 ──────────────────────────────────────
     "시스템": "System",
     "승/패/동": "Win/loss/tie",
-    "Text+Ontology (P0★ · 사전지정 주)": "Text+Ontology (P0★, prespecified primary)",
+    "Text+Ontology (P0★ · 사전지정 주)": "Text+Ontology (P0★, prespecified configuration)",
     "다국어 융합 기준선 (B★ · 탐색적)": "Multilingual fusion baseline (B★, exploratory)",
     "서지 조건 모사 기준선 (B10 · 탐색적)": "Bibliographic-condition baseline (B10, exploratory)",
     # ── 표 7 · 자원 번들 교체 ────────────────────────────────────────────────
@@ -349,12 +349,13 @@ CELLS: dict[str, str] = {
         "nDCG@20**, and the improvement is larger in the subgroup with **low** lexical overlap "
         "between query and positives",
     "**부분 지지 — 주 지표에 한정** (R@100 은 P1 에서 유의 개선 · nDCG 조항 미충족 · 사전 지정 주 구성 비유의 · 저중첩 조건 반증)":
-        "**supported for the primary metric only** (R@100 improved significantly on P1; the nDCG "
-        "clause was not met; the prespecified primary configuration did not reach significance; the "
+        "**supported for the primary outcome only** (R@100 improved significantly on P1; the nDCG "
+        "clause was not met; the prespecified configuration did not reach significance; the "
         "low-overlap clause was contradicted)",
     "**미지지** (R@100 은 개선되나 nDCG 조항이 깨졌다 · 주 구성 비유의)":
         "**not supported** (R@100 improved but the nDCG clause was not met; the primary "
-        "configuration did not reach significance)",
+        "outcome improved only in the secondary configuration, and the prespecified configuration "
+        "did not reach significance)",
     "**점검 2 · 계층 특이성**": "**Check 2 · layer specificity**",
     "게이트 태스크와 무관한 전문가 매칭 전용 계층(`Skill`·`ExpertCase`·`Mitigation`)의 제거는 검색 성능을 **유의하게 바꾸지 않는다**":
         "Removing the expert-matching-only layers (`Skill`, `ExpertCase`, `Mitigation`), which are "
@@ -402,7 +403,7 @@ CELLS: dict[str, str] = {
     "개수": "Count",
     "용도": "Purpose",
     "G0 통과": "G0 pass",
-    "L3 주 태스크 스위트 (pa)": "L3 primary-task suite (pa)",
+    "L3 주 태스크 스위트 (pa)": "L3 focal-task suite (pa)",
     "선행기술조사 태스크의 기능 검증": "Functional validation of the prior-art search task",
     "T3 스위트 (em 6 · tf 5 · core 12)": "T3 suites (em 6, tf 5, core 12)",
     "다른 태스크와 공유 코어의 비회귀": "Non-regression of the other tasks and the shared core",
@@ -424,7 +425,7 @@ CELLS: dict[str, str] = {
     "승인 조건을 한 층 아래 태스크에서 확인":
         "Verify the acceptance condition on the task one layer below",
     "설계·개발": "Design and development",
-    "산출물 A1(SDKB)과 A2(T-gate)": "Artifacts A1 (SDKB) and A2 (the T-gate)",
+    "산출물 A1(SDKB)과 A2(T-gate)": "Artifacts ART-1 (SDKB) and ART-2 (the T-gate)",
     "1차 평가": "Evaluation round 1",
     "초기 결함주입에서 게이트 판별력이 **기각**":
         "Discriminative power of the gate was **rejected** in the initial fault injection",

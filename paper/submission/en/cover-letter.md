@@ -4,8 +4,8 @@ To the Editors of *Results in Engineering*
 
 Dear Editors,
 
-We submit **"A Task-Aware Release Gate for Shared Engineering Ontologies with Multiple Task Views:
-A Design Science Study in Semiconductor Prior-Art Retrieval"** for consideration as a full research
+We submit **"A Task-Aware Release Gate for Evolving Shared Engineering Ontologies: Evidence from
+Semiconductor Prior-Art Retrieval"** for consideration as a full research
 paper.
 
 **The problem.** Engineering ontologies do not stop changing once released; they change whenever the
@@ -30,8 +30,8 @@ concepts per document 2.4-fold and passed every formal layer *reduced* retrieval
 −0.0293, 95% CI [−0.0542, −0.0053]). The retrieval condition refused it. A widely held assumption,
 that improving an ontology's internal quality improves the tasks built on it, did not hold, and the
 refusal is the artifact doing its job. We report the boundary of the positive results with the same
-care. Deep recall improved on both splits, but the pre-registered composite prediction held in
-neither and the pre-specified primary configuration did not reach significance.
+care. Deep recall improved on both splits, but the preregistered composite prediction held in
+neither, and the prespecified configuration did not reach significance.
 
 **Fit with the journal.** The paper reports new knowledge that is useful to engineering practice.
 It addresses an operational problem rather than an ontology-theoretic one: how a semiconductor
