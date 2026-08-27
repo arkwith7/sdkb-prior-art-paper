@@ -569,10 +569,11 @@ def fig_ep_gate_matrix(out: Path | None = None) -> Path:
         _fit_text(ax, 0.645, y + h / 2 - 0.012, verdict, 0.340, where="그림6 판정 요약",
                   ha="left", va="center", fontsize=7.8, color=INK, linespacing=1.6)
 
-    # ── 읽는 법 띠 ───────────────────────────────────────────────────────────
-    _fit_text(ax, 0.5, 0.055, T("matrix.reading"), 0.940, where="그림6 읽는 법",
-              ha="center", va="center", fontsize=8.2, color=INK, linespacing=1.7,
-            bbox=dict(boxstyle="round,pad=0.55", fc="#F7F9FB", ec=BORDER, lw=1.0))
+    # ── 읽는 법 띠는 그리지 않는다 (2026-08-27 · PLAN-083) ────────────────────
+    # 띠는 y=0.055 에 있었고 EP5 행은 y=0.040–0.185 에 있다. 곧 **두 언어 모두에서** 띠가
+    # 마지막 행을 덮고 있었다 — 영문 라벨 길이의 문제가 아니라 기하의 결함이다. 읽는 법과
+    # T4 각주는 그림이 아니라 **캡션**이 진다(규격 F4 · 그림의 글자는 구조를 지고 구체적
+    # 내역은 캡션이 진다). `matrix.reading` 라벨은 캡션 문구의 원천으로 표에 남긴다.
     return _save(fig, out)
 
 

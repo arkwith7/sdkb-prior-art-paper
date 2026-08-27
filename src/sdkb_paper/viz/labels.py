@@ -119,15 +119,15 @@ CELL_TRANSLATIONS: dict[str, str] = {
     "기술예측": "Technology foresight",
     "비식별·생성 인스턴스": "De-identified·synthetic instances",
     "거절특허 1,000 · 심사관 인용 2,534 · claim sidecar":
-        "1,000 rejected patents · 2,534 examiner citations · claim sidecar",
+        "1,000 rejected patents\n2,534 examiner citations · claim sidecar",
     "G1·G2 시계열": "G1·G2 time series",
     "표현 타당성 + **음성 대조군**(§5.12) · 성능 미평가":
-        "Representational validity + **negative control** · performance not evaluated",
+        "Representation + negative control · not evaluated",
     "**주 정량 검증** (Recall@K·nDCG·게이트)":
-        "**Primary quantitative validation** (Recall@K·nDCG·gate)",
+        "**Primary quantitative validation**",
     "2차 재사용 증거 (§7.4)": "Evidence of secondary reuse",
     # 역량질문 번호 칸 — 번호는 라벨이라 옮기지 않고 괄호의 한국어만 옮긴다.
-    "09·10·22·27 (+29–31 측정)": "09·10·22·27 (+29–31 measurement)",
+    "09·10·22·27 (+29–31 측정)": "09·10·22·27 (+29–31)",
     "01–08·23–26": "01–08·23–26",
     "11·12·15–18·20·28": "11·12·15–18·20·28",
 }
@@ -210,12 +210,12 @@ LABELS: dict[str, dict[str, str]] = {
     "overview.a3_title": {
         "ko": "E1 · 다층 평가 벤치마크 — 다섯 평가 에피소드와 각각의 측정 대상",
         "en": "E1 · Multi-layer benchmark — five episodes and what each measures"},
-    "overview.ep_target": {"ko": "측정 대상 · {target}", "en": "Measures · {target}"},
+    "overview.ep_target": {"ko": "대상 · {target}", "en": "Target · {target}"},
     "overview.ep1_title": {"ko": "EP1 · 표현 감사", "en": "EP1 · Representation audit"},
     "overview.ep1_target": {"ko": "ART-1 자원", "en": "ART-1 resource"},
     "overview.ep1_body": {
         "ko": "세 태스크 어휘와 CQ 가\n자원에 실재하는가",
-        "en": "Are the three task vocabularies\nand CQs present in the resource"},
+        "en": "Are the three task vocabularies\nand CQs present"},
     "overview.ep2_title": {"ko": "EP2 · 게이트 판별력", "en": "EP2 · Gate discrimination"},
     "overview.ep2_target": {"ko": "ART-2 게이트", "en": "ART-2 gate"},
     "overview.ep2_body": {
@@ -229,18 +229,18 @@ LABELS: dict[str, dict[str, str]] = {
         "ko": "자원만 교체 → T1 {mark.fail}\n승인 = 0",
         "en": "Resource only → T1 {mark.fail}\nAccept = 0"},
     "overview.ep4_title": {"ko": "EP4 · 검색 이득의 범위", "en": "EP4 · Scope of the gain"},
-    "overview.ep4_target": {"ko": "T1 의 주 지표", "en": "Primary metric of T1"},
+    "overview.ep4_target": {"ko": "T1 주 지표", "en": "T1 primary metric"},
     "overview.ep4_body": {
         "ko": "질의 {ep4.n_queries} · 확증 분할 둘\nfamily Recall@100",
         "en": "{ep4.n_queries} queries · two splits\nfamily Recall@100"},
     "overview.ep5_title": {"ko": "EP5 · 제2 자원 이식", "en": "EP5 · Port to a 2nd resource"},
     "overview.ep5_target": {
-        "ko": "ART-2 절차의 자원 비의존성", "en": "ART-2 · resource independence"},
+        "ko": "ART-2 자원 비의존성", "en": "ART-2 portability"},
     "overview.ep5_body": {
         "ko": "형식 층·T3 코드 변경 없이 실행\n"
-              "관찰면 {ep5.observable}/{ep5.cq_total} · 명세 재접지 필요",
-        "en": "Formal layers and T3 ran\nunchanged · surface "
-              "{ep5.observable}/{ep5.cq_total}\nspecification regrounded"},
+              "관찰면 {ep5.observable}/{ep5.cq_total} · 명세 재접지",
+        "en": "Formal layers and T3 ran unchanged\n"
+              "surface {ep5.observable}/{ep5.cq_total} · spec regrounded"},
     # ── 그림 2 · 층간 지표 불일치 ────────────────────────────────────────────
     "layer.tag_resource": {"ko": "자원 층", "en": "Resource layer"},
     "layer.tag_retrieval": {"ko": "검색 층", "en": "Retrieval layer"},
@@ -325,9 +325,9 @@ LABELS: dict[str, dict[str, str]] = {
         "en": "One proposition runs through all three — a change that improves resource "
               "indicators and passes formal validation does not guarantee the next layer."},
     # ── 그림 3 · 공유 T-Box와 세 태스크 뷰 ───────────────────────────────────
-    "tbox.cq_prefix": {"ko": "대표 역량질문 · {cq}", "en": "Representative CQ · {cq}"},
+    "tbox.cq_prefix": {"ko": "역량질문 · {cq}", "en": "CQ · {cq}"},
     "tbox.abox_prefix": {"ko": "A-Box · {abox}", "en": "A-Box · {abox}"},
-    "tbox.status_head": {"ko": "본 논문의 지위", "en": "Status in this paper"},
+    "tbox.status_head": {"ko": "본 논문의 지위", "en": "Status"},
     "tbox.channel_title": {
         "ko": "교차 태스크 결합 통로 — 공유 어휘가 두 뷰를 잇는다",
         "en": "Cross-task coupling channels — shared vocabulary joins two views"},
@@ -455,34 +455,32 @@ LABELS: dict[str, dict[str, str]] = {
               "not included in these numbers."},
 
     # ── 그림 6 · 평가 에피소드 × 승인식 구성요소 ─────────────────────────────
-    "matrix.col_resource": {"ko": "자원 ART-1", "en": "Resource ART-1"},
-    "matrix.col_resource_sub": {"ko": "표현 감사", "en": "Representation audit"},
-    "matrix.col_formal_sub": {"ko": "형식 · 기능", "en": "Formal · functional"},
+    "matrix.col_resource": {"ko": "ART-1", "en": "ART-1"},
+    "matrix.col_resource_sub": {"ko": "표현 감사", "en": "Audit"},
+    "matrix.col_formal_sub": {"ko": "형식 · 기능", "en": "Formal"},
     "matrix.col_t1_sub": {"ko": "검색 비열등성", "en": "Non-inferiority"},
     "matrix.col_t2_sub": {"ko": "하위집단", "en": "Subgroups"},
     "matrix.col_t3_sub": {"ko": "교차 태스크", "en": "Cross-task"},
-    "matrix.col_t4_sub": {"ko": "생성 층", "en": "Generation layer"},
-    "matrix.head_episode": {"ko": "평가 에피소드", "en": "Evaluation episode"},
-    "matrix.head_verdict": {"ko": "판정 요약", "en": "Verdict summary"},
+    "matrix.col_t4_sub": {"ko": "생성 층", "en": "Generation"},
+    "matrix.head_episode": {"ko": "에피소드", "en": "Episode"},
+    "matrix.head_verdict": {"ko": "판정", "en": "Verdict"},
     "matrix.ep1_name": {"ko": "표현 감사", "en": "Representation audit"},
     "matrix.ep1_status": {"ko": "관측 사실", "en": "Observed fact"},
     "matrix.ep1_cell": {
         "ko": "역량질문 {cq.total}개\n세 태스크 어휘",
         "en": "{cq.total} questions\nthree task vocabularies"},
     "matrix.ep1_verdict": {
-        "ko": "세 태스크의 어휘·관계·역량질문이 자원에 실재한다.\n"
-              "다만 표현 범위는 검색 준비도와 동일하지 않다.",
-        "en": "The vocabularies, relations and questions of the three tasks are present.\n"
-              "Representational scope is not the same as retrieval readiness."},
+        "ko": "세 태스크의 어휘·관계·역량질문이 자원에 실재한다.",
+        "en": "The three task vocabularies, relations and questions are present."},
     "matrix.ep2_name": {"ko": "게이트 판별력", "en": "Gate discrimination"},
     "matrix.ep2_status": {"ko": "홀드아웃 확증", "en": "Holdout confirmatory"},
     "matrix.ep2_cell_l3": {"ko": "주 태스크 CQ\n검출", "en": "Primary-task CQ\ndetection"},
     "matrix.ep2_cell_t3": {"ko": "교차 결함\n단독 검출", "en": "Cross-task fault\nT3 alone"},
     "matrix.ep2_verdict": {
-        "ko": "교차 태스크 결함은 T3 가 단독으로 검출하였고 정상 델타의\n"
-              "오거부는 {ep2.false_positive} 이다 (단측 McNemar p = {ep2.mcnemar_p:.4f}).",
-        "en": "T3 alone detected the cross-task faults, and false rejections among\n"
-              "sound deltas are {ep2.false_positive} (one-sided McNemar p = {ep2.mcnemar_p:.4f})."},
+        "ko": "교차 결함은 T3 가 단독 검출 · 오거부 {ep2.false_positive} "
+              "(McNemar p = {ep2.mcnemar_p:.4f}).",
+        "en": "T3 alone detected them · false rejections {ep2.false_positive} "
+              "(McNemar p = {ep2.mcnemar_p:.4f})."},
     "matrix.ep3_name": {"ko": "통제된 자원 교체", "en": "Resource substitution"},
     "matrix.ep3_status": {"ko": "별도 사전등록", "en": "Separate preregistration"},
     "matrix.ep3_cell_resource": {
@@ -495,10 +493,8 @@ LABELS: dict[str, dict[str, str]] = {
     "matrix.ep3_cell_t3": {
         "ko": "CQ {cq.t3_total}개\n통과율 유지", "en": "{cq.t3_total} CQs\npass rate held"},
     "matrix.ep3_verdict": {
-        "ko": "자원 지표가 개선되고 형식 검증을 통과한 변경을 성능 조건\n"
-              "하나가 차단하였다. 승인식은 곱이므로 승인 결과는 거부이다.",
-        "en": "One performance condition blocked a change that improved the resource\n"
-              "indicators and passed formal validation. The rule is a product, so it is a rejection."},
+        "ko": "형식 검증을 전부 통과한 변경을 성능 조건 하나가 차단하였다.",
+        "en": "One performance condition blocked a change that passed every formal layer."},
     "matrix.ep4_name": {"ko": "검색 이득의 범위", "en": "Scope of the gain"},
     "matrix.ep4_status": {"ko": "확증 · 분할 둘", "en": "Confirmatory · two splits"},
     "matrix.ep4_cell_t1": {
@@ -507,12 +503,12 @@ LABELS: dict[str, dict[str, str]] = {
     "matrix.ep4_cell_t2": {"ko": "국소 회귀\n없음", "en": "No local\nregression"},
     "matrix.ep4_cell_t4": {
         "ko": "하한 {t4.citation_precision.lb95:sig}\n마진 −{t4.eps} 초과",
-        "en": "Lower bound {t4.citation_precision.lb95:sig}\npast margin −{t4.eps}"},
+        "en": "LB {t4.citation_precision.lb95:sig}\npast −{t4.eps}"},
     "matrix.ep4_verdict": {
         "ko": "깊은 회수의 개선은 두 확증 분할에서 반복 관측되었다.\n"
-              "사전등록된 복합 기준의 동시 충족은 두 분할에서 확인되지 않았다.",
+              "복합 기준의 동시 충족은 두 분할에서 확인되지 않았다.",
         "en": "Deep recall improved in both confirmatory splits.\n"
-              "The preregistered composite prediction held in neither split."},
+              "The composite prediction held in neither split."},
     "matrix.ep5_name": {"ko": "제2 자원 이식", "en": "Port to a 2nd resource"},
     "matrix.ep5_status": {"ko": "별도 사전등록", "en": "Separate preregistration"},
     "matrix.ep5_cell_formal": {
@@ -522,10 +518,8 @@ LABELS: dict[str, dict[str, str]] = {
         "ko": "관찰면 {ep5.observable}/{ep5.cq_total}\n불일치 쌍 {ep5.discordant}",
         "en": "Surface {ep5.observable}/{ep5.cq_total}\ndiscordant {ep5.discordant}"},
     "matrix.ep5_verdict": {
-        "ko": "형식 층과 교차 태스크 층의 절차는 자원을 바꾸어도 실행되었다.\n"
-              "동결한 결함 명세는 그 자원의 표현 관습에 재접지가 필요하였다.",
-        "en": "The formal and cross-task layers ran on a different resource.\n"
-              "The frozen fault specification had to be regrounded on its conventions."},
+        "ko": "절차는 이전되었고 동결한 결함 명세는 재접지가 필요하였다.",
+        "en": "The procedure transferred; the frozen fault specification did not."},
     "matrix.reading": {
         "ko": "가로로 읽으면 한 에피소드가 승인식의 어느 항을 검증하였는지 보이고, 세로로 "
               "읽으면 같은 항이 다른 실험에서 낸 판정이 보인다.\n"

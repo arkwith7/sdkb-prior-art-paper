@@ -39,19 +39,25 @@ BODY_FIGURES = (
 # `A1`·`A2`·`A3` 에서 **`ART-1`·`ART-2`·`E1`** 로 옮겼다. 구 표기가 절제 조건 `A1`–`A8` 과
 # 기호가 겹쳐 같은 기호가 두 가지를 가리켰고, 셋째 띠는 그림만 `A3` 이고 본문은 `E1` 이었다.
 # **의도한 변경이므로 값을 갱신한다** — 바뀐 것은 라벨 문자열뿐이고 수치·기하·배치는 그대로다.
+# **2026-08-27 갱신 2(사용자 승인 · PLAN-083)** — 셋이 바뀌었다. ⓐ `concept_ep_gate_matrix`:
+# 하단 "읽는 법" 띠가 y=0.055 에 있고 EP5 행이 y=0.040–0.185 에 있어 **두 언어 모두에서** 띠가
+# 마지막 행을 덮고 있었다. 띠를 그리지 않고 그 내용을 캡션으로 내렸으며, 열 머리글과 판정 요약도
+# 줄였다. ⓑ `concept_overview`·ⓒ `concept_tbox_views`: 영문판에서 라벨이 옆 상자를 침범하던
+# 자리를 두 언어의 라벨을 함께 줄여 해소하였다. **수치와 자리표시자는 하나도 바뀌지 않았다** —
+# 바뀐 것은 설명하는 말의 길이다(규격 F6).
 KO_SHA256 = {
     "concept_overview.svg":
-        "8ed1760812e18577a2d5258c1fc9b0aca6ac2b87c8fc70cf688c726245c6efb6",
+        "761be1a7122962d57eb080adb57f5a6594a79038969daad66bc54e5139d52ebd",
     "concept_layer_mismatch.svg":
         "2c9ff70afceef91b525b3de085689261436974fbbae073ac42c9d0f8aab26e3a",
     "concept_tbox_views.svg":
-        "a145cbbce0b2dca37ddd9b87a8c7915e6f8a28c23967103b463a2215ac3de6c1",
+        "c5d0c395e3eb998c465f0d97148d3124340606035e7c221cba3bca764fba93a9",
     "concept_gate_flow.svg":
         "13c200d61b997e68998e18841f04cbf941e37bafd201c09e4dd6c86a43205dcb",
     "concept_experiment_flow.svg":
         "d705ab050d1424ac0ce02396a871ddec83fe134d16fcae904e407e3474031faf",
     "concept_ep_gate_matrix.svg":
-        "adf8a9d7b8205e9d69f848bc99e2e8b4408002547e7f45539431bc23fb349c98",
+        "34745f829cefaaa35857810ed58a4996706278a2be3145d27b2178098115ea1b",
     "ir_metrics.svg":
         "c3118b3128d9b95cb8d33f7c8891b49179d4e0cc433bb3b7463838c966478ee0",
 }

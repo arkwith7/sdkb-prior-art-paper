@@ -84,8 +84,6 @@ CAPTIONS: dict[str, str] = {
           "five episodes and what each measures. The middle band reads left to right, and a failed "
           "stage stops the ones behind it. T4, shown dashed, is not part of the approval rule "
           "(§3.5.1).",
-    "T1": "**Table 1. Position relative to prior work — the contribution is the combination and the "
-          "experimental design, not primacy.**",
     "F2alt": "Figure 2. The indicator structure of the three layers and the three misalignments "
              "observed between them.",
     "F2": "**Figure 2.** Cross-layer metric misalignment. The left side shows the indicator "
@@ -95,9 +93,9 @@ CAPTIONS: dict[str, str] = {
           "to a different unit within the same layer, the number of documents reviewed. "
           "Observation (i) is presented in §5.1, (ii) in §5.4.3, and (iii) in §3.5.1 and §6.4; the "
           "interpretation is in §6.1.",
-    "T2": "**Table 2. Stages of design science research and how they were carried out in this "
+    "T1": "**Table 1. Stages of design science research and how they were carried out in this "
           "study.**",
-    "T3": "**Table 3. Evaluation episodes — EP is a new label and does not collide with the "
+    "T2": "**Table 2. Evaluation episodes — EP is a new label and does not collide with the "
           "preregistration labels.**",
     "F3alt": "Figure 3. Three task views on one shared T-Box and the channels of cross-task "
              "coupling.",
@@ -106,23 +104,27 @@ CAPTIONS: dict[str, str] = {
     "F6": "**Figure 6.** Evaluation episodes mapped onto the terms of the acceptance rule. Rows are "
           "episodes and columns are terms of the rule; only the leftmost column is the resource "
           "rather than the gate. The symbol in each cell is the verdict and the line beneath it the "
-          "evidence. A blank cell means that the episode did not examine that term. T4 is marked "
-          "with an asterisk because it is not part of the acceptance rule.",
-    "T11": "**Table 11. Decision stability — the point at which each verdict switches under the "
+          "evidence, and a blank cell means that the episode did not examine that term. Read across "
+          "for what one episode examined; read down for how the same term was judged in different "
+          "experiments. In the EP3 row a change passing every formal layer was rejected at T1; in "
+          "the EP4 row a configuration passing T1 did not show non-inferiority at T4. T4 is marked "
+          "with an asterisk because it is not part of the acceptance rule; its status is a design "
+          "and one verdict.",
+    "T9": "**Table 9. Decision stability — the point at which each verdict switches under the "
            "frozen thresholds.**",
-    "T12": "**Table 12. Nine deficits in validation strength and generalizability — every remedy "
+    "T10": "**Table 10. Nine deficits in validation strength and generalizability — every remedy "
            "is the object of a new preregistration.**",
-    "T10": "**Table 10. Release-lineage verdicts on engineering ontology 2 — confined to "
+    "T8": "**Table 8. Release-lineage verdicts on engineering ontology 2 — confined to "
            "the formal layers and the cross-task layer.** d0–d5 are releases v1.3.0, v1.4.0, "
            "v1.4.1, v1.4.2, v1.4.3, and v1.4.4; migration condition R places the original instances "
            "unchanged and N places them after applying the official migration rules. Because the "
            "acceptance rule is not completed, `accept` is not recorded in any row and only partial "
            "acceptance remains.",
-    "T9": "**Table 9. Subgroups and ablation in the first confirmatory split** (test, 198 queries, "
+    "T7": "**Table 7. Subgroups and ablation in the first confirmatory split** (test, 198 queries, "
           "family R@100, query-level paired bootstrap with 10,000 resamples; `Difference` in the "
           "ablation row is the **removal loss** (full − ablated; positive = layer contribution); "
           "Holm m=8; all 17 rows are in S5).",
-    "T8": "**Table 8. Retrieval performance in the two confirmatory splits (2 panels) — the "
+    "T6": "**Table 6. Retrieval performance in the two confirmatory splits (2 panels) — the "
           "baseline is the Text Hybrid (B3) of each panel; Δ and the win/loss/tie counts summarize "
           "the original sample paired per query, and the 95% confidence intervals and two-sided "
           "*p* values come from a query-level paired bootstrap with 10,000 resamples.**",
@@ -132,12 +134,10 @@ CAPTIONS: dict[str, str] = {
           "difference of each auxiliary metric against B3 with 95% confidence intervals. Ontology "
           "reranking retrieves more known positives within a review depth of 100 but does not "
           "improve the ordering quality of the top 20.",
-    "T7": "**Table 7. Retrieval performance when only the resource bundle is substituted (test, 198 "
+    "T5": "**Table 5. Retrieval performance when only the resource bundle is substituted (test, 198 "
           "queries, family Recall@100).**",
-    "T6": "**Table 6. The preregistered evaluation checks and their verdicts — the evidence and the "
+    "T4": "**Table 4. The preregistered evaluation checks and their verdicts — the evidence and the "
           "full text are in Section 5 and in supplementary S5.**",
-    "T5": "**Table 5. Control roles of the comparison configurations — the response each must show "
-          "when only the resource is substituted.**",
     "F5alt": "Figure 5. Correspondence between the procedure of prior-art search in practice and "
              "the configuration of this experiment, and the two places where it fails.",
     "F5": "**Figure 5.** Correspondence between practice and the experimental configuration. The "
@@ -145,7 +145,7 @@ CAPTIONS: dict[str, str] = {
           "experiment at each stage. The two notes in the right margin mark where the correspondence "
           "fails, and the band at the bottom states the premise under which the numbers of this "
           "section hold.",
-    "T4": "**Table 4. The 31 competency questions by purpose — the gate denominator is 28 and the "
+    "T3": "**Table 3. The 31 competency questions by purpose — the gate denominator is 28 and the "
           "representation-audit denominator is 31.**",
     "F4alt": "Figure 4. The order of the acceptance procedure, the handling of each unmet term, and "
              "the actual verdicts in the controlled resource substitution.",
@@ -186,21 +186,21 @@ CELLS: dict[str, str] = {
     "τ=0.05에서 T3 단독 검출 12/45이나 τ=0.10에서는 4/45, τ=0.00에서는 17/45 (§5.2)":
         "At τ=0.05 detection by T3 alone is 12/45, at τ=0.10 it is 4/45, and at τ=0.00 it is 17/45 "
         "(§5.2)",
-    "τ 격자 전반의 검출률·위양성률 곡선을 사전등록하고 동시 보고":
+    "τ 격자 전반의 검출률·위양성률 곡선을 사전등록하고 보고":
         "Preregister and report jointly the detection-rate and false-positive curves across the τ "
         "grid",
     "임계 셋의 실무적 근거 부재": "No practical basis for the three thresholds",
     "ε=0.02·δ=0.05·τ=0.05는 동결한 규범적 선택이며 보정을 거치지 않았다 (§3.5)":
         "ε=0.02, δ=0.05, and τ=0.05 are frozen normative choices and were not calibrated (§3.5)",
-    "재색인 반복의 회수 변동폭 측정과 실무자 허용 한계 조사":
+    "재색인 반복의 회수 변동폭과 실무자 허용 한계 조사":
         "Measure recall variation across repeated reindexing and survey practitioner tolerance",
     "승인 게이트를 완전히 평가할 수 있는 자원의 부재":
         "No resource on which the acceptance gate can be evaluated in full",
-    "**부분 해소** — 형식 층과 교차 태스크 층은 제2 공학 온톨로지에서 동일 절차로 판정하였다 (§4.6 · §5.5). 게이트 전체의 평가는 릴리스 델타 계보와 하류 태스크 벤치마크를 동시에 갖춘 자원을 요구하나, 본 연구의 자원은 뒤의 것만 제2 자원은 앞의 것만 갖추었다":
+    "**부분 해소** — 형식 층과 교차 태스크 층은 제2 공학 온톨로지에서 동일 절차로 판정하였다 (§4.6 · §5.5). 게이트 전체의 평가는 릴리스 델타 계보와 하류 태스크 벤치마크를 동시에 갖춘 자원을 요구하나, 두 자원은 각각 하나씩만 갖추었다":
         "**partly removed** — the formal layers and the cross-task layer were adjudicated on "
         "engineering ontology 2 with the same procedure (§4.6 · §5.5). Evaluating the whole gate "
         "requires a resource that holds both a release delta lineage and a downstream task "
-        "benchmark, whereas our resource holds only the latter and resource 2 only the former",
+        "benchmark, and each of the two resources holds only one",
     "두 조건을 동시에 갖춘 자원의 확보, 또는 제2 자원의 태스크 벤치마크를 구축한 뒤 T1·T2를 적용":
         "Obtain a resource holding both conditions, or build a task benchmark on resource 2 and "
         "then apply T1 and T2",
@@ -210,25 +210,24 @@ CELLS: dict[str, str] = {
     "질의 측 번역 구성을 추가하여 언어별 회수를 분해 재측정":
         "Add a query-side translation configuration and re-measure recall decomposed by language",
     "강한 다국어 기준선의 부재": "No strong multilingual baseline",
-    "**부분 해소** — 다국어 융합 기준선을 별도 사전등록으로 추가하였고 기준선 강도는 유의하게 변하지 않았다 (§4.3 · §5.4.3 · 표 8). 다만 두 인코더가 같은 백본 계열이므로 **계열 다양성은 미달성**":
-        "**partly removed** — a multilingual fusion baseline was added under a separate "
-        "preregistration and baseline strength did not change significantly (§4.3 · §5.4.3 · "
-        "Table 8). The two encoders share a backbone family, however, so **family diversity was "
-        "not achieved**",
+    "**부분 해소** — 다국어 융합 기준선을 추가하였고 기준선 강도는 유의하게 변하지 않았다 (§4.3 · 표 6). 두 인코더가 같은 백본 계열이므로 **계열 다양성은 미달성**":
+        "**partly removed** — a multilingual fusion baseline was added and baseline strength did "
+        "not change significantly (§4.3 · Table 6). The two encoders share a backbone family, so "
+        "**family diversity was not achieved**",
     "계열이 다른 인코더를 포함한 재평가": "Re-evaluate including an encoder from a different family",
     "전문가 관련성 판정 미수행": "Expert relevance judgment not performed",
     "프로토콜은 동결하였으나 판정은 수행하지 않았다 (§4.4). 취약도는 판정 전환 최소 건수로 계량하고 외생 라벨 병합으로 **부분 축소**하였다 (§5.4.1)":
         "The protocol was frozen but the judgment was not performed (§4.4). The vulnerability was "
         "quantified by the minimum number of judgment reversals and **partly reduced** by merging "
         "exogenous labels (§5.4.1)",
-    "상위 미인용 후보의 **표적 표본**에 대한 2인 가림 독립 판정과 κ 보고":
+    "상위 미인용 후보 **표적 표본**의 2인 가림 독립 판정과 κ 보고":
         "2-rater blinded independent judgment on a **targeted sample** of highly ranked uncited "
         "candidates, with κ reported",
     "결함 명세의 자원 간 이전": "Transfer of the fault specification between resources",
-    "제2 도메인의 홀드아웃 모델에서 포함관계 역전 결함의 주입 후보가 0건이어서 21건 중 9건이 판정에 이르지 못하였다 (§5.5)":
-        "In domain 2 the holdout model had 0 injection sites for the containment-inversion fault, "
-        "so 21 faults yielded 9 without a verdict (§5.5)",
-    "대상 자원의 술어 방향을 실측하고 그 관습에 맞추어 결함 명세를 재정의한 뒤 새 사전등록으로 재판정":
+    "홀드아웃 모델에서 포함관계 역전 결함의 주입 후보가 0건이어서 21건 중 9건이 판정에 이르지 못하였다 (§5.5)":
+        "The holdout model had 0 injection sites for the containment-inversion fault, so 21 faults "
+        "yielded 9 without a verdict (§5.5)",
+    "대상 자원의 술어 방향을 실측하여 결함 명세를 재정의한 뒤 새 사전등록으로 재판정":
         "Measure the predicate direction of the target resource, redefine the fault specification "
         "for that convention, and adjudicate again under a new preregistration",
     # ── 표 11 · 결정 안정성 ─────────────────────────────────────────────────
@@ -425,7 +424,7 @@ CELLS: dict[str, str] = {
     "승인 조건을 한 층 아래 태스크에서 확인":
         "Verify the acceptance condition on the task one layer below",
     "설계·개발": "Design and development",
-    "산출물 A1(SDKB)과 A2(T-gate)": "Artifacts ART-1 (SDKB) and ART-2 (the T-gate)",
+    "산출물 ART-1(SDKB)과 ART-2(T-gate)": "Artifacts ART-1 (SDKB) and ART-2 (the T-gate)",
     "1차 평가": "Evaluation round 1",
     "초기 결함주입에서 게이트 판별력이 **기각**":
         "Discriminative power of the gate was **rejected** in the initial fault injection",

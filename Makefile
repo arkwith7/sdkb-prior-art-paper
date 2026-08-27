@@ -1,4 +1,4 @@
-.PHONY: figures-en concept-rel style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check concept-status
+.PHONY: supplementary-check-en figures-en concept-rel style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check concept-status
 
 setup:
 	uv sync --all-extras
@@ -65,6 +65,12 @@ style-check-en:
 # G1·G2·G5 위반은 B-2·B-3′ 반영으로 0 이 되었고, 승격 시점 실측도 0 이다 — 켜면서 고친 문장은
 # 없다. **G4(식별자 산문 사용)는 설계상 경고로 남는다**(CLAUDE.md §2.3-5). 승격 경로는
 # verdicts·style-check 가 밟은 것과 같다.
+# 영문 supplementary 가 원문의 수치를 그대로 옮겼는가 (PLAN-083 · CLAUDE.md §1-1).
+# 번역은 사람이 하고 기계는 **측정값 불변만** 보증한다 — 표를 문자 단위로 복사하는
+# build_submission_en 과 같은 규율이며, 산문·표가 뒤섞인 감사 기록에 맞춘 형태다.
+supplementary-check-en:
+	uv run python scripts/check_supplementary_en.py
+
 glossary-check:
 	uv run python scripts/check_glossary.py
 
