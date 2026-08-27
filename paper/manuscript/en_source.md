@@ -18,6 +18,7 @@ uses.
 | A-Box | assertional box — the instance layer of an ontology (§3.1) |
 | A1–A8 | ablation conditions; A8 is the negative control (§4.4) |
 | ART-1 / ART-2 | research artifacts — the SDKB ontology dataset / release acceptance gate (§3) |
+| E1 | the evaluation environment — the multi-layer benchmark (§4) |
 | B0–B5 / P0–P2 | comparison systems — baselines / proposed systems (§4.3) |
 | BM25 | Okapi Best Matching 25 — a lexical ranking function |
 | CQ | competency question — a question the ontology must be able to answer (§3.1) |

@@ -164,8 +164,8 @@ L 611.793 52.572096
 " clip-path="url(#p91b36f6844)" style="fill: none; stroke: #cbd5e0; stroke-linecap: square"/>
    </g>
    <g id="text_1">
-    <!-- 자원 A1 -->
-    <g style="fill: #1a202c" transform="translate(120.88155 36.46128) scale(0.096 -0.096)">
+    <!-- 자원 ART-1 -->
+    <g style="fill: #1a202c" transform="translate(113.2833 36.46128) scale(0.096 -0.096)">
      <defs>
       <path id="NotoSansCJKjp-Bold-d58b" d="M 358 4794 
 L 358 4090 
@@ -252,6 +252,44 @@ L 2598 1952
 L 1472 1952 
 z
 " transform="scale(0.015625)"/>
+      <path id="NotoSansCJKjp-Bold-33" d="M 1530 2541 
+L 1530 3987 
+L 2144 3987 
+C 2752 3987 3085 3814 3085 3302 
+C 3085 2797 2752 2541 2144 2541 
+L 1530 2541 
+z
+M 3162 0 
+L 4218 0 
+L 3110 1939 
+C 3654 2150 4013 2592 4013 3302 
+C 4013 4390 3226 4742 2227 4742 
+L 582 4742 
+L 582 0 
+L 1530 0 
+L 1530 1792 
+L 2189 1792 
+L 3162 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="NotoSansCJKjp-Bold-35" d="M 1523 0 
+L 2470 0 
+L 2470 3949 
+L 3808 3949 
+L 3808 4742 
+L 192 4742 
+L 192 3949 
+L 1523 3949 
+L 1523 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="NotoSansCJKjp-Bold-e" d="M 314 1491 
+L 2061 1491 
+L 2061 2170 
+L 314 2170 
+L 314 1491 
+z
+" transform="scale(0.015625)"/>
       <path id="NotoSansCJKjp-Bold-f6b2" d="M 525 0 
 L 3373 0 
 L 3373 768 
@@ -271,7 +309,10 @@ z
      <use xlink:href="#NotoSansCJKjp-Bold-d4cb" transform="translate(92 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-1" transform="translate(184 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-22" transform="translate(206.703125 0)"/>
-     <use xlink:href="#NotoSansCJKjp-Bold-f6b2" transform="translate(270.796875 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-33" transform="translate(270.796875 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-35" transform="translate(337.09375 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-e" transform="translate(392.09375 0)"/>
+     <use xlink:href="#NotoSansCJKjp-Bold-f6b2" transform="translate(429.09375 0)"/>
     </g>
    </g>
    <g id="text_2">
@@ -621,19 +662,6 @@ z
    <g id="text_5">
     <!-- T1 -->
     <g style="fill: #1a202c" transform="translate(224.1774 36.46128) scale(0.096 -0.096)">
-     <defs>
-      <path id="NotoSansCJKjp-Bold-35" d="M 1523 0 
-L 2470 0 
-L 2470 3949 
-L 3808 3949 
-L 3808 4742 
-L 192 4742 
-L 192 3949 
-L 1523 3949 
-L 1523 0 
-z
-" transform="scale(0.015625)"/>
-     </defs>
      <use xlink:href="#NotoSansCJKjp-Bold-35"/>
      <use xlink:href="#NotoSansCJKjp-Bold-f6b2" transform="translate(62.5 0)"/>
     </g>

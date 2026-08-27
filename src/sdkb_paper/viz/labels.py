@@ -159,18 +159,18 @@ MARKS: dict[str, dict[str, str]] = {
 # ═══════════════════════════════════════════════════════════════════════════
 # 라벨 표 — 키는 `<그림>.<슬롯>`
 # ═══════════════════════════════════════════════════════════════════════════
-# **산출물 라벨은 두 언어가 다르다 (2026-08-26 · 외부 영문 교정 반영).** 영문 원고는 산출물을
-# `ART-1`·`ART-2`, 평가환경을 `E1` 이라 부른다 — 구 표기 `A1`·`A2` 가 **절제 조건 `A1`–`A8` 과
-# 기호가 겹쳤기** 때문이며, 같은 기호가 두 가지를 가리켜 사고가 난 S-시리즈의 경로다.
-# **국문 라벨은 건드리지 않는다** — 국문 원고가 아직 `A1`·`A2` 를 쓰고, 라벨만 바꾸면 그림과
-# 본문이 어긋난다. 국문의 같은 충돌은 별도 결정 사항으로 남긴다.
+# **산출물 라벨은 두 언어가 같다 — `ART-1`·`ART-2`·`E1` (2026-08-27 · 사용자 승인).**
+# 구 표기 `A1`·`A2` 는 **절제 조건 `A1`–`A8` 과 기호가 겹쳐** 같은 기호가 산출물과 절제를
+# 동시에 가리켰다 — 같은 사고로 폐기된 S-시리즈의 경로다. 영문은 외부 교정이 먼저 풀었고
+# (2026-08-26) 국문을 그다음 날 맞췄다. 셋째 띠는 그림만 `A3` 이라 부르고 본문은 `E1` 이라
+# 불러 온 **기존 불일치**였으며 이때 함께 해소했다.
 LABELS: dict[str, dict[str, str]] = {
     # 공통 ───────────────────────────────────────────────────────────────────
     "common.status_prefix": {"ko": "지위 · {status}", "en": "Status · {status}"},
 
     # ── 그림 1 · 연구 개요도 ─────────────────────────────────────────────────
     "overview.a1_title": {
-        "ko": "A1 · SDKB 데이터셋 — 공유 T-Box 하나 위의 세 태스크 뷰",
+        "ko": "ART-1 · SDKB 데이터셋 — 공유 T-Box 하나 위의 세 태스크 뷰",
         "en": "ART-1 · SDKB dataset — three task views on one shared T-Box"},
     "overview.core_head": {"ko": "공유 코어 어휘", "en": "Shared core vocabulary"},
     "overview.core_body": {
@@ -185,7 +185,7 @@ LABELS: dict[str, dict[str, str]] = {
         "ko": "상류 교정 · 어휘 확장\n새 A-Box 유입",
         "en": "Upstream fix · vocabulary\nnew A-Box"},
     "overview.a2_title": {
-        "ko": "A2 · 릴리스 승인 게이트 — 앞 단계가 실패하면 뒤를 실행하지 않는다",
+        "ko": "ART-2 · 릴리스 승인 게이트 — 앞 단계가 실패하면 뒤를 실행하지 않는다",
         "en": "ART-2 · Release acceptance gate — a failed stage stops the ones behind it"},
     "overview.stage_l0l3": {"ko": "L0–L3", "en": "L0–L3"},
     "overview.stage_l0l3_body": {
@@ -208,23 +208,23 @@ LABELS: dict[str, dict[str, str]] = {
         "ko": "T4 · 하류 생성 층 비회귀 — 설계와 판정 1회 · 승인식 미편입",
         "en": "T4 · Downstream generation non-regression — designed, one verdict, not in the rule"},
     "overview.a3_title": {
-        "ko": "A3 · 다층 평가 벤치마크 — 다섯 평가 에피소드와 각각의 측정 대상",
+        "ko": "E1 · 다층 평가 벤치마크 — 다섯 평가 에피소드와 각각의 측정 대상",
         "en": "E1 · Multi-layer benchmark — five episodes and what each measures"},
     "overview.ep_target": {"ko": "측정 대상 · {target}", "en": "Measures · {target}"},
     "overview.ep1_title": {"ko": "EP1 · 표현 감사", "en": "EP1 · Representation audit"},
-    "overview.ep1_target": {"ko": "A1 자원", "en": "ART-1 resource"},
+    "overview.ep1_target": {"ko": "ART-1 자원", "en": "ART-1 resource"},
     "overview.ep1_body": {
         "ko": "세 태스크 어휘와 CQ 가\n자원에 실재하는가",
         "en": "Are the three task vocabularies\nand CQs present in the resource"},
     "overview.ep2_title": {"ko": "EP2 · 게이트 판별력", "en": "EP2 · Gate discrimination"},
-    "overview.ep2_target": {"ko": "A2 게이트", "en": "ART-2 gate"},
+    "overview.ep2_target": {"ko": "ART-2 게이트", "en": "ART-2 gate"},
     "overview.ep2_body": {
         "ko": "홀드아웃 결함 {ep2.t3_only} 를 T3 가 단독 검출\n"
               "정상 델타 오거부 {ep2.false_positive}",
         "en": "T3 alone detects {ep2.t3_only} holdout faults\n"
               "false rejections {ep2.false_positive}"},
     "overview.ep3_title": {"ko": "EP3 · 통제된 자원 교체", "en": "EP3 · Resource substitution"},
-    "overview.ep3_target": {"ko": "ΔG → A2 판정", "en": "ΔG → ART-2 verdict"},
+    "overview.ep3_target": {"ko": "ΔG → ART-2 판정", "en": "ΔG → ART-2 verdict"},
     "overview.ep3_body": {
         "ko": "자원만 교체 → T1 {mark.fail}\n승인 = 0",
         "en": "Resource only → T1 {mark.fail}\nAccept = 0"},
@@ -235,7 +235,7 @@ LABELS: dict[str, dict[str, str]] = {
         "en": "{ep4.n_queries} queries · two splits\nfamily Recall@100"},
     "overview.ep5_title": {"ko": "EP5 · 제2 자원 이식", "en": "EP5 · Port to a 2nd resource"},
     "overview.ep5_target": {
-        "ko": "A2 절차의 자원 비의존성", "en": "ART-2 · resource independence"},
+        "ko": "ART-2 절차의 자원 비의존성", "en": "ART-2 · resource independence"},
     "overview.ep5_body": {
         "ko": "형식 층·T3 코드 변경 없이 실행\n"
               "관찰면 {ep5.observable}/{ep5.cq_total} · 명세 재접지 필요",
@@ -455,7 +455,7 @@ LABELS: dict[str, dict[str, str]] = {
               "not included in these numbers."},
 
     # ── 그림 6 · 평가 에피소드 × 승인식 구성요소 ─────────────────────────────
-    "matrix.col_resource": {"ko": "자원 A1", "en": "Resource ART-1"},
+    "matrix.col_resource": {"ko": "자원 ART-1", "en": "Resource ART-1"},
     "matrix.col_resource_sub": {"ko": "표현 감사", "en": "Representation audit"},
     "matrix.col_formal_sub": {"ko": "형식 · 기능", "en": "Formal · functional"},
     "matrix.col_t1_sub": {"ko": "검색 비열등성", "en": "Non-inferiority"},

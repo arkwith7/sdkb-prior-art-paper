@@ -34,10 +34,14 @@ BODY_FIGURES = (
     "ir_metrics.svg",
 )
 
-# G2 · 한국어판의 동결 해시 (2026-08-26 · PLAN-082 착수 시점에 고정)
+# G2 · 한국어판의 동결 해시
+# 2026-08-26 PLAN-082 착수 시점에 고정 · **2026-08-27 갱신(사용자 승인)** — 산출물 라벨을
+# `A1`·`A2`·`A3` 에서 **`ART-1`·`ART-2`·`E1`** 로 옮겼다. 구 표기가 절제 조건 `A1`–`A8` 과
+# 기호가 겹쳐 같은 기호가 두 가지를 가리켰고, 셋째 띠는 그림만 `A3` 이고 본문은 `E1` 이었다.
+# **의도한 변경이므로 값을 갱신한다** — 바뀐 것은 라벨 문자열뿐이고 수치·기하·배치는 그대로다.
 KO_SHA256 = {
     "concept_overview.svg":
-        "319278a29a2ac96a5113f263819e35724d1463e8a399cd34e74722d57eacbec1",
+        "8ed1760812e18577a2d5258c1fc9b0aca6ac2b87c8fc70cf688c726245c6efb6",
     "concept_layer_mismatch.svg":
         "2c9ff70afceef91b525b3de085689261436974fbbae073ac42c9d0f8aab26e3a",
     "concept_tbox_views.svg":
@@ -47,7 +51,7 @@ KO_SHA256 = {
     "concept_experiment_flow.svg":
         "d705ab050d1424ac0ce02396a871ddec83fe134d16fcae904e407e3474031faf",
     "concept_ep_gate_matrix.svg":
-        "281957db065196628031951028b0f88dd29d2ea49e1b14b8a6df3fec705af894",
+        "adf8a9d7b8205e9d69f848bc99e2e8b4408002547e7f45539431bc23fb349c98",
     "ir_metrics.svg":
         "c3118b3128d9b95cb8d33f7c8891b49179d4e0cc433bb3b7463838c966478ee0",
 }
