@@ -100,6 +100,13 @@ terms:
     define_in: "§1"
     gloss: 한 태스크를 위한 변경이 다른 태스크의 질의 경로를 훼손하는 현상
 
+  - id: eligibility-screening
+    category: concept
+    ko: 사전 적격심사
+    en: eligibility screening
+    define_in: "§3"
+    gloss: 두 실행의 비교가 성립하고 델타가 자격을 갖추었는가를 판정 이전에 확인하는 일곱 항의 검사
+
   - id: controlled-substitution
     category: concept
     ko: 통제된 자원 교체
