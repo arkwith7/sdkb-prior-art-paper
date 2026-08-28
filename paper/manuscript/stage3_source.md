@@ -935,7 +935,7 @@ A의 것을 승계하여 개봉 이전 커밋(`67568c8`)에 고정되어 있다.
 
 **표 5. 두 확증 분할의 검색 성능 (2-panel) — 기준선은 각 패널의 Text Hybrid(B3)이며, Δ와 승/패/동은 질의 단위로 짝지은 원표본 요약이고 95% 신뢰구간과 양측 *p*값은 질의 단위 paired bootstrap 10,000회로 산출하였다.**
 
-{{COPY:**표 5.4.1a. 두 확증 분할의 검색 성능 (2-panel)|table|keep:**A** | **Text Hybrid;**A** | Text+Ontology;**A** | **+ClaimFeature;**A** | 다국어 융합 기준선;**A** | 서지 조건 모사 기준선;**B** | **Text Hybrid;**B** | Text+Ontology;**B** | **+ClaimFeature;**B** | 다국어 융합 기준선;**B** | 서지 조건 모사 기준선}}
+{{COPY:**표 6.4.1a. 두 확증 분할의 검색 성능 (2-panel)|table|keep:**A** | **Text Hybrid;**A** | Text+Ontology;**A** | **+ClaimFeature;**A** | 다국어 융합 기준선;**A** | 서지 조건 모사 기준선;**B** | **Text Hybrid;**B** | Text+Ontology;**B** | **+ClaimFeature;**B** | 다국어 융합 기준선;**B** | 서지 조건 모사 기준선}}
 
 표에는 판정이 직접 걸린 세 구성과 탐색적 기준선 둘을 싣는다. 탐색적 기준선의 값은 확증 판정에
 들어가지 않는다. 효과 크기는 패널 B가 패널 A의 약 3분의 2 수준이며 전체 결과는 S5에 있다.
