@@ -1,8 +1,10 @@
 # S7 · Paper–release crosswalk
 
 > The numbers this paper reports ↔ the numbers the public release shows ↔ the **resource
-> generation** each belongs to ↔ the **reproduction grade** of each asset. Basis: `CLAUDE.md` §2.3.
-> Written 2026-08-21. This is the English rendering of the Korean audit record
+> generation** each belongs to ↔ the **reproduction grade** of each asset. The paper reports the
+> frozen generation on which the experiments actually ran, whereas the release distributes the
+> current generation reflecting later upstream corrections, so the two may differ. This is the
+> English rendering of the Korean audit record
 > [S7-release-crosswalk.md](../S7-release-crosswalk.md), which remains the record of the original
 > wording.
 >

@@ -1,12 +1,9 @@
-# S1. Appendices A–H removed from canonical v0.9 (preserved in full)
+# S1 · Preregistration checklist and methodological appendices
 
-> **This file is a move, not a deletion.** Under PLAN-033 §4.2, the appendices of the v2.0
-> manuscript retain **only the abridged Appendix B (the claim–evidence matrix)**, and the rest
-> (A, C–H) are moved here and published as supplementary material. The content is **exactly as cut
-> from canonical v0.9, with not a character altered** — altering it would break the purpose of
-> preservation, an honest record of the state before correction (`CLAUDE.md`, the canonical-return
-> clause). Source commit: `paper/archive/논문_v0_9_SDKB_통합초안.md` at `f3127f5`. Because an abridged
-> Appendix B remains in the manuscript, **the full text before abridgment** is carried here as well.
+> Full text of the preregistered items, the freeze list, and the validation procedures cited by
+> §4 and §5 of the manuscript. Each item records what was frozen, when, and under which commit
+> hash. The claim–evidence matrix appears in abridged form in the manuscript and in full here.
+
 >
 > This is the English rendering of the Korean audit record
 > [S1-appendices-v09.md](../S1-appendices-v09.md), which remains the record of the original wording.

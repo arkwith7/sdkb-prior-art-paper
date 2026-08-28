@@ -1,10 +1,11 @@
-# S3 — Options designed but not executed · full text of the abridged §4 (v0.9)
+# S3 · Evaluation options designed but not executed
 
-> **Why this file exists.** In stage 2 of PLAN-033, §4 (the methodology of the task-based
-> validation gate) was reduced from 6,960 to 5,459 characters, and what was cut is carried here
-> **without a single character altered**. Most of what was cut is an **option that was designed but
-> not executed in this study** — that it was not executed is itself a reportable fact, so it is not
-> deleted (`CLAUDE.md` §1-1, §8). §4.2 and §4.8 of the manuscript point to this file.
+> Full specifications of the evaluation options this study specified at the design stage but did
+> not execute: the comparison of query representations, the auxiliary indicators separating
+> novelty from inventive step, and the expert relevance-judgment protocol. **That they were not
+> executed is itself a reportable fact, so the specifications are given as written.** This file
+> introduces no verdicts and no new figures.
+
 >
 > No verdict and no number is created here. Every sentence below was carried over verbatim from an
 > earlier edition of manuscript v0.9.

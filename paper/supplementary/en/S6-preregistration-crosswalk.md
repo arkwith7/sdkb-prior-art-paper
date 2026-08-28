@@ -1,7 +1,9 @@
 # S6 · Preregistration crosswalk
 
 > The names this manuscript gives to its evaluation checks ↔ the labels used in the preregistration
-> documents ↔ the documents themselves. Basis: `CLAUDE.md` §0.9, rule 4. Written 2026-08-15.
+> documents ↔ the documents themselves. A paper reporting preregistered results must let readers
+> verify the correspondence between its claims and the registered outcomes; this table is that
+> correspondence.
 > This is the English rendering of the Korean audit record
 > [S6-preregistration-crosswalk.md](../S6-preregistration-crosswalk.md); the Korean file remains
 > the record of the original wording, and no verdict or measured value differs between them.
@@ -50,12 +52,14 @@ canonical manuscript [논문_v0_9_SDKB_통합초안.md](../../archive/논문_v0_
 
 ## 4. Design principles `DP` ↔ Lessons ①②③ — recording where a label went
 
-**2026-08-26 · PLAN-081 §5-④.** The manuscript reports seven design principles (`DP1`–`DP7`) as
+The manuscript reports seven design principles (`DP1`–`DP7`) as
 **three lessons** (**Lessons ①②③**) and **two follow-up hypotheses**. The evidence is one
 qualifying resource delta and one port case, so a general proposition resting on a single case is
 not called an established principle. **The grading scheme and the full `DP` table are preserved in
 [S5](S5-submission-full-v2.md) §3.3, §7.7 and §7.8** — this is a change in where they are reported
-and what they are called, not a retraction. **No verdict, measured value or grade differs.**
+and what they are called, not a retraction. **No verdict, measured value or grade differs.** The
+table below records where each label went. **Not recording where a label went is itself a break in
+traceability.**
 
 | Working canonical manuscript and PLANs | Place in the manuscript | Name |
 |---|---|---|
@@ -64,8 +68,8 @@ and what they are called, not a retraction. **No verdict, measured value or grad
 | `DP5` Separation of candidate generation | §6.3 | **Lesson ③** |
 | `DP1` Layered validation | §6.1 | Absorbed into the prose; no label |
 | `DP4` Controlled resource substitution | Opening of §4 | Absorbed as a methodological requirement of the evaluation design; no label |
-| `DP6` Verification of transfer | §6.4 | **Follow-up hypothesis** (graded "proposition" in S5) |
-| `DP7` Port-layer separation | §6.4 | **Follow-up hypothesis** |
+| `DP6` Verification of transfer | §6.3 | **Follow-up hypothesis** (graded "proposition" in S5) |
+| `DP7` Port-layer separation | §6.3 | **Follow-up hypothesis** |
 
 **The lesson names are used inside the manuscript only.** The working canonical manuscript, the
 PLANs, the defect ledger and `verdicts.yaml` keep the `DP` labels. What must hold is traceability,

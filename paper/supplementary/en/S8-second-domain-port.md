@@ -1,6 +1,7 @@
 # S8 · Port to a second engineering ontology (EP5) — protocol and full verdicts
 
-> The pre-abridgment full text of §4.6 and §5.5 of the manuscript. **Each verdict was issued once
+> Full text of the port evaluation to a second engineering ontology, cited by §4.6 and §5.5 of the
+> manuscript. **Each verdict was issued once
 > and none was re-adjudicated.** The preregistration is
 > [PLAN-064-prereg](../../../01.code_spec/archive/PLAN-064-prereg.md), and the execution record and
 > design decisions are in

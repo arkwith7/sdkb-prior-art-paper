@@ -1,12 +1,13 @@
-# S2. The four adjudications of the fault injection and CQ pass rates by generation (full text of v0.9 §6.5–§6.6)
+# S2 · The full course of the gate discriminative-power evaluation and its holdout confirmation
 
-> **This is a move, not a deletion.** Under PLAN-033 §3.2, H1 (discriminative power of the gate) is
-> demoted in the v2.0 manuscript to **the design (§4.9) plus one paragraph of holdout confirmation
-> (§6.5)**. The four adjudications that led to the verdict (H1 → H1′ → H1″ → H1‴) and the table of
-> CQ pass rates by generation are preserved here in full. **Not a character was altered** — hiding
-> the order of re-adjudication would make it indistinguishable from p-hacking, and exposing that
-> order is why this record exists. Source: §6.5–§6.6 of the canonical manuscript at commit
-> `f3127f5`.
+> The fault-injection evaluation of the gate's discriminative power went through **four
+> adjudications.** The first three re-adjudicate the same fault data and are therefore
+> exploratory; only the last is confirmatory. It was replicated on holdout instances never
+> adjudicated before, with the decision rule frozen and the preregistration committed separately
+> from the results. **All four are reported because their order determines the status of each
+> verdict.** What was frozen and what was changed at each round appears in the opening paragraph
+> of each section below. The table of competency-question pass rates by generation is included.
+
 >
 > This is the English rendering of the Korean audit record
 > [S2-fault-injection-v09.md](../S2-fault-injection-v09.md), which remains the record of the
