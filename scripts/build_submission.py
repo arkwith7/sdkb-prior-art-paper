@@ -8,7 +8,7 @@
 - 1단계의 계약은 **"순수 이관 · 문장 수정 0"**이다. 손으로 2,000행을 옮기면 그 계약을
   지켰는지 아무도 확인할 수 없다. 스크립트로 만들면 **발췌가 원문과 문자 단위로 같은지**
   기계가 검증한다 — 그것이 이 파일의 존재 이유다.
-- 정본(`paper/논문_v0_9_SDKB_통합초안.md`)은 **읽기만 한다.** 감사 가능한 전체 기록으로
+- 정본(`paper/archive/논문_v0_9_SDKB_통합초안.md`)은 **읽기만 한다.** 감사 가능한 전체 기록으로
   유지되어야 하므로(CLAUDE.md 서두 투고 파생 경로) 이 스크립트는 정본을 절대 쓰지 않는다.
 
 1단계가 하는 일은 둘뿐이다 (요건 2 이동 대장의 **이관 행만**)
@@ -25,7 +25,7 @@ import argparse
 import sys
 from pathlib import Path
 
-SOURCE = Path("paper/논문_v0_9_SDKB_통합초안.md")
+SOURCE = Path("paper/archive/논문_v0_9_SDKB_통합초안.md")
 TARGET = Path("paper/submission/manuscript.md")
 
 # ── 이관 명세 — 행번호가 아니라 **앵커 문자열**로 잡는다(정본이 자라도 따라간다) ──────────

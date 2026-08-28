@@ -20,7 +20,7 @@
 >
 > **강제 대상 (기계 검사 `make style-check`)** — 투고 파생본 계열:
 > `paper/manuscript/stage3_source.md`(산문 소스) · `paper/submission/**/*.md`(조립 산출물).
-> **대상 아님** — 작업 정본 `paper/논문_v0_9_SDKB_통합초안.md`와 `paper/supplementary/`.
+> **대상 아님** — 작업 정본 `paper/archive/논문_v0_9_SDKB_통합초안.md`와 `paper/supplementary/`.
 > 이 둘은 **감사 기록**이므로 과거 문장을 소급해 다듬지 않는다(`submission_check.py`가 정본을
 > 대상에서 제외하는 것과 같은 이유). 다만 **정본에 새로 쓰는 문단은 이 규격을 따른다.**
 

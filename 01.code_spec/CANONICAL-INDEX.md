@@ -15,13 +15,13 @@
 > **10건**. **판정·수치 변경 0** — 원고가 인용하는 자원 세대는 그대로다(§1 두 번째 경고문).
 >
 > **개정 (2026-07-31 · 정본 회귀 반영).** v1.0(영문 투고본)·v1.1(국문 정본)은 **`paper/archive/`로
-> 내려갔고 인용 금지**이며, 작업 정본은 다시 [v0.9 통합초안](../paper/논문_v0_9_SDKB_통합초안.md)이다
+> 내려갔고 인용 금지**이며, **작업 정본은 [paper/manuscript/stage3_source.md](../paper/manuscript/stage3_source.md)이다** (2026-08-28 · PLAN-085 §6 · v0.9 통합초안도 `paper/archive/`로 내려갔다)
 > (CLAUDE.md 머리말 · [PLAN-029](archive/PLAN-029-post-remediation-reexperiment.md)). 이 개정으로
 > 바로잡은 것: ① **T-gate·C3 산출물은 "미구현/미산출"이 아니라 구현·산출 완료** ② **기여는 3개가
 > 아니라 4개** ③ **C0(상류 환류) 축 신설** — `upstream/` 대장·CR 7건이 정본 인덱스에 없었다
 > ④ **G₁·G₂는 "세대"가 아니라 후보 모집단**(D-12 실측) ⑤ C2/H5 판정 문구를 CLAUDE.md §0에 정렬.
 >
-> *작성 근거: 정본 원고 [paper/논문_v0_9_SDKB_통합초안.md] · [RECONCILIATION-v09.md](RECONCILIATION-v09.md) ·
+> *작성 근거: 정본 원고 [paper/archive/논문_v0_9_SDKB_통합초안.md] · [RECONCILIATION-v09.md](RECONCILIATION-v09.md) ·
 > [specs/SPEC-006](specs/SPEC-006-g0-asbuilt-inventory.md)(G₀ as-built)·[SPEC-007](specs/SPEC-007-ir-corpus-asbuilt.md)(IR 코퍼스 as-built) ·
 > [upstream/DEFECT-LEDGER.md](../upstream/DEFECT-LEDGER.md) · 메모리 `pivot-v09-retrieval-primary-task`.
 > §1 서명은 온디스크 실측(MANIFEST §3).*
@@ -32,7 +32,8 @@
 
 | 축 | 정본 (FINAL) | 위치 |
 |---|---|---|
-| **작업 정본 (감사 기록)** | `논문_v0_9_SDKB_통합초안.md` — 사전등록 라벨(RQ·H)과 판정 기록의 원본. §1.4a = **사전등록된 평가 점검 H3·H5** · H1·H2·H4 는 판정 불변·지위 강등 | `paper/` |
+| **작업 정본** | `manuscript/stage3_source.md` — 현행 논리(EP1–EP5 · 교훈 셋 · ART-1/ART-2/E1)의 유일한 원본. **분량 상한 없음** | `paper/` |
+| **구 정본 (감사 기록 · 두 세대 낡음)** | `논문_v0_9_SDKB_통합초안.md` — 사전등록 라벨(RQ·H)과 판정 기록의 원본. §1.4a = **사전등록된 평가 점검 H3·H5** · H1·H2·H4 는 판정 불변·지위 강등. **현행 내용의 근거로 인용 금지** | `paper/archive/` |
 | **투고 파생본** | `paper/submission/manuscript.md` — 작업 정본의 **파생물**(PLAN-048). 기여 **3개**(산출물·방법·**설계지식** · CLAUDE.md §0.5 · 2026-08-19 개정) · 본문 표 13 · 그림 8 · 자체 호칭 사용(**§0.9 라벨 정책** — 파생본은 `H1`–`H5`·`RQ1`–`RQ5` 를 쓰지 않는다) | `paper/submission/` · 조립 = `make submission-stage3` |
 | **파생본 산문 소스** | `paper/manuscript/stage3_source.md` — **파생본을 직접 편집하지 않는다.** 표는 동결본에서 기계 복사 | `paper/manuscript/` |
 | **작업 규약** | `CLAUDE.md` (v0.9 기조 · C0/C1/C2/C3·T-gate) | 루트 |
@@ -206,13 +207,13 @@
 ### `paper/`
 | 분류 | 파일 |
 |---|---|
-| **FINAL** | `논문_v0_9_SDKB_통합초안.md` (정본 · 유일 · v2.0 재구성 1단계) |
+| **FINAL** | `manuscript/stage3_source.md` (작업 정본 · 유일 · PLAN-085 재구성 중) |
 | **SUPPLEMENTARY (공개 예정 · 인용 가능)** | `supplementary/S1-appendices-v09.md`(잘라낸 부록 A·C–H 전문) · `supplementary/S2-fault-injection-v09.md`(결함주입 4회차 재판정 §6.5–6.6 + 구 §6.3 가설 판정표 전문) |
 | **ARCHIVED (인용 금지)** | `archive/논문_v1_1_SDKB_국문정본.md` · `archive/논문_v1_0_SDKB_AEI_투고초안.md` (**2026-07-29 강등** — "교정 전 상태"의 정직한 기록으로 보존) · `archive/논문_v0.7_SDKB.md` · `archive/논문_v0.5_SDKB.md` · `archive/논문초안_v0.2·v0.3` |
 | **GENERATED — LIVE** | `figures/{cq_report,vocab_coverage}_*.md` (CQ·어휘 측정 리포트) |
 | **ARCHIVED 그림·표 (S-시리즈)** | `archive/figures/*.svg`(fig1·4·6·7·8·10·11 등) · `archive/tables/*.md`(h1·h2·robustness) — 구 커버리지/시계열/이식성, **인용 금지** |
 | **v0.9 그림·표 — 산출 완료** | `tables/ir_{performance,subgroup,increment,crosslingual}_{dev,test}.md`(C2 · 9건) · `tables/fault_matrix{,_v2,_v3,_v4}.md`·`tables/cq_generations.md`(C3 · 5건) · `figures/ir_{increment,metrics,ablation,subgroup}.svg`(**원고 그림 1–4** — v2.0 에서 mermaid 그림 1 제거로 한 칸씩 당겨졌다) |
-| **빈 디렉토리 (함정)** | `manuscript/`(.gitkeep 뿐 — 진짜 원고는 `paper/논문_v0_9…md`) |
+| **구 함정 (해소됨)** | `manuscript/` 는 더 이상 비어 있지 않다 — **작업 정본 `stage3_source.md` 가 여기 있다**(2026-08-28) |
 
 ### `01.code_spec/`
 | 분류 | 파일 |

@@ -13,7 +13,7 @@ meta:
   plan: PLAN-048
   frozen_date: "2026-08-10"
   scan_targets:
-    - paper/논문_v0_9_SDKB_통합초안.md
+    - paper/archive/논문_v0_9_SDKB_통합초안.md
     - paper/submission/**/*.md
     # 산문 소스 편입 (2026-08-22 · 사용자 승인 · PLAN-067 R-7).
     # **왜 넓히는가:** 파생본은 이 파일에서 조립되므로 대부분의 위반은 파생본에서 잡힌다.

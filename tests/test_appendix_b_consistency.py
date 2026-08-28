@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-PAPER = Path(__file__).resolve().parents[1] / "paper" / "논문_v0_9_SDKB_통합초안.md"
+PAPER = Path(__file__).resolve().parents[1] / "paper" / "archive" / "논문_v0_9_SDKB_통합초안.md"
 
 # §6.3 판정 열이 아직 비어 있음을 뜻하는 표기 — 이것이 있으면 "판정 없음"으로 센다.
 PLACEHOLDERS = ("[지지/기각", "[실험 후 기입]", "[기입]")

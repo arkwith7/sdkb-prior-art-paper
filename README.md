@@ -4,7 +4,7 @@
 기술예측 세 뷰를 지탱하며, 이 데이터셋을 **핵심 태스크(선행기술 검색)로 증명하고, 진화 시 다른 태스크를
 훼손하지 않음(다중 태스크 작동성)을 T-gate로 보증**한다. 투고 대상: *Advanced Engineering Informatics (AEI)*.
 
-> **작업 정본은 [paper/논문_v0_9_SDKB_통합초안.md](paper/논문_v0_9_SDKB_통합초안.md)이고, 투고본은
+> **작업 정본은 [paper/archive/논문_v0_9_SDKB_통합초안.md](paper/archive/논문_v0_9_SDKB_통합초안.md)이고, 투고본은
 > 그 파생물 [paper/submission/manuscript.md](paper/submission/manuscript.md)이다**(산문 소스
 > `paper/manuscript/stage3_source.md` → `make submission-stage3`). 서명 수치의 최종
 > 판정은 [01.code_spec/CANONICAL-INDEX.md](01.code_spec/CANONICAL-INDEX.md) §1, 진행 현황은
@@ -117,7 +117,7 @@ BigQuery ────┘                                                     │
 | 무엇 | 어디 |
 |---|---|
 | 작업 규약 | [CLAUDE.md](CLAUDE.md) (v0.9 기조) |
-| 정본 원고 | [paper/논문_v0_9_SDKB_통합초안.md](paper/논문_v0_9_SDKB_통합초안.md) |
+| 정본 원고 | [paper/archive/논문_v0_9_SDKB_통합초안.md](paper/archive/논문_v0_9_SDKB_통합초안.md) |
 | 정본 인덱스·현황·전파 원장 | [01.code_spec/](01.code_spec/) — `CANONICAL-INDEX.md` · `STATUS.md` · `RECONCILIATION-v09.md` |
 | 계약(SPEC) | [01.code_spec/specs/](01.code_spec/specs/) — SPEC-001~007 |
 | 용어집·실무 참조 | `GLOSSARY-{ONTOLOGY,SEMICONDUCTOR,STATISTICS}.md` · [REF-001](01.code_spec/REF-001-ip-rnd-domain-framework.md)(IP-R&D) |

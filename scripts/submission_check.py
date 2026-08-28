@@ -43,7 +43,7 @@ import re
 import sys
 from pathlib import Path
 
-# 동결 기준선 — paper/논문_v0_9_SDKB_통합초안.md, 2026-08-10 (PLAN-048 승인 시점) 실측.
+# 동결 기준선 — paper/archive/논문_v0_9_SDKB_통합초안.md, 2026-08-10 (PLAN-048 승인 시점) 실측.
 # 전체 124,354자 = 본문 114,472자 + 서지 9,882자 (커밋 9188e757 의 정본에서 재측정 · 2026-08-16).
 BASELINE_CHARS = 124_354            # 참고 — D6 는 아래 본문 기준선으로 판정한다
 BASELINE_BODY_CHARS = 114_472       # D6 분모: `# 참고문헌` 앞까지

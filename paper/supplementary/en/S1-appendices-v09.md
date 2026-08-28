@@ -5,7 +5,7 @@
 > (A, C–H) are moved here and published as supplementary material. The content is **exactly as cut
 > from canonical v0.9, with not a character altered** — altering it would break the purpose of
 > preservation, an honest record of the state before correction (`CLAUDE.md`, the canonical-return
-> clause). Source commit: `paper/논문_v0_9_SDKB_통합초안.md` at `f3127f5`. Because an abridged
+> clause). Source commit: `paper/archive/논문_v0_9_SDKB_통합초안.md` at `f3127f5`. Because an abridged
 > Appendix B remains in the manuscript, **the full text before abridgment** is carried here as well.
 >
 > This is the English rendering of the Korean audit record

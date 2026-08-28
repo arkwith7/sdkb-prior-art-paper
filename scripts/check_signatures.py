@@ -24,7 +24,7 @@ BASELINE_TEST = ROOT / "tests" / "test_baseline_integration.py"
 # (STATUS.md 는 서사 정본이라 구 서명 보존이 설계 — 제외.
 #  구 원고 v0.5/v0.7 은 paper/archive/ 로 이관됨 — 동결 이력이라 검사 제외.)
 TARGETS = [
-    ROOT / "paper" / "논문_v0_9_SDKB_통합초안.md",   # v0.9 정본 원고
+    ROOT / "paper" / "archive" / "논문_v0_9_SDKB_통합초안.md",   # v0.9 정본 원고
     ROOT / "README.md",
     ROOT / "data" / "DATASET-CARD.md",
 ]

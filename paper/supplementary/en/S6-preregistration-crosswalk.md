@@ -33,7 +33,7 @@ answers it**, exactly as designed at the time of preregistration.
 | `H4` | Layer contribution | Rows A4 and A5 of the ablation table in §5.4.2 | Rejected |
 
 **Demotion is not deletion.** The verdict records remain under their original labels in the working
-canonical manuscript [논문_v0_9_SDKB_통합초안.md](../../논문_v0_9_SDKB_통합초안.md) §1.4a and in
+canonical manuscript [논문_v0_9_SDKB_통합초안.md](../../archive/논문_v0_9_SDKB_통합초안.md) §1.4a and in
 [paper/verdicts.yaml](../../verdicts.yaml).
 
 ## 3. Design research questions
