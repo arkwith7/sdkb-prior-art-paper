@@ -16,8 +16,21 @@
   ＋  내부 링크 도달성 (이관은 삭제가 아니다 — supplementary 링크가 끊기면 실패)
 
 설계 메모
-- **대상은 파생본뿐이다**(`paper/submission/**/*.md`). 작업 정본은 감사 기록이므로 이 검사의
-  대상이 아니다 — 정본에 상한을 걸면 기록을 지우라는 요구가 된다.
+- **대상은 파생본과 산문 소스 둘이다.** 파생본(`paper/submission/**/*.md`)은 전 항목을 받고,
+  **산문 소스**(`paper/manuscript/*_source.md`)는 **D9(§참조 도달성)와 내부 링크만** 받는다
+  (2026-08-29 · O-15 · 사용자 승인). 정본에 분량·표/그림 상한을 걸면 기록을 지우라는 요구가
+  되므로 그 넷(D2·D4·D5·D6 및 D3·D7·D8)은 산문 소스에 적용하지 않는다 — **면제가 아니라
+  해당 없는 항목을 빼는 것이다**(부속물 처리와 같은 규칙).
+- **왜 넓히는가 (O-15).** D9 와 링크 검사는 이 검사기에만 있고, 이 검사기는 파생본만 보았다.
+  그래서 **조립을 동결한 기간에는 정본에서 절을 옮기거나 번호를 바꾸어 §참조가 죽어도 검사군
+  다섯이 전부 초록이었다.** 실제로 PLAN-085 재구성이 그 상태에서 진행됐고 확인은 손으로 했다.
+  전례는 `verdicts` 의 산문 소스 편입(PLAN-067 R-7)이며, 그때처럼 **대상만 넓히고 규칙은
+  그대로 둔다.** 켜는 시점 실측은 **위반 0**(국문 소스 절 제목 38 · 고유 §참조 35 · 미도달 0 ·
+  깨진 링크 0 · 영문 소스 D9 0 · 링크 0)이므로 경고 단계 없이 차단으로 켠다.
+- **산문 소스의 링크는 자기 위치가 아니라 조립 대상 위치를 기준으로 쓰여 있다.** 국문 소스는
+  `paper/submission/`, 영문 소스는 `paper/submission/en/` 이 기준이다(깊이가 달라 영문은
+  `../../`). 소스 디렉터리에서 그대로 풀면 영문 28건이 거짓 위반이 된다 — 그래서 대상마다
+  **링크 기준 디렉터리**를 함께 등록한다.
 - 파생본이 아직 없으면(PLAN-048 1단계 전) **대상 부재로 통과**시키고 그 사실을 출력한다.
   없는 것을 실패로 만들면 0단계 배선 자체가 CI 를 붉힌다.
 - 분량 기준선은 **코드에 동결**한다. 정본을 실시간으로 읽어 비교하면 정본이 자라는 만큼
@@ -144,6 +157,13 @@ WORKDOC_MARKERS = [
     "미수행 설계 전문",
 ]
 
+# 산문 소스와 그 **링크 기준 디렉터리** (O-15). 값은 소스가 링크를 쓸 때 전제한 위치이며,
+# 조립 산출물이 놓이는 자리다 — 소스 자신의 디렉터리가 아니다.
+SOURCE_TARGETS: dict[str, str] = {
+    "paper/manuscript/stage3_source.md": "paper/submission",
+    "paper/manuscript/en_source.md": "paper/submission/en",
+}
+
 TABLE_SEP = re.compile(r"^\|[\s:|-]+\|?\s*$")
 IMAGE_REF = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
 INTERNAL_LINK = re.compile(r"(?<!!)\[[^\]]*\]\((?!https?:|mailto:)([^)#]+)(?:#[^)]*)?\)")
@@ -170,7 +190,14 @@ def strip_fenced(lines: list[str]) -> list[str]:
     return out
 
 
-def check_file(path: Path, root: Path, warns: list[str] | None = None) -> list[str]:
+def check_file(
+    path: Path,
+    root: Path,
+    warns: list[str] | None = None,
+    *,
+    is_source: bool = False,
+    link_base: Path | None = None,
+) -> list[str]:
     fails: list[str] = []
     # 경고 채널을 넘기지 않으면 경고는 버린다 — 단위 테스트가 차단 위반만 보기 위해서다.
     warns = [] if warns is None else warns
@@ -178,11 +205,13 @@ def check_file(path: Path, root: Path, warns: list[str] | None = None) -> list[s
     lines = strip_fenced(text.splitlines())
     body = "\n".join(lines)
 
-    # D2 · 플레이스홀더
-    for i, line in enumerate(lines, 1):
-        for ph in PLACEHOLDERS:
-            if ph in line:
-                fails.append(f"{path}:{i}: [D2] 플레이스홀더 잔존 — {ph}")
+    # D2 · 플레이스홀더 — 산문 소스는 대상이 아니다(O-15). 소스는 편집 중의 문서이고
+    # 플레이스홀더의 정리는 조립·마감에서 판정한다.
+    if not is_source:
+        for i, line in enumerate(lines, 1):
+            for ph in PLACEHOLDERS:
+                if ph in line:
+                    fails.append(f"{path}:{i}: [D2] 플레이스홀더 잔존 — {ph}")
 
     # **원고 검사와 제출 부속물 검사를 가른다 (2026-08-21 · PLAN-063 트랙 4).**
     # D3(영문 제목·초록)·D5(표·그림 계수)·D6(분량)·D7(초록 단어)·D8(키워드)은 **원고의 성질**을
@@ -200,11 +229,13 @@ def check_file(path: Path, root: Path, warns: list[str] | None = None) -> list[s
     if is_manuscript and not has_en_abstract:
         fails.append(f"{path}: [D3] 영문 초록 절(Abstract) 없음")
 
-    # D4 · 작업 정본 전용 블록
-    for i, line in enumerate(lines, 1):
-        for marker in WORKDOC_MARKERS:
-            if marker in line and line.lstrip().startswith("#"):
-                fails.append(f"{path}:{i}: [D4] 작업 정본 전용 블록 잔존 — {marker}")
+    # D4 · 작업 정본 전용 블록 — 산문 소스는 대상이 아니다(O-15). 이 검사는 "정본에만 있어야
+    # 하는 블록이 파생본으로 새어 나왔는가"를 묻는 것이므로, 소스에 대면 질문이 뒤집힌다.
+    if not is_source:
+        for i, line in enumerate(lines, 1):
+            for marker in WORKDOC_MARKERS:
+                if marker in line and line.lstrip().startswith("#"):
+                    fails.append(f"{path}:{i}: [D4] 작업 정본 전용 블록 잔존 — {marker}")
 
     # D5 · 표·그림 계수
     n_tables = sum(1 for line in lines if TABLE_SEP.match(line))
@@ -290,8 +321,8 @@ def check_file(path: Path, root: Path, warns: list[str] | None = None) -> list[s
             target = target.strip()
             if not target:
                 continue
-            resolved = (path.parent / target).resolve()
-            if not resolved.exists() and not (root / target).resolve().exists():
+            base = link_base or path.parent
+            if not (base / target).resolve().exists() and not (root / target).resolve().exists():
                 fails.append(f"{path}:{i}: [LINK] 내부 링크 단절 — {target}")
 
     return fails
@@ -304,15 +335,21 @@ def main() -> int:
     args = ap.parse_args()
 
     root = Path(args.root).resolve()
-    targets = sorted((root / "paper" / "submission").rglob("*.md"))
-    if not targets:
-        print("대상 부재: paper/submission/**/*.md — 투고 파생본이 아직 없다 (PLAN-048 1단계 전). 통과.")
+    derived = sorted((root / "paper" / "submission").rglob("*.md"))
+    # 산문 소스는 조립 동결과 무관하게 항상 본다 — 이 편입의 이유가 바로 동결 기간의 공백이다(O-15).
+    sources = [(root / rel, root / base) for rel, base in SOURCE_TARGETS.items() if (root / rel).exists()]
+    if not derived and not sources:
+        print("대상 부재: paper/submission/**/*.md · paper/manuscript/*_source.md. 통과.")
         return 0
+    if not derived:
+        print("파생본 부재 — 산문 소스만 검사한다 (조립 동결 중이면 정상이다).")
 
     fails: list[str] = []
     warns: list[str] = []
-    for f in targets:
+    for f in derived:
         fails += check_file(f, root, warns)
+    for f, base in sources:
+        fails += check_file(f, root, warns, is_source=True, link_base=base)
 
     for line in warns:
         print(line)
@@ -325,7 +362,10 @@ def main() -> int:
             return 0
         return 1
     tail = f" · 경고 {len(warns)}건" if warns else ""
-    print(f"통과: {len(targets)}개 파일 · 투고 준비 검사 (D2–D9 · 내부 링크){tail}")
+    print(
+        f"통과: 파생본 {len(derived)}개 (D2–D9 · 내부 링크) + 산문 소스 {len(sources)}개 "
+        f"(D9 · 내부 링크){tail}"
+    )
     return 0
 
 

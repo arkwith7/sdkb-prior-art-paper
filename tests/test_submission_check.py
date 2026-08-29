@@ -87,6 +87,55 @@ def test_d9_ignores_claude_md_clause_and_bibliography(tmp_path):
     assert "D9" not in _codes(sc.check_file(_write(tmp_path, body), tmp_path))
 
 
+# ── O-15 · 산문 소스 편입 (D9·링크만) ───────────────────────────────────
+def _src(tmp_path: Path, body: str, name: str = "stage3_source.md") -> Path:
+    d = tmp_path / "paper" / "manuscript"
+    d.mkdir(parents=True, exist_ok=True)
+    p = d / name
+    p.write_text(body, encoding="utf-8")
+    return p
+
+
+def test_source_scope_flags_dead_section_ref(tmp_path):
+    """조립 동결 중에도 정본의 죽은 §참조는 잡힌다 — 편입의 이유가 이것이다."""
+    body = "# 3. 산출물\n\n## 3.5 승인 규칙\n\n절차는 §3.9 에 있다.\n"
+    fails = sc.check_file(_src(tmp_path, body), tmp_path, is_source=True)
+    assert "D9" in _codes(fails)
+
+
+def test_source_scope_skips_manuscript_only_rules(tmp_path):
+    """소스에는 D2·D4 를 대지 않는다 — 대면 감사 기록을 지우라는 요구가 된다."""
+    body = (
+        "# 3. 산출물\n\n## 3.5 승인 규칙\n\n"
+        "TODO(3) 값은 [실험 후 기입] 이다.\n\n# 개봉 원장\n\n표.\n"
+    )
+    codes = _codes(sc.check_file(_src(tmp_path, body), tmp_path, is_source=True))
+    assert "D2" not in codes and "D4" not in codes
+    # 같은 본문이 파생본이면 둘 다 잡힌다 — 규칙을 지운 것이 아니라 대상을 가른 것이다.
+    derived = _codes(sc.check_file(_write(tmp_path, body), tmp_path))
+    assert "D2" in derived and "D4" in derived
+
+
+def test_source_links_resolve_against_assembly_base(tmp_path):
+    """소스의 링크는 자기 위치가 아니라 **조립 대상 위치**를 기준으로 쓰여 있다."""
+    (tmp_path / "paper" / "supplementary").mkdir(parents=True)
+    (tmp_path / "paper" / "supplementary" / "S1.md").write_text("x", encoding="utf-8")
+    body = "# 3. 산출물\n\n전문은 [S1](../supplementary/S1.md).\n"
+    src = _src(tmp_path, body)
+    base = tmp_path / "paper" / "submission"
+    assert "LINK" not in _codes(sc.check_file(src, tmp_path, is_source=True, link_base=base))
+    # 기준을 잘못 잡으면(소스 디렉터리) 같은 링크가 거짓 위반이 된다 — 그래서 기준을 등록한다.
+    deep = tmp_path / "paper" / "submission" / "en"
+    assert "LINK" in _codes(sc.check_file(src, tmp_path, is_source=True, link_base=deep))
+
+
+def test_source_targets_registry_matches_repo():
+    """등록된 소스와 링크 기준이 실제 저장소와 어긋나면 검사가 조용히 비게 된다."""
+    for rel, base in sc.SOURCE_TARGETS.items():
+        assert (ROOT / rel).exists(), rel
+        assert (ROOT / base).is_dir(), base
+
+
 # ── 표 셀 치환의 수치 불변 보장 ──────────────────────────────────────────
 def test_cell_fix_rejects_measurement_change(monkeypatch):
     """표 문구는 고쳐도 되지만 **수치는 못 바꾼다** — 사유 없는 수치 변경은 실패(rc 2)."""

@@ -5,9 +5,12 @@
 > the English manuscript can reach every piece of evidence it points to.
 >
 > **What this file is not.** It is not a translation of the whole Korean S5. That file
-> ([S5-submission-full-v2.md](../S5-submission-full-v2.md)) is the frozen
-> pre-abridgment edition of the whole manuscript and remains **the complete audit record**; where a
-> section below states that further material exists, it is there. Nothing here is created: every
+> ([S5-submission-full-v2.md](../S5-submission-full-v2.md)) carries the same cited material in
+> Korean, together with the exploratory re-readings and the verdict records that the manuscript
+> cites only in Korean; where a section below states that further material exists, it is there.
+> The unabridged pre-excerpt edition, from which both files were cut, is kept as the complete
+> audit record at
+> [paper/archive/S5-submission-full-v2-pre-excerpt.md](../../archive/S5-submission-full-v2-pre-excerpt.md). Nothing here is created: every
 > value and every verdict is carried over from that record, and a machine check
 > (`make supplementary-check-en`) verifies that the measured values of the two files agree.
 >
