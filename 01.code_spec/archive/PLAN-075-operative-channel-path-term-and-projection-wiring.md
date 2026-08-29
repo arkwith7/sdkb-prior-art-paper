@@ -6,7 +6,7 @@
 > §2.1(자원만 교체) 경로가 아니다** — 정지 게이트 4개를 전부 탄다.
 >
 > **위치.** 승인된 작동 층 로드맵(2026-08-23) 세 단계 가운데 **1번(통로)** 이다.
-> `통로(배선) → 공리(채굴·T-Box) → 자유 텍스트 평가셋`. 2번의 원료는 [PLAN-074](../plans/PLAN-074-part1-redesign-extraction-unit.md)
+> `통로(배선) → 공리(채굴·T-Box) → 자유 텍스트 평가셋`. 2번의 원료는 [PLAN-074](../archive/PLAN-074-part1-redesign-extraction-unit.md)
 > Phase 0′ 계수가 이미 만들고 있고, 3번은 평가셋이 0건이라 아직 설계 이전이다.
 >
 > **승계.** 이 문서는 [PLAN-073](../archive/PLAN-073-claim-feature-projection-wiring.md)(한정요소 투영

@@ -165,7 +165,7 @@
 | O-10 λ dev 가중 선택 (`w_r` · `w_f2`) | §2.1 새 사전등록(PLAN-077) | 동상 |
 | `PLAN-079-prereg` 측정 (CR-001B ⑤ · CR-020 ⑥ · D-53 T3) | **C0 · 논문 밖** | 초안(미동결) |
 | [PLAN-071](PLAN-071-followup-paper-axiomatized-resource-redesign.md) | 후속 논문 | 살아 있는 계획 |
-| [PLAN-074](PLAN-074-part1-redesign-extraction-unit.md) | 후속 실험(Phase 0′) | 동상 |
+| [PLAN-074](../archive/PLAN-074-part1-redesign-extraction-unit.md) | 후속 실험(Phase 0′) | 동상 |
 
 **넷 모두 현 원고의 판정과 수치에 영향이 없다** — 앞의 둘은 C0(제품·상류)이고 뒤의 둘은 후속
 논문이다. **이 계획에서 착수하지 않으며, 착수 여부는 투고 뒤에 따로 정한다.**
