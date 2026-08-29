@@ -4,16 +4,12 @@
 > documents ↔ the documents themselves. A paper reporting preregistered results must let readers
 > verify the correspondence between its claims and the registered outcomes; this table is that
 > correspondence.
-> This is the English rendering of the Korean audit record
+> This is the English rendering of the Korean original
 > [S6-preregistration-crosswalk.md](../S6-preregistration-crosswalk.md); the Korean file remains
 > the record of the original wording, and no verdict or measured value differs between them.
 
-**Why this table exists.** The manuscript names its evaluation checks in words rather than by
-label, because hypothesis numbers with gaps in the sequence (`H3`, `H5`) would send a reader
-looking for an `H1`, `H2` and `H4` that the manuscript does not contain. A paper reporting
-preregistered results must nevertheless allow its claims to be matched against the registered
-results, and this table is that correspondence. Renaming in the manuscript is a matter of notation.
-Which check was confirmatory, what it predicted, and what verdict it received are unchanged.
+The manuscript names its evaluation checks in words; the preregistration documents use hypothesis
+labels. The table below joins the two.
 
 ## 1. Confirmatory evaluation checks
 
@@ -55,36 +51,47 @@ canonical manuscript [논문_v0_9_SDKB_통합초안.md](../../archive/논문_v0_
 The manuscript reports seven design principles (`DP1`–`DP7`) as
 **three lessons** (**Lessons ①②③**) and **two follow-up hypotheses**. The evidence is one
 qualifying resource delta and one port case, so a general proposition resting on a single case is
-not called an established principle. **The grading scheme and the full `DP` table are preserved in
-[S5](S5-submission-full-v2.md) §3.3, §7.7 and §7.8** — this is a change in where they are reported
-and what they are called, not a retraction. **No verdict, measured value or grade differs.** The
-table below records where each label went. **Not recording where a label went is itself a break in
-traceability.**
+not called an established principle. This is a change in where they are reported and what they are
+called, not a retraction. **No verdict, measured value or grade differs.** The table below records
+where each label went and how it is graded.
 
-| Working canonical manuscript and PLANs | Place in the manuscript | Name |
-|---|---|---|
-| `DP2` Acceptance one layer below | §6.3 | **Lesson ①** |
-| `DP3` Cross-task monitoring | §6.3 | **Lesson ②** |
-| `DP5` Separation of candidate generation | §6.3 | **Lesson ③** |
-| `DP1` Layered validation | §6.1 | Absorbed into the prose; no label |
-| `DP4` Controlled resource substitution | Opening of §4 | Absorbed as a methodological requirement of the evaluation design; no label |
-| `DP6` Verification of transfer | §6.3 | **Follow-up hypothesis** (graded "proposition" in S5) |
-| `DP7` Port-layer separation | §6.3 | **Follow-up hypothesis** |
+**There are five promotion conditions, fixed before the results were seen.** (1) the evidence is
+the output of executed code; (2) competing explanations are excluded, or their non-exclusion is
+stated; (3) the principle is stated in a form transferable beyond this artifact — if the sentence
+carries "in SDKB" it is an observation, not a principle; (4) it is refutable, with the observation
+that would weaken it stated alongside; (5) it is not derived after the fact, with the design time
+and the confirmation time each recorded.
+
+There are three grades. **Designed in advance, empirically supported** applies where all five hold
+and the design time precedes the confirmation time; **empirically supported** applies where all
+five hold but confirmation came first; **proposition** applies where at least one is unmet. The
+evidence and the weakening condition of each principle are stated in §6.3 of the manuscript.
+
+| Working canonical manuscript and PLANs | Place in the manuscript | Name | Grade |
+|---|---|---|---|
+| `DP2` Acceptance one layer below | §6.3 | **Lesson ①** | Designed in advance, empirically supported |
+| `DP3` Cross-task monitoring | §6.3 | **Lesson ②** | Designed in advance, empirically supported |
+| `DP5` Separation of candidate generation | §6.3 | **Lesson ③** | Empirically supported |
+| `DP1` Layered validation | §6.1 | Absorbed into the prose; no label | Empirically supported |
+| `DP4` Controlled resource substitution | Opening of §4 | Absorbed as a methodological requirement of the evaluation design; no label | Empirically supported |
+| `DP6` Verification of transfer | §6.3 | **Follow-up hypothesis** | Proposition |
+| `DP7` Port-layer separation | §6.3 | **Follow-up hypothesis** | Empirically supported |
+
+> The design-principle tables in [S5](S5-submission-full-v2.md) §3.3, §7.7 and §7.8 belong to the
+> generation that had **two grades** and **do not carry `DP7`**. The current grading is held by the
+> table above.
 
 **The lesson names are used inside the manuscript only.** The working canonical manuscript, the
 PLANs, the defect ledger and `verdicts.yaml` keep the `DP` labels. What must hold is traceability,
-not identity of symbols (`CLAUDE.md` §0.9).
+not identity of symbols.
 
 ## 5. Names that did not change
 
 `L0`–`L3` (four formal validation layers) · `T1`–`T4` (task conditions) · `EP1`–`EP5` (evaluation
 episodes) · `A1`–`A8` (ablation conditions) · `B0`–`B5` and `P0`–`P2` (comparison systems).
 
-> **The lessons do not use `L` (2026-08-26, at the author's direction).** The former labels
-> `L1`–`L3` collided with the formal validation layers `L0`–`L3`. One symbol standing for two
-> things has caused an error in this project before (the retired S-series), so the lessons are
-> named with the enclosed numerals **①②③**. A label beginning with `L` therefore denotes exactly
-> one thing in this paper: a formal validation layer.
+> The lessons are named with the enclosed numerals **①②③**. A label beginning with `L` denotes
+> exactly one thing in this paper: a formal validation layer, `L0`–`L3`.
 
 `T1`–`T4` remain because they are not legacy notation. They are the names of the components of the
 artifact this paper proposes, the T-gate.

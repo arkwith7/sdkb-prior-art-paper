@@ -4,24 +4,17 @@
 > generation** each belongs to ↔ the **reproduction grade** of each asset. The paper reports the
 > frozen generation on which the experiments actually ran, whereas the release distributes the
 > current generation reflecting later upstream corrections, so the two may differ. This is the
-> English rendering of the Korean audit record
+> English rendering of the Korean original
 > [S7-release-crosswalk.md](../S7-release-crosswalk.md), which remains the record of the original
 > wording.
 >
 > **No verdict and no measured value changes here.** This table does not correct a value; it states
 > **which generation a value belongs to**.
 
-## 0. Why this table exists
-
-§6.5 of the paper tells the reader to *check against the release and its hashes*. The
-numbers the paper reports and the numbers the release shows, however, **belong to different
-resource generations**. The paper reports the frozen generation on which the experiments actually
-ran, whereas the release distributes the current generation, which reflects later upstream
-corrections. That the two differ is not an error but a function of time; failing to say so would
-be the error.
-
-**Without this table a reader is blocked at four places**: the count of vocabulary properties, the
-size of the claim-feature layer, the competency-question pass rate, and the graph triple signature.
+§6.5 of the paper directs the reader to check against the release and its hashes. Four places
+diverge — the count of vocabulary properties, the size of the claim-feature layer, the competency
+question pass rate, and the graph triple signature — and the tables below resolve all four by
+naming the generation each value belongs to.
 
 ## 1. Resource generations — where each value came from
 
@@ -35,8 +28,8 @@ size of the claim-feature layer, the competency-question pass rate, and the grap
 | Former release `v1.1-paper` | `754fb78` | 2026-08-20 | ditto | Zenodo `10.5281/zenodo.22030396` · not cited, for reasons R1 and R2 below |
 
 **Freezing evidence.** The snapshot signature of the paper's generation is in the signature history
-of `01.code_spec/CANONICAL-INDEX.md` §1. The per-file sha256 of arm O′ of EP3 is in
-`01.code_spec/archive/PLAN-040-oprime-snapshot-signatures.json` (18 files). The source commit and
+of the repository. The per-file sha256 of arm O′ of EP3 is in the signature list of preregistration
+document PLAN-040 (18 files). The source commit and
 freshness record of the current snapshot are in `data/external/sdkb/PROVENANCE.json`, and the
 per-file sha256 of every release asset is in the release's **`provenance/PROVENANCE.json`**
 (323 assets at tag time · `release.upstream_commit = 754fb78`).
@@ -86,7 +79,7 @@ grade, and the details are in [S5](S5-submission-full-v2.md).
 1. **Do not cite a value without stating its generation.** `owl:ObjectProperty 97` is the value of
    the paper's generation and `99` is the value of the current generation. Both are correct.
 2. **Do not update the paper's numbers to the release values.** Doing so would be *changing the
-   conditions after seeing the results* (`CLAUDE.md` §1-2, §1-3); measurement on a new generation
+   conditions after seeing the results*; measurement on a new generation
    is **a new experiment under a new preregistration**.
 3. **Do not cite the release values as expectations for the paper.** The same reason applies.
 4. The reference for comparing release assets is the **version DOI**; to denote the dataset in
@@ -108,10 +101,9 @@ corrected upstream at `b8495b2`, `v1.1.1-paper` was issued, and the new version 
 `version = {1.1.1}`; and `CITATION.cff` carries `version: "1.1.1"` and
 `doi: 10.5281/zenodo.22030395`.
 
-**One rule stands alongside it to prevent recurrence: a tagged tree does not state its own version
-DOI.** That number is assigned when the release is issued, so a tag can only ever carry the
-**preceding** number, which is the mechanism behind R1 and R2. The concept DOI is stable and
-enumerates every version, so a tagged tree states that one alone.
+The mechanism behind R1 and R2 is that a tagged tree cannot state its own version DOI. That number
+is assigned when the release is issued, so a tag can only carry the preceding number. The concept
+DOI is stable and enumerates every version, so a tagged tree states that one.
 
 **Asset invariance was confirmed by hash.** Of the 324 public assets, the ones whose hash moved are
 the five metadata files (`README.md`, `README.ko.md`, `CITATION.cff`, `.zenodo.json`,

@@ -9,8 +9,9 @@
   손으로 옮겨 적으면 오탈자가 곧 조작이 된다(§1-1 "수치는 실행된 코드의 출력"). 그래서
   산문은 사람이 쓰고(`paper/manuscript/stage3_source.md`), **표는 축약 전 전문에서 문자
   단위로 복사**한다. 이 파일이 그 경계를 강제한다.
-- 복사 원본은 **축약 전 파생본 전문**(`paper/supplementary/S5-submission-full-v2.md`)이다.
-  S5 는 2단계 산출물의 동결 사본이므로 3단계 편집이 원본을 움직이지 못한다.
+- 복사 원본은 **조립 입력 층**(`paper/assembly/`)이다. 표는 `frozen-tables.md`, 서지는
+  `references.md` 에 있으며 둘 다 축약 이전 파생본에서 기계로 떼어 온 사본이다. 조립 입력은
+  독자에게 나가는 자료가 아니므로, 보충자료를 정리해도 조립이 흔들리지 않는다.
 - 앵커가 없거나 둘 이상이면 **조용히 넘어가지 않고 실패**한다(rc 2). 표가 소리 없이
   빠지거나 엉뚱한 표가 실리는 사고를 구조적으로 막기 위해서다.
 
@@ -27,6 +28,10 @@
 않으면 실패한다(rc 2). 내린 행은 삭제가 아니라 이관이며 전문은 동결본에 그대로 남는다.
 
 **표 안의 문구도 규약을 따라야 한다 — 그러나 표를 다시 타자하지는 않는다(CELL_FIXES).**
+치환은 **나가는 표에만** 건다(2026-08-29). 동결본 전체에 걸면 복사되지 않는 표까지 고치게 되어,
+고친 문장은 어디에도 나가지 않고 앵커 유지 의무만 남는다 — 실측 21건 중 16건이 그러하였고,
+그 열여섯이 동결본의 절 일곱을 붙잡아 보충자료를 정리할 수 없게 만들었다. 복사되는 표 어디에도
+걸리지 않는 치환이 남아 있으면 조립이 멈춘다.
 절 번호가 바뀌거나(§4.9 → §4.5) §0.8 문구 사전이 늘면 표 셀도 따라가야 하는데, 그 이유로
 표를 손으로 옮겨 적으면 이 파일의 존재 이유가 사라진다. 그래서 셀 치환은 **앵커가 정확히
 한 번 매치되는 목록으로만** 허용하고, **수치가 하나라도 달라지면 실패**시킨다(rc 2).
@@ -44,7 +49,14 @@ import sys
 from pathlib import Path
 
 PROSE = Path("paper/manuscript/stage3_source.md")
-FROZEN = Path("paper/supplementary/S5-submission-full-v2.md")
+# 복사 원본 — **조립 입력 층**(2026-08-29 · 사용자 승인). 구판은 축약 이전 파생본
+# `paper/supplementary/S5-submission-full-v2.md` 를 직접 읽었고, 그래서 S5 하나가 두 임무를
+# 졌다 — 독자에게 근거를 보이는 일과 조립기에 표를 빌려주는 일이다. 두 임무는 서로를 붙잡아,
+# 조립을 위해 남긴 자리가 보충자료의 정리를 막고 보충자료의 교정이 조립을 멈췄다(실제 2회).
+# 자리를 나누면 그 결합이 사라진다. **표의 내용은 한 글자도 바뀌지 않았다** — 분리 전후의
+# 조립 산출물이 바이트 단위로 동일함을 확인하였다.
+FROZEN = Path("paper/assembly/frozen-tables.md")
+BIB_SRC = Path("paper/assembly/references.md")
 TARGET = Path("paper/submission/manuscript.md")
 
 DIRECTIVE = re.compile(
@@ -182,7 +194,7 @@ BIB_INSERTS: list[tuple[str, str]] = [
         "& Sabou, M. (2015). Ontology evolution: A process-centric survey. *The Knowledge Engineering "
         "Review, 30*(1), 45–75. https://doi.org/10.1017/S0269888913000349",
     ),
-    # AEI 문헌 보강(2026-08-17) — 투고처에 게재된 최근 연구와의 포지셔닝(§2.2·§2.3·§2.4·§3).
+    # 공학 정보학 문헌 보강(2026-08-17) — 인접 최근 연구와의 포지셔닝(§2.2·§2.3·§2.4·§3).
     # 서지는 Crossref 등록 메타데이터 대조다(저자·권·논문번호·DOI).
     (
         "Kontokostas, D., Westphal, P.,",
@@ -252,6 +264,11 @@ def measurements(text: str) -> list[str]:
     return NUMERIC.findall(SECTION_TOKEN.sub("§", text))
 
 CELL_FIXES: list[tuple[str, str, str | None]] = [
+    # **사문 16건을 뺐다 (2026-08-29 · 사용자 승인).** 뺀 것은 §1.4a 평가 점검 표 4행 ·
+    # §4.9 승인식 표 5행 · §7.7·§7.8 설계원리 표 5행 · §4.1 세 태스크 뷰 1행 · §4.4 도달성 1행
+    # 이다. **판정도 수치도 바뀌지 않는다** — 이 열여섯은 복사되지 않는 표를 고치고 있었으므로
+    # 산출물에 한 글자도 내보낸 적이 없다(실측: 치환 결과 문자열이 파생본에 0건). 같은 규율은
+    # 이제 원본 쪽에서 선다 — `make verdicts` 가 supplementary 까지 보기 때문이다.
     # 절제 표의 `p=0.000` — 0 이 아닌 값을 0 으로 적은 자리다. 부트스트랩 10,000 회의
     # 분해능은 0.0001 이므로 산출기가 낼 수 있는 가장 작은 값이 `0.000` 으로 반올림된 것이며,
     # **참값이 0 이라는 뜻이 아니다.** 통계 보고 관례대로 `p<.001` 로 적는다. 같은 표의 다른
@@ -277,89 +294,6 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
         "그 행의 수치(21·10)가 새로 들어간다 — 출처는 SPEC-010 §8 판정 기록이다. 명칭은 "
         "\"효용\" 에서 \"이득의 범위\" 로 내린다(PLAN-081 §6-③) — 수치는 불변이다",
     ),
-    # 자원 교체 표 — P1 은 사전 지정 주 구성이 아니라 **교체 대상 구성**이다(§0.8 SYSTEM_LABELS).
-    (
-        "| **P1 (주 시스템)** |",
-        "| **P1 (교체 대상 구성)** | 0.4849 | 0.4556 | **−0.0293** · 95% CI [−0.0542, −0.0053] |",
-        None,
-    ),
-    # 평가 점검 표 머리글 — 두 칸은 합성 판정이 아니라 **사전등록별 기록**임을 열 이름이 말하게
-    # 한다. 그리고 §0.9 에 따라 첫 칸을 사전등록 라벨에서 **서술형 호칭**으로 바꾼다.
-    (
-        "| 연구질문 | 점검 (라벨) |",
-        "| 평가 점검 | 지위 | 결과를 보기 전에 동결한 예측 | 사전등록별 판정 기록 · "
-        "첫 확증 분할(A) | 사전등록별 판정 기록 · 두 번째 확증 분할(B) | 근거 |",
-        None,
-    ),
-    # ── §0.9 라벨 정책: 파생본 본문에 사전등록 라벨을 쓰지 않는다 ──────────────────────
-    # 세 행 모두 **판정·예측·수치는 원문 그대로**이고 바뀌는 것은 첫 두 칸의 호칭뿐이다.
-    # 라벨의 숫자(RQ2·H3·RQ3·H5·RQ5·T4)가 빠지므로 수치 토큰 검사가 걸린다 — 사유를 적는다.
-    # 대응표는 paper/supplementary/S6-preregistration-crosswalk.md.
-    (
-        "| **RQ2** 검색 유용성 |",
-        "| **점검 1 · 검색 유용성** | 확증 | 온톨로지 보강 검색은 최강 텍스트 기준선보다 "
-        "**Recall@100 과 nDCG@20 이 모두** 높고, 그 개선폭은 질의–정답의 어휘 중첩이 **낮은** "
-        "집단에서 더 크다 | **부분 지지 — 주 지표에 한정** (R@100 은 P1 에서 유의 개선 · nDCG "
-        "조항 미충족 · 사전 지정 주 구성 비유의 · 저중첩 조건 반증) | **미지지** (R@100 은 "
-        "개선되나 nDCG 조항이 깨졌다 · 주 구성 비유의) | §6.4.1 (패널 A · B) |",
-        "라벨 숫자 2·3(RQ2·H3)만 빠진다 — 예측·판정·측정값은 원문과 동일하다(§0.9 규칙 2)",
-    ),
-    (
-        "| **RQ3** 계층 특이성 |",
-        "| **점검 2 · 계층 특이성** | 확증 | 게이트 태스크와 무관한 전문가 매칭 전용 계층"
-        "(`Skill`·`ExpertCase`·`Mitigation`)의 제거는 검색 성능을 **유의하게 바꾸지 않는다** | "
-        "**기각 → 교차 태스크 의존성 관측** (제거가 검색을 유의하게 악화) | **재현되지 않음 — "
-        "판정 불가** (같은 절제의 값이 0.0000 · \"영향 없음\"과 \"뺄 것이 없음\"을 가르지 "
-        "못한다) | §6.4.3 · §6.4.6 · §7.3 |",
-        "라벨 숫자 3·5(RQ3·H5)만 빠진다 — 예측·판정·측정값은 원문과 동일하다(§0.9 규칙 2)",
-    ),
-    (
-        "| **RQ5** 전달 |",
-        "| **점검 3 · 전달** | 확증 평가 (게이트 조건 T4) | 검색 구성만 교체하고 생성기를 고정하였을 때 "
-        "**인용 정확도가 떨어지지 않고 환각률이 오르지 않는다**(마진 동결) | *(탐색적 평가 — "
-        "평가 절차 동결이 목적 · 판정 없음)* | **판정 1회 = 실패 — 전달을 확증하지 못했다** "
-        "(점추정은 제안 구성이 앞서나 신뢰구간 하한이 마진보다 낮았다 · 원인 미구분) | "
-        "[S5](../supplementary/S5-submission-full-v2.md) 부록 A |",
-        "라벨 숫자 5(RQ5)만 빠지고 T4 는 게이트 이름이라 남는다 — 판정·측정값은 원문과 동일하다",
-    ),
-    # DP4 근거 셀에 남은 마지막 사전등록 라벨 — §0.9 규칙 2.
-    (
-        "| **DP4** | **통제된 자원 교체**",
-        "| **DP4** | **통제된 자원 교체** — 문서집합·모델·가중치를 고정하고 **자원 번들만 교체**해야 "
-        "온톨로지 중심 자원 변경의 효과가 판별된다 | §4.2 · §6.3 — T-Box 가 한 번도 바뀌지 않아 "
-        "승인 안전성을 **원리적으로 측정할 수 없었다** · 두 조건이 처음 성립한 뒤에야 판정이 나왔다 · "
-        "**성립 사례는 1건** | 확인이 먼저 | 2026-08-01 | **경험적 지지** "
-        "(확인 선행 · 방법론적 요구사항) |",
-        "라벨 숫자 2(H2)가 빠지고 사례 수 1 이 늘어난다 — 근거와 시점은 원문과 동일하다"
-        "(§0.9 규칙 2 · §0.6 3단계 등급). **절 참조도 고친다** — 구판의 `§6.5` 는 A-5 가 EP5 "
-        "결과 절을 가리키려고 `§5.5` 로 사상해 둔 토큰이라, DP4 의 근거인 그래프 계보와 통제된 "
-        "자원 교체가 아니라 이식 판정을 가리키고 있었다(EP5 삽입으로 생긴 스테일 참조). "
-        "`§4.2 · §6.3` 은 파생본의 `§3.2 · §5.1` 으로 사상된다(2026-08-26 재배열)",
-    ),
-    # DP2·DP3 등급 — §0.6 이 3단계로 개정되며(2026-08-19 · PLAN-060) "확립" 이 갈렸다.
-    # 설계 시점이 확인 시점보다 앞선 둘만 **사전 설계 · 실증 지지**다. 근거·시점·수치는 불변이고
-    # 바뀌는 것은 등급의 이름뿐이다. §4.9 는 SECTION_RENUMBER 가 §4.5 로 옮긴다.
-    (
-        "| **DP2** |",
-        "| **DP2** | **한 층 아래 승인** — 자원 변경은 자원 지표가 아니라 **다음 사용 층의 "
-        "비회귀 결과**로 승인한다 | §6.3 — 형식 검증 L0–L3 를 **전부 통과한** 델타를 성능 조건 "
-        "T1 이 거부(Accept = 0) | **§4.9 설계 시점** | 2026-08-01 | **사전 설계 · 실증 지지** |",
-        None,
-    ),
-    (
-        "| **DP3** |",
-        "| **DP3** | **교차 태스크 감시** — 공유 T-Box 에서는 **주 태스크 성능만으로** 변경을 "
-        "승인하지 않는다 | §6.2 — 교차 결함을 T3 만 단독 검출(12/45 · 단측 *p*=.0001) · "
-        "§6.4.3 — 음성 대조군(A8) 제거가 검색 성능을 0.0316 저하시켰고(제거 손실 +0.0316), 다만 "
-        "**§6.4.6 두 번째 분할에서는 0.0000 으로 서로 달랐다** · §6.5 — 제2 도메인에서는 판정이 "
-        "가능한 12건에서 단독 검출 0 (근거를 늘리지 않는다) | **§4.9 설계 시점**(T3) | 2026-07 | "
-        "**사전 설계 · 실증 지지** — 근거는 결함주입 T3 단독 검출이 진다. A8 근거는 **두 표본에서 "
-        "서로 달랐음을 그대로 적는다**(경쟁 설명 §7.9) |",
-        "부호 표기 통일 — 같은 값을 표 9 캡션의 제거 손실 정의(full − ablated · 양수 = 계층 기여)와"
-        " 같은 부호로 적는다. 측정값은 0.0316 그대로다(§1-1 · PLAN-062 F1). 여기에 제2 도메인 "
-        "판정(12건 · 단독 검출 0)이 더해진다 — 등급은 불변이고 근거의 범위도 넓히지 않는다"
-        "(PLAN-064 A-5 · SPEC-010 §8.2)",
-    ),
     # ── 문체 규격 v2 · T6 (2026-08-16) ────────────────────────────────────────
     # 규격 v1 은 산문만 검사했으므로 **표 셀의 구어·은유·축약형이 통째로 남아 있었다**.
     # v2 의 T6·T7 이 표 셀을 검사 대상에 넣었고, 그래서 여기서 고친다. 아래 치환은
@@ -378,57 +312,6 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
         "판정 | §6.3 |",
         None,
     ),
-    ("| 항 | 말로 풀면 | 어긋나면 |", "| 항 | 조건의 내용 | 미충족 시의 처리 |", None),
-    (
-        "| L0–L3 | 최신인가 ·",
-        "| L0–L3 | 최신 상태인가 · 구조 제약을 충족하는가 · 논리적 모순이 없는가 · 필수 "
-        "역량질문에 응답하는가 | 즉시 거부 |",
-        None,
-    ),
-    (
-        "| **T1** | 바꾼 뒤에도",
-        "| **T1** | 변경 이후에도 **검색 성능이 저하되지 않았는가** | 허용 폭 \\(\\epsilon\\) 을 "
-        "초과하여 저하되면 거부 |",
-        None,
-    ),
-    (
-        "| **T2** | 전체 평균은 괜찮아도",
-        "| **T2** | 전체 평균과 별개로 **특정 하위집단만 저하되지 않았는가** | 한 집단이라도 "
-        "\\(\\delta\\) 이상 저하되면 거부 |",
-        None,
-    ),
-    (
-        "| **T3** | **다른 갈래**가",
-        "| **T3** | **다른 태스크**가 응답하던 역량질문에 여전히 응답하는가 | 통과율이 하나라도 "
-        "저하되면 거부 |",
-        None,
-    ),
-    # DP1 근거 셀 — P1 을 "주 시스템"이라 부르는 것은 §0.8 SYSTEM_LABELS 위반이다.
-    (
-        "| **DP1** | **층별 검증**",
-        "| **DP1** | **층별 검증** — 온톨로지 내부 품질과 하류 태스크 성능은 **별도 층에서** "
-        "평가한다 | §6.3 — 문서당 개념 1.545 → 3.779(2.4배)인데 교체 대상 구성(P1)의 "
-        "Recall@100 은 −0.0293 · **성립한 자원 델타는 1건** | 확인이 먼저 | 2026-08-01 | "
-        "**경험적 지지** (확인 선행) |",
-        "구성 명칭 P1 과 델타 건수 1 이 늘어난다 — 측정값은 원문과 동일하다"
-        "(§0.8 SYSTEM_LABELS · §0.6 3단계 등급)",
-    ),
-    (
-        "| **DP6** |",
-        "| **DP6** | **전달 검증** — 검색 지표의 개선을 검토 효율이나 생성 답변 품질로 "
-        "**자동 일반화하지 않는다** | §6.4.5 — Recall@100 이 +0.0534 인데 Candidate Reduction "
-        "중앙값 **0.0 %** · 부록 A — 검색 층에서 유의하게 개선된 팔이 **생성 층 비열등 판정을 "
-        "통과하지 못하였다**(T4 실패 · 하한 −0.0205 대 마진 −0.02) | §4.9.1(T4 설계) | "
-        "2026-08-09 (확증 판정 1회) | **제안** |",
-        None,
-    ),
-    # 5장 절 병합(14 → 7)에 따른 §5.12 → §5.6. 앵커는 이 행에서만 나오는 클래스 목록으로 잡는다.
-    ("| 전문가 매칭 | `Problem`·`RootCause`", None, None),
-    # ── 용어 교정 (2026-08-16) ────────────────────────────────────────────────
-    # "해상도"는 이 원고에서 네 가지 뜻으로 쓰이던 은유였다(자원 계량 · 도달성의 관찰 수준 ·
-    # 매칭 단위 · CQ 검사 세밀도). 뜻마다 다른 용어로 갈랐고, 이 표의 열 이름은 그중
-    # **도달성의 관찰 수준**이다(§4.3 에서 정의한다).
-    ("| 해상도 | 정의 | 도달성 |", "| 관찰 수준 | 정의 | 도달성 |", None),
     ("| B0·B2·B3 텍스트 · B4 분류 |",
      "| B0·B2·B3 텍스트 · B4 분류 | 불변 | 불변 | 0 (텍스트를 변경하지 않았으므로) |", None),
 ]
@@ -482,14 +365,24 @@ def remap_sections(text: str) -> str:
     return CHAPTER_TOKEN.sub(lambda m: CHAPTER_REMAP[m.group(0)], text)
 
 
-def apply_cell_fixes(lines: list[str]) -> None:
-    """동결본 행을 제자리에서 고친다. 앵커가 1건이 아니거나 수치가 바뀌면 실패한다."""
+def apply_cell_fixes(rows: list[str], used: dict[str, int]) -> list[str]:
+    """**복사된 표 행**을 고친다. 앵커가 그 표 안에 두 번 있거나 수치가 바뀌면 실패한다.
+
+    **범위를 표로 좁힌 이유 (2026-08-29 · 사용자 승인).** 구판은 동결본 **전체**에 치환을 걸고
+    앵커마다 파일 안에서 정확히 1건을 요구했다. 그 결과 두 가지가 생겼다. ① 복사되지 않는 절의
+    표까지 치환 대상이 되어, 고친 문장이 **어디에도 나가지 않은 채** 앵커 유지 의무만 남았다 —
+    실측 21건 중 **16건이 그런 사문(死文)이었다.** ② 그 16건이 동결본의 절 일곱을 붙잡아 두어,
+    보충자료를 정리하면 조립이 멈췄다. 치환은 **나가는 표에만** 걸어야 그 둘이 함께 사라진다.
+    """
+    out = list(rows)
     for probe, new, reason in CELL_FIXES:
-        hits = [k for k, line in enumerate(lines) if probe in line]
-        if len(hits) != 1:
-            fail(f"셀 치환 앵커가 {len(hits)}건 — {probe!r}")
+        hits = [k for k, line in enumerate(out) if probe in line]
+        if not hits:
+            continue
+        if len(hits) > 1:
+            fail(f"셀 치환 앵커가 한 표 안에서 {len(hits)}건 — {probe!r}")
         k = hits[0]
-        old = lines[k]
+        old = out[k]
         text = old if new is None else new
         for a, b in SECTION_RENUMBER:
             text = text.replace(a, b)
@@ -502,8 +395,9 @@ def apply_cell_fixes(lines: list[str]) -> None:
                     f"  이전: {measurements(old)}\n  이후: {measurements(text)}"
                 )
             print(f"셀 치환 · 수치 변경 허용 — {probe!r}: {reason}")
-        lines[k] = text
-    print(f"셀 치환 {len(CELL_FIXES)}건 (수치 불변 검사 통과)")
+        out[k] = text
+        used[probe] = used.get(probe, 0) + 1
+    return out
 
 
 def fail(msg: str) -> None:
@@ -538,7 +432,11 @@ def read_generated(name: str) -> list[str]:
 
 
 def extract_table(
-    lines: list[str], anchor: str, keep: str | None = None, remap: bool = True
+    lines: list[str],
+    anchor: str,
+    keep: str | None = None,
+    remap: bool = True,
+    fixes_used: dict[str, int] | None = None,
 ) -> str:
     hits = [i for i, line in enumerate(lines) if anchor in line]
     if not hits:
@@ -558,6 +456,8 @@ def extract_table(
     if k - j < 3:
         fail(f"표가 너무 짧다({k - j}행) — {anchor!r}")
     rows = lines[j:k]
+    if fixes_used is not None:
+        rows = apply_cell_fixes(rows, fixes_used)
     if keep is not None:
         rows = select_rows(rows, keep, anchor)
     out = [remap_sections(row) for row in rows] if remap else list(rows)
@@ -605,27 +505,35 @@ def build() -> str:
         fail(f"산문 소스 부재 — {PROSE}")
     if not FROZEN.exists():
         fail(f"복사 원본 부재 — {FROZEN}")
+    if not BIB_SRC.exists():
+        fail(f"서지 원본 부재 — {BIB_SRC}")
     frozen = FROZEN.read_text(encoding="utf-8").split("\n")
-    apply_cell_fixes(frozen)         # 동결본은 디스크에서 불변 — 메모리 사본만 고친다
     prose = PROSE.read_text(encoding="utf-8")
 
     used: list[str] = []
+    fixes_used: dict[str, int] = {}   # 동결본은 디스크에서 불변 — 나가는 표만 고친다
 
     def sub(match: re.Match[str]) -> str:
         anchor = match.group("anchor").strip()
         used.append(anchor)
         src = match.group("src")
         if src is None:
-            return extract_table(frozen, anchor, match.group("keep"))
+            return extract_table(frozen, anchor, match.group("keep"), fixes_used=fixes_used)
         return extract_table(read_generated(src), anchor, match.group("keep"), remap=False)
 
     out = DIRECTIVE.sub(sub, prose)
     if "{{BIB}}" not in out:
         fail("{{BIB}} 지시자가 없다 — 참고문헌이 빠진 원고는 만들지 않는다")
-    out = out.replace("{{BIB}}", extract_bib(frozen))
+    out = out.replace("{{BIB}}", extract_bib(BIB_SRC.read_text(encoding="utf-8").split("\n")))
     if "{{COPY" in out:
         fail("해석되지 않은 지시자가 남았다 — 문법은 {{COPY:앵커|table}} 이다")
-    print(f"복사한 표 {len(used)}개 · 원본 {FROZEN}")
+    unused = [probe for probe, _new, _r in CELL_FIXES if probe not in fixes_used]
+    if unused:
+        fail(
+            "복사되는 표 어디에도 걸리지 않은 셀 치환이 있다 — 사문이므로 목록에서 뺀다:\n  "
+            + "\n  ".join(repr(p) for p in unused)
+        )
+    print(f"셀 치환 {len(CELL_FIXES)}건 · 복사한 표 {len(used)}개 · 원본 {FROZEN}")
     return out
 
 

@@ -143,7 +143,7 @@ def test_cell_fix_rejects_measurement_change(monkeypatch):
     line = "| **P1** | 0.4849 | 0.4556 |"
     monkeypatch.setattr(b3, "CELL_FIXES", [("| **P1** |", "| **P1** | 0.4949 | 0.4556 |", None)])
     with pytest.raises(SystemExit) as e:
-        b3.apply_cell_fixes([line])
+        b3.apply_cell_fixes([line], {})
     assert e.value.code == 2
 
 
@@ -152,15 +152,39 @@ def test_cell_fix_allows_section_renumber_without_reason(monkeypatch):
     b3 = _load("build_submission_stage3")
     lines = ["| **DP2** | 승인 | §4.9 설계 시점 | 2026-08-01 |"]
     monkeypatch.setattr(b3, "CELL_FIXES", [("| **DP2** |", None, None)])
-    b3.apply_cell_fixes(lines)
-    assert "§4.5 설계 시점" in lines[0] and "2026-08-01" in lines[0]
+    out = b3.apply_cell_fixes(lines, {})
+    assert "§4.5 설계 시점" in out[0] and "2026-08-01" in out[0]
 
 
 def test_cell_fix_fails_on_ambiguous_anchor(monkeypatch):
     b3 = _load("build_submission_stage3")
     monkeypatch.setattr(b3, "CELL_FIXES", [("| **X** |", "| **X** | new |", None)])
     with pytest.raises(SystemExit) as e:
-        b3.apply_cell_fixes(["| **X** | a |", "| **X** | b |"])
+        b3.apply_cell_fixes(["| **X** | a |", "| **X** | b |"], {})
+    assert e.value.code == 2
+
+
+def test_cell_fix_is_scoped_to_the_copied_table(monkeypatch):
+    """복사되지 않는 자리의 치환은 **사문**이다 — 표 밖 앵커는 건드리지 않고 넘어간다.
+
+    구판은 동결본 전체를 훑고 앵커마다 1건을 요구해, 복사되지 않는 표까지 붙잡아 두었다
+    (실측 21건 중 16건). 범위를 표로 좁힌 뒤에는 그런 앵커가 조용히 통과하고, 전량 미사용은
+    build() 가 별도로 실패시킨다.
+    """
+    b3 = _load("build_submission_stage3")
+    monkeypatch.setattr(b3, "CELL_FIXES", [("| **없는행** |", "| **없는행** | new |", None)])
+    used: dict[str, int] = {}
+    rows = ["| a | b |", "| --- | --- |", "| 1 | 2 |"]
+    assert b3.apply_cell_fixes(rows, used) == rows
+    assert used == {}
+
+
+def test_build_rejects_dead_cell_fix(monkeypatch):
+    """복사되는 표 어디에도 걸리지 않는 치환이 남아 있으면 조립이 멈춘다."""
+    b3 = _load("build_submission_stage3")
+    monkeypatch.setattr(b3, "CELL_FIXES", list(b3.CELL_FIXES) + [("| **사문앵커** |", "| x |", None)])
+    with pytest.raises(SystemExit) as e:
+        b3.build()
     assert e.value.code == 2
 
 
@@ -216,3 +240,30 @@ def test_d6_under_target_is_silent(tmp_path):
     fails = sc.check_file(_write(tmp_path, _body_of(n)), tmp_path, warns)
     assert "D6" not in _codes(fails)
     assert not warns
+
+
+# ── V7 · 라벨 이름공간 `E` (CLAUDE.md §0.9 규칙 5) ────────────────────────
+def test_e_label_namespace_is_evaluation_environment_only():
+    """본문의 `E` 는 평가환경 하나만 가리킨다 — 적격심사를 `E` 로 부르면 문다.
+
+    본문 약어표는 `E1` 을 평가환경으로 등재하고 사전등록 PLAN-035 는 같은 `E1`–`E7` 을
+    적격심사 일곱 항으로 쓴다. 두 층이 한 문단에서 만나면 같은 기호가 두 가지를 가리킨다.
+    """
+    sc7 = _load("style_check")
+    p = ROOT / "x.md"
+
+    # 적격심사 라벨이 새어 들어오는 두 경로
+    assert sc7.check_label_namespace(p, ["적격심사 E1–E7 은 전부 통과하였다."], set())
+    assert sc7.check_label_namespace(p, ["적격심사 E1 은 델타 유형을 확인한다."], set())
+    # 정당한 두 형태는 통과한다
+    assert not sc7.check_label_namespace(p, ["본 절은 평가환경(E1)을 기술한다."], set())
+    assert not sc7.check_label_namespace(p, ["적격심사 일곱 항은 전부 통과하였다."], set())
+
+
+def test_current_manuscript_has_no_e_label_collision():
+    """규약을 켜는 시점의 실측이 0 이어야 한다 — 이 조항은 재발 방지이지 교정이 아니다."""
+    sc7 = _load("style_check")
+    src = ROOT / "paper" / "manuscript" / "stage3_source.md"
+    lines = src.read_text(encoding="utf-8").splitlines()
+    exempt = {i for i, ln in enumerate(lines, 1) if "<!-- style-ok" in ln}
+    assert sc7.check_label_namespace(src, lines, exempt) == []

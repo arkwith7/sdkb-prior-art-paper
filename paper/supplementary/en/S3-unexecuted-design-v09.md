@@ -10,7 +10,7 @@
 > No verdict and no number is created here. Every sentence below was carried over verbatim from an
 > earlier edition of manuscript v0.9.
 >
-> This is the English rendering of the Korean audit record
+> This is the English rendering of the Korean original
 > [S3-unexecuted-design-v09.md](../S3-unexecuted-design-v09.md), which remains the record of the
 > original wording.
 

@@ -1313,9 +1313,8 @@ This reranking ceiling was observed most strongly on the cross-lingual axis (§5
 This section treats which of the observations above can be transferred to another resource. The
 evidence is one qualifying resource delta and one port case, so we state them as hypotheses for
 later studies to test rather than as established principles. Each lesson is stated with its evidence
-and with the observation that would weaken its necessity. The full promotion criteria and grading
+and with the observation that would weaken its necessity. The promotion criteria and grading
 scheme, and the correspondence with the original labels, are in
-[S5](../../supplementary/en/S5-submission-full-v2.md) and
 [S6](../../supplementary/en/S6-preregistration-crosswalk.md).
 
 **Lesson ① · Acceptance one layer below.** A resource change is accepted on the non-regression

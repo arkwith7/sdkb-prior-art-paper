@@ -9,7 +9,7 @@
 > Korean, together with the exploratory re-readings and the verdict records that the manuscript
 > cites only in Korean; where a section below states that further material exists, it is there.
 > The unabridged pre-excerpt edition, from which both files were cut, is kept as the complete
-> audit record at
+> original at
 > [paper/archive/S5-submission-full-v2-pre-excerpt.md](../../archive/S5-submission-full-v2-pre-excerpt.md). Nothing here is created: every
 > value and every verdict is carried over from that record, and a machine check
 > (`make supplementary-check-en`) verifies that the measured values of the two files agree.
@@ -211,7 +211,7 @@ the per-term contributions and the concepts and features that matched.
 
 **The reranking ceiling.** The proposed systems reorder the top 1,000 of the text baseline and do
 not enlarge the candidate set, and the counts behind that ceiling are in the Korean record
-(Appendix C of S5, exploratory descriptive statistics).
+(Appendix B of S5, exploratory descriptive statistics).
 
 ---
 
@@ -758,21 +758,6 @@ the transfer experiment is confirmatory but **the verdict is a failure**, so no 
 is used as grounds for "improved". The sentence that may be used is **"we could not confirm
 transfer"** and not *"it does not transfer"* — the point estimate in fact favored the proposed arm,
 and what broke was not the value but the width of the interval.
-
----
-
-## 13. Design principles and the promotion criteria
-
-Cited from §6.3 of the manuscript. The manuscript reports three of these as Lessons ①②③ and two as
-follow-up hypotheses; the label correspondence is in
-[S6](S6-preregistration-crosswalk.md) §4. The full principle table, the grading scheme and the five
-promotion criteria are in §3.3, §7.7 and §7.8 of the Korean record, which remains the canonical
-statement of the grades. The grades themselves are unchanged: two are *designed in advance and
-empirically supported* (acceptance one layer below; cross-task monitoring), three are *empirically
-supported* with confirmation preceding design (layered validation; controlled resource
-substitution; separation of candidate generation), and one is a *proposition* (verification of
-transfer). Port-layer separation was added later on the evidence of the second-resource port and is
-*empirically supported*.
 
 ---
 

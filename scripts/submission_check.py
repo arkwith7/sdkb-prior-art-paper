@@ -10,12 +10,17 @@
   D4  작업 정본 전용 블록 0건      (원고상태·정정 대장·개봉 원장·미수행 설계 전문)
   D5  본문 표 ≤ 13 · 그림 4–8
   D6  본문 분량 — 권고 목표 61 % 초과는 **경고** · 실패 상한 63 % 초과는 **차단** · **참고문헌 제외**
-  D7  영문 초록 ≤ 250 단어          (AEI 투고 규정)
-  D8  키워드 ≤ 7 개                 (AEI 투고 규정)
+  D7  영문 초록 ≤ 250 단어          (보수적 편집 상한 — 투고처 미정)
+  D8  키워드 ≤ 7 개                 (보수적 편집 상한 — 투고처 미정)
   D9  본문 §참조의 도달성           (축약·재배열로 사라진 절을 가리키지 않는가)
-  ＋  내부 링크 도달성 (이관은 삭제가 아니다 — supplementary 링크가 끊기면 실패)
+  ＋  내부 링크 도달성 (이관은 삭제가 아니다 — 링크가 끊기면 실패)
 
 설계 메모
+- **대상은 셋이다 — 파생본 · 산문 소스 · 보충자료.** 보충자료(`paper/supplementary/**/*.md`)는
+  **내부 링크만** 받는다(2026-08-29). 보충자료는 심사자에게 나가는 자료인데 검사기 다섯이 전부
+  대상에서 제외하고 있었고, 그 사각지대에서 죽은 링크와 낡은 판정 서술이 살아남았다. 다만 D9 는
+  걸지 않는다 — 보충자료의 `§` 는 자기 문서가 아니라 다른 판의 원고를 가리킨다.
+  **감사 기록(`paper/audit/`)은 대상이 아니다.**
 - **대상은 파생본과 산문 소스 둘이다.** 파생본(`paper/submission/**/*.md`)은 전 항목을 받고,
   **산문 소스**(`paper/manuscript/*_source.md`)는 **D9(§참조 도달성)와 내부 링크만** 받는다
   (2026-08-29 · O-15 · 사용자 승인). 정본에 분량·표/그림 상한을 걸면 기록을 지우라는 요구가
@@ -35,15 +40,10 @@
   없는 것을 실패로 만들면 0단계 배선 자체가 CI 를 붉힌다.
 - 분량 기준선은 **코드에 동결**한다. 정본을 실시간으로 읽어 비교하면 정본이 자라는 만큼
   목표가 헐거워진다(움직이는 골대).
-- **D7·D8 은 투고처 규정이므로 협상 대상이 아니다**(D6 의 축약 목표는 우리가 정한 페이지 목표라
-  성격이 다르다). 규정이 바뀌면 상수를 고치고 출처를 주석에 남긴다.
-- **2026-08-26 · 투고처가 바뀌었고 새 규정을 확인했다**(PLAN-081 §5-② 종결). 1지망은
-  `Results in Engineering` 이며 Guide for Authors 실측 결과 **D7·D8 의 값은 바뀌지 않는다** —
-  초록 *"does not exceed 250 words"* · 키워드 *"1 to 7 keywords"*. 우연이 아니라 두 저널이
-  같은 Elsevier 표준을 쓴다. **두 상수는 이제 잠정값이 아니라 확정값이며 출처만 바뀌었다.**
-- **같은 규정이 D5·D6 의 성격을 바꾼다.** 이 저널은 *"no strict formatting requirements
-  (on length restrictions or reference formatting, for example)"* 를 명시한다. 곧 분량·표·그림
-  상한은 **투고처 규정이 아니라 전부 우리가 정한 편집 목표**다(D7·D8 과 성격이 다르다).
+- **투고처는 미정이다.** 그러므로 D5–D9 는 전부 **우리가 정한 편집 목표**이며, 어느 것도
+  외부 규정을 근거로 삼지 않는다. D7·D8 의 값(초록 250단어 · 키워드 7)은 다수 저널이 요구하는
+  범위 가운데 **가장 좁은 쪽**을 택한 보수적 상한이다 — 투고처가 정해지면 그 규정으로 대체하고
+  출처를 이 주석에 남긴다. **투고처를 전제한 서술을 이 파일에 다시 넣지 않는다.**
 - **D9 는 §2.3 의 "이관은 삭제가 아니다"를 절 참조로 확장한 것**이다. 파생본은 장 구성을 접으며
   만들어지므로(PLAN-048 2단계: 11장 → 8장) 산문에 남은 옛 절 번호가 조용히 죽은 링크가 된다.
   파일 링크만 검사하면 이것을 놓친다 — 실제로 놓쳤다(§4.8·§4.9·§4.9.1).
@@ -61,12 +61,9 @@ from pathlib import Path
 BASELINE_CHARS = 124_354            # 참고 — D6 는 아래 본문 기준선으로 판정한다
 BASELINE_BODY_CHARS = 114_472       # D6 분모: `# 참고문헌` 앞까지
 # D6 목표 −40 % → −39 % (2026-08-17 · 사용자 승인). **투고처 규정이 아니라 우리가 정한
-# 페이지 목표이므로 조정 대상이다**(D7·D8 과 성격이 다르다 — 위 설계 메모). 완화한 이유는
-# AEI 게재 문헌과의 포지셔닝을 §2.2·§2.3·§2.4·§3 에 보강했기 때문이다. AEI 심사표는 해당
-# 저널 발표 연구의 반영을 명시적으로 평가하는데, 직전 판의 AEI 인용은 3편뿐이었다.
-# **완화분은 서술이 아니라 문헌에만 쓴다** — 직전 판의 본문은 68,672자(−40.01 %)로 상한에
-# 11자를 남기고 있었고, 문헌 보강의 순증은 807자다(신설 문단 둘 · §2.3 한 문단 · §3 한 문장 ·
-# 표 1 을 10행에서 6행으로 압축한 감소분을 상계한 값). 판정·수치는 하나도 바뀌지 않았다.
+# 페이지 목표이므로 조정 대상이다.** 완화한 이유는 인접 문헌과의 포지셔닝을 §2.2·§2.3·§2.4·§3
+# 에 보강했기 때문이며, 완화분은 서술이 아니라 문헌에만 썼다(순증 807자). 판정·수치는 하나도
+# 바뀌지 않았다.
 # D6 를 한 줄 상한에서 **2단 규칙**으로 바꾼다 (2026-08-20 · 사용자 승인).
 # 왜 바꾸는가: 직전 판의 본문은 상한에 **5자**를 남기고 있었다. 그 상태에서 D6 는 편집 품질을
 # 관리하는 것이 아니라 **설명의 보강을 차단**한다 — 문장 하나를 더하면 검사가 실패하므로,
@@ -93,11 +90,9 @@ BASELINE_BODY_CHARS = 114_472       # D6 분모: `# 참고문헌` 앞까지
 # 감량은 압축이 아니라 표·supplementary 와 중복되던 서술의 제거로 얻었다(§6 이동 대장).
 # **완화 당시의 사유는 해소되었다** — 규율이 요구한 서술(용어 정의 · EP5 재프레이밍)은 전부 본문에
 # 남아 있고 잘라낸 것은 같은 내용을 두 번 말하던 문단이다.
-# D6 상향 (2026-08-26 · PLAN-081 §12.3 · 사용자 승인). **투고처 규정이 아니라 우리가 정한
-# 페이지 목표이므로 조정 대상이다**(D7 초록 250단어 · D8 키워드 7 과 성격이 다르다 — 그 둘은
-# 건드리지 않는다). 1지망 `Results in Engineering` 은 *"no strict formatting requirements
-# (on length restrictions or reference formatting, for example)"* 를 명시하므로, D6 의 외부
-# 근거는 이제 없고 전부 우리 편집 목표다.
+# D6 상향 (2026-08-26 · PLAN-081 §12.3 · 사용자 승인). **D6 에는 외부 근거가 없고 전부 우리
+# 편집 목표다** — 투고처가 미정이므로 D7·D8 도 같은 성격이며, 다만 그 둘의 값은 보수적 상한이라
+# 건드리지 않는다.
 # **왜 올리는가:** PLAN-081 이 §3(산출물·절차)의 비중을 올리도록 지시했고 그 증량이 실제로
 # 들어왔다 — §3.1 설계 결정과 그 대가 +539자 · §3.6 지속 통합 릴리스 절차 신설 +1,087자
 # (파생본 실측 · 공백 포함 · 커밋 d330476 대비). 그 증량은 desk reject 방어의 본체이므로
@@ -135,9 +130,9 @@ MAX_TABLES = 14                     # D5
 # 영향을 받지 않는다. 규격은 paper/FIGURE-SPEC.md.
 FIGURE_RANGE = (4, 8)               # D5
 
-# D7·D8 — **확정값**(2026-08-26 · PLAN-081 · Results in Engineering Guide for Authors 실측).
-# 초록 "does not exceed 250 words" · 키워드 "1 to 7 keywords". 구 출처(AEI)와 값이 같다.
-MAX_ABSTRACT_WORDS = 250            # D7 — Results in Engineering Guide for Authors (투고처 규정)
+# D7·D8 — 투고처가 정해지기 전까지의 **보수적 편집 상한**이다. 값은 다수 저널이 요구하는 범위
+# 가운데 가장 좁은 쪽을 택했다. 투고처가 정해지면 그 규정으로 대체하고 출처를 여기에 남긴다.
+MAX_ABSTRACT_WORDS = 250            # D7 — 보수적 편집 상한 (투고처 미정)
 MAX_KEYWORDS = 7                    # D8 — 위와 같음
 
 PLACEHOLDERS = [                    # D2 — verdicts.yaml PLACEHOLDERS 와 이중 방어
@@ -190,12 +185,30 @@ def strip_fenced(lines: list[str]) -> list[str]:
     return out
 
 
+
+def _check_links(path: Path, root: Path, link_base: Path | None) -> list[str]:
+    """내부 링크 도달성 — 이관은 삭제가 아니므로 끊긴 링크는 실패다."""
+    fails: list[str] = []
+    lines = strip_fenced(path.read_text(encoding="utf-8", errors="replace").splitlines())
+    for i, line in enumerate(lines, 1):
+        for target in INTERNAL_LINK.findall(line):
+            target = target.strip()
+            if not target:
+                continue
+            base = link_base or path.parent
+            if not (base / target).resolve().exists() and not (root / target).resolve().exists():
+                fails.append(f"{path}:{i}: [LINK] 내부 링크 단절 — {target}")
+
+    return fails
+
+
 def check_file(
     path: Path,
     root: Path,
     warns: list[str] | None = None,
     *,
     is_source: bool = False,
+    links_only: bool = False,
     link_base: Path | None = None,
 ) -> list[str]:
     fails: list[str] = []
@@ -204,6 +217,13 @@ def check_file(
     text = path.read_text(encoding="utf-8", errors="replace")
     lines = strip_fenced(text.splitlines())
     body = "\n".join(lines)
+
+    # 보충자료는 **내부 링크만** 받는다 (2026-08-29 · 사용자 승인). 분량·표/그림·초록·키워드는
+    # 투고 파생본의 규격이고, D9(§참조 도달성)도 대상이 아니다 — 보충자료의 `§` 는 자기 문서가
+    # 아니라 **다른 판의 원고**를 가리키며(각 파일 서두가 그 판을 밝힌다), 자기 절 번호로 재면
+    # 전량이 거짓 위반이 된다. 남는 것은 "이관은 삭제가 아니다"를 지키는 링크 도달성이다.
+    if links_only:
+        return _check_links(path, root, link_base)
 
     # D2 · 플레이스홀더 — 산문 소스는 대상이 아니다(O-15). 소스는 편집 중의 문서이고
     # 플레이스홀더의 정리는 조립·마감에서 판정한다.
@@ -290,7 +310,7 @@ def check_file(
         if n_words > MAX_ABSTRACT_WORDS:
             fails.append(
                 f"{path}:{abs_start + 1}: [D7] 영문 초록 {n_words}단어 > 상한 "
-                f"{MAX_ABSTRACT_WORDS} (−{n_words - MAX_ABSTRACT_WORDS}단어 필요 · 투고처 규정)"
+                f"{MAX_ABSTRACT_WORDS} (−{n_words - MAX_ABSTRACT_WORDS}단어 필요 · 편집 상한)"
             )
 
     # D8 · 키워드 개수
@@ -303,7 +323,7 @@ def check_file(
         parts = [p for p in parts if p]
         if len(parts) > MAX_KEYWORDS:
             fails.append(
-                f"{path}:{i}: [D8] 키워드 {len(parts)}개 > 상한 {MAX_KEYWORDS} (투고처 규정)"
+                f"{path}:{i}: [D8] 키워드 {len(parts)}개 > 상한 {MAX_KEYWORDS} (편집 상한)"
             )
 
     # D9 · §참조 도달성 — 축약·재배열로 사라진 절을 가리키면 실패한다.
@@ -315,16 +335,7 @@ def check_file(
                 if ref not in defined:
                     fails.append(f"{path}:{i}: [D9] 없는 절 참조 — §{ref}")
 
-    # 내부 링크 도달성
-    for i, line in enumerate(lines, 1):
-        for target in INTERNAL_LINK.findall(line):
-            target = target.strip()
-            if not target:
-                continue
-            base = link_base or path.parent
-            if not (base / target).resolve().exists() and not (root / target).resolve().exists():
-                fails.append(f"{path}:{i}: [LINK] 내부 링크 단절 — {target}")
-
+    fails += _check_links(path, root, link_base)
     return fails
 
 
@@ -338,6 +349,8 @@ def main() -> int:
     derived = sorted((root / "paper" / "submission").rglob("*.md"))
     # 산문 소스는 조립 동결과 무관하게 항상 본다 — 이 편입의 이유가 바로 동결 기간의 공백이다(O-15).
     sources = [(root / rel, root / base) for rel, base in SOURCE_TARGETS.items() if (root / rel).exists()]
+    # 보충자료 — 내부 링크만. 감사 기록(paper/audit/)은 대상이 아니다.
+    supp = sorted((root / "paper" / "supplementary").rglob("*.md"))
     if not derived and not sources:
         print("대상 부재: paper/submission/**/*.md · paper/manuscript/*_source.md. 통과.")
         return 0
@@ -350,6 +363,8 @@ def main() -> int:
         fails += check_file(f, root, warns)
     for f, base in sources:
         fails += check_file(f, root, warns, is_source=True, link_base=base)
+    for f in supp:
+        fails += check_file(f, root, warns, links_only=True)
 
     for line in warns:
         print(line)
@@ -364,7 +379,7 @@ def main() -> int:
     tail = f" · 경고 {len(warns)}건" if warns else ""
     print(
         f"통과: 파생본 {len(derived)}개 (D2–D9 · 내부 링크) + 산문 소스 {len(sources)}개 "
-        f"(D9 · 내부 링크){tail}"
+        f"(D9 · 내부 링크) + 보충자료 {len(supp)}개 (내부 링크){tail}"
     )
     return 0
 

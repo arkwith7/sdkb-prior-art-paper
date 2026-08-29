@@ -21,6 +21,7 @@ CI:    Makefile `verdicts` 타깃 → quality-gate 에 배선 (sig-check 옆).
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import glob
 import re
 import sys
@@ -94,7 +95,9 @@ def scannable(lines: list[str], exempt_headers: list[str]) -> list[tuple[int, st
 # 검사기가 그 규칙을 **조용히 무시한다** — EP5 에서 실제로 그렇게 됐다. 규칙이 없는 것과
 # 규칙이 무시되는 것은 다르며, 뒤쪽은 통과처럼 보인다. 그래서 미지 키를 rc 2 로 멈춘다.
 META_KEYS = frozenset({"plan", "frozen_date", "scan_targets", "exempt_tables_with_header"})
-VERDICT_KEYS = frozenset({"forbidden", "composite_allowed", "exempt_line", "scan_raw", "record"})
+VERDICT_KEYS = frozenset(
+    {"forbidden", "composite_allowed", "exempt_line", "scan_raw", "record", "exempt_targets"}
+)
 
 
 def unknown_keys(cfg: dict) -> list[tuple[str, str]]:
@@ -140,6 +143,15 @@ def main() -> int:
         return 2
     exempt_headers = meta.get("exempt_tables_with_header", []) or []
 
+    # 라벨별 대상 면제 — 규칙의 성격이 대상 층에 따라 다를 때만 쓴다.
+    # 예: PLACEHOLDERS 는 **데스크 리젝 요인**이라 투고 파생본에서만 위반이며, 보충자료의
+    # 미확정 서지 표기는 §1-1 이 요구하는 정직한 표기다. 면제는 라벨 단위이고 파일 glob 으로만
+    # 준다 — 문장 단위 면제를 허용하면 규칙이 조용히 비게 된다.
+    target_exempt: dict[str, list[str]] = {
+        label: list((spec or {}).get("exempt_targets", []) or [])
+        for label, spec in (cfg.get("verdicts") or {}).items()
+    }
+
     # 라벨별 규칙 컴파일
     rules: list[tuple[str, re.Pattern, bool]] = []    # (라벨, 금지 정규식, 원문검사 여부)
     exempt: dict[str, list[re.Pattern]] = {}          # 라벨별 문맥 면제
@@ -153,9 +165,16 @@ def main() -> int:
 
     violations = 0
     for f in targets:
+        rel = f.as_posix()
+        skipped = {
+            label for label, pats in target_exempt.items()
+            if pats and any(fnmatch.fnmatch(rel, str(root / p)) for p in pats)
+        }
         lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
         for lineno, text, raw_text in scannable(lines, exempt_headers):
             for label, rx, use_raw in rules:
+                if label in skipped:
+                    continue
                 subject = raw_text if use_raw else text
                 m = rx.search(subject)
                 if not m:

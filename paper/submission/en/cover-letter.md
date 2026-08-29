@@ -1,6 +1,6 @@
-# Cover letter — Results in Engineering
+# Cover letter
 
-To the Editors of *Results in Engineering*
+To the Editors
 
 Dear Editors,
 
@@ -33,8 +33,7 @@ refusal is the artifact doing its job. We report the boundary of the positive re
 care. Deep recall improved on both splits, but the preregistered composite prediction held in
 neither, and the prespecified configuration did not reach significance.
 
-**Fit with the journal.** The paper reports new knowledge that is useful to engineering practice.
-It addresses an operational problem rather than an ontology-theoretic one: how a semiconductor
+**Scope.** The paper reports new knowledge that is useful to engineering practice. It addresses an operational problem rather than an ontology-theoretic one: how a semiconductor
 knowledge base decides what may be released. It contributes a release procedure that runs in a
 continuous integration pipeline, a controlled before-and-after experiment on a real change, and the
 measurement of a failure the procedure blocked. Every shared engineering ontology eventually faces

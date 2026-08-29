@@ -14,6 +14,7 @@
   H1  소제목은 명사구형 — 서술형·의문형 종결 금지
   V5  `task` 의 번역은 "태스크" 로 단일화 (예외 합성어만 허용)
   V6  표·그림 번호는 등장 순서로 1부터 연번 — 중복·결번 금지
+  V7  `E` 라벨은 본문에서 **평가환경 하나**만 가리킨다 — 적격심사 항을 `E` 로 부르지 않는다
 
 **S1·S2·S4·T1·T4·V1–V4 는 사람이 지킨다.** 검사기 통과는 규격 준수의 필요조건이지 충분조건이
 아니다. `check_verdicts.py` 가 판정 강도의 표류를 막듯, 이 파일은 **어체의 표류**만 막는다.
@@ -127,6 +128,18 @@ HEADING_TRAILING_PAREN = re.compile(r"\s*[(（][^()（）]*[)）]\s*$")
 
 # V6 — 표·그림 캡션. 본문 참조("표 8의 …")가 아니라 **캡션 행**만 번호의 원천으로 센다.
 CAPTION = re.compile(r"^\*\*(?P<kind>표|그림)\s*(?P<num>\d+)[.\s]")
+
+# V7 — 라벨 이름공간 `E` (CLAUDE.md §0.9 규칙 5 · 2026-08-29).
+# **무엇을 막는가.** 본문 약어표는 `E1` 을 **평가환경**(다층 평가 벤치마크)으로 등재하는데,
+# 사전등록 PLAN-035 는 같은 `E1`–`E7` 을 **적격심사 일곱 항**으로 쓴다. 본문이 적격심사를 `E`
+# 로 부르는 순간 한 문단 안에서 `E1` 이 두 가지를 가리킨다 — `S`-시리즈와 교훈 `L` 에서 이미
+# 두 번 난 사고다. 사전등록 문서의 라벨은 추적성을 위해 그대로 두고(§0.9 규칙 1), 막는 것은
+# **본문이 그 라벨을 끌어다 쓰는 것**뿐이다.
+# 신호는 둘이다 — ① 본문에 `E2`–`E7` 이 나타나면 그것은 평가환경일 수 없다(평가환경은 하나다).
+# ② 같은 행에서 `E` 라벨과 "적격심사" 가 함께 나타난다.
+E_LABEL = re.compile(r"\bE[1-9]\b")
+E_NON_ENV = re.compile(r"\bE[2-9]\b")
+E_SCREENING = re.compile(r"적격\s*심사")
 
 # T5 — 볼드 안에 종결어미가 있으면 용어가 아니라 주장 문장이다.
 BOLD = re.compile(r"\*\*(?P<inner>[^*\n]{2,})\*\*")
@@ -323,6 +336,7 @@ def check_file(path: Path) -> list[str]:
 
     fails += check_lines(path, lines, exempt)
     fails += check_numbering(path, lines)
+    fails += check_label_namespace(path, lines, exempt)
     return fails
 
 
@@ -376,6 +390,32 @@ def check_lines(path: Path, lines: list[str], exempt: set[int]) -> list[str]:
             seg = heading_is_finite(stripped)
             if seg:
                 fails.append(f"{path}:{i}: [H1] 소제목이 서술형 — “{seg}” (명사구형으로 쓴다)")
+    return fails
+
+
+def check_label_namespace(path: Path, lines: list[str], exempt: set[int]) -> list[str]:
+    """`E` 라벨은 본문에서 평가환경 하나만 가리킨다(V7 · CLAUDE.md §0.9 규칙 5)."""
+    fails: list[str] = []
+    in_fence = False
+    for i, raw in enumerate(lines, 1):
+        if raw.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence or i in exempt:
+            continue
+        line = mask_quoted(raw)
+        m = E_NON_ENV.search(line)
+        if m:
+            fails.append(
+                f"{path}:{i}: [V7] `E` 라벨 {m.group(0)} — 본문의 `E` 는 평가환경 하나뿐이다 "
+                f"(적격심사는 서술형으로 “적격심사 일곱 항”)"
+            )
+            continue
+        if E_LABEL.search(line) and E_SCREENING.search(line):
+            fails.append(
+                f"{path}:{i}: [V7] 적격심사를 `E` 라벨로 부른다 — 서술형으로 쓴다 "
+                f"(사전등록 문서의 `E1`–`E7` 은 그대로 두고 대응은 crosswalk 에 적는다)"
+            )
     return fails
 
 
@@ -439,7 +479,7 @@ def main() -> int:
     if fails:
         print(f"\n{'경고' if args.warn else '실패'}: 문체 규격 위반 {len(fails)}건 (paper/STYLE-KO-ACADEMIC.md)")
         return 0 if args.warn else 1
-    print(f"통과: {len(targets)}개 파일 · 문체 규격 (S3·T2·T3·T5·T6·T7·H1·V5·V6)")
+    print(f"통과: {len(targets)}개 파일 · 문체 규격 (S3·T2·T3·T5·T6·T7·H1·V5·V6·V7)")
     return 0
 
 
