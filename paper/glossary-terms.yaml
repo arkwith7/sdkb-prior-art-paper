@@ -46,6 +46,15 @@ terms:
     define_in: "§3"
     gloss: 저자가 주입한 결함이 아니라 자원의 실제 개정 이력에서 발생한 버전 간 변경
 
+  - id: eligible-delta
+    category: concept
+    ko: 자격 있는 델타
+    en: eligible delta
+    aliases_ko: [자격을 갖춘 델타, 자격 있는 자원 델타, 자격을 갖춘 변경, 자격 있는 변경]
+    define_in: "§3"
+    gloss: 승인식의 판정 대상이 되는 실제 델타의 두 유형(T-Box 델타·개념층 델타). A-Box 코퍼스
+      델타는 동일 후보 모집단 위의 비교가 성립하지 않으므로 제외된다
+
   - id: evaluation-episode
     category: concept
     ko: 평가 에피소드

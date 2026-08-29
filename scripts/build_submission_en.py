@@ -91,7 +91,7 @@ CAPTIONS: dict[str, str] = {
           "was actually observed between them. The number on each arrow at the left corresponds to "
           "the numbered observation at the right, and (ii) alone points not to the next layer but "
           "to a different unit within the same layer, the number of documents reviewed. "
-          "Observation (i) is presented in §5.1, (ii) in §5.4.3, and (iii) in §3.5.1 and §6.4; the "
+          "Observation (i) is presented in §5.2, (ii) in §5.3.3, and (iii) in §3.5.1 and §6.4; the "
           "interpretation is in §6.1.",
     "T1": "**Table 1. Stages of design science research and how they were carried out in this "
           "study.**",
@@ -110,21 +110,22 @@ CAPTIONS: dict[str, str] = {
           "the EP4 row a configuration passing T1 did not show non-inferiority at T4. T4 is marked "
           "with an asterisk because it is not part of the acceptance rule; its status is a design "
           "and one verdict.",
-    "T9": "**Table 9. Decision stability — the point at which each verdict switches under the "
+    "T8": "**Table 8. Decision stability — the point at which each verdict switches under the "
            "frozen thresholds.**",
-    "T10": "**Table 10. Nine deficits in validation strength and generalizability — every remedy "
-           "is the object of a new preregistration.**",
-    "T8": "**Table 8. Release-lineage verdicts on engineering ontology 2 — confined to "
+    "T9": "**Table 9. Six deficits in validation strength and generalizability — every remedy "
+           "is the object of a new preregistration.** The three deficits confined to the retrieval "
+           "layer are in [S9](../../supplementary/en/S9-retrieval-evaluation-detail.md).",
+    "T7": "**Table 7. Release-lineage verdicts on engineering ontology 2 — confined to "
            "the formal layers and the cross-task layer.** d0–d5 are releases v1.3.0, v1.4.0, "
            "v1.4.1, v1.4.2, v1.4.3, and v1.4.4; migration condition R places the original instances "
            "unchanged and N places them after applying the official migration rules. Because the "
            "acceptance rule is not completed, `accept` is not recorded in any row and only partial "
            "acceptance remains.",
-    "T7": "**Table 7. Subgroups and ablation in the first confirmatory split** (test, 198 queries, "
+    "T6": "**Table 6. Subgroups and ablation in the first confirmatory split** (test, 198 queries, "
           "family R@100, query-level paired bootstrap with 10,000 resamples; `Difference` in the "
           "ablation row is the **removal loss** (full − ablated; positive = layer contribution); "
           "Holm m=8; all 17 rows are in S5).",
-    "T6": "**Table 6. Retrieval performance in the two confirmatory splits (2 panels) — the "
+    "T5": "**Table 5. Retrieval performance in the two confirmatory splits (2 panels) — the "
           "baseline is the Text Hybrid (B3) of each panel; Δ and the win/loss/tie counts summarize "
           "the original sample paired per query, and the 95% confidence intervals and two-sided "
           "*p* values come from a query-level paired bootstrap with 10,000 resamples.**",
@@ -134,19 +135,19 @@ CAPTIONS: dict[str, str] = {
           "difference of each auxiliary metric against B3 with 95% confidence intervals. Ontology "
           "reranking retrieves more known positives within a review depth of 100 but does not "
           "improve the ordering quality of the top 20.",
-    "T5": "**Table 5. Retrieval performance when only the resource bundle is substituted (test, 198 "
+    "T4": "**Table 4. Retrieval performance when only the resource bundle is substituted (test, 198 "
           "queries, family Recall@100).**",
-    "T4": "**Table 4. The preregistered evaluation checks and their verdicts — the evidence and the "
-          "full text are in Section 5 and in supplementary S5.**",
-    "F5alt": "Figure 5. Correspondence between the procedure of prior-art search in practice and "
-             "the configuration of this experiment, and the two places where it fails.",
-    "F5": "**Figure 5.** Correspondence between practice and the experimental configuration. The "
-          "left column lists the stages of practice and the right column the configuration of this "
-          "experiment at each stage. The two notes in the right margin mark where the correspondence "
-          "fails, and the band at the bottom states the premise under which the numbers of this "
-          "section hold.",
     "T3": "**Table 3. The 31 competency questions by purpose — the gate denominator is 28 and the "
           "representation-audit denominator is 31.**",
+    # 그림 5(실무 절차 ↔ 실험 구성)는 재구성에서 신설된 도식이다 — 조립 동결 기간에
+    # 추가되어 이 지도에 항목이 없었다(2026-08-29 · O-13 에서 확인).
+    "F5alt": "Figure 5. The steps of prior art search in practice mapped onto the configuration of "
+             "this experiment, and the two places where the correspondence does not hold.",
+    "F5": "**Figure 5.** Practice steps mapped onto the experimental configuration. The left column "
+          "is the step in practice and the right column is the configuration of this experiment that "
+          "corresponds to it. The two annotations in the right margin mark the places where the "
+          "correspondence does not hold, and the band below states the premise under which the "
+          "numbers of this section hold.",
     "F4alt": "Figure 4. The order of the acceptance procedure, the handling of each unmet term, and "
              "the actual verdicts in the controlled resource substitution.",
     "F4": "**Figure 4.** The T-gate procedure and the actual verdicts. The left column is the order "
@@ -173,8 +174,8 @@ CELLS: dict[str, str] = {
     "현 상태 (보고 위치)": "Current state (where reported)",
     "해소하는 측정": "Measurement that removes it",
     "실제 자원 변경의 거부 사례가 1회": "Only 1 rejection of a real resource change",
-    "통제된 자원 교체 1회에서 T1 미충족에 따른 승인 거부 (§5.1)":
-        "Acceptance refused on an unmet T1 in 1 controlled resource substitution (§5.1)",
+    "통제된 자원 교체 1회에서 T1 미충족에 따른 승인 거부 (§5.2)":
+        "Acceptance refused on an unmet T1 in 1 controlled resource substitution (§5.2)",
     "자격 있는 델타 3–5건을 순차 투입하고 판정의 분포를 보고":
         "Submit 3–5 eligible deltas in sequence and report the distribution of verdicts",
     "승인된 변경의 사후 안전성 미검정": "Post-acceptance safety of an approved change not tested",
@@ -183,9 +184,9 @@ CELLS: dict[str, str] = {
     "승인된 델타를 릴리스한 뒤 다음 세대의 봉인 분할에서 재측정":
         "Release an accepted delta and re-measure on the sealed split of the next generation",
     "교차 태스크 검출의 임계 민감성": "Threshold sensitivity of cross-task detection",
-    "τ=0.05에서 T3 단독 검출 12/45이나 τ=0.10에서는 4/45, τ=0.00에서는 17/45 (§5.2)":
+    "τ=0.05에서 T3 단독 검출 12/45이나 τ=0.10에서는 4/45, τ=0.00에서는 17/45 (§5.4)":
         "At τ=0.05 detection by T3 alone is 12/45, at τ=0.10 it is 4/45, and at τ=0.00 it is 17/45 "
-        "(§5.2)",
+        "(§5.4)",
     "τ 격자 전반의 검출률·위양성률 곡선을 사전등록하고 보고":
         "Preregister and report jointly the detection-rate and false-positive curves across the τ "
         "grid",
