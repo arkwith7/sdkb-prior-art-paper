@@ -14,6 +14,11 @@
 > [S3-unexecuted-design-v09.md](../S3-unexecuted-design-v09.md), which remains the record of the
 > original wording.
 
+> **On the `§` references in this file.** The text below was carried over from the v0.9 working
+> canonical manuscript, so its `§` numbers are that edition's section numbers and differ from those
+> of the current manuscript. The working canonical manuscript is
+> [논문_v0_9_SDKB_통합초안.md](../../archive/논문_v0_9_SDKB_통합초안.md).
+
 ---
 
 ## S3.1 §4.2 as written — three query representations (comparison not run)

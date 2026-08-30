@@ -155,7 +155,7 @@ G0·G1·G2와 claim-feature sidecar별로 분리해 provenance와 함께 보고�
 | **P0★** Text+Ontology | 후보 검토의 우선순위 부여 | B3 후보 풀과 개념 | `retrieval/systems.py::rerank_p0` | `sys_P0star_*.txt` |
 | **P1** +ClaimFeature | 동일 | 위의 입력과 청구항 한정요소 | `analysis/ontology_eval.py::rerank_p1` | `sys_P1_*.txt` |
 
-각 순위 파일은 `analysis/metrics.py`의 채점을 거쳐 본문 §5.4 의 성능표가 되며, 절제와 하위집단은 같은 파일에서 파생된다.
+각 순위 파일은 `analysis/metrics.py`의 채점을 거쳐 본문 §5.3 의 성능표가 되며, 절제와 하위집단은 같은 파일에서 파생된다.
 
 **미구현 구성.** B1(BM25-Fielded)과 P2(+Ground-aware)는 설계하였으나 구현하지 않았으므로 순위와 지표가 산출된 적이 없다. 즉 결과가 불리하여 제외한 것이 아니라 보고할 값이 존재하지 않는다.
 

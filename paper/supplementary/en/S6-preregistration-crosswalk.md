@@ -26,9 +26,9 @@ answers it**, exactly as designed at the time of preregistration.
 
 | Preregistration label | Content | Place in the manuscript | Verdict |
 |---|---|---|---|
-| `H1` | Discriminative power of the gate | §4.4 design · §5.2 holdout confirmation | Supported within the holdout scope |
+| `H1` | Discriminative power of the gate | §4.4 design · §5.4 holdout confirmation | Supported within the holdout scope |
 | `H2` | Acceptance safety | §6.4 | **Not tested on the resource of this paper** · later rejected in one actual test under a separate preregistration (PLAN-035) |
-| `H4` | Layer contribution | Rows A4 and A5 of the ablation table in §5.4.2 | Rejected |
+| `H4` | Layer contribution | Rows A4 and A5 of the ablation table in §5.3.2 | Rejected |
 
 **Demotion is not deletion.** The verdict records remain under their original labels in the working
 canonical manuscript [논문_v0_9_SDKB_통합초안.md](../../archive/논문_v0_9_SDKB_통합초안.md) §1.4a and in

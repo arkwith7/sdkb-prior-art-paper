@@ -14,8 +14,8 @@
 > value and every verdict is carried over from that record, and a machine check
 > (`make supplementary-check-en`) verifies that the measured values of the two files agree.
 >
-> **Where each citation lands.** §2.4 → §1 · §3.3 → §2 · §5.3 → §3 · §4.3 → §4 · §4.5 → §5 and §10 ·
-> §4.4 and §5.4.2 → §6 · §5.4.1 → §7 and §8 · §5.4.3 → §9 · §6.3 → §11 and §13 · §6.4 → §12, §14
+> **Where each citation lands.** §2.4 → §1 · §3.3 → §2 · §5.1 → §3 · §4.3 → §4 · §4.5 → §5 and §10 ·
+> §4.4 and §5.3.2 → §6 · §5.3.1 → §7 and §8 · §5.3.3 → §9 · §6.3 → §11 and §13 · §6.4 → §12, §14
 > and §15 · §3.5.1 and §6.4 (transfer) → §16.
 
 ---
@@ -89,7 +89,7 @@ evidence observed in this data is.
 
 ## 3. The three task views in the T-Box
 
-Cited from §5.3 of the manuscript.
+Cited from §5.1 of the manuscript.
 
 The TTL files of the repository contain, for expert matching, `Problem`, `RootCause`,
 `FailureMode`, `Mitigation`, `Skill`, `Expert`, `ExpertCase` and the equipment, material and company
@@ -164,7 +164,7 @@ three sets per split, `dev`, `test` and `test_b`.
 | **P0★** Text+Ontology | Prioritizing candidates for review | The B3 candidate pool and concepts | `retrieval/systems.py::rerank_p0` | `sys_P0star_*.txt` |
 | **P1** +ClaimFeature | Same | The above inputs plus claim features | `analysis/ontology_eval.py::rerank_p1` | `sys_P1_*.txt` |
 
-Each ranking file is scored by `analysis/metrics.py` to become the performance table of §5.4 of the
+Each ranking file is scored by `analysis/metrics.py` to become the performance table of §5.3 of the
 manuscript, and the ablation and subgroup results derive from the same files.
 
 **Unimplemented configurations.** B1 (BM25-Fielded) and P2 (+Ground-aware) were designed but not
@@ -306,7 +306,7 @@ This score is an **analysis-only stratification label** and is not fed into the 
 
 ## 6. Ablation conditions and the full subgroup and ablation table
 
-Cited from §4.4 and §5.4.2 of the manuscript.
+Cited from §4.4 and §5.3.2 of the manuscript.
 
 **The eight preregistered ablation conditions.** One layer at a time is removed to measure its
 contribution.
@@ -402,7 +402,7 @@ interval; subgroups with n<20 are drawn in grey. File `paper/figures/ir_subgroup
 
 ## 7. Retrieval performance — all rows of the two confirmatory splits
 
-Cited from §5.4.1 of the manuscript.
+Cited from §5.3.1 of the manuscript.
 
 > **The two panels appear in one table but are neither pooled nor averaged.** Panel A is the first
 > confirmatory split (198 queries · 479 qrels) and panel B the non-overlapping second split (198
@@ -459,7 +459,7 @@ afterwards.
 
 ## 9. Cross-lingual decomposition and operational efficiency
 
-Cited from §5.4.3 of the manuscript. Every value here is exploratory descriptive statistics on
+Cited from §5.3.3 of the manuscript. Every value here is exploratory descriptive statistics on
 frozen runs and frozen settings; it is neither a new retrieval nor a preregistered confirmatory
 test.
 
@@ -519,7 +519,7 @@ saving of search time or cost**, because per-document review time was not measur
 
 ## 8. Robustness of the comparison under incomplete ground truth
 
-Cited from §5.4.1 of the manuscript (the two checks of §4.5).
+Cited from §5.3.1 of the manuscript (the two checks of §4.5).
 
 > **This section does not stand in for expert relevance judgment.** It asks one question — **does
 > the conclusion of the paired comparison depend on the relevance of the unjudged documents?** No new

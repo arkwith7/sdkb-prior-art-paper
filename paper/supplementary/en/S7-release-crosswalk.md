@@ -38,7 +38,7 @@ per-file sha256 of every release asset is in the release's **`provenance/PROVENA
 
 | Item | Value in the paper (location) | Generation | Value in the release | Generation | Source of the difference |
 |---|---|---|---|---|---|
-| `owl:ObjectProperty` | **97** (§3.2 · 97 → 98 in §5.3) | 105,588 / 105,713 | **99** | Current | CR-007 declared `skos:broader`, +1; a later upstream correction added another |
+| `owl:ObjectProperty` | **97** (§3.2 · 97 → 98 in §5.2) | 105,588 / 105,713 | **99** | Current | CR-007 declared `skos:broader`, +1; a later upstream correction added another |
 | `owl:DatatypeProperty` | **81** (§3.2) | 105,588 | **85** | Current | Later upstream correction |
 | `owl:Class` | **103** (§3.2) | 105,588 | **103** (84 named + 19 blank nodes) | Current | **Identical** — only the way of counting is reported differently |
 | Claim-feature sidecar | **11,605,931** triples (§3.2) | 105,588 | **11,770,236** | Current | More material to decompose after re-retrieval of the full text |

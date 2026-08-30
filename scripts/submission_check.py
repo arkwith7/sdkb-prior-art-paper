@@ -13,13 +13,15 @@
   D7  영문 초록 ≤ 250 단어          (보수적 편집 상한 — 투고처 미정)
   D8  키워드 ≤ 7 개                 (보수적 편집 상한 — 투고처 미정)
   D9  본문 §참조의 도달성           (축약·재배열로 사라진 절을 가리키지 않는가)
+  D10 보충자료 → 본문 §참조의 도달성 (보충자료가 "본문 §X"라 밝힌 참조만)
   ＋  내부 링크 도달성 (이관은 삭제가 아니다 — 링크가 끊기면 실패)
 
 설계 메모
 - **대상은 셋이다 — 파생본 · 산문 소스 · 보충자료.** 보충자료(`paper/supplementary/**/*.md`)는
   **내부 링크만** 받는다(2026-08-29). 보충자료는 심사자에게 나가는 자료인데 검사기 다섯이 전부
   대상에서 제외하고 있었고, 그 사각지대에서 죽은 링크와 낡은 판정 서술이 살아남았다. 다만 D9 는
-  걸지 않는다 — 보충자료의 `§` 는 자기 문서가 아니라 다른 판의 원고를 가리킨다.
+  걸지 않는다 — 보충자료의 `§` 는 자기 문서가 아니라 다른 판의 원고를 가리킨다. **그 대신
+  D10 이 "본문 §X" 라 스스로 밝힌 참조만 본다**(2026-08-30 · 아래 D10 주석).
   **감사 기록(`paper/audit/`)은 대상이 아니다.**
 - **대상은 파생본과 산문 소스 둘이다.** 파생본(`paper/submission/**/*.md`)은 전 항목을 받고,
   **산문 소스**(`paper/manuscript/*_source.md`)는 **D9(§참조 도달성)와 내부 링크만** 받는다
@@ -202,6 +204,68 @@ def _check_links(path: Path, root: Path, link_base: Path | None) -> list[str]:
     return fails
 
 
+# ── D10 · 보충자료가 **본문을 명시적으로 가리키는** §참조의 도달성 ────────────────
+#
+# **왜 D9 로는 못 잡는가.** D9 는 문서가 자기 절 번호로 재는 검사이고, 보충자료는 그 대상에서
+# 빠져 있다 — 보충자료의 `§` 대부분이 자기 문서가 아니라 **다른 판의 원고**를 가리키기
+# 때문이다(각 파일 서두가 그 판을 밝힌다). 그래서 보충자료는 §참조에 관해 **어느 검사도 받지
+# 않았고**, 그 사각지대에서 실제로 죽은 포인터가 살아남았다.
+#
+# **실측(2026-08-30 · 이 규칙을 켜면서 고친 것).** 파생본의 §5 절 순서가 재배열됐는데 그 사상이
+# 조립기에 반영되지 않아 표 3 의 다섯 행 중 넷이 죽은 절을 가리켰고, 같은 원인으로 보충자료가
+# 본문을 잘못 가리켰다 — S6 대조표 4건(`투고본 §5.7` · `§6.2` · `§8.1` · `§6.4.3`) · S7 1건 ·
+# S5 국문 1건 · S5 영문 8건. **S6 은 §0.9 규칙 4 가 요구하는 대조표이므로, 그것이 죽은 절을
+# 가리키는 것은 링크 누락보다 나쁘다** — 심사자가 추적 가능성을 확인하러 오는 자리다.
+#
+# **무엇만 보는가.** `본문 §X` · `투고본 §X` · `§X of the manuscript` 처럼 **대상이 현행 본문임을
+# 문장이 스스로 밝힌 참조**만 본다. 그 밖의 `§` 는 건드리지 않는다 — 다른 판을 가리키는 것이
+# 정상이기 때문이다. 그러므로 이 규칙은 D9 의 확장이 아니라 **D9 가 원리적으로 볼 수 없는
+# 부분집합**을 맡는다.
+#
+# **v0.9 고지가 있는 파일은 통째로 제외한다.** S1·S2·S3 는 서두에서 *"이 파일의 § 번호는 v0.9
+# 판의 것"* 이라 선언하며, 그 선언이 파일 전체에 걸린다. 고지를 지우면 그때부터 검사 대상이
+# 되므로, 고지는 면제 장치가 아니라 **범위 선언**이다.
+#
+# **한계를 밝힌다.** 실재하지만 **다른** 절을 가리키는 어긋남(§5.2 ↔ §5.4)은 이 규칙도 잡지
+# 못한다. 그것은 절 순서를 바꿀 때 사람이 대조표를 함께 고쳐야 하는 자리이며, 조립기의
+# `CHAPTER_REMAP` 주석이 그 의무를 적어 둔다.
+SUPP_V09_NOTICE = re.compile(
+    r"이 파일의 .?§.? 참조에 대하여|On the .?§.? references in this file"
+)
+# `본문 §5.3` · `투고본 §4.5` · `§5.3.1 of the manuscript` · `§4.4 and §5.3.2 of the manuscript`
+SUPP_BODY_REF_KO = re.compile(r"(?:본문|투고본)\s*§\s?(\d+(?:\.\d+)*)")
+SUPP_BODY_REF_EN = re.compile(
+    r"§\s?(\d+(?:\.\d+)*)(?:[^.\n]{0,40}?§\s?\d+(?:\.\d+)*)?[^.\n]{0,40}?\bof the manuscript\b"
+)
+
+
+def _supp_body_sections(path: Path, root: Path) -> set[str] | None:
+    """이 보충자료가 가리키는 **현행 본문**의 절 번호 집합. 본문이 없으면 None."""
+    target = root / "paper" / "submission" / ("en/manuscript.md" if path.parent.name == "en" else "manuscript.md")
+    if not target.exists():
+        return None
+    secs = {m.group(1) for ln in target.read_text(encoding="utf-8").splitlines()
+            if (m := HEADING_NUM.match(ln))}
+    return secs | {s.split(".")[0] for s in secs} if secs else None
+
+
+def _check_supp_body_refs(path: Path, root: Path) -> list[str]:
+    text = path.read_text(encoding="utf-8", errors="replace")
+    if SUPP_V09_NOTICE.search(text):
+        return []                                  # 범위 선언 — 이 파일의 §는 v0.9 판이다
+    valid = _supp_body_sections(path, root)
+    if not valid:
+        return []                                  # 조립 동결로 본문이 없으면 판정하지 않는다
+    out: list[str] = []
+    for i, line in enumerate(strip_fenced(text.splitlines()), 1):
+        refs = set(SUPP_BODY_REF_KO.findall(line))
+        for m in SUPP_BODY_REF_EN.finditer(line):
+            refs |= set(re.findall(r"§\s?(\d+(?:\.\d+)*)", m.group(0)))
+        for ref in sorted(refs - valid):
+            out.append(f"{path}:{i}: [D10] 본문에 없는 절을 본문으로 가리킨다 — §{ref}")
+    return out
+
+
 def check_file(
     path: Path,
     root: Path,
@@ -223,7 +287,7 @@ def check_file(
     # 아니라 **다른 판의 원고**를 가리키며(각 파일 서두가 그 판을 밝힌다), 자기 절 번호로 재면
     # 전량이 거짓 위반이 된다. 남는 것은 "이관은 삭제가 아니다"를 지키는 링크 도달성이다.
     if links_only:
-        return _check_links(path, root, link_base)
+        return _check_links(path, root, link_base) + _check_supp_body_refs(path, root)
 
     # D2 · 플레이스홀더 — 산문 소스는 대상이 아니다(O-15). 소스는 편집 중의 문서이고
     # 플레이스홀더의 정리는 조립·마감에서 판정한다.
@@ -371,7 +435,7 @@ def main() -> int:
     for line in fails:
         print(line)
     if fails:
-        print(f"\n{'경고' if args.warn else '실패'}: 투고 준비 위반 {len(fails)}건 (PLAN-048 DoD D2–D9)")
+        print(f"\n{'경고' if args.warn else '실패'}: 투고 준비 위반 {len(fails)}건 (PLAN-048 DoD D2–D10)")
         if args.warn:
             print("(경고 모드 — CLAUDE.md §2.3: PLAN-048 3단계 종료 시 차단으로 승격)")
             return 0
@@ -379,7 +443,7 @@ def main() -> int:
     tail = f" · 경고 {len(warns)}건" if warns else ""
     print(
         f"통과: 파생본 {len(derived)}개 (D2–D9 · 내부 링크) + 산문 소스 {len(sources)}개 "
-        f"(D9 · 내부 링크) + 보충자료 {len(supp)}개 (내부 링크){tail}"
+        f"(D9 · 내부 링크) + 보충자료 {len(supp)}개 (내부 링크 · D10){tail}"
     )
     return 0
 
