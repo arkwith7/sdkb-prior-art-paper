@@ -15,7 +15,7 @@
 >
 > **새 측정 0 · 새 실험 0 · `verdicts.yaml` 의 판정 열 무변경**(§0.8 문구 사전에는 **행이
 > 늘어난다** — §4). 검색 성능 보강 실험은 비목표이며 후속 논문
-> ([PLAN-071](PLAN-071-followup-paper-axiomatized-resource-redesign.md)) 소관이다(§9).
+> ([PLAN-071](../archive/PLAN-071-followup-paper-axiomatized-resource-redesign.md)) 소관이다(§9).
 
 ---
 
@@ -353,7 +353,7 @@
 | # | 하지 않는다 | 이유 |
 |---|---|---|
 | ① | 판정·수치의 재산출 · `verdicts.yaml` **판정 열** 수정 | 편집 작업이지 실험이 아니다(§1-2) |
-| ② | 검색 성능 보강 실험(BM25F · PatentSBERTa · cross-encoder · 전문가 관련성 판정) | 주장은 **승인 게이트**이고 검색 층은 T1 의 계기다. [PLAN-071](PLAN-071-followup-paper-axiomatized-resource-redesign.md) 2부 소관 |
+| ② | 검색 성능 보강 실험(BM25F · PatentSBERTa · cross-encoder · 전문가 관련성 판정) | 주장은 **승인 게이트**이고 검색 층은 T1 의 계기다. [PLAN-071](../archive/PLAN-071-followup-paper-axiomatized-resource-redesign.md) 2부 소관(2026-08-30 이후 상류 `PLAN-003`) |
 | ③ | 자격 델타 3–5건 추가 확보 | **새 판정을 만드는 실험**이므로 §2.1 새 사전등록. 2차 의견도 *"필수 통과기준이 아니라 강화책"* 이라 적는다 |
 | ④ | bpref·미실행 이력의 **삭제** | 실행 기록의 삭제는 §1-1 이 지키려는 것을 훼손한다 — 지위 표시와 이관으로 처리 |
 | ⑤ | 결손 식별자 재부여 | 추적성을 끊는다(§1.5) |

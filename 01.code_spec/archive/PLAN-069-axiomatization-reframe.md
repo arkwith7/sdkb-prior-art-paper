@@ -1,7 +1,7 @@
 # PLAN-069 — 기조 전환: 선언된 중심축을 **작동하는 공리**로
 
 > **아카이빙 2026-08-25 — 트랙 A 완주.** ②③③′③″④⑤ 가 전부 끝났고 반영 기록은 §10·§11 이다.
-> **트랙 B·C 는 이 계획에서 빠져 [PLAN-071](../plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md)
+> **트랙 B·C 는 이 계획에서 빠져 [PLAN-071](PLAN-071-followup-paper-axiomatized-resource-redesign.md)
 > 로 이관 종결**되었다(§-1 범위 결정). **DoD 6 의 미달분 둘**(본문 약 63,000자 · §5.2+§5.3 비중
 > 상승)은 [OPEN-ITEMS O-11](../plans/OPEN-ITEMS.md) 로 이월한다 — 둘 다 감량이 아니라 구성
 > 변경(§2.2)이 필요하기 때문이다. 이 문서는 결정의 기록이므로 수정하지 않는다.
@@ -21,7 +21,7 @@
 >
 > **범위 결정 (2026-08-23 · 사용자 승인) — 트랙 B·C 는 이 계획에서 빠져 후속 논문으로 이관됐다.**
 > 현 투고본은 **트랙 A 프레임으로 마감**하고, 트랙 B(R2 · CR-A~D)·트랙 C(R3·R4 · `PLAN-070-prereg`)
-> 는 [PLAN-071](../plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md) 이 받는다.
+> 는 [PLAN-071](PLAN-071-followup-paper-axiomatized-resource-redesign.md) 이 받는다.
 > 따라서 **§8 로드맵 ⑥–⑨ 는 현 투고본의 임계 경로가 아니며**, 특히 ⑨(*"R3·R4 결과를 §5 에 편입"*)
 > 는 더 이상 현 원고의 계획이 아니다 — 그 결과는 후속 논문에 실린다.
 > **`PLAN-070-prereg` 번호는 결번으로 보존한다**(번호 재사용 금지 · §0.5).

@@ -36,7 +36,7 @@
 
 **왜 이 방향인가.** 지금까지 지적된 약점은 거의 전부 **"사례 1건 위에 일반 명제를 올렸다"**
 한 가지 불일치에서 파생된다. 불일치를 닫는 길은 둘이고, 증거를 올리는 쪽(구 O-5 가름 실험 ·
-[PLAN-071](../plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md))은 후속 논문으로 이미
+[PLAN-071](PLAN-071-followup-paper-axiomatized-resource-redesign.md))은 후속 논문으로 이미
 이관됐다. 남은 쪽은 **주장을 내리는 것**이며, 그것은 데이터를 건드리지 않으므로
 [PLAN-080](../plans/PLAN-080-submission-close.md) DoD 13(수치 재산출 0)과 충돌하지 않는다.
 
@@ -255,7 +255,7 @@ DP 표 원본과 §0.6 승격 기준 전문은 **S5 에 그대로 남긴다** �
 | # | 하지 않는다 | 이유 |
 |---|---|---|
 | ① | **한계·결손 아홉·경쟁 설명 다섯의 축소** | 등급을 낮추는 것은 주장이지 정직성이 아니다. 공개 자산이 이것을 검증 가능하게 만든다 |
-| ② | 검색 평가만 떼어 별도 논문으로 분할 | [PLAN-071](../plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md) 과 겹쳐 살라미로 읽힌다(§0.5 한 논문 유지) |
+| ② | 검색 평가만 떼어 별도 논문으로 분할 | [PLAN-071](PLAN-071-followup-paper-axiomatized-resource-redesign.md) 과 겹쳐 살라미로 읽힌다(§0.5 한 논문 유지) |
 | ③ | 판정·수치의 재산출 · 봉인 접근 | §1-2 · §1-3 |
 | ④ | 새 실험으로 약점을 메우는 것 | 결손 ⑧(2인 가림 판정)과 df 가중 2×2 는 **새 사전등록**이며 별도 승인 사항이다 |
 | ⑤ | 국문 정본·supplementary 의 소급 수정 | 감사 기록이다(§8.1 적용 범위) |

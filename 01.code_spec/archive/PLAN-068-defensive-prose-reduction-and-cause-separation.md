@@ -3,7 +3,7 @@
 > **아카이빙 2026-08-23 — 트랙 A 완주.** 1차·2차 이관으로 누적 −2,054자(본문 72,495자) · A-5a·A-5b 교정 완료.
 > **남은 항목 셋은 이월했다** — D6 임계 원복과 트랙 C(봉인 배선)는 [`plans/OPEN-ITEMS.md`](../plans/OPEN-ITEMS.md)
 > O-4·O-6 으로, **트랙 B(2×2 자원·점수식 가름 실험)는 후속 논문**
-> [`plans/PLAN-071`](../plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md) **§-1.7 로 이관했다**
+> [`plans/PLAN-071`](PLAN-071-followup-paper-axiomatized-resource-redesign.md) **§-1.7 로 이관했다**
 > (2026-08-23 사용자 승인 · 설계는 §B-0~§B-5 원문 그대로이고 옮긴 것은 귀속뿐이다).
 > 이 문서는 사전등록·결정 기록이므로 수정하지 않는다.
 

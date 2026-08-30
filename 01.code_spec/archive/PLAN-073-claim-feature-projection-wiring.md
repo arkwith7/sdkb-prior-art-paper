@@ -28,7 +28,7 @@
 
 ## 1. 순서 제약 — **2×2 가름 실험을 먼저 돌린다** (이 문서의 첫째 요건)
 
-[PLAN-071 §-1.7](../plans/PLAN-071-followup-paper-axiomatized-resource-redesign.md) 규칙 4 는
+[PLAN-071 §-1.7](PLAN-071-followup-paper-axiomatized-resource-redesign.md) 규칙 4 는
 2×2 자원·점수식 가름 실험에 **`src/` 무변경**을 걸었다 — *"`src/` 를 건드리면 기존 동결
 runset 과의 O/O′ 비교가 영구 실격"* 이기 때문이다. **이 배선은 정의상 `src/retrieval` ·
 `src/analysis` 를 바꾼다.**

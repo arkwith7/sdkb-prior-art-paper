@@ -201,8 +201,8 @@
 |---|---|---|
 | O-9 `ir_panel` 기대값 대장 기록 | §2 · 탐색 도구 | [OPEN-ITEMS](OPEN-ITEMS.md) |
 | O-10 λ dev 가중 선택 (`w_r` · `w_f2`) | §2.1 새 사전등록(PLAN-077) | 동상 |
-| `PLAN-079-prereg` 측정 (CR-001B ⑤ · CR-020 ⑥ · D-53 T3) | **C0 · 논문 밖** | 초안(미동결) |
-| [PLAN-071](PLAN-071-followup-paper-axiomatized-resource-redesign.md) | 후속 논문 | 살아 있는 계획 |
+| [`PLAN-079-prereg`](../archive/PLAN-079-prereg-measurement-013854b.md) 측정 (CR-001B ⑤ · CR-020 ⑥ · D-53 T3) | **C0 · 논문 밖** | **미실행 종결 · 아카이브**(2026-08-30 · 재개는 새 번호의 새 사전등록) |
+| [PLAN-071](../archive/PLAN-071-followup-paper-axiomatized-resource-redesign.md) | 후속 논문 | **이관 기록 · 아카이브**(2026-08-30 · 설계 본문은 상류 `PLAN-001`·`PLAN-003`) |
 | [PLAN-074](../archive/PLAN-074-part1-redesign-extraction-unit.md) | 후속 실험(Phase 0′) | 동상 |
 
 **넷 모두 현 원고의 판정과 수치에 영향이 없다** — 앞의 둘은 C0(제품·상류)이고 뒤의 둘은 후속

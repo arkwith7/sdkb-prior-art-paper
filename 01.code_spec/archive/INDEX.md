@@ -14,7 +14,7 @@
 > 손으로 쓴 요약은 원문과 조용히 어긋난다). 빈 칸은 그 문서가 머리말에 상태를 적지 않았다는
 > 뜻이며, 완료 여부는 원문에서 확인한다.
 >
-> *생성: 2026-08-30 · 재생성은 이 파일 말미의 명령으로 한다.*
+> *생성: 2026-08-30 (PLAN-071 · PLAN-079-prereg 2행 추가 · 같은 추출 규칙) · 재생성은 이 파일 말미의 명령으로 한다.*
 
 | 문서 | 제목 | 문서가 밝힌 상태 |
 |---|---|---|
@@ -92,12 +92,14 @@
 | [PLAN-067-ep5-reframe-port-anatomy.md](PLAN-067-ep5-reframe-port-anatomy.md) | EP5 재프레이밍: 일반화 시험에서 **이식 해부**로 |  |
 | [PLAN-068-defensive-prose-reduction-and-cause-separation.md](PLAN-068-defensive-prose-reduction-and-cause-separation.md) | 방어 서술의 감량과 논거의 실험적 보강 | 아카이빙 2026-08-23 — 트랙 A 완주 |
 | [PLAN-069-axiomatization-reframe.md](PLAN-069-axiomatization-reframe.md) | 기조 전환: 선언된 중심축을 **작동하는 공리**로 | 아카이빙 2026-08-25 — 트랙 A 완주 |
+| [PLAN-071-followup-paper-axiomatized-resource-redesign.md](PLAN-071-followup-paper-axiomatized-resource-redesign.md) | 이관 기록: 후속 논문(논문 B) 설계는 상류로 갔다 (2026-08-30) | 지위: 이관 기록 · 아카이브 |
 | [PLAN-072-prereg.md](PLAN-072-prereg.md) | 사전등록: CR-001B ⑤ · CR-020 ⑥ 하류 지표 (스냅샷 `0a7ff153` → `48971f8`) | 아카이빙 2026-08-23 — 실행 완주 |
 | [PLAN-073-claim-feature-projection-wiring.md](PLAN-073-claim-feature-projection-wiring.md) | 요구정의: 한정요소 개념 투영을 순위 함수에 배선한다 (하류 §2 1단계 🛑) | 아카이빙 2026-08-23 — 2단계 관찰까지 완주 후 승계 |
 | [PLAN-074-part1-redesign-extraction-unit.md](PLAN-074-part1-redesign-extraction-unit.md) | 이관 기록: 판단 쌍 추출 단위 재설계는 상류로 갔다 (2026-08-29) |  |
 | [PLAN-075-operative-channel-path-term-and-projection-wiring.md](PLAN-075-operative-channel-path-term-and-projection-wiring.md) | 요구정의: 작동 층의 **통로**를 연다 (경로 점수 항 + 한정요소 투영 배선 · 하류 §2 1단계 🛑) | 지위: 요구정의 · 1단계 승인 완료 (2026-08-24 · §11 다섯 항 전부) |
 | [PLAN-076-seal-ledger-wiring.md](PLAN-076-seal-ledger-wiring.md) | 봉인 열람 원장 배선 교정 (O-6 · PLAN-068 트랙 C) |  |
 | [PLAN-078-prereg-snapshot-013854b.md](PLAN-078-prereg-snapshot-013854b.md) | 사전등록: 스냅샷 `48971f8` → `013854b` 반영 (B층 인용문헌 복원) | 아카이빙 2026-08-25 — 실행 완주 |
+| [PLAN-079-prereg-measurement-013854b.md](PLAN-079-prereg-measurement-013854b.md) | 사전등록: CR-001B ⑤ · CR-020 ⑥ 하류 판정과 T3 (스냅샷 `013854b` · D-53) | 지위: 미실행 종결 · 아카이브 (2026-08-30 · 사용자 지시) |
 | [PLAN-081-reframe-existence-proof.md](PLAN-081-reframe-existence-proof.md) | 투고처 재조준과 주장 크기 재정렬 (§2.2 요건 다섯 · 정지 게이트 1개) | 아카이빙 (2026-08-29 · 사용자 지시) |
 | [PLAN-082-figure-en.md](PLAN-082-figure-en.md) | 본문 그림 7종의 영문판 (§2 완주 · 2026-08-26 종결) | 아카이빙 (2026-08-29 · 사용자 지시) |
 | [PLAN-083-condense-body-tables-figures.md](PLAN-083-condense-body-tables-figures.md) | 본문 축약(§2·§4·§5·§6) · 표 간결화 · 그림 라벨 감량 (2026-08-27) | 아카이빙 (2026-08-29 · 사용자 지시) |

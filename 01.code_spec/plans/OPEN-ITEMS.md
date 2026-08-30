@@ -478,7 +478,7 @@ screening)` 를 `glossary-terms.yaml`(35항)과 `glossary.md` 양쪽에 넣었�
 
 ## ~~O-5~~ · 2×2 자원·점수식 가름 실험 — **이관 종결 (2026-08-23 · 사용자 승인)**
 
-**PLAN-068 트랙 B 는 [PLAN-071](PLAN-071-followup-paper-axiomatized-resource-redesign.md) §-1.7 이
+**PLAN-068 트랙 B 는 [PLAN-071](../archive/PLAN-071-followup-paper-axiomatized-resource-redesign.md) §-1.7 이
 받았다. 이 항목은 여기서 닫힌다** — 행을 지우지 않고 남기는 것은 추적 때문이다.
 
 **결정.** 선택지 ⓐ(현 투고본 존치)와 ⓑ(후속 논문 이관) 가운데 **ⓑ**. 근거는 둘이다 —
