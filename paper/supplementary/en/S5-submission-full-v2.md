@@ -15,8 +15,8 @@
 > (`make supplementary-check-en`) verifies that the measured values of the two files agree.
 >
 > **Where each citation lands.** §2.4 → §1 · §3.3 → §2 · §5.1 → §3 · §4.3 → §4 · §4.5 → §5 and §10 ·
-> §4.4 and §5.3.2 → §6 · §5.3.1 → §7 and §8 · §5.3.3 → §9 · §6.3 → §11 and §13 · §6.4 → §12, §14
-> and §15 · §3.5.1 and §6.4 (transfer) → §16.
+> §4.4 and §5.3.2 → §6 · §5.3.1 → §7 and §8 · §5.3.3 → §9 · §6.3 → §11 · §6.4 → §12, §13
+> and §14 · §3.5.1 and §6.4 (transfer) → §15.
 
 ---
 
@@ -26,7 +26,7 @@ Cited from §2.4 of the manuscript.
 
 | Research strand | Gap that remains | What this study adds |
 |---|---|---|
-| Patent text retrieval | No explicit domain semantics and no validation of graph evolution | Couples the semiconductor ontology hierarchy into candidate generation and reranking |
+| Patent text retrieval | No explicit domain semantics and no validation of graph evolution | Couples the semiconductor ontology hierarchy into **reranking** (candidate generation is outside the design — see the competing-explanation table in §13 of this document) |
 | Citation and KG retrieval | Query-citation leakage and the problem of controlling change | Masks the query edges and separates by time and family |
 | Cross-lingual patent retrieval | The channels are limited to translation and multilingual embeddings | Sets the language-neutral concept IRI as a third channel and decomposes recall by the language of the ground truth (exploratory · §9) |
 | Ontology validation | Does not guarantee ranking quality or freedom from cross-task regression | A three-condition T-gate and a non-inferiority merge rule |
@@ -198,7 +198,10 @@ S(q,d) =\;& w_b\widetilde{BM25}(q,d)
 
 with each term normalized to [0,1] per query.
 
-- \(ConceptOverlap\): weighted Jaccard over process, device, material, equipment and failure concepts
+- \(ConceptOverlap\): **unweighted Jaccard** over process, device, material, equipment and failure
+  concepts — a set intersection over union, with no per-concept and no document-frequency
+  weighting (`retrieval/ontology_rerank.py:89`; the fixed specification is in
+  [S10](S10-artifact-design-rationale.md))
 - \(PathSim\): semantic similarity based on the shortest ontology path or on information content
 - \(FeatureCoverage\): the proportion of the features of the query's independent claims that the
   candidate covers
@@ -236,7 +239,8 @@ The auxiliary metrics are as follows.
 - MRR@K: **at what rank the first related document appeared** (mean reciprocal rank)
 - nDCG (normalized discounted cumulative gain)@20: on the subset with a graded qrel
 - bpref: an indicator that is **less disturbed when the ground truth is incomplete** (Buckley &
-  Voorhees, 2004)
+  Voorhees, 2004) — **a record of a past execution, excluded from the current analysis** (see the
+  status notice below)
 - Candidate Reduction: **how far the candidates to be reviewed were reduced** while holding recall
   at the same level
 - Median and p95 latency per query, graph-feature generation time, index size and memory use
@@ -252,9 +256,16 @@ metrics are computed under the following conventions, which are stated in the ta
 is computed with binary gain.** (ii) **bpref treats retrieved non-positive documents as
 non-relevant** — classical bpref requires a judged non-relevant set, which is empty under a
 positive-only qrel, making the value always 1 and the indicator vacuous. Both conventions apply
-identically to every comparison system, so the validity of comparison between systems is preserved.
-Graded evaluation is a follow-up task once the expert judgments of §5.13 of the Korean record are
-obtained.
+identically to every comparison system, so **comparison between systems remains possible, but the
+bias that arises from incomplete labels is not removed.** Graded evaluation is a follow-up task once
+the expert judgments of §5.13 of the Korean record are obtained.
+
+> **Status notice — bpref and precision are records of a past execution and are excluded from the
+> current analysis.** §4.5 of the manuscript states that neither metric is used, because both
+> require fixing every uncited document as non-relevant while our ground truth is partial. The
+> bpref values that remain in the tables below are **what was actually computed and reported in
+> that generation**, and they are not deleted. They are, however, **not cited as evidence for any
+> current verdict.**
 
 **Readout metrics one layer below (Appendix A · exploratory layer A → confirmatory layer B).** All
 of the above belong to the retrieval layer. To see whether the gain of the retrieval layer carries
@@ -457,66 +468,6 @@ afterwards.
 
 ---
 
-## 9. Cross-lingual decomposition and operational efficiency
-
-Cited from §5.3.3 of the manuscript. Every value here is exploratory descriptive statistics on
-frozen runs and frozen settings; it is neither a new retrieval nor a preregistered confirmatory
-test.
-
-**Why a per-query average cannot answer the cross-lingual question.** The subgroup table of §6
-reports that the gain of the proposal is not significant on queries whose positives include a
-foreign language (Δ +0.0140, *p* = .518). Whether the cause is a lack of language neutrality in the
-ontology, the absence of query and document translation, or a deficit in the resource itself is not
-separable from a per-query average, because the average is diluted by the Korean positives (of the
-479 positives in the confirmatory split, 340 are Korean, 128 English and 11 Japanese). Recall is
-therefore decomposed by **micro-aggregation over ground-truth documents**; every number is the
-output of `python -m sdkb_paper.analysis.lang_recall --split test` (artifact
-`paper/tables/ir_crosslingual_test.md`).
-
-**Operational efficiency — the gain on the primary outcome barely carries into the number of
-documents reviewed.** What the gain on R@100 (+0.0534) means in practice was converted into the unit
-of **documents reviewed**. There are four metrics: **Effort@Recall**, the minimum review depth at
-which a query first reaches a target recall; **Candidate Reduction**, by what percentage that depth
-fell against the baseline; and the recall-by-depth curve and the number of additional documents
-found per query. The unit is the same family (distinct inventions) as the primary outcome, and the
-review-depth cap is fixed at 500. The full table is `paper/tables/ir_effort_test.md` and the curve
-is `paper/figures/ir_effort_curve.svg`.
-
-| System | To the first related document (median) | To half the positives (median) | Full-recall attainment |
-|---|---:|---:|---:|
-| Text Hybrid (B3) | 21.0 | 65.0 | 38.4% |
-| Text+Ontology (P0★) | 23.5 | 70.5 | 41.9% |
-| **+ClaimFeature (P1)** | **19.0** | **59.5** | 40.9% |
-
-**The medians fall, but the benefit disappears once queries are paired.** The median Candidate
-Reduction, comparing the review depth of the two systems directly on the same query, is **0.0%**,
-and the win/tie/loss counts are 62/16/64, essentially even (at the half-positives target, over the
-142 queries that both reached). The number of additional documents found per query also has a median
-of 0: at K=100, 37 queries gained documents against 11 that lost them, for a total of +28. The gain
-of §7 above is therefore **not the result of improving every query a little but a shift of the mean
-produced by some queries only**. This observation runs in the same direction as the concentration of
-the gain in the high-overlap subgroup.
-
-**One structural point stated in advance.** Without a cap on review depth, the proportion of queries
-that fail to reach the target recall is **identical** across the three systems (half the positives
-26.8%, full recall 55.1%), because the proposed systems reorder the candidate pool of B3 without
-enlarging it. The only benefit available here is in principle **"finding the same things at a
-shallower depth"** and never **"finding more"** — the limit of reranking diagnosed in §6.2 of the
-manuscript appears in the same shape in the operational metrics.
-
-**Three boundaries in reading this.** (i) Queries that failed to reach the target recall **were not
-discarded**. Discarding them would remove the hard queries and inflate the benefit, so unreached
-queries were conservatively imputed at cap+1, only medians were reported, and the truncation
-proportion is carried in the table. (ii) **The median for full recall (R=1.0) is not reported**,
-because more than half (over 55%) are unreached and the median would be determined by the imputed
-value; only the attainment rate is given in its place. (iii) These values are **exploratory
-descriptive statistics**. The confirmatory split was already unsealed, so no superiority is claimed
-again here and these values do not enter the conclusions or the contributions. They are also
-statements about the **number** of documents reviewed and **do not translate into a percentage
-saving of search time or cost**, because per-document review time was not measured.
-
----
-
 ## 8. Robustness of the comparison under incomplete ground truth
 
 Cited from §5.3.1 of the manuscript (the two checks of §4.5).
@@ -601,6 +552,66 @@ depend on this threshold.
 **The second check, widening the ground truth by an exogenous label,** merged the examiner citations
 of foreign counterparts and the difference was maintained (+0.0534 → +0.0593 · *p* = .008 → .003).
 The full text of both checks is in the Korean record.
+
+---
+
+## 9. Cross-lingual decomposition and operational efficiency
+
+Cited from §5.3.3 of the manuscript. Every value here is exploratory descriptive statistics on
+frozen runs and frozen settings; it is neither a new retrieval nor a preregistered confirmatory
+test.
+
+**Why a per-query average cannot answer the cross-lingual question.** The subgroup table of §6
+reports that the gain of the proposal is not significant on queries whose positives include a
+foreign language (Δ +0.0140, *p* = .518). Whether the cause is a lack of language neutrality in the
+ontology, the absence of query and document translation, or a deficit in the resource itself is not
+separable from a per-query average, because the average is diluted by the Korean positives (of the
+479 positives in the confirmatory split, 340 are Korean, 128 English and 11 Japanese). Recall is
+therefore decomposed by **micro-aggregation over ground-truth documents**; every number is the
+output of `python -m sdkb_paper.analysis.lang_recall --split test` (artifact
+`paper/tables/ir_crosslingual_test.md`).
+
+**Operational efficiency — the gain on the primary outcome barely carries into the number of
+documents reviewed.** What the gain on R@100 (+0.0534) means in practice was converted into the unit
+of **documents reviewed**. There are four metrics: **Effort@Recall**, the minimum review depth at
+which a query first reaches a target recall; **Candidate Reduction**, by what percentage that depth
+fell against the baseline; and the recall-by-depth curve and the number of additional documents
+found per query. The unit is the same family (distinct inventions) as the primary outcome, and the
+review-depth cap is fixed at 500. The full table is `paper/tables/ir_effort_test.md` and the curve
+is `paper/figures/ir_effort_curve.svg`.
+
+| System | To the first related document (median) | To half the positives (median) | Full-recall attainment |
+|---|---:|---:|---:|
+| Text Hybrid (B3) | 21.0 | 65.0 | 38.4% |
+| Text+Ontology (P0★) | 23.5 | 70.5 | 41.9% |
+| **+ClaimFeature (P1)** | **19.0** | **59.5** | 40.9% |
+
+**The medians fall, but the benefit disappears once queries are paired.** The median Candidate
+Reduction, comparing the review depth of the two systems directly on the same query, is **0.0%**,
+and the win/tie/loss counts are 62/16/64, essentially even (at the half-positives target, over the
+142 queries that both reached). The number of additional documents found per query also has a median
+of 0: at K=100, 37 queries gained documents against 11 that lost them, for a total of +28. The gain
+of §7 above is therefore **not the result of improving every query a little but a shift of the mean
+produced by some queries only**. This observation runs in the same direction as the concentration of
+the gain in the high-overlap subgroup.
+
+**One structural point stated in advance.** Without a cap on review depth, the proportion of queries
+that fail to reach the target recall is **identical** across the three systems (half the positives
+26.8%, full recall 55.1%), because the proposed systems reorder the candidate pool of B3 without
+enlarging it. The only benefit available here is in principle **"finding the same things at a
+shallower depth"** and never **"finding more"** — the limit of reranking diagnosed in §6.2 of the
+manuscript appears in the same shape in the operational metrics.
+
+**Three boundaries in reading this.** (i) Queries that failed to reach the target recall **were not
+discarded**. Discarding them would remove the hard queries and inflate the benefit, so unreached
+queries were conservatively imputed at cap+1, only medians were reported, and the truncation
+proportion is carried in the table. (ii) **The median for full recall (R=1.0) is not reported**,
+because more than half (over 55%) are unreached and the median would be determined by the imputed
+value; only the attainment rate is given in its place. (iii) These values are **exploratory
+descriptive statistics**. The confirmatory split was already unsealed, so no superiority is claimed
+again here and these values do not enter the conclusions or the contributions. They are also
+statements about the **number** of documents reviewed and **do not translate into a percentage
+saving of search time or cost**, because per-document review time was not measured.
 
 ---
 
@@ -715,7 +726,7 @@ significant degradation in the first split may have been chance, or the queries 
 may have held effectively no Skill-axis concepts, so that **there was nothing to remove**. If the
 latter, the 0 is not "no effect" but "not measurable", and **this table cannot separate the two**.
 The way to separate them is to decompose and compare the per-query, per-axis concept coverage of the
-two splits, and the specification is in §14 below.
+two splits, and the specification is in §13 below.
 
 **This split does not demolish the grounds for the cross-task condition — but it moves their
 weight.** The claim that the cross-task non-regression condition (T3) is independently necessary
@@ -761,7 +772,7 @@ and what broke was not the value but the width of the interval.
 
 ---
 
-## 14. Competing explanations — what was not separated, given as the specification of the experiment that would separate it
+## 13. Competing explanations — what was not separated, given as the specification of the experiment that would separate it
 
 Cited from §6.4 of the manuscript.
 
@@ -783,7 +794,7 @@ requires is not "we excluded them" but **"we state that we did not exclude them"
 | Competing explanation | Prediction | The experiment that would separate it | Current state |
 |---|---|---|---|
 | **The split between the two confirmatory splits on the negative control (A8)** — (i) the significant degradation in layer A was chance; (ii) the queries of layer B held no concepts on the expert-layer axis, so there was nothing to remove | If (ii), the coverage of that axis in the layer-B queries is close to 0 | Decompose and compare the per-query, per-axis concept coverage of the two splits | **Not performed** — the second split cannot separate "failure to reproduce" from "nothing to measure" |
-| **The cause of the transfer verdict failure (T4)** — (i) the retrieval gain does not carry to the generation layer; (ii) the sample was too small to show non-inferiority | If (ii), the lower bound moves inside the margin as the sample grows | Re-adjudicate with the same instrument on more queries (a new preregistration) | **Not performed** — the lower bound missed the margin by 0.0005, a knife-edge failure, so both explanations remain alive (§16) |
+| **The cause of the transfer verdict failure (T4)** — (i) the retrieval gain does not carry to the generation layer; (ii) the sample was too small to show non-inferiority | If (ii), the lower bound moves inside the margin as the sample grows | Re-adjudicate with the same instrument on more queries (a new preregistration) | **Not performed** — the lower bound missed the margin by 0.0005, a knife-edge failure, so both explanations remain alive (§15) |
 
 **This table is an output.** "We did not identify the cause" is a limitation, but **being able to
 specify what to measure in order to separate them** is a result. None of the five changes the
@@ -793,7 +804,7 @@ acceptance rule but **the direction of improvement**.
 
 ---
 
-## 15. Qualitative typology of failures — produced, and placed in an appendix
+## 14. Qualitative typology of failures — produced, and placed in an appendix
 
 Cited from §6.4 of the manuscript.
 
@@ -840,7 +851,7 @@ Because κ fell below the criterion fixed in advance, this typology is reported 
 
 ---
 
-## 16. Appendix A — the transfer experiment (RQ5 · one T4 verdict)
+## 15. Appendix A — the transfer experiment (RQ5 · one T4 verdict)
 
 Cited from §3.5.1 and §6.4 of the manuscript.
 
@@ -933,3 +944,26 @@ margin by **0.0005**. The sentence that may be used is therefore not *"it was wo
 layer"* but **"we could not show with this sample that performance does not fall"**. **The margin was
 not changed** — moving a frozen threshold for the sake of 0.0005 is exactly the post-hoc adjustment
 this paper forbids, and **regret is not a reason**.
+
+
+---
+
+## Appendix · Release operation procedure moved from §3.6 of the manuscript (PLAN-086 §7.3)
+
+**Tracking per release.** Tracking the per-subgroup drop (T2) and the competency-question pass rate
+of the other tasks (T3) release by release makes visible both the local failures hidden under an
+average and the erosion between tasks.
+
+**Whether a resource delta reached the gate — three decision rules.** If a frozen record exists in
+which the same pipeline signature was produced from a different snapshot, the run is recorded as
+**invisible**. If no such record exists it is recorded as **no evidence of invisibility**, and if a
+signature cannot be produced it is recorded as **undeterminable**. The middle state does not mean
+that the delta was observed.
+
+**Execution cost per layer.** On a graph of 55,887 triples with 15 competency questions the mean
+execution time per layer is L1 124 s, L2 12.5 s, and L3+T3 1.6 s. T1 and T2 include rebuilding the
+retrieval index and are not included in these values.
+
+**Asymmetry of validation levels.** The three tasks are not validated to the same level. The
+expert-matching view and the foresight view are subject to T3 regression monitoring, and the
+retrieval performance of those two views is not claimed by this study.

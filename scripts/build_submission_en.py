@@ -113,8 +113,10 @@ CAPTIONS: dict[str, str] = {
     "T8": "**Table 8. Decision stability — the point at which each verdict switches under the "
            "frozen thresholds.**",
     "T9": "**Table 9. Six deficits in validation strength and generalizability — every remedy "
-           "is the object of a new preregistration.** The three deficits confined to the retrieval "
-           "layer are in [S9](../../supplementary/en/S9-retrieval-evaluation-detail.md).",
+           "is the object of a new preregistration.** Deficits ⑥–⑧ are confined to the retrieval "
+           "layer and are in [S9](../../supplementary/en/S9-retrieval-evaluation-detail.md) under "
+           "the same numbers. The numbers are fixed identifiers linking the manuscript to the "
+           "supplementary material and are not reassigned.",
     "T7": "**Table 7. Release-lineage verdicts on engineering ontology 2 — confined to "
            "the formal layers and the cross-task layer.** d0–d5 are releases v1.3.0, v1.4.0, "
            "v1.4.1, v1.4.2, v1.4.3, and v1.4.4; migration condition R places the original instances "
@@ -153,7 +155,7 @@ CAPTIONS: dict[str, str] = {
     "F4": "**Figure 4.** The T-gate procedure and the actual verdicts. The left column is the order "
           "of the acceptance procedure and reads downward. The middle column is the handling when a "
           "term is not met, and the right column is the verdict each term actually produced in the "
-          "controlled resource substitution (§5.1). The right column shows that a change passing "
+          "controlled resource substitution (§5.2). The right column shows that a change passing "
           "every formal layer was rejected on one performance condition.",
     "F3": "**Figure 3.** The shared T-Box and three task views. The three boxes at the top give the "
           "main classes of each view, a representative competency question, the A-Box evidence, and "

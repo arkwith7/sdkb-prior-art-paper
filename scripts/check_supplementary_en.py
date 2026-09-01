@@ -41,7 +41,13 @@ EN_DIR = KO_DIR / "en"
 # 부분 렌더링 — 영문판이 원문의 **인용된 자리만** 옮긴 파일. 포함 관계로 검사한다.
 PARTIAL = {"S5-submission-full-v2.md"}
 
-NUMERIC = re.compile(r"\d+(?:[.,]\d+)*")
+# **부호를 값에 포함한다 (PLAN-086 D15 · 2026-09-01).** 구 정규식은 `\d+(?:[.,]\d+)*` 였고
+# 부호가 없어 `+0.0534` 와 `−0.0534` 가 **같은 토큰**이었다. 개선과 저하를 뒤바꿔 적어도
+# 이 검사는 통과한다 — 수치 일치는 의미 일치가 아니다. 유니코드 마이너스(U+2212)와 하이픈,
+# 그리고 영문 `minus` 표기를 모두 부호로 읽는다.
+# 부호는 **낱말 뒤에 붙은 하이픈이 아닐 때만** 부호다 — `pre-2015` 의 하이픈은 음수 기호가
+# 아니다. 그래서 부호 앞에 글자·숫자가 오면 부호로 읽지 않는다.
+NUMERIC = re.compile(r"(?:(?<![0-9A-Za-z가-힣])[+\u2212-])?\d+(?:[.,]\d+)*")
 # 측정값이 아닌 자리 — 절 번호 · 식별자 · 날짜 · 커밋 해시 · 파일명
 NOT_MEASUREMENT = [
     re.compile(r"§\s?\d+(?:\.\d+)*[a-z]?"),          # §4.5 · §6.4.3 · §1.4a
@@ -56,6 +62,9 @@ NOT_MEASUREMENT = [
 ]
 
 
+SIGN_NORM = str.maketrans({"\u2212": "-", "\u2013": "-", "\u2010": "-"})
+
+
 def measurements(text: str) -> Counter[str]:
     """원문과 영문판이 말하는 **측정값**. 한 자리 숫자는 세지 않는다.
 
@@ -66,7 +75,82 @@ def measurements(text: str) -> Counter[str]:
     """
     for pat in NOT_MEASUREMENT:
         text = pat.sub(" ", text)
-    return Counter(n for n in NUMERIC.findall(text) if len(n) > 1)
+    text = text.translate(SIGN_NORM)
+    out: Counter[str] = Counter()
+    for n in NUMERIC.findall(text):
+        digits = n.lstrip("+-")
+        # 천 단위 구분은 표기 관습이지 값이 아니다 — 한국어는 `1000`, 영문은 `1,000` 을 쓴다.
+        # 소수점은 지운다면 값이 달라지므로, **소수부가 없을 때만** 쉼표를 제거한다.
+        if "," in digits and "." not in digits:
+            digits = digits.replace(",", "")
+        if len(digits) <= 1:
+            continue
+        # **부호 없는 자리는 부호 없는 채로 센다.** 한국어가 「0.0293 저하」로 적고 영문이
+        # `reduced by 0.0293` 으로 적는 자리가 흔하며, 거기에 부호를 강제하면 거짓 위반이 된다.
+        # 이 검사가 잡으려는 것은 **한쪽이 부호를 달고 다른 쪽이 반대 부호를 단** 경우다.
+        out[(n[0] + digits) if n[0] in "+-" else digits] += 1
+    return out
+
+
+# ── D15 · 의미 묶음 대조 (PLAN-086 · 2026-09-01) ────────────────────────────
+#
+# **수치 일치는 의미 일치가 아니다.** 위의 대조는 같은 수를 두 문서가 갖고 있는가만 본다.
+# 그러나 실제로 난 사고는 수치가 아니라 **그 수가 무엇의 값인가**에서 났다 — 본문이
+# *"쓰지 않는다"* 한 지표를 보충자료가 계산해 보고하고 있었고, 두 문서의 수치는 일치했다.
+#
+#   M1  배제 선언과의 정합 — 본문이 현행 분석에서 뺀 지표를 보충자료가 **지위 표시 없이**
+#       다루면 실패한다. 삭제를 요구하지 않는다(§1-1) — 요구하는 것은 지위의 명시다.
+#   M2  판정 지위의 어휘 — `확증`/`confirmatory` 를 세 범주(㉮㉯㉰) 밖에서 쓰지 않는다.
+#       "주요 확증 셋에 없다"와 "탐색적이다"는 같은 뜻이 아니며, 그 혼동이 S0·S8 에 있었다.
+
+EXCLUDED_METRICS = {
+    # 지표 이름 → 지위 표시로 인정하는 표현(둘 중 하나가 같은 파일에 있어야 한다)
+    "bpref": ("과거 실행 기록", "record of a past execution"),
+}
+# M2 는 **지위를 선언하는 자리**만 본다. `확증 분할`·`확증 점검`·`confirmatory split` 은 동결된
+# 용어이고 지위 선언이 아니다 — 그것까지 세면 규칙이 거짓 위반으로 가득 차 아무도 읽지 않는다.
+# 선언의 자리는 셋이다: 절 표제 · `확증 · 사전등록 §…` 형태의 꼬리표 · 표 셀 하나가 통째로 `확증`.
+STATUS_DECL = [
+    re.compile(r"^#{1,6}\s.*(?<![가-힣])확증(?![가-힣])"),
+    re.compile(r"^#{1,6}\s.*\bconfirmatory\b", re.I),
+    re.compile(r"확증\s*·\s*사전등록"),
+    re.compile(r"\bconfirmatory\s*·\s*preregistration", re.I),
+    re.compile(r"\|\s*확증\s*\|"),
+    re.compile(r"\|\s*[Cc]onfirmatory\s*\|"),
+]
+STATUS_CATEGORY = re.compile(r"[㉮㉯㉰]")
+# 동결된 연어(collocation) — `확증 분할`·`확증 판독` 은 대상의 이름이지 지위의 선언이 아니다.
+STATUS_FROZEN = re.compile(
+    r"확증\s*(분할|판독|점검|계열|평가\s*점검)|홀드아웃\s*확증|확증에서\s*강등"
+    r"|confirmatory\s+(split|readout|check|evaluation\s+check)"
+    r"|demoted\s+from\s+confirmatory",
+    re.I,
+)
+
+
+def semantic_bundle(path: Path) -> list[str]:
+    """M1·M2 — 한 파일 안에서 닫히는 의미 검사."""
+    out: list[str] = []
+    text = path.read_text(encoding="utf-8", errors="replace")
+    flat = re.sub(r"\s+", " ", text)
+    for metric, markers in EXCLUDED_METRICS.items():
+        # `\b` 를 쓰지 않는다 — 한국어에서 `bpref는` 은 한글이 낱말 문자로 취급되어 경계가
+        # 생기지 않고, 그래서 국문판이 통째로 눈에 보이지 않았다.
+        pat = rf"(?<![0-9A-Za-z]){metric}(?![0-9A-Za-z])"
+        if re.search(pat, flat, re.I) and not any(m in flat for m in markers):
+            out.append(
+                f"{path}: [M1] 현행 분석에서 제외한 지표 ‘{metric}’ 를 지위 표시 없이 다룬다 "
+                f"— {markers[0]!r} 로 표시한다(삭제하지 않는다)"
+            )
+    for i, line in enumerate(text.splitlines(), 1):
+        if STATUS_FROZEN.search(line) or STATUS_CATEGORY.search(line):
+            continue
+        if any(p.search(line) for p in STATUS_DECL):
+            out.append(
+                f"{path}:{i}: [M2] 판정 지위 ‘확증’ 을 세 범주 밖에서 쓴다 "
+                f"— ㉮ 검색 사전등록 확증 점검 · ㉯ 산출물 검증·승인 판정 · ㉰ 탐색적 분석"
+            )
+    return out
 
 
 def main() -> int:
@@ -85,6 +169,8 @@ def main() -> int:
             print(f"[미번역] {ko.name}")
             continue
         done += 1
+        fails += semantic_bundle(ko)
+        fails += semantic_bundle(en)
         a, b = measurements(ko.read_text()), measurements(en.read_text())
         if ko.name in PARTIAL:
             invented = sorted(set(b) - set(a))

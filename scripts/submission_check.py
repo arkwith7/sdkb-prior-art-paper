@@ -403,6 +403,74 @@ def check_file(
     return fails
 
 
+# ── D13 · 장별 분량 예산 (PLAN-086 · 2026-09-01) ────────────────────────────
+#
+# **왜 D6 로는 부족한가.** D6 는 문서 전체에 걸린 한 개의 수이고 영문에는 아무 검사가 없었다.
+# 그래서 장 단위의 증가는 무신호로 지나갔고(PLAN-083 이후 +4,697자), 영문은 PLAN-080 이 정한
+# 상한을 391 단어 넘긴 채 통과했다. 이 검사는 **경고**다 — 차단은 D6 가 계속 맡는다.
+
+BUDGET_SPEC = Path("paper/word-budget.yaml")
+_CHAP = re.compile(r"^#\s+(\d+)\.\s")
+_EN_WORD = re.compile(r"[A-Za-z][A-Za-z0-9'’\-]*")
+
+
+def _chapters(path: Path, bib_head: str) -> dict[str, list[str]]:
+    """장 번호 → 그 장의 행. `0` 은 제목·초록·약어표를 담는 머리다."""
+    out: dict[str, list[str]] = {}
+    cur, buf = "0", []
+    for line in strip_fenced(path.read_text(encoding="utf-8", errors="replace").splitlines()):
+        if re.match(rf"^#\s+{bib_head}\s*$", line):
+            break
+        if m := _CHAP.match(line):
+            out[cur] = buf
+            cur, buf = m.group(1), []
+        else:
+            buf.append(line)
+    out[cur] = buf
+    return out
+
+
+def check_budget(root: Path) -> list[str]:
+    """장별 예산 대조 — 전량 경고다."""
+    spec_path = root / BUDGET_SPEC
+    if not spec_path.exists():
+        return []
+    try:
+        import yaml
+    except ImportError:                                  # pragma: no cover
+        return [f"[D13] {BUDGET_SPEC} 를 읽을 수 없다 — pyyaml 미설치"]
+    cfg = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
+    head = 1.0 + float(cfg["meta"].get("headroom", 0.0))
+    warns: list[str] = []
+
+    ko = root / cfg["meta"]["targets"]["ko"]
+    en = root / cfg["meta"]["targets"]["en"]
+    ko_ch = _chapters(ko, "참고문헌") if ko.exists() else {}
+    en_ch = _chapters(en, "References") if en.exists() else {}
+
+    def ko_n(lines: list[str]) -> int:
+        return len(re.sub(r"\s", "", "\n".join(lines)))
+
+    def en_n(lines: list[str]) -> int:
+        # 표 행은 국문 파생본에서 문자 단위로 복사된 것이라 영문 산문의 분량이 아니다.
+        prose = [ln for ln in lines if not ln.strip().startswith("|")]
+        return len(_EN_WORD.findall("\n".join(prose)))
+
+    tot = cfg.get("total") or {}
+    if ko_ch and (n := sum(ko_n(v) for v in ko_ch.values())) > tot.get("ko_chars", 10**9):
+        warns.append(f"[D13] 국문 총량 {n:,}자 > 목표 {tot['ko_chars']:,}자")
+    if en_ch and (n := sum(en_n(v) for v in en_ch.values())) > tot.get("en_words", 10**9):
+        warns.append(f"[D13] 영문 총량 {n:,}단어 > 목표 {tot['en_words']:,}단어")
+
+    for key, budget in (cfg.get("chapters") or {}).items():
+        name = budget.get("name", key)
+        if key in ko_ch and (n := ko_n(ko_ch[key])) > budget["ko_chars"] * head:
+            warns.append(f"[D13] {key}장({name}) 국문 {n:,}자 > 예산 {budget['ko_chars']:,}자")
+        if key in en_ch and (n := en_n(en_ch[key])) > budget["en_words"] * head:
+            warns.append(f"[D13] {key}장({name}) 영문 {n:,}단어 > 예산 {budget['en_words']:,}단어")
+    return [f"{BUDGET_SPEC}: {w}" for w in warns]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
@@ -429,6 +497,7 @@ def main() -> int:
         fails += check_file(f, root, warns, is_source=True, link_base=base)
     for f in supp:
         fails += check_file(f, root, warns, links_only=True)
+    warns += check_budget(root)
 
     for line in warns:
         print(line)

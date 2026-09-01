@@ -330,7 +330,7 @@ def render_table(faults: dict, normal: dict, lineage: dict, cost: dict) -> str:
                     "> **형식 층과 교차 태스크 층에 한정한 판정이다.** T1·T2 는 이식하지 않았으므로",
                     "> `accept` 는 null 이고 `Accept_partial` 만 남는다(사전등록 §6.2).", ""]
 
-    L += ["## 1. 교차 결함 검출 (확증 · 사전등록 §6.1)", ""]
+    L += ["## 1. 교차 결함 검출 (㉯ 산출물 검증·승인 판정 · 사전등록 §6.1)", ""]
     if j.get("n_vacuous"):
         by = " · ".join(f"{k} {v}건" for k, v in j["vacuous_by_fault"].items())
         L += [f"> **인스턴스 {j['n']}건 가운데 {j['n_vacuous']}건은 판정이 아니다**({by}). "
@@ -383,7 +383,7 @@ def render_table(faults: dict, normal: dict, lineage: dict, cost: dict) -> str:
         L += [f"- 규칙 재료 부족으로 **대체 생성 {subs}건** (원 규칙은 각 항목의 "
               "`substituted_from` 에 남는다)"]
 
-    L += ["", "## 3. 릴리스 계보 (확증 · 사전등록 §6.2·§6.3)", "",
+    L += ["", "## 3. 릴리스 계보 (㉯ 산출물 검증·승인 판정 · 사전등록 §6.2·§6.3)", "",
           "| 인접 쌍 | 이행 | Δ 추가 | Δ 제거 | L1 | L2 | L3 | T3 | Accept_partial |",
           "|---|---|---|---|---|---|---|---|---|"]
     for x in lineage["judgments"]:

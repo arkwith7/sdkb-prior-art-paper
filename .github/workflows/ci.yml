@@ -48,9 +48,9 @@ jobs:
 
       # 영문 문체 규격 정합 (paper/STYLE-EN-ACADEMIC.md). 한국어 규격이 어체의 표류를 막는
       # 자리에서 영문 원고의 같은 표류를 막는다 — 특히 판정 강도의 영문 관용구(§4)를 본다.
-      # **경고 모드** — 영문 본문 번역이 끝나기 전이라 위반 0 이 아니다. 본문 완성 시점에
-      # `--warn` 을 떼고 차단으로 승격한다 (한국어 규격이 밟은 경로 · CLAUDE.md §2.3).
-      - name: Academic style check — English (warn)
+      # **차단 모드** — 2026-08-26(PLAN-080 A-⑤) 승격. 경고로 시작한 이유였던 "영문 본문
+      # 번역 미완"이 해소됐고 승격 시점 실측은 위반 0 이다 (CLAUDE.md §2.3).
+      - name: Academic style check — English
         run: uv run python scripts/style_check_en.py
 
       # 용어 첫 등장 규율 (paper/glossary-terms.yaml · CLAUDE.md §8.1 V1·V2 · PLAN-066).
@@ -60,6 +60,24 @@ jobs:
       # 승격하였다. G4(식별자 산문 사용)는 설계상 경고로 남는다.
       - name: Glossary first-mention check
         run: uv run python scripts/check_glossary.py
+
+      # 상호참조 (PLAN-086 D11·D12). D9 는 §참조의 **도달성**만 보므로 존재하는 다른 절을
+      # 틀리게 가리키는 것·표와 그림 번호·보충자료 → 본문 표 참조는 어느 검사도 보지 않았다.
+      # X5 는 **국·영문 대조**다 — 국문만 고치고 영문이 뒤처지는 사고가 가장 자주 났다.
+      # **차단 모드** — 도입 커밋에서 켜는 시점의 위반을 함께 해소했다.
+      - name: Cross-reference check (EP↔section · tables/figures · KO–EN)
+        run: uv run python scripts/check_crossrefs.py
+
+      # 주장 강도 (PLAN-086 D14). verdicts.yaml 은 판정 문구를 보고 **주장의 크기**는 보지
+      # 않는다 — 선취 주장("we found no design")과 미실행 이력의 본문 잔류가 그 사각지대였다.
+      # **차단 모드.**
+      - name: Claim-strength check (novelty overreach · unexecuted history)
+        run: uv run python scripts/check_claims.py
+
+      # 영문 supplementary 의 수치·의미 대조 (PLAN-086 D15). 부호를 값에 포함하고, 본문이
+      # 현행 분석에서 제외한 지표의 지위 표시와 판정 지위 세 범주(㉮㉯㉰)를 함께 본다.
+      - name: Supplementary EN measurement and meaning check
+        run: uv run python scripts/check_supplementary_en.py
 
       # 단위 + 통합 테스트. 통합 테스트가 커밋된 스냅샷에서 baseline 을 재조립해
       # 관측 단위 수(Process 8 / SubProcess 12)·특허 0건·결정성·CQ 서명을 검증한다.

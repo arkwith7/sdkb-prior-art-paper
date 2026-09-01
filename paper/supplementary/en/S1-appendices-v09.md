@@ -196,8 +196,10 @@ Items an independent re-execution has to check against.
   current resource.
 - **Two metric conventions differ from what §5.1 of the manuscript announced.** Because the qrel is
   entirely grade 1, nDCG@20 was computed with **binary gain** and bpref under the
-  **retrieved-as-judged** convention (noted in §5.1 and §6.2). Graded evaluation is conditional on
-  first obtaining the expert judgments of §5.5.
+  **retrieved-as-judged** convention (noted in §5.1 and §6.2). The bpref values are **a record of a
+  past execution and are excluded from the current analysis** (status notice in
+  [S5](S5-submission-full-v2.md) §5). Graded evaluation is conditional on first obtaining the expert
+  judgments of §5.5.
 - **The retrieval pipeline is frozen for single-language query processing (measured and updated
   2026-07-28).** With no translation layer, cross-lingual recall depends on only two channels, the
   multilingual embedding and the language-neutral concept IRI. The result is measured and reported
@@ -205,3 +207,37 @@ Items an independent re-execution has to check against.
   the final system recovers 5% of non-Korean positives). Improvement experiments with translation,
   concept enrichment or candidate generation as factors would change the F8 and F13 freezes and are
   therefore possible only under **a separate preregistration** (§9.1 · PLAN-019).
+
+
+---
+
+## Appendix · Resource specification moved from §3.2 and §3.3 of the manuscript (PLAN-086 §7.3)
+
+### The full set of predicates on the rejected-patent axis
+
+The rejected-patent axis consists of `hasPriorArtExaminer` (examiner citation · **the relation
+removed from the retrieval graph under leakage control**), `rejectedFor` (rejection ground),
+`hasClaim`/`dependsOnClaim`, `hasFeature`/`featureConcept`,
+`hasJudgment`/`aboutClaim`/`overPriorArt`/`onGround`, and `hasPriorArtApplicant` (applicant
+citation, held separately from the examiner citation).
+
+### Definitions of the four denominators
+
+Examiner citations number 2,534 in total, of which 30 are non-patent literature. 2,321 is the number
+of distinct patents designated by `hasPriorArtExaminer`. 2,211 is the number of ground-truth items
+that reach the graph at node level, and 584 is the size of the sample carrying a judgment link. The
+four are different denominators and are not mixed as one ground-truth count.
+
+### Decision rules for the two relevance grades
+
+Grade 2 applies when a judgment links a specific claim to a prior document and the rejection ground
+is identified. Grade 1 applies when only a patent-level citation relation is confirmed; the absence
+of a citation relation is treated as unobserved rather than confirmed negative. Grade 2 does not
+imply a legally deeper relevance. The 30 non-patent-literature items are excluded from the
+denominator of the main evaluation and reported separately.
+
+### The five-way release separation that blocks ground-truth inflow
+
+The five are the publishable core, the development and validation qrel, the test judgments sealed
+until evaluation (hash-pinned, with an access log), derived features generated independently of the
+qrel, and provenance. Pinning does not constrain improvement in later versions.

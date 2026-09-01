@@ -1,4 +1,4 @@
-.PHONY: supplementary-check-en figures-en concept-rel style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check concept-status
+.PHONY: crossref-check claims-check score-spec supplementary-check-en figures-en concept-rel style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check concept-status
 
 setup:
 	uv sync --all-extras
@@ -84,6 +84,22 @@ supplementary-check-en:
 
 glossary-check:
 	uv run python scripts/check_glossary.py
+
+# 상호참조 (PLAN-086 D11·D12 · 2026-09-01). D9 는 §참조의 **도달성**만 보므로 존재하는 다른 절을
+# 가리키는 것·표와 그림의 번호·보충자료 → 본문 표 참조는 어느 검사도 보지 않았다. 여기에 더해
+# **국·영문 대조**(D12)를 둔다 — 국문만 고치고 영문이 뒤처지는 사고가 가장 자주 났다.
+crossref-check:
+	uv run python scripts/check_crossrefs.py
+
+# 주장 강도 (PLAN-086 D14). `verdicts.yaml` 은 판정 문구를 보고 **주장의 크기**는 보지 않는다.
+# 선취·최상급 표현과 미실행 이력의 본문 잔류를 본다.
+claims-check:
+	uv run python scripts/check_claims.py
+
+# 점수 함수 확정표 — 항 정의·최종 가중치·코드 위치를 코드에서 읽어 낸다(PLAN-086 E-1d).
+# 손으로 옮겨 적으면 S5 §5.6 의 "가중 Jaccard" 같은 표류가 되돌아온다.
+score-spec:
+	uv run python scripts/export_score_spec.py
 
 # 용어별 첫 등장·정의 위치 대장 — PLAN-066 실측표와 glossary.md §J 의 원천. 손으로 세지 않는다.
 glossary-inventory:

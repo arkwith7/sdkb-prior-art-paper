@@ -247,6 +247,26 @@ BIB_INSERTS: list[tuple[str, str]] = [
         "co-located with ESWC 2023* (CEUR Workshop Proceedings, Vol. 3471). "
         "https://ceur-ws.org/Vol-3471/paper4.pdf",
     ),
+    # 신규성 자리 좁히기(2026-09-01 · PLAN-086 E-3c) — 릴리스 워크플로 자동화와 품질 검사의
+    # 선행 도구 둘. 본 연구가 "확인하지 못하였다"고 적을 수 있는 것은 이 둘이 하는 일이 아니라
+    # **하류 태스크 조건을 승인식의 항으로 넣은 설계**이며, 그 경계를 §2.2·§2.3 에서 명시한다.
+    # Matentzoglu 는 Mynarz 앞에 와야 하므로 그 삽입 뒤에 둔다(앵커가 삽입된 행이다).
+    (
+        "Kontokostas, D., Westphal, P.,",
+        "Jackson, R. C., Balhoff, J. P., Douglass, E., Harris, N. L., Mungall, C. J., & Overton, J. A. "
+        "(2019). ROBOT: A tool for automating ontology workflows. *BMC Bioinformatics, 20*, Article 407. "
+        "https://doi.org/10.1186/s12859-019-3002-3",
+    ),
+    (
+        "Mynarz, J., Haniková, K.,",
+        "Matentzoglu, N., Goutte-Gattat, D., Tan, S. Z. K., Balhoff, J. P., Carbon, S., Caron, A. R., "
+        "Duncan, W. D., Flack, J. E., Haendel, M., Harris, N. L., Hogan, W. R., Hoyt, C. T., "
+        "Jackson, R. C., Kim, H., Kir, H., Larralde, M., McMurry, J. A., Overton, J. A., Peters, B., "
+        "Pilgrim, C., Stefancsik, R., Robb, S. M. C., Toro, S., Vasilevsky, N. A., Walls, R., "
+        "Mungall, C. J., & Osumi-Sutherland, D. (2022). Ontology Development Kit: A toolkit for "
+        "building, maintaining and standardizing biomedical ontologies. *Database, 2022*, "
+        "Article baac087. https://doi.org/10.1093/database/baac087",
+    ),
 ]
 
 

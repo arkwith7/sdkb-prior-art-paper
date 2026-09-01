@@ -54,7 +54,7 @@ development model expresses the building–floor–room containment with `brick:
 90 injection sites and detected faults, whereas the holdout model expresses the same relation with
 `brick:isPartOf`. What was observed is that a fault specification does not transfer unchanged
 across resources; porting a procedure and porting a fault specification are different problems. The
-remedy is deficit ⑨ of Table 10 in the manuscript.
+remedy is deficit ⑨ of Table 9 in the manuscript.
 
 ## 4. Full verdicts (copy of the generator output)
 
@@ -66,7 +66,7 @@ remedy is deficit ⑨ of Table 10 in the manuscript.
 > **These verdicts are confined to the formal layers and the cross-task layer.** T1 and T2 were not
 > ported, so `accept` is null and only `Accept_partial` remains (preregistration §6.2).
 
-## 1. Cross-task fault detection (confirmatory · preregistration §6.1)
+## 1. Cross-task fault detection (㉯ artifact validation and approval verdict · preregistration §6.1)
 
 > **Nine of the 21 instances are not verdicts** (nine X2 instances). The number of injection sites
 > was 0, so the fault never entered the graph. **12 are adjudicable**, and the figures below are
@@ -117,7 +117,7 @@ remedy is deficit ⑨ of Table 10 in the manuscript.
 - **8 substitutions** were generated where rule material was insufficient (the original rule is
   retained in the `substituted_from` field of each item)
 
-## 3. Release lineage (confirmatory · preregistration §6.2, §6.3)
+## 3. Release lineage (㉯ artifact validation and approval verdict · preregistration §6.2, §6.3)
 
 | Adjacent pair | Migration | Δ added | Δ removed | L1 | L2 | L3 | T3 | Accept_partial |
 |---|---|---|---|---|---|---|---|---|

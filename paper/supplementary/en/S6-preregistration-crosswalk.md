@@ -15,9 +15,15 @@ labels. The table below joins the two.
 
 | Name in the manuscript | Preregistration label | Research-question label | Preregistration document | Status |
 |---|---|---|---|---|
-| **Retrieval-utility check** | `H3` | `RQ2` | PLAN-031 (first confirmatory split) · PLAN-047 (second confirmatory split) | Confirmatory |
-| **Layer-specificity check** | `H5` | `RQ3` · `RQ4` | PLAN-031 · PLAN-047 | Confirmatory |
-| **Transfer check** | `T4` (no hypothesis label) | `RQ5` | PLAN-038 (instrument frozen) · PLAN-047 (confirmatory readout) | One confirmatory readout · not part of the acceptance rule |
+| **Retrieval-utility check** | `H3` | `RQ2` | PLAN-031 (first confirmatory split) · PLAN-047 (second confirmatory split) | ㉮ |
+| **Layer-specificity check** | `H5` | `RQ3` · `RQ4` | PLAN-031 · PLAN-047 | ㉮ |
+| **Transfer check** | `T4` (no hypothesis label) | `RQ5` | PLAN-038 (instrument frozen) · PLAN-047 (confirmatory readout) | ㉮ · one confirmatory readout · not part of the acceptance rule |
+
+> **㉮ denotes a preregistered confirmatory retrieval check** (the three categories are in
+> [S0](S0-index.md): ㉮ preregistered confirmatory retrieval check · ㉯ artifact validation and
+> approval verdict · ㉰ exploratory analysis). The three entries in §2 below were demoted from ㉮,
+> and among them the final round of the gate discriminative-power evaluation and the verdict of
+> the controlled resource substitution are ㉯.
 
 `RQ4` (layer independence) has no separate check: **the result of the layer-specificity check
 answers it**, exactly as designed at the time of preregistration.
@@ -28,7 +34,7 @@ answers it**, exactly as designed at the time of preregistration.
 |---|---|---|---|
 | `H1` | Discriminative power of the gate | §4.4 design · §5.4 holdout confirmation | Supported within the holdout scope |
 | `H2` | Acceptance safety | §6.4 | **Not tested on the resource of this paper** · later rejected in one actual test under a separate preregistration (PLAN-035) |
-| `H4` | Layer contribution | Rows A4 and A5 of the ablation table in §5.3.2 | Rejected |
+| `H4` | Layer contribution | Rows A4 and A5 of the ablation table — [S5](S5-submission-full-v2.md) §6 (moved out of manuscript §5.3.2) | Rejected |
 
 **Demotion is not deletion.** The verdict records remain under their original labels in the working
 canonical manuscript [논문_v0_9_SDKB_통합초안.md](../../archive/논문_v0_9_SDKB_통합초안.md) §1.4a and in
@@ -103,3 +109,35 @@ subgroup margin δ=0.05, primary outcome family-level Recall@100, the time and f
 boundaries, the low-overlap boundary 0.0079, and the generation-layer margins ε_T4=0.02 and
 η=0.01 — together with the sealed qrel hashes and the access ledger, are in §4.5 of the manuscript
 and in the pre-abridgment full text [S5](S5-submission-full-v2.md).
+
+
+---
+
+## 5. Preregistration chronology — what was frozen, and when (absorbed from §3, §4.5 and §5.2 of the manuscript)
+
+The manuscript states the preregistration, sealing and unsealing procedure once, in §4.5. The freeze
+history that had been repeated chapter by chapter is absorbed into this table. **No verdict and no
+number changed; what changed is where the record is carried.**
+
+| What was frozen | When | Where it is stated |
+|---|---|---|
+| Non-inferiority margin ε=0.02 · subgroup limit δ=0.05 · distribution threshold τ=0.05 | Before the evaluation set was unsealed | Manuscript §3.5 |
+| Primary outcome family-level Recall@100 | Before the evaluation set was unsealed | Manuscript §4.5 |
+| Time and family split boundaries (2016-11-21, 2021-07-21) and the seed | Before the test qrel was unsealed | Manuscript §4.1 |
+| Sealing and hash of the test qrel (479 edges / 198 queries) | Before the final comparison | Manuscript §4.1 |
+| Lexical-overlap boundary Q1 = 0.0079 | Before results were seen | Manuscript §4.5 |
+| Bootstrap resample count 10,000 and the seed | Before unsealing | Manuscript §4.5 |
+| The predictions of the three evaluation checks | Before results were seen | Manuscript §4.5 · §1 above |
+| Fault-injection decision rule (detection by T3 alone ≥1 ∧ one-sided McNemar *p*<.05 ∧ false-positive rate ≤5%) | Before the holdout injection | Manuscript §4.4 · [S2](S2-fault-injection-v09.md) |
+| The reporting policy should removal of A8 degrade performance | Before results were seen | Manuscript §4.4 |
+| Decision rule, margin, weights and retrieval settings of the second split (commit `67568c8`) | Before unsealing | Manuscript §5.3.1 |
+| Margin and hallucination-rate threshold of the transfer check | Before unsealing | Manuscript §3.5.1 |
+| The five promotion conditions and three grades for design knowledge | Before results were seen | §4 above |
+| Resource hashes, competency questions, delta rules, fault specification, decision rule and threshold grid of the port | Before execution | Manuscript §4.6 · [S8](S8-second-domain-port.md) |
+| Conclusion rules | Before unsealing | Manuscript §6.4 · [S5](S5-submission-full-v2.md) |
+
+**In the controlled resource substitution (§5.2) what was frozen is every input to the decision
+rule.** That covers the document set, the retrieval code, the settings, the weights, the split, the
+sealed qrel, the three subgroup axes, the four competency-question suites, the resample count and
+seed, the hash of the candidate population, and the weight grid of the ranking function. What
+differed between the two runs is therefore the resource bundle alone.

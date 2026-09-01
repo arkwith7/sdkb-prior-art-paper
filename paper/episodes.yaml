@@ -1,0 +1,46 @@
+# paper/episodes.yaml — 평가 에피소드 ↔ 절의 단일 원천 (PLAN-086 D11 · 2026-09-01)
+#
+# **왜 이 파일이 필요한가.** EP1–EP5 는 결과 장의 정식 이름공간이고(CLAUDE.md §7), 절을 옮길
+# 때마다 "EP3 는 §5.2" 같은 대응이 산문·표·캡션·보충자료 네 자리에 흩어져 따라 움직여야 한다.
+# 지금까지 그 대응을 검사하는 기계가 없었고, 그래서 재구성마다 한두 자리가 뒤처졌다.
+# `scripts/check_crossrefs.py` 가 이 파일을 읽어 국·영문 원고와 보충자료를 대조한다.
+#
+# **번호는 재사용하지 않는다**(§0.9). 여기서 EP 를 지우거나 다시 매기지 않는다.
+
+meta:
+  plan: PLAN-086
+  frozen_date: "2026-09-01"
+  # 대조 대상 — 국문 산문 소스와 영문 산문 소스, 그리고 조립된 파생본.
+  targets:
+    ko:
+      - paper/manuscript/stage3_source.md
+      - paper/submission/manuscript.md
+    en:
+      - paper/manuscript/en_source.md
+      - paper/submission/en/manuscript.md
+  # 보충자료가 "본문 표 N" 이라 밝힌 참조의 대조 대상 (D11 · 보충자료 → 본문 표 번호)
+  supplementary:
+    ko: paper/supplementary
+    en: paper/supplementary/en
+
+episodes:
+  EP1:
+    ko: 표현 감사
+    en: Representation audit
+    section: "5.1"
+  EP2:
+    ko: 게이트 판별력
+    en: Discriminative power of the gate
+    section: "5.4"
+  EP3:
+    ko: 통제된 자원 교체
+    en: Controlled resource substitution
+    section: "5.2"
+  EP4:
+    ko: 검색 효용과 그 경계
+    en: Retrieval utility and its boundary
+    section: "5.3"
+  EP5:
+    ko: 제2 공학 온톨로지로의 이식
+    en: Port to a second engineering ontology
+    section: "5.5"

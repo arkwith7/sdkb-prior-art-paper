@@ -17,18 +17,28 @@ hand.
 | Why the numbers in the paper differ from those in the public release | [S7](S7-release-crosswalk.md) | §6.5 |
 | The result of porting the procedure to a second engineering ontology | [S8](S8-second-domain-port.md) | §4.6 · §5.5 |
 | The detail of the retrieval-layer evaluation and its gaps | [S9](S9-retrieval-evaluation-detail.md) | §5.3 · §6.4 |
+| Why the artifact had to take that form, and what the scoring function computes | [S10](S10-artifact-design-rationale.md) | §3 · §4.3 |
 
 `S4` is a retired number and is not reused.
 
-## The status of each verdict — confirmatory versus exploratory
+## The status of each verdict — three categories
 
-Three of the evaluation checks the manuscript reports are confirmatory: the retrieval-utility
-check, the layer-specificity check and the transfer check. The preregistration document and the
-verdict of each are tabulated in [S6](S6-preregistration-crosswalk.md). Every other analysis is
-exploratory and is marked as such in the manuscript.
+The verdicts reported by the manuscript and by the supplementary material fall into three
+categories, and every document calls them by the same names. **"Not among the three principal
+confirmatory checks" and "exploratory" do not mean the same thing** — the verdicts of the approval
+gate were reached under a separate preregistration, and their status is not exploratory.
 
-The gate discriminative-power evaluation went through four verdicts, of which only the last is
-confirmatory. The manipulated variable and the verdict of each are in
+| Category | What it is | What falls under it |
+|---|---|---|
+| **㉮ Preregistered confirmatory retrieval check** | A retrieval-layer check adjudicated on the sealed split against preregistered criteria | Retrieval-utility check · layer-specificity check · transfer check |
+| **㉯ Artifact validation and approval verdict** | A verdict obtained by applying the gate under a separate preregistration | Final round of the gate discriminative-power evaluation (EP2) · T1, T2 and T3 of the controlled resource replacement (EP3) · the second-domain port (EP5) |
+| **㉰ Exploratory analysis** | Any analysis that belongs to neither of the above | Cross-lingual diagnosis · operational efficiency · robustness under an incomplete ground truth |
+
+The preregistration document and the verdict of each of the three ㉮ checks are tabulated in
+[S6](S6-preregistration-crosswalk.md).
+
+The gate discriminative-power evaluation went through four verdicts; the last is ㉯ and the
+preceding three are ㉰. The manipulated variable and the verdict of each are in
 [S2](S2-fault-injection-v09.md).
 
 The supplementary material creates no verdict and no number of its own. The values here are the
