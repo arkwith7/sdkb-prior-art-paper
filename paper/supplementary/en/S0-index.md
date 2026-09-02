@@ -19,6 +19,16 @@ hand.
 | The detail of the retrieval-layer evaluation and its gaps | [S9](S9-retrieval-evaluation-detail.md) | §5.3 · §6.4 |
 | Why the artifact had to take that form, and what the scoring function computes | [S10](S10-artifact-design-rationale.md) | §3 · §4.3 |
 
+## Stable identifiers for material moved from the manuscript
+
+| Identifier | Content | Return to the manuscript |
+|---|---|---|
+| [S1-T1](S1-appendices-v09.md#s1-t1--classification-and-uses-of-the-31-competency-questions) | Classification and uses of the 31 competency questions | §3.4 |
+| [S3-T1](S3-unexecuted-design-v09.md#s3-t1--six-gaps-in-validation-strength-and-generalizability) | Specifications for resolving the six gaps | §6.4 |
+| [S8-T1](S8-second-domain-port.md#s8-t1--release-lineage-and-operational-cost) | Release lineage and operational cost of resource 2 | §5.5 |
+| [S9-T1](S9-retrieval-evaluation-detail.md#s9-t1--complete-subgroup-and-ablation-results) | Subgroup and ablation results | §5.3.2 |
+| [S9-T2](S9-retrieval-evaluation-detail.md#s9-t2--exploratory-baselines-and-original-sample-summary) | Exploratory baselines and original-sample summary | §5.3.1 |
+
 `S4` is a retired number and is not reused.
 
 ## The status of each verdict — three categories

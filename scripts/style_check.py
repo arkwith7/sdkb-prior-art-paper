@@ -4,7 +4,7 @@
 용법:  python scripts/style_check.py [--root .] [--warn] [--stats]
 종료:  0 = 통과(또는 --warn) · 1 = 위반 · 2 = 대상 부재
 
-무엇을 보는가 — 규격 v2 의 아홉 항목을 본다.
+무엇을 보는가 — 규격 v2 의 열한 항목을 본다.
   S3  문장 길이 ≤ 90자 (공백 포함)
   T2  은유·구어 동사 금지 (치환표)
   T3  문두 접속어는 표준 학술 연결어만 (그래서·그런데·하지만 금지)
@@ -15,6 +15,8 @@
   V5  `task` 의 번역은 "태스크" 로 단일화 (예외 합성어만 허용)
   V6  표·그림 번호는 등장 순서로 1부터 연번 — 중복·결번 금지
   V7  `E` 라벨은 본문에서 **평가환경 하나**만 가리킨다 — 적격심사 항을 `E` 로 부르지 않는다
+  X1  관통 예시 번호는 1부터 연번이며 증거 지위 표식을 갖는다
+  X2  합성 예시는 실제 판정으로 오독되는 판정 낱말을 쓰지 않는다
 
 **S1·S2·S4·T1·T4·V1–V4 는 사람이 지킨다.** 검사기 통과는 규격 준수의 필요조건이지 충분조건이
 아니다. `check_verdicts.py` 가 판정 강도의 표류를 막듯, 이 파일은 **어체의 표류**만 막는다.
@@ -140,6 +142,12 @@ CAPTION = re.compile(r"^\*\*(?P<kind>표|그림)\s*(?P<num>\d+)[.\s]")
 E_LABEL = re.compile(r"\bE[1-9]\b")
 E_NON_ENV = re.compile(r"\bE[2-9]\b")
 E_SCREENING = re.compile(r"적격\s*심사")
+
+# PLAN-087 — 관통 예시의 증거 지위. 합성 예시는 설명·판정식 데모일 뿐 실제 릴리스
+# 판정이 아니므로, 예시 머리말에서 둘을 기계적으로 구분한다.
+EXAMPLE_HEAD = re.compile(r"^>\s*\*\*예시\s*(?P<num>\d+)\s*[·.]\s*(?P<title>[^*]+)\*\*")
+EVIDENCE_MARKERS = ("합성 설명", "합성 실행", "탐색 사례", "사전등록 집계")
+SYNTHETIC_VERDICT = re.compile(r"(최종\s*)?(승인|거부|채택|기각|확증|부분\s*지지)")
 
 # T5 — 볼드 안에 종결어미가 있으면 용어가 아니라 주장 문장이다.
 BOLD = re.compile(r"\*\*(?P<inner>[^*\n]{2,})\*\*")
@@ -337,6 +345,7 @@ def check_file(path: Path) -> list[str]:
     fails += check_lines(path, lines, exempt)
     fails += check_numbering(path, lines)
     fails += check_label_namespace(path, lines, exempt)
+    fails += check_running_examples(path, lines, exempt)
     return fails
 
 
@@ -437,6 +446,38 @@ def check_numbering(path: Path, lines: list[str]) -> list[str]:
     return fails
 
 
+def check_running_examples(path: Path, lines: list[str], exempt: set[int]) -> list[str]:
+    """PLAN-087 examples are sequential and carry an explicit evidence-status marker."""
+    fails: list[str] = []
+    found: list[tuple[int, int, str]] = []
+    for lineno, raw in enumerate(lines, 1):
+        match = EXAMPLE_HEAD.match(raw.strip())
+        if not match or lineno in exempt:
+            continue
+        number = int(match.group("num"))
+        title = match.group("title").strip()
+        found.append((number, lineno, title))
+        marker = next((item for item in EVIDENCE_MARKERS if item in title), None)
+        if marker is None:
+            fails.append(
+                f"{path}:{lineno}: [X1] 예시 {number}의 증거 지위 표식 누락 — "
+                f"{' · '.join(EVIDENCE_MARKERS)} 중 하나를 머리말에 쓴다"
+            )
+        elif marker.startswith("합성"):
+            verdict = SYNTHETIC_VERDICT.search(title)
+            if verdict:
+                fails.append(
+                    f"{path}:{lineno}: [X2] 합성 예시 머리말의 판정 낱말 “{verdict.group(0)}” — "
+                    "합성 실행은 행 수와 판정식의 작동만 진술한다"
+                )
+    for expected, (number, lineno, _) in enumerate(found, 1):
+        if number != expected:
+            fails.append(
+                f"{path}:{lineno}: [X1] 예시 {number}는 {expected}번째 예시 — 1부터 연번으로 쓴다"
+            )
+    return fails
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
@@ -479,7 +520,7 @@ def main() -> int:
     if fails:
         print(f"\n{'경고' if args.warn else '실패'}: 문체 규격 위반 {len(fails)}건 (paper/STYLE-KO-ACADEMIC.md)")
         return 0 if args.warn else 1
-    print(f"통과: {len(targets)}개 파일 · 문체 규격 (S3·T2·T3·T5·T6·T7·H1·V5·V6·V7)")
+    print(f"통과: {len(targets)}개 파일 · 문체 규격 (S3·T2·T3·T5·T6·T7·H1·V5·V6·V7·X1·X2)")
     return 0
 
 

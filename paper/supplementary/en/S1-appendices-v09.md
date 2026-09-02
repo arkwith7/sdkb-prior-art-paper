@@ -241,3 +241,15 @@ denominator of the main evaluation and reported separately.
 The five are the publishable core, the development and validation qrel, the test judgments sealed
 until evaluation (hash-pinned, with an access log), derived features generated independently of the
 qrel, and provenance. Pinning does not constrain improvement in later versions.
+
+## S1-T1 · Classification and uses of the 31 competency questions
+
+> Moved from manuscript §3.4. [Return to manuscript §3.4](../../manuscript/en_source.md#34-task-level-acceptance-after-formal-validation)
+
+| Category | Count | Use | G0 pass |
+|---|---:|---|---:|
+| L3 focal-task suite (pa) | 5 | Functional validation of the prior-art task | 4/5 |
+| T3 suites (em 6 · tf 5 · core 12) | 23 | Non-regression of other tasks and the shared core | 23/23 |
+| **Gate-observed subtotal** | **28** | Denominator of the acceptance rule | **27/28** |
+| Sidecar claim queries (CQ29–31) | 3 | Claim-level measurement only · not included in the rule | 3/3 |
+| **Full representation audit** | **31** | Denominator of the EP1 representation audit | **30/31** |

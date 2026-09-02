@@ -575,8 +575,15 @@ serve:
 # example-both  : 두 경로(rdflib · 저장소 엔진)의 CQ 행 수 대조. 갈리면 예시 서사의 근거가 갈린 것이다.
 # skim          : 제목·그림 캡션·예시 첫 문장만 뽑은 paper/SKIM.md 갱신 (PR 마다 diff 검토).
 # skim-check    : 같은 것 + K1(§3–§5 절마다 그림/예시) 위반 시 실패 — 재구성 완료 후 CI 에 배선한다.
-.PHONY: example-delta example-gate example-both skim skim-check
+.PHONY: example-excerpt example-excerpt-check example-delta example-gate example-both skim skim-check
+example-excerpt:
+	uv run python scripts/gen_example_excerpt.py
+
+example-excerpt-check:
+	uv run python scripts/gen_example_excerpt.py --check
+
 example-delta:
+	uv run python scripts/example_delta_demo.py --summary-out paper/tables/example_delta_summary.md
 	uv run python scripts/example_delta_demo.py --delta merge_etch_into_plasma --md > paper/tables/example_delta_a.md
 	uv run python scripts/example_delta_demo.py --delta relocate_case_failuremode --md > paper/tables/example_delta_b.md
 	uv run python scripts/example_delta_demo.py --delta merge_etch_into_plasma --dump data/samples

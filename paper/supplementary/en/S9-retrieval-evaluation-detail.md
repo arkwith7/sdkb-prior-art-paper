@@ -62,6 +62,30 @@ renumbering them would break the correspondence with the manuscript.
 | ⑦ | Absence of a strong multilingual baseline | **Partially resolved** — a multilingual fusion baseline was added and baseline strength did not change significantly (§4.3 · Table 5). Because both encoders share a backbone family, **family diversity is not achieved** | Re-evaluation including an encoder from a different family |
 | ⑧ | Expert relevance judgments not carried out | The protocol was frozen but no judgments were made (§4.4). Vulnerability is quantified as the minimum number of judgment flips and **partially reduced** by merging exogenous labels (§5.3.1) | Two-rater blinded independent judgment of a **targeted sample** of top-ranked uncited candidates, with κ reported |
 
+## S9-T1 · Complete subgroup and ablation results
+
+> Moved from manuscript §5.3.2. [Return to manuscript §5.3.2](../../manuscript/en_source.md#532-subgroups-and-ablation)
+
+| Group/removed layer | Queries | qrel | Text Hybrid R@100 | Proposed R@100 | Difference | 95% CI |
+|---|---:|---:|---:|---:|---:|---|
+| **low lexical overlap** | 27 | 59 | 0.1975 | 0.1389 | **−0.0586** | [−0.2099,+0.0741] (p=0.448) |
+| **high lexical overlap** | 171 | 420 | 0.4685 | 0.5396 | **+0.0711** | [+0.0330,+0.1104] (p<.001) |
+| positives entirely Korean | 98 | 207 | 0.6023 | 0.6959 | +0.0936 | [+0.0295,+0.1579] (p=0.004) |
+| positives include another language | 100 | 272 | 0.2642 | 0.2782 | +0.0140 | [−0.0313,+0.0578] (p=0.518) |
+| **−Expert layer (A8, negative control)** | 198 | 479 | — | 0.4534 | **+0.0316** | **[+0.0105,+0.0560]** (p=0.002 · significant after Holm) |
+
+Of all 17 rows, the twelve not shown above remain in the frozen full version in S5. In the second
+confirmatory split, the same removal of the expert-matching-only layer was 0.0000 and was not reproduced.
+
+## S9-T2 · Exploratory baselines and original-sample summary
+
+> Moved from manuscript Table 6. [Return to manuscript §5.3.1](../../manuscript/en_source.md#531-retrieval-performance-and-the-verdicts-of-the-confirmatory-checks)
+
+The multilingual-fusion and bibliographic-condition baselines do not enter the confirmatory verdict.
+Their split-level values and the original-sample win/loss/tie summary remain in the full two-panel
+retrieval table in S5. Manuscript Table 6 retains only Text Hybrid, Text+Ontology, and +ClaimFeature,
+the three configurations directly used in the verdict.
+
 ## 5. The layer-contribution check — verdicts on the twelve ablation rows
 
 Details of the layer-contribution check summarised in §5.3.2 of the manuscript. **Values are

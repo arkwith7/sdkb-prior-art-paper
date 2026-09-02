@@ -19,6 +19,7 @@
     {{COPY:<앵커 문자열>|table}}     앵커 행 다음에 오는 마크다운 표 블록을 그대로 넣는다
     {{COPY:<앵커>|table|keep:A;B}}   같은 표에서 **머리글과 지정한 행만** 골라 넣는다
     {{COPY:<앵커>|table|from:X.md}}  동결본 대신 paper/tables/X.md(생성기 산출)에서 가져온다
+    {{INCLUDE:X.md}}                 paper/tables/X.md 생성물을 전체 삽입한다
     (from: 은 keep: 보다 앞에 쓴다 — keep 의 행 앵커에는 `|` 가 들어간다)
     {{BIB}}                          참고문헌 목록을 그대로 넣되, 아래 BIB_FIXES 만 교체한다
 
@@ -65,6 +66,7 @@ DIRECTIVE = re.compile(
     r"(?:\|from:(?P<src>[^|}]+))?"
     r"(?:\|keep:(?P<keep>[^}]+))?\}\}"
 )
+INCLUDE_DIRECTIVE = re.compile(r"\{\{INCLUDE:(?P<src>[^}]+)\}\}")
 
 # `from:` 로 지목할 수 있는 두 번째 복사 원본 — **생성기가 만든 표**다(PLAN-060 B3).
 # 왜 필요한가: S5 는 2단계 산출물의 동결 사본이므로 그 뒤에 새로 계산한 표는 그 안에 없다.
@@ -289,16 +291,8 @@ CELL_FIXES: list[tuple[str, str, str | None]] = [
     # 이다. **판정도 수치도 바뀌지 않는다** — 이 열여섯은 복사되지 않는 표를 고치고 있었으므로
     # 산출물에 한 글자도 내보낸 적이 없다(실측: 치환 결과 문자열이 파생본에 0건). 같은 규율은
     # 이제 원본 쪽에서 선다 — `make verdicts` 가 supplementary 까지 보기 때문이다.
-    # 절제 표의 `p=0.000` — 0 이 아닌 값을 0 으로 적은 자리다. 부트스트랩 10,000 회의
-    # 분해능은 0.0001 이므로 산출기가 낼 수 있는 가장 작은 값이 `0.000` 으로 반올림된 것이며,
-    # **참값이 0 이라는 뜻이 아니다.** 통계 보고 관례대로 `p<.001` 로 적는다. 같은 표의 다른
-    # p 값은 그대로 둔다 — 반올림으로 0 이 되지 않았기 때문이다.
-    (
-        "| **high lexical overlap** | 171 | 420 | 0.4685 | 0.5396 |",
-        "| **high lexical overlap** | 171 | 420 | 0.4685 | 0.5396 | **+0.0711** | "
-        "[+0.0330,+0.1104] (p<.001) |",
-        "p=0.000 은 반올림 표기이고 참값은 0 이 아니다 — 통계 보고 관례에 따라 p<.001 로 적는다",
-    ),
+    # PLAN-087에서 절제 표는 S9-T1로 이동하였다. 그 표에만 걸리던 p=0.000 치환도 조립
+    # 경로에서 제거한다. S9-T1은 통계 보고 관례에 맞춘 p<.001 표기를 보존한다.
     # EP4 행 — "1회 개봉" 단정 대신 열람 원장을 밝힌다(§0.8 SEAL).
     (
         "| **EP4** | **검색 효용과 경계** |",
@@ -465,6 +459,11 @@ def read_generated(name: str) -> list[str]:
     return path.read_text(encoding="utf-8").split("\n")
 
 
+def include_generated(name: str) -> str:
+    """생성기 산출 Markdown 전체를 삽입한다(예시 Turtle 블록 등)."""
+    return "\n".join(read_generated(name)).rstrip()
+
+
 def extract_table(
     lines: list[str],
     anchor: str,
@@ -556,11 +555,14 @@ def build() -> str:
         return extract_table(read_generated(src), anchor, match.group("keep"), remap=False)
 
     out = DIRECTIVE.sub(sub, prose)
+    out = INCLUDE_DIRECTIVE.sub(lambda match: include_generated(match.group("src")), out)
     if "{{BIB}}" not in out:
         fail("{{BIB}} 지시자가 없다 — 참고문헌이 빠진 원고는 만들지 않는다")
     out = out.replace("{{BIB}}", extract_bib(BIB_SRC.read_text(encoding="utf-8").split("\n")))
     if "{{COPY" in out:
         fail("해석되지 않은 지시자가 남았다 — 문법은 {{COPY:앵커|table}} 이다")
+    if "{{INCLUDE" in out:
+        fail("해석되지 않은 지시자가 남았다 — 문법은 {{INCLUDE:파일명}} 이다")
     unused = [probe for probe, _new, _r in CELL_FIXES if probe not in fixes_used]
     if unused:
         fail(

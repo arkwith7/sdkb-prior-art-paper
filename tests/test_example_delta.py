@@ -49,3 +49,10 @@ def test_delta_a_preserves_or_grows_prior_art_answers(demo):
 def test_delta_b_changes_exactly_one_triple(demo):
     r = demo.evaluate("relocate_case_failuremode")
     assert r["changed"] == 1 and r["n0"] == r["n1"], "간선 수 보존 결함(F14 축소판)이어야 한다"
+
+
+def test_manuscript_summary_contains_only_the_two_frozen_regressions(demo):
+    text = demo.render_summary()
+    assert "CQ21 2→1행" in text
+    assert "CQ28 1→0행" in text
+    assert len(text.splitlines()) == 4  # 머리글·구분행·델타 둘

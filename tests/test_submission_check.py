@@ -188,6 +188,18 @@ def test_build_rejects_dead_cell_fix(monkeypatch):
     assert e.value.code == 2
 
 
+def test_generated_markdown_include_is_confined_and_exact(tmp_path, monkeypatch):
+    """관통 예시 블록도 paper/tables 생성물에서만 문자 그대로 가져온다."""
+    b3 = _load("build_submission_stage3")
+    generated = tmp_path / "tables"
+    generated.mkdir()
+    (generated / "example.md").write_text("```turtle\na:b c:d e:f .\n```\n", encoding="utf-8")
+    monkeypatch.setattr(b3, "GENERATED_DIR", generated)
+    assert b3.include_generated("example.md") == "```turtle\na:b c:d e:f .\n```"
+    with pytest.raises(SystemExit):
+        b3.include_generated("../outside.md")
+
+
 # ── §0.8 문구 사전 · SEAL · SYSTEM_LABELS ────────────────────────────────
 def test_verdicts_yaml_seal_and_system_label_rules_bite():
     """규칙이 yaml 에 살아 있고, 허용형/금지형을 실제로 가르는가."""

@@ -57,6 +57,7 @@ _HYBRID = "src/sdkb_paper/retrieval/hybrid.py"
 _PERF = "data/processed/ir/ir_performance_test.csv"
 _PERF_B = "data/processed/ir/ir_performance_test_b.csv"
 _CEILING = "data/processed/ir/rerank_ceiling_test.json"
+_EXAMPLE_SUMMARY = "paper/tables/example_delta_summary.md"
 # 표 3(세 태스크 뷰)의 앵커 — 캡션이 아니라 바로 앞 문장을 잡는다. 캡션 문자열은
 # 파생본 재편으로 번호가 바뀌지만 이 문장은 동결 전문의 것이라 움직이지 않는다.
 _S5_VIEW_ANCHOR = r"각 \(V_t=(C_t,R_t,Q_t)\)는 태스크별"
@@ -89,6 +90,14 @@ CQ_MEASUREMENT_ONLY = ("CQ29", "CQ30", "CQ31")
 # ── 규칙표 ────────────────────────────────────────────────────────────────────
 # 순서는 그림에서 읽히는 순서(자원 층 → 검색 층 → 생성 층)를 따른다.
 RULES: list[Rule] = [
+    Rule("example.a.before", _EXAMPLE_SUMMARY, "합성 델타 A · CQ21 전 행 수",
+         pattern=r"CQ21\s+(\d+)→\d+행", cast="int"),
+    Rule("example.a.after", _EXAMPLE_SUMMARY, "합성 델타 A · CQ21 후 행 수",
+         pattern=r"CQ21\s+\d+→(\d+)행", cast="int"),
+    Rule("example.b.before", _EXAMPLE_SUMMARY, "합성 델타 B · CQ28 전 행 수",
+         pattern=r"CQ28\s+(\d+)→\d+행", cast="int"),
+    Rule("example.b.after", _EXAMPLE_SUMMARY, "합성 델타 B · CQ28 후 행 수",
+         pattern=r"CQ28\s+\d+→(\d+)행", cast="int"),
     # ① 자원 층 → 검색 층 · EP3 통제된 자원 교체 (사전등록 PLAN-035 · O vs O′)
     Rule("ep3.concepts_per_doc.before", _PLAN035, "자원 델타 표 · 문서당 개념 (O 팔)",
          pattern=r"\|\s*코퍼스 문서당 개념\s*\|\s*([\d.]+)\s*\|"),

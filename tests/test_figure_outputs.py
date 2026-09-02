@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parent.parent
 FIGURES = ROOT / "paper" / "figures"
 HANGUL = re.compile(r"[가-힣]")
 
-# 본문 그림 7종 — 영문 원고가 인용하는 것과 같은 목록이다.
+# 본문 그림 8종 — 영문 원고가 인용하는 것과 같은 목록이다.
 BODY_FIGURES = (
     "concept_overview.svg",
     "concept_layer_mismatch.svg",
@@ -32,6 +32,7 @@ BODY_FIGURES = (
     "concept_experiment_flow.svg",
     "concept_ep_gate_matrix.svg",
     "ir_metrics.svg",
+    "concept_detection_port_boundary.svg",
 )
 
 # G2 · 한국어판의 동결 해시
@@ -47,19 +48,21 @@ BODY_FIGURES = (
 # 바뀐 것은 설명하는 말의 길이다(규격 F6).
 KO_SHA256 = {
     "concept_overview.svg":
-        "761be1a7122962d57eb080adb57f5a6594a79038969daad66bc54e5139d52ebd",
+        "b7d26124693eecb5021571e7ccf834e1b13028ed45cf545bf8b4ec2d96d24f0d",
     "concept_layer_mismatch.svg":
         "2c9ff70afceef91b525b3de085689261436974fbbae073ac42c9d0f8aab26e3a",
     "concept_tbox_views.svg":
         "c5d0c395e3eb998c465f0d97148d3124340606035e7c221cba3bca764fba93a9",
     "concept_gate_flow.svg":
-        "13c200d61b997e68998e18841f04cbf941e37bafd201c09e4dd6c86a43205dcb",
+        "03c21457fc5d57985881a2981f5ef189a83553f6713a17afb5c1eb71086ddb0f",
     "concept_experiment_flow.svg":
         "d705ab050d1424ac0ce02396a871ddec83fe134d16fcae904e407e3474031faf",
     "concept_ep_gate_matrix.svg":
         "34745f829cefaaa35857810ed58a4996706278a2be3145d27b2178098115ea1b",
     "ir_metrics.svg":
         "c3118b3128d9b95cb8d33f7c8891b49179d4e0cc433bb3b7463838c966478ee0",
+    "concept_detection_port_boundary.svg":
+        "e2f01456ff3d696163f220f5b6a19f4e07252ceae8eecc6a01fc4eaf229a5868",
 }
 
 

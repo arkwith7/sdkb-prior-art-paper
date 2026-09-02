@@ -49,6 +49,7 @@ TARGET = ROOT / "paper" / "submission" / "en" / "manuscript.md"
 
 TABLE_RE = re.compile(r"\{\{TABLE:(\d+)\}\}")
 FIGURE_RE = re.compile(r"\{\{FIGURE:(\d+)\}\}")
+INCLUDE_RE = re.compile(r"\{\{INCLUDE:([A-Za-z0-9_.-]+\.md)\}\}")
 
 # 수치 토큰 — 절 번호는 뺀다(§4.9 → §4.5 는 재번호이지 수치 변경이 아니다).
 NUMERIC = re.compile(r"\d+(?:[.,]\d+)*")
@@ -92,11 +93,13 @@ CAPTIONS: dict[str, str] = {
           "the numbered observation at the right, and (ii) alone points not to the next layer but "
           "to a different unit within the same layer, the number of documents reviewed. "
           "Observation (i) is presented in §5.2, (ii) in §5.3.3, and (iii) in §3.5.1 and §6.4; the "
-          "interpretation is in §6.1.",
-    "T1": "**Table 1. Stages of design science research and how they were carried out in this "
-          "study.**",
-    "T2": "**Table 2. Evaluation episodes — EP is a new label and does not collide with the "
+          "interpretation is in §6.1. In the controlled substitution, concepts per document rose "
+          "2.4× while the retrieval verdict moved in the opposite direction.",
+    "T1": "**Table 1. Evaluation episodes — EP is a new label and does not collide with the "
           "preregistration labels.**",
+    "T2": "**Table 2. Questions asked by each comparison configuration and its input signals.**",
+    "T3": "**Table 3. Mapping from evaluation questions to metrics and decision rules.**",
+    "T4": "**Table 4. Mapping from claims to verdict language and evidence locations.**",
     "F3alt": "Figure 3. Three task views on one shared T-Box and the channels of cross-task "
              "coupling.",
     "F6alt": "Figure 6. The five evaluation episodes mapped onto the terms of the acceptance rule, "
@@ -110,24 +113,14 @@ CAPTIONS: dict[str, str] = {
           "the EP4 row a configuration passing T1 did not show non-inferiority at T4. T4 is marked "
           "with an asterisk because it is not part of the acceptance rule; its status is a design "
           "and one verdict.",
-    "T8": "**Table 8. Decision stability — the point at which each verdict switches under the "
+    "T7": "**Table 7. Decision stability — the point at which each verdict switches under the "
            "frozen thresholds.**",
     "T9": "**Table 9. Six deficits in validation strength and generalizability — every remedy "
            "is the object of a new preregistration.** Deficits ⑥–⑧ are confined to the retrieval "
            "layer and are in [S9](../../supplementary/en/S9-retrieval-evaluation-detail.md) under "
            "the same numbers. The numbers are fixed identifiers linking the manuscript to the "
            "supplementary material and are not reassigned.",
-    "T7": "**Table 7. Release-lineage verdicts on engineering ontology 2 — confined to "
-           "the formal layers and the cross-task layer.** d0–d5 are releases v1.3.0, v1.4.0, "
-           "v1.4.1, v1.4.2, v1.4.3, and v1.4.4; migration condition R places the original instances "
-           "unchanged and N places them after applying the official migration rules. Because the "
-           "acceptance rule is not completed, `accept` is not recorded in any row and only partial "
-           "acceptance remains.",
-    "T6": "**Table 6. Subgroups and ablation in the first confirmatory split** (test, 198 queries, "
-          "family R@100, query-level paired bootstrap with 10,000 resamples; `Difference` in the "
-          "ablation row is the **removal loss** (full − ablated; positive = layer contribution); "
-          "Holm m=8; all 17 rows are in S5).",
-    "T5": "**Table 5. Retrieval performance in the two confirmatory splits (2 panels) — the "
+    "T6": "**Table 6. Retrieval performance in the two confirmatory splits (2 panels) — the "
           "baseline is the Text Hybrid (B3) of each panel; Δ and the win/loss/tie counts summarize "
           "the original sample paired per query, and the 95% confidence intervals and two-sided "
           "*p* values come from a query-level paired bootstrap with 10,000 resamples.**",
@@ -137,10 +130,8 @@ CAPTIONS: dict[str, str] = {
           "difference of each auxiliary metric against B3 with 95% confidence intervals. Ontology "
           "reranking retrieves more known positives within a review depth of 100 but does not "
           "improve the ordering quality of the top 20.",
-    "T4": "**Table 4. Retrieval performance when only the resource bundle is substituted (test, 198 "
+    "T5": "**Table 5. Retrieval performance when only the resource bundle is substituted (test, 198 "
           "queries, family Recall@100).**",
-    "T3": "**Table 3. The 31 competency questions by purpose — the gate denominator is 28 and the "
-          "representation-audit denominator is 31.**",
     # 그림 5(실무 절차 ↔ 실험 구성)는 재구성에서 신설된 도식이다 — 조립 동결 기간에
     # 추가되어 이 지도에 항목이 없었다(2026-08-29 · O-13 에서 확인).
     "F5alt": "Figure 5. The steps of prior art search in practice mapped onto the configuration of "
@@ -164,6 +155,12 @@ CAPTIONS: dict[str, str] = {
           "joins. The box at the bottom gives the shared core and the number of competency "
           "questions per suite that the gate observes. That the three views are not exclusive "
           "modules is why the cross-task regression of §1 can occur.",
+    "F8alt": "Figure 8. Detection scope observed in the SDKB holdout and the port to resource 2.",
+    "F8": "**Figure 8.** The cross-task condition detected faults missed by the formal layers in the "
+          "SDKB holdout, whereas transfer of the frozen fault specification's effect was not confirmed on "
+          "resource 2. The upper row summarizes 45 SDKB faults and 27 sound changes; the lower row "
+          "summarizes adjudicable faults and sound changes on resource 2. The rates are not compared "
+          "directly because their denominators differ; details are in §5.4–§5.5 and S2 and S8.",
 }
 
 # 셀 사전 — 한국어 셀 **전체**를 키로 하는 완전 일치 치환. 부분 문자열 치환을 쓰지 않는 이유는
@@ -171,6 +168,59 @@ CAPTIONS: dict[str, str] = {
 # 지표·게이트·라벨 이름(L0–L3 · T1–T4 · Recall@100 · P0★ · B3 · EP1–EP4)은 이미 라틴 문자이며
 # 바꾸면 다른 것을 가리키므로 사전에 없다. 숫자만 든 셀도 없다 — 손대지 않는다.
 CELLS: dict[str, str] = {
+    # ── PLAN-087 · 본문 표 2–4 ─────────────────────────────────────────────
+    "묻는 질문": "Question asked",
+    "입력 신호": "Input signals",
+    "온톨로지 없이 도달하는 강한 텍스트 기준은 무엇인가":
+        "What is the strongest text baseline reachable without the ontology?",
+    "청구항 어휘·밀집 표현": "claim vocabulary and dense representation",
+    "자원 변경에 직접 반응하는 개념 경로는 무엇인가":
+        "Which concept path responds directly to a resource change?",
+    "개념 겹침·경로": "concept overlap and paths",
+    "텍스트 기준에 온톨로지 신호를 더한 효과는 무엇인가":
+        "What is the effect of adding ontology signals to the text baseline?",
+    "B3 + B5 신호": "B3 + B5 signals",
+    "한정요소 신호를 추가한 부차 구성의 효과는 무엇인가":
+        "What is the effect of the secondary configuration adding claim-feature signals?",
+    "P0 + 한정요소 포괄": "P0 + claim-feature coverage",
+    "평가 질문": "Evaluation question",
+    "지표·판정식": "Metric and decision rule",
+    "본문에서 읽는 예시": "Example used in the manuscript",
+    "자원 변경이 검토 깊이 100의 회수를 훼손하는가":
+        "Does the resource change harm recall at review depth 100?",
+    "family Recall@100 · T1 비열등": "family Recall@100 · T1 non-inferiority",
+    "ΔR@100과 −ε의 비교": "comparison of ΔR@100 with −ε",
+    "하위집단에 큰 저하가 있는가": "Is there a large drop in any subgroup?",
+    "집단별 Recall@100 · T2": "subgroup Recall@100 · T2",
+    "최대 저하와 δ의 비교": "comparison of the maximum drop with δ",
+    "다른 태스크의 질의 경로가 회귀하는가": "Do query paths of another task regress?",
+    "CQ v2 통과율 · T3": "CQ v2 pass rate · T3",
+    "전후 응답 행 수와 τ의 비교": "comparison of response-row counts before and after, with τ",
+    "상위 정렬도 함께 개선되는가": "Does top-rank ordering improve as well?",
+    "상위 20위 정렬 지표": "top-20 ordering metric",
+    "Text Hybrid 대비 차이": "difference from Text Hybrid",
+    "주장": "Claim",
+    "판정 문구": "Verdict wording",
+    "근거의 위치": "Evidence location",
+    "형식 검증을 통과한 실제 변경이 검색 조건에서 거부되었다":
+        "A real change that passed formal validation was rejected by the retrieval condition",
+    "Accept = 0 · T1 불충족": "Accept = 0 · T1 not met",
+    "표 5 · S7 · S9": "Table 5 · S7 · S9",
+    "T3은 주 태스크 감시가 통과시킨 교차 태스크 회귀를 검출한다":
+        "T3 detects cross-task regressions admitted by focal-task monitoring",
+    "세 조건 충족": "all three conditions met",
+    "검색 유용성 점검": "retrieval utility check",
+    "첫 분할 부분 지지 · 두 번째 분할 미지지":
+        "first split supported in part · second split not supported",
+    "표 6 · S9": "Table 6 · S9",
+    "계층 특이성 점검": "layer specificity check",
+    "첫 분할 기각 · 두 번째 분할 재현되지 않음":
+        "first split rejected · not reproduced in the second split",
+    "전달 점검": "transfer check",
+    "비열등 미달 · 판정 1회": "non-inferiority not met · 1 verdict",
+    "S5 부록 A": "S5 Appendix A",
+    "절차 이전 · 결함 명세 미이전 · 정밀 검증 미달":
+        "procedure transferred · fault-specification transfer not confirmed · precision validation not met",
     # ── 표 13 · 결손 아홉 ───────────────────────────────────────────────────
     "결손": "Deficit",
     "현 상태 (보고 위치)": "Current state (where reported)",
@@ -648,6 +698,14 @@ def build() -> str:
         fail(f"복사 원본 부재 — {KOREAN} (먼저 `make submission-stage3`)")
     korean = KOREAN.read_text(encoding="utf-8").split("\n")
     out = PROSE.read_text(encoding="utf-8")
+
+    def include_generated(match: re.Match[str]) -> str:
+        path = ROOT / "paper" / "tables" / match.group(1)
+        if not path.is_file() or path.parent != ROOT / "paper" / "tables":
+            fail(f"INCLUDE 대상 부재 또는 허용 범위 밖 — {match.group(1)}")
+        return path.read_text(encoding="utf-8").rstrip()
+
+    out = INCLUDE_RE.sub(include_generated, out)
 
     copied = 0
     residue: list[str] = []

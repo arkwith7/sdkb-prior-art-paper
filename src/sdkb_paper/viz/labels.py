@@ -168,6 +168,26 @@ LABELS: dict[str, dict[str, str]] = {
     # 공통 ───────────────────────────────────────────────────────────────────
     "common.status_prefix": {"ko": "지위 · {status}", "en": "Status · {status}"},
 
+    # ── 그림 8 · 검출과 이식의 경계 ──────────────────────────────────────────
+    "boundary.title": {
+        "ko": "형식 층 이후 교차 태스크 검출과 제2 자원 이식의 경계",
+        "en": "Cross-task detection after formal checks and its port boundary"},
+    "boundary.sdkb": {"ko": "SDKB 홀드아웃", "en": "SDKB hold-out"},
+    "boundary.brick": {"ko": "제2 자원 이식", "en": "Second-resource port"},
+    "boundary.l3": {"ko": "L3 검출", "en": "L3 detected"},
+    "boundary.t3": {"ko": "T3 검출", "en": "T3 detected"},
+    "boundary.t3only": {"ko": "T3 단독", "en": "T3 only"},
+    "boundary.control": {"ko": "정상 변경", "en": "Normal changes"},
+    "boundary.sdkb_note": {
+        "ko": "홀드아웃 결함 {ep2.t3_only} 단독 검출 · 위양성 {ep2.false_positive}",
+        "en": "Hold-out faults: {ep2.t3_only} T3-only · false positives {ep2.false_positive}"},
+    "boundary.brick_note": {
+        "ko": "판정 가능 {ep5.judgeable}/{ep5.instances} · 관찰면 {ep5.observable}/{ep5.cq_total}",
+        "en": "Judgeable {ep5.judgeable}/{ep5.instances} · observable {ep5.observable}/{ep5.cq_total}"},
+    "boundary.scope": {
+        "ko": "검출 기제는 실행되었으나 동결한 결함 명세의 효과는 이전되지 않았다",
+        "en": "The detection mechanism ran, but transfer of the frozen fault specification was not confirmed"},
+
     # ── 그림 1 · 연구 개요도 ─────────────────────────────────────────────────
     "overview.a1_title": {
         "ko": "ART-1 · SDKB 데이터셋 — 공유 T-Box 하나 위의 세 태스크 뷰",
@@ -241,6 +261,9 @@ LABELS: dict[str, dict[str, str]] = {
               "관찰면 {ep5.observable}/{ep5.cq_total} · 명세 재접지",
         "en": "Formal layers and T3 ran unchanged\n"
               "surface {ep5.observable}/{ep5.cq_total} · spec regrounded"},
+    "overview.dsr_cycle": {
+        "ko": "DSR 순환 · 문제 식별 → 설계·개발 → 1차 평가 → 설계 개선 → 재평가 → 실제 개정·이식 판정 → 설계지식",
+        "en": "DSR cycle · problem → design/build → initial evaluation → redesign → re-evaluation → release/port verdicts → design knowledge"},
     # ── 그림 2 · 층간 지표 불일치 ────────────────────────────────────────────
     "layer.tag_resource": {"ko": "자원 층", "en": "Resource layer"},
     "layer.tag_retrieval": {"ko": "검색 층", "en": "Retrieval layer"},
@@ -395,6 +418,11 @@ LABELS: dict[str, dict[str, str]] = {
         "en": "The rule is a product, so one unmet term makes acceptance 0. "
               "Here the result is a rejection and T1 is the only unmet condition. "
               "T4 is not part of the rule."},
+    "gate.example_footer": {
+        "ko": "합성 실행 · Δ_ex-A는 CQ21 {example.a.before}→{example.a.after}행 · "
+              "Δ_ex-B는 CQ28 {example.b.before}→{example.b.after}행에서 T3 조건을 설명한다",
+        "en": "Synthetic execution · Δ_ex-A explains T3 at CQ21 {example.a.before}→{example.a.after} rows · "
+              "Δ_ex-B at CQ28 {example.b.before}→{example.b.after} rows"},
     # ── 그림 5 · 실무 흐름과 실험 구성의 대응 ────────────────────────────────
     "flow.col_practice": {
         "ko": "선행기술조사 실무의 절차", "en": "Prior-art search in practice"},

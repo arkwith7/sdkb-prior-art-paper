@@ -38,6 +38,27 @@ meta:
 
 terms:
   # ───────── (가) concept — 이 논문이 만든 개념어 ─────────
+  - id: running-example
+    category: concept
+    ko: 관통 예시
+    en: running example
+    define_in: "§1"
+    gloss: 같은 합성 사례를 §3–§5에서 반복 참조하여 자원 구조·평가 설계·판정의 연결을 설명하는 장치
+
+  - id: example-graph
+    category: concept
+    ko: 예시 그래프
+    en: example graph
+    define_in: "§1"
+    gloss: 실물 T-Box 어휘와 최소 합성 A-Box로 구성하여 세 태스크 질의 경로를 실행하는 설명용 RDF 그래프
+
+  - id: skim-path
+    category: concept
+    ko: 스킴 경로
+    en: skim path
+    define_in: "§1"
+    gloss: 장·절 제목과 그림 캡션 첫 문장, 예시 첫 문장만 이어 읽는 논문의 시각적 논증 골격
+
   - id: real-delta
     category: concept
     ko: 실제 델타

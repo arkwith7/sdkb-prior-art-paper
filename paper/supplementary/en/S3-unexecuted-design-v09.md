@@ -1,5 +1,20 @@
 # S3 · Evaluation options designed but not executed
 
+## S3-T1 · Six gaps in validation strength and generalizability
+
+> Moved from manuscript §6.4. [Return to manuscript §6.4](../../manuscript/en_source.md#64-limitations-competing-explanations-and-a-specification-of-the-deficits)
+
+| | Gap | Current state (where reported) | Measurement that resolves it |
+|---|---|---|---|
+| ① | Only 1 rejection of a real resource change | Approval rejected after T1 was not met in 1 controlled resource substitution (§5.2) | Submit 3–5 eligible deltas sequentially and report the verdict distribution |
+| ② | Post-acceptance safety of an approved change not tested | The adjudicated delta was not accepted, so the comparison did not arise (§6.4) | Release an accepted delta and remeasure on the next generation's sealed split |
+| ③ | Threshold sensitivity of cross-task detection | Detection by T3 alone was 12/45 at τ=0.05, 4/45 at τ=0.10, and 17/45 at τ=0.00 (§5.4) | Preregister and report detection- and false-positive-rate curves across the τ grid |
+| ④ | No practical basis for the threshold set | ε=0.02, δ=0.05, and τ=0.05 are frozen normative choices and were not calibrated (§3.5) | Measure recall variation across repeated reindexing and survey practitioner tolerance |
+| ⑤ | No resource permitting full evaluation of the acceptance gate | The formal layers and T3 were adjudicated on resource 2, but evaluation of the whole gate remains incomplete (§4.6 · §5.5) | Re-evaluate on a resource with both a release lineage and downstream task benchmark |
+| ⑨ | Transfer of the fault specification between resources | The 9 containment-inversion faults had no injection sites and were not adjudicated (§5.5) | Measure predicate direction in the target resource, redefine the fault specification, and adjudicate again |
+
+Every remedy requires a new preregistration. Retrieval-specific gaps ⑥–⑧ are in S9.
+
 > Full specifications of the evaluation options this study specified at the design stage but did
 > not execute: the comparison of query representations, the auxiliary indicators separating
 > novelty from inventive step, and the expert relevance-judgment protocol. **That they were not

@@ -10,7 +10,7 @@ paper/SKIM.md 로 쓰고, 절마다 시각 장치(그림·예시 박스)가 하�
     uv run python scripts/skim_outline.py ... --check   # §3–§5 의 절(## · ###)에 그림/예시가 없으면 종료코드 1
 
 검사 규칙 K1–K3
-  K1  §3–§5 의 모든 ## 절에는 그림 또는 예시 박스가 하나 이상 있어야 한다.
+  K1  §3–§5 의 모든 ## 절에는 그림·예시 박스·번호가 있는 그림의 명시적 재참조가 하나 이상 있어야 한다.
   K2  그림 캡션의 첫 문장은 '무엇을 그렸다'가 아니라 '무엇이 보인다'(주장)여야 한다 — 기계는 길이만 본다:
       첫 문장이 12자 미만이면 경고(예: "연구 개요도.").
   K3  절 제목이 에피소드 식별자로 시작하면(예: "EP3 · 통제된 자원 교체") 경고 — 제목이 주장을 담아야 한다.
@@ -25,6 +25,7 @@ H_RE = re.compile(r"^(#{1,3})\s+(.*)$")
 FIG_RE = re.compile(r"^\*\*그림\s*(\d+)\.\*\*\s*(.*)$")
 TAB_RE = re.compile(r"^\*\*표\s*(\d+)\.\s*(.*?)\*\*")
 EX_RE = re.compile(r"^>\s*\*\*예시\s*(\d+)\s*[·.]\s*([^*]*)\*\*\s*(.*)$")
+FIG_REF_RE = re.compile(r"그림\s*(\d+)(?:[·,과와의을를에은는도에서]|\s|$)")
 
 
 def first_sentence(s: str) -> str:
@@ -79,6 +80,11 @@ def main() -> int:
             if len(cap) < 12:
                 warnings.append(f"K2 그림 {m.group(1)} 캡션 첫 문장이 주장이 아님: '{cap}'")
             continue
+
+        # K1은 새 그림의 직접 배치만 강제하지 않는다. 본문이 기존 그림을 번호로 다시
+        # 가리키고 그 해석을 이어 가는 경우도 논증 장치다(PLAN-087 §4.3).
+        if cur_sec and FIG_REF_RE.search(ln) and not ln.lstrip().startswith("!["):
+            visuals[cur_sec] = max(visuals.get(cur_sec, 0), 1)
         m = EX_RE.match(ln)
         if m:
             out.append(f"  [예시 {m.group(1)} · {m.group(2).strip()}] {first_sentence(m.group(3))}")

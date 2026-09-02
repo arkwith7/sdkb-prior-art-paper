@@ -1,6 +1,26 @@
 {
   "note": "개념 그림이 인용하는 수치의 동결본. 손으로 고치지 않는다 — 산출물을 갱신한 뒤 `make figure-data` 로 재동결한다 (CLAUDE.md §1-1 · 그림 규격 F6).",
   "values": {
+    "example.a.before": {
+      "value": 2,
+      "source": "paper/tables/example_delta_summary.md",
+      "how": "합성 델타 A · CQ21 전 행 수"
+    },
+    "example.a.after": {
+      "value": 1,
+      "source": "paper/tables/example_delta_summary.md",
+      "how": "합성 델타 A · CQ21 후 행 수"
+    },
+    "example.b.before": {
+      "value": 1,
+      "source": "paper/tables/example_delta_summary.md",
+      "how": "합성 델타 B · CQ28 전 행 수"
+    },
+    "example.b.after": {
+      "value": 0,
+      "source": "paper/tables/example_delta_summary.md",
+      "how": "합성 델타 B · CQ28 후 행 수"
+    },
     "ep3.concepts_per_doc.before": {
       "value": 1.545,
       "source": "01.code_spec/archive/PLAN-035-h2-linker-preregistration.md",

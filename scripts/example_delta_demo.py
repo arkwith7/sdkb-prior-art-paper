@@ -234,6 +234,27 @@ def run(delta_name: str, md: bool, dump: Path | None = None, engine: str = "rdfl
     return 0
 
 
+def render_summary(engine: str = "rdflib") -> str:
+    """본문 예시 2용 최소 표 — 회귀 CQ와 층 판정만 생성한다."""
+    labels = {
+        "merge_etch_into_plasma": "Δ_ex-A · 공정 개념 오병합",
+        "relocate_case_failuremode": "Δ_ex-B · 사례–결함모드 재배치",
+    }
+    lines = [
+        "| 합성 델타 | 선행기술조사 L3 | 교차 태스크 T3 | 회귀 CQ(전→후) |",
+        "|---|---|---|---|",
+    ]
+    for name in labels:
+        result = evaluate(name, engine=engine)
+        changed = [row for row in result["rows"] if row[0] in result["regressed"]]
+        detail = " · ".join(f"{row[0]} {row[4]}→{row[5]}행" for row in changed)
+        lines.append(
+            f"| {labels[name]} | {'통과' if result['l3_pass'] else '실패'} | "
+            f"{'통과' if result['t3_pass'] else '미충족'} | {detail} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--delta", choices=sorted(DELTAS), help="하나만 실행 (기본: 전량)")
@@ -243,7 +264,14 @@ def main() -> int:
     ap.add_argument("--engine", choices=("rdflib", "repo", "both"), default="rdflib",
                     help="rdflib(기본 · 의존성 없음) | repo(저장소 cq_runner·judge 위임 · 사이드카 필요) | "
                          "both(두 경로의 행 수를 대조 — 갈리면 exit 1)")
+    ap.add_argument("--summary-out", type=Path,
+                    help="본문용 최소 요약표를 지정 경로에 쓴다(두 권고 델타 고정)")
     ns = ap.parse_args()
+    if ns.summary_out:
+        ns.summary_out.parent.mkdir(parents=True, exist_ok=True)
+        ns.summary_out.write_text(render_summary(ns.engine), encoding="utf-8")
+        print(f"wrote {ns.summary_out}")
+        return 0
     names = [ns.delta] if ns.delta else sorted(DELTAS)
     if ns.engine == "both":
         return _compare_engines(names, ns.dump)

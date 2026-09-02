@@ -113,6 +113,24 @@ def test_clean_prose_passes(tmp_path):
 
 
 # ───────── 규격과 검사기의 정합 ─────────
+def test_running_example_requires_evidence_status(tmp_path):
+    body = "> **예시 1 · 예시 그래프.** 본문이다.\n"
+    assert "X1" in _codes(_run(tmp_path, HEAD + body))
+
+
+def test_running_example_sequence_and_synthetic_status_pass(tmp_path):
+    body = (
+        "> **예시 1 · 예시 그래프 · 합성 설명.** 본문이다.\n\n"
+        "> **예시 2 · 델타 통과 · 합성 실행.** 본문이다.\n"
+    )
+    assert _run(tmp_path, HEAD + body) == []
+
+
+def test_synthetic_example_heading_rejects_empirical_verdict_words(tmp_path):
+    body = "> **예시 1 · 승인 거부 · 합성 실행.** 본문이다.\n"
+    assert "X2" in _codes(_run(tmp_path, HEAD + body))
+
+
 def test_checker_targets_exclude_the_working_manuscript():
     """대상은 투고 파생본 계열뿐이다 — 정본·supplementary 는 감사 기록이므로 소급 적용하지 않는다."""
     source = (ROOT / "scripts" / "style_check.py").read_text(encoding="utf-8")

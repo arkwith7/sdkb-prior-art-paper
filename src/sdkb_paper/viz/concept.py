@@ -152,6 +152,8 @@ def fig_overview(out: Path | None = None) -> Path:
         _fit_text(ax, x, 0.092, T(f"overview.{ep}_body"), 0.170,
                   where=f"그림1 {ep} 본문",
                   ha="center", va="center", fontsize=7.0, color=MUTE, linespacing=1.45)
+    ax.text(0.5, 0.018, T("overview.dsr_cycle"), ha="center", va="center",
+            fontsize=7.2, color=MUTE)
     return _save(fig, out)
 
 
@@ -379,8 +381,8 @@ def fig_gate_flow(out: Path | None = None) -> Path:
         if i < len(rows) - 1:
             _arrow(ax, 0.175, y - 0.004, 0.175, y - gap + 0.004, color=INK, lw=1.6, ms=12)
 
-    _fit_text(ax, 0.030, 0.030, T("gate.footer"), 0.950, where="그림4 각주",
-              ha="left", va="center", fontsize=8.6, color=INK)
+    _fit_text(ax, 0.030, 0.032, T("gate.example_footer"), 0.950, where="그림4 합성 실행 각주",
+              ha="left", va="center", fontsize=7.8, color=INK)
     return _save(fig, out)
 
 
@@ -577,6 +579,43 @@ def fig_ep_gate_matrix(out: Path | None = None) -> Path:
     return _save(fig, out)
 
 
+def fig_detection_port_boundary(out: Path | None = None) -> Path:
+    """그림 8 — SDKB 홀드아웃 검출과 제2 자원 이식의 관찰 범위를 분리한다."""
+    out = out or FIGURES / "concept_detection_port_boundary.svg"
+    v = figdata.load()
+    fig, ax = _canvas(11.0, 4.8)
+    ax.text(0.04, 0.93, T("boundary.title"), ha="left", va="center",
+            fontsize=12, fontweight="bold", color=INK)
+
+    columns = [T("boundary.l3"), T("boundary.t3"), T("boundary.t3only"), T("boundary.control")]
+    x_positions = [0.30, 0.47, 0.64, 0.81]
+    for x, title in zip(x_positions, columns):
+        ax.text(x, 0.81, title, ha="center", va="center", fontsize=9,
+                fontweight="bold", color=MUTE)
+
+    rows = [
+        (0.58, T("boundary.sdkb"), [v["ep2.l3_detected"], v["ep2.t3_detected"],
+                                    v["ep2.t3_only"], v["ep2.false_positive"]],
+         T("boundary.sdkb_note")),
+        (0.32, T("boundary.brick"), ["—", f"{v['ep5.t3_only']}/{v['ep5.judgeable']}",
+                                     f"{v['ep5.t3_only']}/{v['ep5.judgeable']}",
+                                     f"{v['ep5.false_positive']}/{v['ep5.normal']}"],
+         T("boundary.brick_note")),
+    ]
+    for y, name, values, note in rows:
+        _rbox(ax, 0.04, y - 0.08, 0.17, 0.16, title=name, body="",
+              fill="#FFFFFF", edge=BORDER, ts=9.5)
+        for x, value in zip(x_positions, values):
+            color = TOBE if value != "—" and not str(value).startswith("0/") else MUTE
+            fill = TOBE_FILL if color == TOBE else "#F1F3F6"
+            _chip(ax, x, y + 0.02, str(value), color=color, fill=fill)
+        ax.text(0.30, y - 0.105, note, ha="left", va="center", fontsize=7.5, color=MUTE)
+
+    _rbox(ax, 0.04, 0.055, 0.90, 0.12, title="", body=T("boundary.scope"),
+          fill=ASIS_FILL, edge=ASIS_EDGE, bs=8.5)
+    return _save(fig, out)
+
+
 def out_dir(lang: str) -> Path:
     """언어별 산출 자리. 한국어판은 국문 정본·supplementary 가 인용하므로 자리를 옮기지 않는다."""
     return FIGURES if lang == "ko" else FIGURES / lang
@@ -592,7 +631,7 @@ def main() -> None:
     d = out_dir(args.lang)
     d.mkdir(parents=True, exist_ok=True)
     for fn in (fig_overview, fig_layer_mismatch, fig_tbox_views, fig_gate_flow,
-               fig_experiment_flow, fig_ep_gate_matrix):
+               fig_experiment_flow, fig_ep_gate_matrix, fig_detection_port_boundary):
         name = fn.__defaults__ and None  # 기본 경로는 각 함수가 정한다
         del name
         out = d / _basename(fn)
@@ -606,6 +645,7 @@ _BASENAMES = {
     "fig_gate_flow": "concept_gate_flow.svg",
     "fig_experiment_flow": "concept_experiment_flow.svg",
     "fig_ep_gate_matrix": "concept_ep_gate_matrix.svg",
+    "fig_detection_port_boundary": "concept_detection_port_boundary.svg",
 }
 
 
