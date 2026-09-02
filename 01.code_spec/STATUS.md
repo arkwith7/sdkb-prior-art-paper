@@ -41,10 +41,13 @@
 > 동결 항목표 · 판정식 · 도달면 실측(G₀ 4,713 · G₁·G₂ 36,510)은 다음 사전등록이 다시 세지
 > 않아도 된다.
 >
-> **살아 있는 계획은 둘이다** — [PLAN-080](plans/PLAN-080-submission-close.md)(투고 마감 ·
-> C 묶음 열림) · [PLAN-087](plans/PLAN-087-running-example-ch3-5.md)(제안 · §10 결정 여덟 대기).
+> **`main` 에서 살아 있는 계획은 하나다** — [PLAN-080](plans/PLAN-080-submission-close.md)
+> (투고 마감 · C 묶음 열림).
 > [PLAN-086](archive/PLAN-086-body-condense-supplementary-coherence.md) 은 **실행 완료 후
 > 아카이빙했다**(2026-09-02 · 42차).
+>
+> **PLAN-087(관통 예시)은 브랜치 `plan-087-running-example` 에 있다** — 제안 상태이고 §10 의
+> 결정 여덟이 대기 중이라 `main` 에 올리지 않았다. 승인되면 병합하고 이 문단을 지운다.
 >
 > **함께 확인된 표류 하나(미교정 · [O-14](plans/OPEN-ITEMS.md) 소관).** 봉인 열람 원장 실물은
 > **70행**(A층 `qrel_test_sealed` 44 · 판독 B 25 · examiner 1 · 2026-08-08~09-02)인데,
