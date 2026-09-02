@@ -561,3 +561,49 @@ figures-en:
 # --- 온톨로지 탐색·모니터링 로컬 웹앱 (읽기 전용) ---
 serve:
 	uv run python -m sdkb_paper.explore.server --port $(or $(PORT),8000)
+
+# ── PLAN-087 · 관통 예시(running example) · 스킴 경로 ────────────────────────────
+# example-delta : 예시 델타 A(동의어 오병합)·B(사례 재배치)를 mini_graph 에 적용해 CQ 행 수 표를
+#                 paper/tables/ 로 생성하고 변형 픽스처를 data/samples/mini_graph_delta_{a,b}.ttl 로 덤프.
+#                 **rdflib 만 쓰므로 사이드카 스토어 없이 어디서나 돈다** — CI 에 걸 수 있는 쪽이다.
+# example-gate  : 그 덤프에 실제 게이트를 돌려 원고 예시 2 의 형식 층 칸을 채운다.
+#                 L1 SHACL · L2 추론기는 그대로 쓰고, **CQ 층은 `cq_runner` 를 단독으로 돌리지 않는다** —
+#                 그 CLI 는 기준선을 받지 않아 v1(존재검사)만 적용하므로 델타 A 의 CQ21 2→1 회귀를
+#                 통과로 읽는다(1 ≥ 1). v2(존재검사 ∧ 분포검사)를 저장소 코드로 재현하는 자리는
+#                 `example_delta_demo.py --engine repo` 이며 측정도 판정도 `cq_runner` 에 위임한다.
+#                 **사이드카 스토어(data/processed/central_axis.oxstore · gitignore)가 필요하다.**
+# example-both  : 두 경로(rdflib · 저장소 엔진)의 CQ 행 수 대조. 갈리면 예시 서사의 근거가 갈린 것이다.
+# skim          : 제목·그림 캡션·예시 첫 문장만 뽑은 paper/SKIM.md 갱신 (PR 마다 diff 검토).
+# skim-check    : 같은 것 + K1(§3–§5 절마다 그림/예시) 위반 시 실패 — 재구성 완료 후 CI 에 배선한다.
+.PHONY: example-delta example-gate example-both skim skim-check
+example-delta:
+	uv run python scripts/example_delta_demo.py --delta merge_etch_into_plasma --md > paper/tables/example_delta_a.md
+	uv run python scripts/example_delta_demo.py --delta relocate_case_failuremode --md > paper/tables/example_delta_b.md
+	uv run python scripts/example_delta_demo.py --delta merge_etch_into_plasma --dump data/samples
+	uv run python scripts/example_delta_demo.py --delta relocate_case_failuremode --dump data/samples
+
+# 사이드카 스토어 선결 조건 — `cq_runner` 는 사이드카 CQ 를 조용히 건너뛰지 않는다(PLAN-023 §3-1).
+# 없으면 FileNotFoundError 로 죽으므로, 죽기 전에 무엇을 해야 하는지 말한다.
+example-gate: example-delta
+	@test -e data/processed/central_axis.oxstore || { \
+	  echo "사이드카 스토어가 없다: data/processed/central_axis.oxstore"; \
+	  echo "  uv run python -m sdkb_paper.ontology.central_axis build   # 로 빌드한 뒤 다시 실행하라"; \
+	  echo "  (gitignore 대상이라 새 클론에는 없다 · example-delta 는 이것 없이도 돈다)"; \
+	  exit 1; }
+	uv run python -m sdkb_paper.validate.shacl_gate data/samples/mini_graph_delta_a.ttl --shapes delta
+	uv run python -m sdkb_paper.validate.shacl_gate data/samples/mini_graph_delta_b.ttl --shapes delta
+	uv run python -m sdkb_paper.validate.reasoner_gate data/samples/mini_graph_delta_a.ttl
+	uv run python -m sdkb_paper.validate.reasoner_gate data/samples/mini_graph_delta_b.ttl
+	uv run python scripts/example_delta_demo.py --delta merge_etch_into_plasma --engine repo --dump data/samples
+	uv run python scripts/example_delta_demo.py --delta relocate_case_failuremode --engine repo --dump data/samples
+
+# `--dump` 를 주지 않으면 스크립트가 임시 디렉터리에 픽스처를 뜬다 — 저장소에 두는 픽스처는
+# 원고가 참조하는 둘(delta_a · delta_b)뿐이고, 대조용 세 번째(reverse)를 남기지 않는다.
+example-both: example-delta
+	uv run python scripts/example_delta_demo.py --engine both
+
+skim:
+	uv run python scripts/skim_outline.py paper/submission/manuscript.md -o paper/SKIM.md
+
+skim-check:
+	uv run python scripts/skim_outline.py paper/submission/manuscript.md --check -o paper/SKIM.md

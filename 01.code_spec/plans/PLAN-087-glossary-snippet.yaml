@@ -1,0 +1,27 @@
+# PLAN-087 — paper/glossary-terms.yaml 의 `terms:` (가) concept 구역에 붙일 3항.
+# 원고에 첫 예시 박스를 넣는 커밋과 **같은 커밋**에서 합친다 (그 전에는 원고에 용어가 없어 검사가 공허하다).
+  - id: running-example
+    category: concept
+    ko: 관통 예시
+    en: running example
+    aliases_ko: [관통하는 예시]
+    define_in: "§3"
+    gloss: 거절특허 하나를 §3 산출물에서 §5 판정까지 같은 인스턴스로 따라가며 설명하는 장치.
+      T-Box 의 규칙을 A-Box 의 실제 트리플 위에서 보이기 위한 것
+
+  - id: example-graph
+    category: concept
+    ko: 예시 그래프
+    en: example graph
+    aliases_ko: [예시 그래프 G_ex]
+    define_in: "§3"
+    gloss: 관통 예시가 놓이는 합성 A-Box(data/samples/mini_graph.ttl · 169 트리플). T-Box·IRI·라벨은
+      실물 SDKB 와 동일하고 특허 5건만 합성이며 CI 픽스처를 겸한다
+
+  - id: skim-path
+    category: concept
+    ko: 스킴 경로
+    en: skim path
+    define_in: "§1"
+    gloss: 장·절 제목과 그림 캡션의 첫 문장만 이어 읽은 원고. 이것만으로 주장과 발견이 파악되는 것이
+      본 원고의 구성 목표이며 make skim 이 paper/SKIM.md 로 남긴다

@@ -1,0 +1,209 @@
+@prefix gov: <https://w3id.org/sdkb/gov/> .
+@prefix ont: <https://w3id.org/sdkb/ont/> .
+@prefix pat: <https://w3id.org/sdkb/data/patent/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/sdkb/data/expert/EXP_M01> a ont:Expert ;
+    skos:altLabel "Expert M01"@en ;
+    skos:prefLabel "전문가 M01"@ko ;
+    ont:hasCaseExperience <https://w3id.org/sdkb/data/expert_case/CASE_M01> ;
+    ont:hasEquipmentExperience <https://w3id.org/sdkb/data/equipment/lam_kiyo>,
+        <https://w3id.org/sdkb/data/equipment_class/etcher> ;
+    ont:hasMaterialExpertise <https://w3id.org/sdkb/data/material/euv_photoresist> ;
+    ont:hasProcessExpertise <https://w3id.org/sdkb/data/subprocess/plasma_etch> ;
+    ont:hasSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> .
+
+pat:1020130000004 a ont:Patent,
+        ont:RejectedPatent ;
+    skos:prefLabel "플라즈마 식각 종점 검출 방법"@ko ;
+    ont:abstractText "합성 초록 — 플라즈마 식각 종점 검출." ;
+    ont:applicationNumber "1020130000004" ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
+    ont:examinationStatus "거절결정(일반)" ;
+    ont:filingDate "2013-05-10"^^xsd:date ;
+    ont:firstClaimText "청구항 1: 플라즈마 식각 종점을 검출하는 방법." ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
+    ont:hasPriorArt pat:us_US7000001 ;
+    ont:hasPriorArtExaminer pat:us_US7000001 ;
+    ont:patentOffice "KR" ;
+    ont:processFamily "etch" ;
+    ont:publicationNumber "1020140000004" ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> ;
+    ont:rejectedFor ont:Rejection_Inventiveness ;
+    ont:valueChainStage "fab" .
+
+pat:1020190000005 a ont:Patent ;
+    skos:prefLabel "식각 챔버 플라즈마 균일도 제어 장치"@ko ;
+    ont:applicationNumber "1020190000005" ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/lam_research> ;
+    ont:exhibitsFailureMode <https://w3id.org/sdkb/data/failure_mode/micro_trenching> ;
+    ont:filingDate "2019-11-08"^^xsd:date ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
+    ont:patentOffice "KR" ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
+
+pat:1020200000001 a ont:Patent ;
+    skos:prefLabel "플라즈마 식각 균일도 개선 방법"@ko ;
+    ont:abstractText "합성 초록 — 플라즈마 식각 균일도 개선." ;
+    ont:applicationNumber "1020200000001" ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
+    ont:claimCount 2 ;
+    ont:claimText "1. 플라즈마 식각 챔버 내 균일도를 개선하는 방법으로서, …",
+        "2. 제1항에 있어서, 상기 챔버의 압력을 조절하는 단계를 포함하는 방법." ;
+    ont:concernsSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> ;
+    ont:concernsTechnologyNode <https://w3id.org/sdkb/data/technology_node/n3> ;
+    ont:filingDate "2020-03-02"^^xsd:date ;
+    ont:firstClaimText "1. 플라즈마 식각 챔버 내 균일도를 개선하는 방법으로서, …" ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
+    ont:patentOffice "KR" ;
+    ont:realizesEquipmentClass <https://w3id.org/sdkb/data/equipment_class/etcher> ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
+
+pat:1020210000002 a ont:Patent ;
+    skos:prefLabel "EUV 마스크 결함 검사 장치"@ko ;
+    ont:applicationNumber "1020210000002" ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
+    ont:filingDate "2021-07-15"^^xsd:date ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H01L21-3065> ;
+    ont:patentOffice "KR" ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/euv_lithography> .
+
+pat:1020230000003 a ont:Patent ;
+    skos:prefLabel "HBM 적층용 식각 공정 슬러리 조성물"@ko ;
+    ont:applicationNumber "1020230000003" ;
+    ont:assignedTo <https://w3id.org/sdkb/data/organization/samsung_electronics> ;
+    ont:concernsDevice <https://w3id.org/sdkb/data/device/hbm> ;
+    ont:filingDate "2023-01-20"^^xsd:date ;
+    ont:hasIPC <https://w3id.org/sdkb/data/ipc/H10B12-00> ;
+    ont:patentOffice "KR" ;
+    ont:realizesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
+
+<https://w3id.org/sdkb/data/problem/PROB_M01> a ont:Problem ;
+    skos:prefLabel "Particle increase in etch chamber"@en ;
+    ont:exhibitsFailureMode <https://w3id.org/sdkb/data/failure_mode/micro_trenching> ;
+    ont:involvesEquipment <https://w3id.org/sdkb/data/equipment/lam_kiyo> ;
+    ont:involvesMaterial <https://w3id.org/sdkb/data/material/euv_photoresist> ;
+    ont:involvesProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> ;
+    ont:problemCategory "contamination" ;
+    ont:requiresSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> .
+
+<https://w3id.org/sdkb/data/process/lithography> a ont:Process ;
+    skos:altLabel "노광"@ko ;
+    skos:prefLabel "Lithography"@en ;
+    ont:hasSubprocess <https://w3id.org/sdkb/data/subprocess/euv_lithography> .
+
+<https://w3id.org/sdkb/data/device/hbm> a ont:Device ;
+    skos:altLabel "고대역폭 메모리"@ko ;
+    skos:prefLabel "HBM"@en ;
+    gov:subjectToControl <https://w3id.org/sdkb/data/gov/kr/tech_control/advanced_packaging> .
+
+<https://w3id.org/sdkb/data/expert_case/CASE_M01> a ont:ExpertCase ;
+    skos:prefLabel "식각 마이크로트렌칭 사례"@ko ;
+    ont:caseFailureMode <https://w3id.org/sdkb/data/failure_mode/micro_trenching> ;
+    ont:caseProcess <https://w3id.org/sdkb/data/subprocess/plasma_etch> ;
+    ont:caseSource "curated_profiles_kr.json#EXP_M01" .
+
+<https://w3id.org/sdkb/data/gov/kr/nct/advanced_packaging> a gov:NationalCoreTechnology ;
+    skos:notation "반도체_NCT_04" ;
+    gov:requiresGovApproval true .
+
+<https://w3id.org/sdkb/data/ipc/H10B12-00> a ont:IPCSymbol ;
+    skos:notation "H10B 12/00" .
+
+<https://w3id.org/sdkb/data/material/hydrofluoric_acid> a ont:Material ;
+    skos:prefLabel "Hydrofluoric Acid"@en .
+
+<https://w3id.org/sdkb/data/metrology/cd_sem> a ont:Metrology ;
+    skos:prefLabel "CD-SEM"@en ;
+    gov:subjectToControl <https://w3id.org/sdkb/data/gov/us/tech_control/ccl_3b001> .
+
+<https://w3id.org/sdkb/data/mitigation/recipe_tuning> a ont:Mitigation ;
+    skos:prefLabel "Recipe Tuning"@en ;
+    ont:mitigationProvidesSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> .
+
+<https://w3id.org/sdkb/data/parameter/bias_power> a ont:Parameter ;
+    skos:prefLabel "Bias Power"@en .
+
+<https://w3id.org/sdkb/data/root_cause/charging> a ont:RootCause ;
+    skos:prefLabel "Charging"@en ;
+    ont:mitigatedBy <https://w3id.org/sdkb/data/mitigation/recipe_tuning> .
+
+<https://w3id.org/sdkb/data/technology_node/n3> a ont:TechnologyNode ;
+    skos:prefLabel "3nm"@en .
+
+gov:JurisdictionKR a skos:Concept ;
+    skos:notation "KR" ;
+    skos:prefLabel "Republic of Korea"@en .
+
+gov:JurisdictionUS a skos:Concept ;
+    skos:notation "US" ;
+    skos:prefLabel "United States"@en .
+
+<https://w3id.org/sdkb/data/equipment/lam_kiyo> a ont:Equipment ;
+    skos:prefLabel "Lam Kiyo"@en ;
+    ont:isInstanceOf <https://w3id.org/sdkb/data/equipment_class/etcher> ;
+    ont:providedBy <https://w3id.org/sdkb/data/organization/lam_research> .
+
+<https://w3id.org/sdkb/data/gov/kr/tech_control/advanced_packaging> a gov:KRIndustrialTechRule ;
+    skos:notation "반도체_NCT_04" ;
+    skos:prefLabel "Advanced_Packaging"@en ;
+    gov:controlLevel "CRITICAL" ;
+    gov:designatedAsNCT <https://w3id.org/sdkb/data/gov/kr/nct/advanced_packaging> ;
+    gov:hasJurisdiction gov:JurisdictionKR .
+
+<https://w3id.org/sdkb/data/gov/us/tech_control/ccl_3b001> a gov:EARRule ;
+    skos:notation "3B001.a" ;
+    skos:prefLabel "CCL_3B001"@en ;
+    gov:controlLevel "HIGH" ;
+    gov:hasJurisdiction gov:JurisdictionUS .
+
+pat:us_US7000001 rdfs:label "Prior art: plasma etch endpoint detection" .
+
+<https://w3id.org/sdkb/data/subprocess/euv_lithography> a ont:SubProcess ;
+    skos:prefLabel "EUV Lithography"@en ;
+    gov:subjectToControl <https://w3id.org/sdkb/data/gov/us/tech_control/ccl_3b001> .
+
+ont:SubProcess rdfs:subClassOf ont:Process .
+
+<https://w3id.org/sdkb/data/failure_mode/micro_trenching> a ont:FailureMode ;
+    skos:prefLabel "Micro-trenching"@en ;
+    ont:isDueTo <https://w3id.org/sdkb/data/root_cause/charging> ;
+    ont:occursAtProcessStep <https://w3id.org/sdkb/data/subprocess/plasma_etch> .
+
+<https://w3id.org/sdkb/data/material/euv_photoresist> a ont:Material ;
+    skos:prefLabel "EUV Photoresist"@en ;
+    ont:incompatibleWith <https://w3id.org/sdkb/data/material/hydrofluoric_acid> .
+
+<https://w3id.org/sdkb/data/organization/lam_research> a ont:Organization,
+        ont:Vendor ;
+    skos:prefLabel "Lam Research"@en ;
+    ont:companyType "장비업체" .
+
+<https://w3id.org/sdkb/data/equipment_class/etcher> a ont:EquipmentClass ;
+    skos:prefLabel "Etcher"@en ;
+    ont:madeBy <https://w3id.org/sdkb/data/organization/lam_research> .
+
+<https://w3id.org/sdkb/data/ipc/H01L21-3065> a ont:IPCSymbol ;
+    skos:notation "H01L 21/3065" .
+
+<https://w3id.org/sdkb/data/organization/samsung_electronics> a ont:Organization ;
+    skos:altLabel "삼성전자"@ko ;
+    skos:prefLabel "SAMSUNG ELECTRONICS CO., LTD."@en .
+
+<https://w3id.org/sdkb/data/skill/endpoint_detection> a ont:Skill ;
+    skos:prefLabel "Endpoint Detection"@en .
+
+<https://w3id.org/sdkb/data/subprocess/plasma_etch> a ont:Process,
+        ont:SubProcess ;
+    skos:altLabel "식각"@ko ;
+    skos:prefLabel "Etch"@en,
+        "Plasma Etch"@en ;
+    gov:subjectToControl <https://w3id.org/sdkb/data/gov/kr/tech_control/advanced_packaging> ;
+    ont:hasParameter <https://w3id.org/sdkb/data/parameter/bias_power> ;
+    ont:measuredBy <https://w3id.org/sdkb/data/metrology/cd_sem> ;
+    ont:requiresSkill <https://w3id.org/sdkb/data/skill/endpoint_detection> ;
+    ont:usesEquipmentClass <https://w3id.org/sdkb/data/equipment_class/etcher> ;
+    ont:usesMaterial <https://w3id.org/sdkb/data/material/euv_photoresist> .
+
