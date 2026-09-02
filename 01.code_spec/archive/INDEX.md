@@ -14,7 +14,7 @@
 > 손으로 쓴 요약은 원문과 조용히 어긋난다). 빈 칸은 그 문서가 머리말에 상태를 적지 않았다는
 > 뜻이며, 완료 여부는 원문에서 확인한다.
 >
-> *생성: 2026-08-30 (PLAN-071 · PLAN-079-prereg 2행 추가 · 같은 추출 규칙) · 재생성은 이 파일 말미의 명령으로 한다.*
+> *생성: 2026-09-02 (PLAN-086 1행 추가 · 같은 추출 규칙) · 이전: 2026-08-30 (PLAN-071 · PLAN-079-prereg 2행 추가) · 재생성은 이 파일 말미의 규칙으로 한다.*
 
 | 문서 | 제목 | 문서가 밝힌 상태 |
 |---|---|---|
@@ -105,6 +105,7 @@
 | [PLAN-083-condense-body-tables-figures.md](PLAN-083-condense-body-tables-figures.md) | 본문 축약(§2·§4·§5·§6) · 표 간결화 · 그림 라벨 감량 (2026-08-27) | 아카이빙 (2026-08-29 · 사용자 지시) |
 | [PLAN-084-supplementary-reader-facing.md](PLAN-084-supplementary-reader-facing.md) | supplementary 를 편집 이력이 아니라 독자용 부록으로 재조직 | 아카이빙 (2026-08-29 · 사용자 지시) |
 | [PLAN-085-restructure-findings-first.md](PLAN-085-restructure-findings-first.md) | 발견 중심 재구성과 작업 정본 층의 복원 | 아카이빙 (2026-08-29 · 사용자 지시) |
+| [PLAN-086-body-condense-supplementary-coherence.md](PLAN-086-body-condense-supplementary-coherence.md) | 층간 서술 정합과 본문 감량: 같은 결과를 모든 문서가 같은 방법·지위·범위로 말하게 한다 | 아카이빙 (2026-09-02 · 사용자 지시) — 실행 완료 (2026-09-01) · DoD 11항 대조는 §13 |
 | [README-PLAN-066-files.md](README-PLAN-066-files.md) | PLAN-066 산출물 — 리포 반영 안내 | 아카이빙 2026-08-23 |
 | [SPEC-003-competency-questions.md](SPEC-003-competency-questions.md) | SPEC-003 · 역량질문(CQ)과 §4.2 의 측정 지표 |  |
 | [STATUS-v05.md](STATUS-v05.md) | 진행 실적 — v0.5 구본 (ARCHIVED · 인용 금지) |  |
