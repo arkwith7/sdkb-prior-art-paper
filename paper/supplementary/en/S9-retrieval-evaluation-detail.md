@@ -86,6 +86,43 @@ Their split-level values and the original-sample win/loss/tie summary remain in 
 retrieval table in S5. Manuscript Table 6 retains only Text Hybrid, Text+Ontology, and +ClaimFeature,
 the three configurations directly used in the verdict.
 
+## S9-T3 · Delta counts and eligibility screening of the controlled resource substitution
+
+> Moved from manuscript §5.2. [Return to manuscript §5.2](../../manuscript/en_source.md#52-increased-document-concept-linking-and-an-actual-rejection-by-the-retrieval-condition-ep3)
+
+The change under review is the first T-Box predicate delta in this study, and it arose from an
+upstream correction. The delta moves the upstream snapshot `d578bf3` → `2839afb`, triples 105,588 →
+105,713, `owl:ObjectProperty` 97 → 98, and `skos:broader` 11 → 18, with classes unchanged at 103.
+There are two arms. Arm O ran the pre-correction resource bundle and arm O′ the post-correction
+bundle through the same pipeline. A resource bundle here consists of the ontology, the surface-form
+dictionary, and the concept mapping. The text-to-concept linker was frozen before the two arms were
+produced, and both run records point to the same code commit. All seven items of the eligibility
+screening passed, and the delta was classified as a T-Box delta (manuscript §3.0). In arm O the
+concept dictionary was absent from that snapshot, so the linker was inactive. Reassembly with the
+linker running but the dictionary removed reproduced the corpus hash byte for byte (pre-check P-1),
+so the two arms differ only in the resource bundle. In arm O′ the dictionary applied. The mean number
+of ontology concepts linked to each existing patent document rose from 1.545 to 3.779 (2.4×). This
+metric measures document-to-concept linking density, not the T-Box class count. The number of
+distinct concepts linked at least once across the corpus grew from 141 to 199, and the linker created
+128,875 new links. T-Box classes remained at 103, and both arms retained the same 40,552 documents.
+The two arms therefore established, for the first time, conditions that differed only in the
+resource bundle. Documents, code, retrieval settings, weights, splits, and the sealed qrel all
+remained frozen. Every prespecified resource-side quantity indicator increased, and formal validation
+L0–L3 passed in full.
+
+The scope of the freeze is every input to the acceptance rule; the list and the time of each freeze
+are in the preregistration chronology ([S6](S6-preregistration-crosswalk.md) §5). Only the resource
+bundle therefore differs between the two runs (manuscript §4.5).
+
+Eligibility screening asks whether a verdict is admissible; it is not the verdict itself. If any of
+its seven items fails, we report the run as untested rather than running the performance conditions.
+Recording such a failure as a rejection would place an inadmissible run in the verdict record. In
+this screening the delta was classified as a T-Box delta and five files had changed. Six pre-checks
+also passed. All seven ranking runs of the two arms reproduced the earlier runs byte for byte, which
+confirms the determinism of the retrieval pipeline by execution. The document set was identical at
+40,552 rows in both arms, and the leakage audit reported zero violations across its four layers. T1
+is valid only when the leakage audit passes, so that confirmation is a precondition of the verdict.
+
 ## 5. The layer-contribution check — verdicts on the twelve ablation rows
 
 Details of the layer-contribution check summarised in §5.3.2 of the manuscript. **Values are

@@ -79,6 +79,20 @@ jobs:
       - name: Supplementary EN measurement and meaning check
         run: uv run python scripts/check_supplementary_en.py
 
+      # 스킴 경로 (PLAN-087 §4.3 · K1–K3). 제목과 캡션만 이어 읽어도 논문이 되는가 —
+      # K1 은 §3–§5 의 절마다 그림·예시 박스·번호가 있는 명시적 재참조가 하나 이상 있는가를
+      # 본다. Makefile 주석이 *"재구성 완료 후 CI 에 배선한다"* 로 유보해 둔 자리이며,
+      # 재구성이 끝났으므로 여기서 배선한다. **차단 모드** — 배선 시점 실측은 경고 0 이다.
+      # `-o` 를 주지 않아 CI 는 paper/SKIM.md 를 쓰지 않는다(검사만 한다).
+      - name: Skim path check (titles + captions · K1–K3)
+        run: uv run python scripts/skim_outline.py paper/submission/manuscript.md --check
+
+      # 예시 1 Turtle 발췌의 신선도 (PLAN-087 §8 ①). 단위 테스트는 생성기의 출력을 보고
+      # **커밋된 표가 픽스처와 같은지는 보지 않는다** — 픽스처가 바뀌면 원고의 예시가 조용히
+      # 낡는다. `--check` 는 재생성 없이 그 차이만 본다.
+      - name: Running-example excerpt freshness
+        run: uv run python scripts/gen_example_excerpt.py --check
+
       # 단위 + 통합 테스트. 통합 테스트가 커밋된 스냅샷에서 baseline 을 재조립해
       # 관측 단위 수(Process 8 / SubProcess 12)·특허 0건·결정성·CQ 서명을 검증한다.
       - name: Unit + integration tests

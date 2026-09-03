@@ -200,6 +200,13 @@ LABELS: dict[str, dict[str, str]] = {
     "overview.view_priorart": {"ko": "선행기술조사", "en": "Prior-art search"},
     "overview.view_foresight": {"ko": "기술예측", "en": "Foresight"},
     "overview.quant_target": {"ko": "정량 검증 대상", "en": "Quantitatively validated"},
+    # 관통 예시의 정박점. 세 뷰가 **어디서** 만나는지를 예시 인스턴스로 말한다 — 표식
+    # `합성 설명` 은 이 줄이 구조 설명이며 실측 판정이 아님을 밝힌다(PLAN-087 §2.0 · 규격 F3).
+    "overview.example_anchor": {
+        "ko": "합성 설명 · 예시 1 — 거절특허 「플라즈마 식각 종점 검출 방법」의 사실은 "
+              "공정 노드 Plasma Etch 에서 세 뷰와 만난다",
+        "en": "Synthetic illustration · Example 1 — the facts of the rejected patent "
+              "“Plasma etch endpoint detection” meet all three views at the Plasma Etch node"},
     "overview.delta_title": {"ko": "자원 변경 ΔG", "en": "Resource change ΔG"},
     "overview.delta_body": {
         "ko": "상류 교정 · 어휘 확장\n새 A-Box 유입",
@@ -233,9 +240,12 @@ LABELS: dict[str, dict[str, str]] = {
     "overview.ep_target": {"ko": "대상 · {target}", "en": "Target · {target}"},
     "overview.ep1_title": {"ko": "EP1 · 표현 감사", "en": "EP1 · Representation audit"},
     "overview.ep1_target": {"ko": "ART-1 자원", "en": "ART-1 resource"},
+    # **"실재" 라 쓰지 않는다.** 표현에는 선언·실체화·작동 세 층이 있고 EP1 이 관측한 것은
+    # 첫째 층이다(CLAUDE.md §0). 본문 §5.1 의 제목도 「선언 범위」이므로 그림이 앞서 나가면
+    # 도판과 절이 서로 다른 것을 말한다.
     "overview.ep1_body": {
-        "ko": "세 태스크 어휘와 CQ 가\n자원에 실재하는가",
-        "en": "Are the three task vocabularies\nand CQs present"},
+        "ko": "세 태스크 어휘와 CQ 가\n자원에 선언되어 있는가",
+        "en": "Are the three task vocabularies\nand CQs declared in the resource"},
     "overview.ep2_title": {"ko": "EP2 · 게이트 판별력", "en": "EP2 · Gate discrimination"},
     "overview.ep2_target": {"ko": "ART-2 게이트", "en": "ART-2 gate"},
     "overview.ep2_body": {
@@ -355,6 +365,10 @@ LABELS: dict[str, dict[str, str]] = {
         "ko": "교차 태스크 결합 통로 — 공유 어휘가 두 뷰를 잇는다",
         "en": "Cross-task coupling channels — shared vocabulary joins two views"},
     "tbox.channel_class": {"ko": "분류 기호", "en": "Classification symbols"},
+    # 관통 예시의 정박점 — 세 뷰가 만나는 공정 노드를 예시 인스턴스로 지시한다.
+    "tbox.channel_example": {
+        "ko": "합성 설명 · 예시 1 의 Plasma Etch ⊂ Etch 가 이 통로 위의 노드다",
+        "en": "Synthetic illustration · Plasma Etch ⊂ Etch from Example 1 sits on this channel"},
     "tbox.core_title": {
         "ko": "공유 코어 T_core — 세 뷰가 함께 서는 자리",
         "en": "Shared core T_core — where the three views meet"},
@@ -439,6 +453,18 @@ LABELS: dict[str, dict[str, str]] = {
     "flow.body_query": {
         "ko": "4종을 준비하였으나 비교는 실행하지 않았다",
         "en": "Four were prepared; the comparison was not run"},
+    # 누출 차단 행 — 실무에 대응이 **없는** 단계다. 출원 시점에는 심사관 인용이 아직
+    # 존재하지 않으므로 실무자는 지울 것이 없고, 평가에서는 그 간선이 정답이므로 반드시
+    # 지워야 한다. 이 비대칭이 이 행의 요점이다(§4.2 · 관통 예시 3).
+    "flow.task_leak": {
+        "ko": "대응 단계가 없다 — 출원 시점에는 인용이 없다",
+        "en": "No counterpart — at filing time no citation exists"},
+    "flow.title_leak": {
+        "ko": "정답 간선 제거와 누출 차단",
+        "en": "Ground-truth edge removal and leakage control"},
+    "flow.body_leak": {
+        "ko": "hasPriorArtExaminer 마스킹 · 시점 유효 · 패밀리 분리",
+        "en": "hasPriorArtExaminer masked · time validity · family separation"},
     "flow.task_search": {
         "ko": "특허 데이터베이스를 검색한다", "en": "Search the patent database"},
     "flow.title_search": {
@@ -491,15 +517,22 @@ LABELS: dict[str, dict[str, str]] = {
     "matrix.col_t3_sub": {"ko": "교차 태스크", "en": "Cross-task"},
     "matrix.col_t4_sub": {"ko": "생성 층", "en": "Generation"},
     "matrix.head_episode": {"ko": "에피소드", "en": "Episode"},
+    # 두 축을 한 줄로 밝힌다 — 행은 추적 번호 순, 절 포인터는 본문에서 읽히는 순서다.
+    "matrix.head_order": {
+        "ko": "행 = 번호 순 · (§) = 본문 순서",
+        "en": "Rows: EP no. · (§): body order"},
+    "matrix.row_tag": {"ko": "{ep} (§{section})", "en": "{ep} (§{section})"},
     "matrix.head_verdict": {"ko": "판정", "en": "Verdict"},
     "matrix.ep1_name": {"ko": "표현 감사", "en": "Representation audit"},
     "matrix.ep1_status": {"ko": "관측 사실", "en": "Observed fact"},
     "matrix.ep1_cell": {
         "ko": "역량질문 {cq.total}개\n세 태스크 어휘",
         "en": "{cq.total} questions\nthree task vocabularies"},
+    # **"실재" 라 쓰지 않는다** — EP1 이 관측한 것은 선언 층이고 본문 §5.1 의 제목도
+    # 「선언 범위」다(CLAUDE.md §0 표현의 세 층 · 그림 1 EP1 상자와 같은 교정).
     "matrix.ep1_verdict": {
-        "ko": "세 태스크의 어휘·관계·역량질문이 자원에 실재한다.",
-        "en": "The three task vocabularies, relations and questions are present."},
+        "ko": "세 태스크의 어휘·관계·역량질문이 자원에 선언되어 있다.",
+        "en": "The three task vocabularies, relations and questions are declared."},
     "matrix.ep2_name": {"ko": "게이트 판별력", "en": "Gate discrimination"},
     "matrix.ep2_status": {"ko": "홀드아웃 확증", "en": "Holdout confirmatory"},
     "matrix.ep2_cell_l3": {"ko": "주 태스크 CQ\n검출", "en": "Primary-task CQ\ndetection"},

@@ -27,6 +27,7 @@
 | [S8-T1](S8-second-domain-port.md#s8-t1--릴리스-계보와-운용-비용) | 제2 자원의 릴리스 계보와 운용 비용 | §5.5 |
 | [S9-T1](S9-retrieval-evaluation-detail.md#s9-t1--하위집단과-절제-전량) | 하위집단과 절제 결과 | §5.3.2 |
 | [S9-T2](S9-retrieval-evaluation-detail.md#s9-t2--탐색적-기준선과-원표본-요약) | 탐색적 기준선과 원표본 요약 | §5.3.1 |
+| [S9-T3](S9-retrieval-evaluation-detail.md#s9-t3--통제된-자원-교체의-델타-계수와-적격심사-전문) | 통제된 자원 교체의 델타 계수·적격심사·재현 확인 전문 | §5.2 |
 
 `S4`는 결번이다. 번호는 재사용하지 않는다.
 

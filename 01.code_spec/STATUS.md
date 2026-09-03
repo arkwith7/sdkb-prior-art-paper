@@ -42,13 +42,16 @@
 > 않아도 된다.
 >
 > **살아 있는 계획은 둘이다** — [PLAN-080](plans/PLAN-080-submission-close.md)(투고 마감 ·
-> C 묶음 열림) · [PLAN-087](plans/PLAN-087-running-example-ch3-5.md)(제안 · §10 결정 여덟 대기).
-> [PLAN-086](archive/PLAN-086-body-condense-supplementary-coherence.md) 은 **실행 완료 후
-> 아카이빙했다**(2026-09-02 · 42차).
+> C 묶음 열림) · [PLAN-087](plans/PLAN-087-running-example-ch3-5.md)(**실행 중** · 잔여 다섯은
+> 그 계획 §11). [PLAN-086](archive/PLAN-086-body-condense-supplementary-coherence.md) 은
+> **실행 완료 후 아카이빙했다**(2026-09-02 · 42차).
 >
-> **PLAN-087 은 이 브랜치(`plan-087-running-example`)에만 있다.** `main` 의 STATUS 는 살아 있는
-> 계획을 PLAN-080 하나로 적는다 — 제안 상태의 계획을 `main` 이 상대 경로로 가리키면 그 링크가
-> 죽기 때문이다. 승인·병합 시 두 문서가 같아진다.
+> **PLAN-087 은 `main` 에 있다 (2026-09-03 정정).** 구 조항은 *"이 브랜치
+> (`plan-087-running-example`)에만 있다"* 로 적혀 있었고 그때는 참이었다. 착수 커밋 `79e995c` 가
+> `main` 에 들어온 뒤로 그 문장이 거짓이 되었으며, **계획 파일도 `main` 에 있으므로 위 상대
+> 경로 링크는 살아 있다.** 이것은 커밋 `fe28724` 가 고친 실패 모드와 같은 것이다 — 브랜치를
+> 전제한 서술은 병합되는 순간 조용히 거짓이 되고, 그다음 세션이 그것을 근거로 되돌린다.
+> **반영 실측과 잔여 항목은 계획 §11 이 지고, STATUS 는 상태만 가리킨다.**
 >
 > **함께 확인된 표류 하나(미교정 · [O-14](plans/OPEN-ITEMS.md) 소관).** 봉인 열람 원장 실물은
 > **70행**(A층 `qrel_test_sealed` 44 · 판독 B 25 · examiner 1 · 2026-08-08~09-02)인데,

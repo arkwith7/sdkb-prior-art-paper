@@ -47,18 +47,23 @@ BODY_FIGURES = (
 # 자리를 두 언어의 라벨을 함께 줄여 해소하였다. **수치와 자리표시자는 하나도 바뀌지 않았다** —
 # 바뀐 것은 설명하는 말의 길이다(규격 F6).
 KO_SHA256 = {
+    # 2026-09-03 갱신 (PLAN-087 §11 잔여 ②) — ART-1 띠에 관통 예시의 정박점 한 줄을 넣고
+    # EP1 상자의 "실재" 를 "선언" 으로 고쳤다. **수치는 넣지도 바꾸지도 않았다.**
     "concept_overview.svg":
-        "b7d26124693eecb5021571e7ccf834e1b13028ed45cf545bf8b4ec2d96d24f0d",
+        "631d4561688a0f8436f507666a71c537a465c9bc5fadc71bd65c3a67fa489946",
     "concept_layer_mismatch.svg":
         "2c9ff70afceef91b525b3de085689261436974fbbae073ac42c9d0f8aab26e3a",
+    # 2026-09-03 갱신 (PLAN-087 §11 잔여 ②) — 캡션이 주장하는 것을 도판이 보이게 하였다:
+    # 그림 3 은 세 뷰가 만나는 예시 노드를, 그림 5 는 정답 간선 제거 행을, 그림 6 은 EP
+    # 번호와 본문 절의 두 축을 각각 표시한다. **수치는 넣지도 바꾸지도 않았다.**
     "concept_tbox_views.svg":
-        "c5d0c395e3eb998c465f0d97148d3124340606035e7c221cba3bca764fba93a9",
+        "1d484c6176a163864d3f6f2af35ea8761b1ebcd215ae3906ee146a774a0e72b5",
     "concept_gate_flow.svg":
         "03c21457fc5d57985881a2981f5ef189a83553f6713a17afb5c1eb71086ddb0f",
     "concept_experiment_flow.svg":
-        "d705ab050d1424ac0ce02396a871ddec83fe134d16fcae904e407e3474031faf",
+        "292547b6130460929d7e400caf33bde340e9f174dd9686c9eeadc1e3dd34c10a",
     "concept_ep_gate_matrix.svg":
-        "34745f829cefaaa35857810ed58a4996706278a2be3145d27b2178098115ea1b",
+        "bf82bd1ff9210afe72655347d2288c060c6b8738f1e69646097f02e47be232f0",
     "ir_metrics.svg":
         "c3118b3128d9b95cb8d33f7c8891b49179d4e0cc433bb3b7463838c966478ee0",
     "concept_detection_port_boundary.svg":

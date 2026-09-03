@@ -37,6 +37,21 @@ from sdkb_paper.config import FIGURES, ROOT
 
 FROZEN = FIGURES / "data" / "concept_values.json"
 
+# 에피소드 ↔ 절 대응은 **동결 JSON 을 거치지 않는다.** 이것은 측정값이 아니라 포인터이고
+# (조립기의 `CELL_FIXES` 도 절 번호를 수치로 세지 않는다), 그 단일 원천은 이미
+# `paper/episodes.yaml` 이며 `check_crossrefs.py` 의 X1 이 산문·보충자료를 그 파일에
+# 대조한다. 그림이 같은 파일을 읽으면 절을 옮길 때 도판이 저절로 따라온다 — JSON 에
+# 얼리면 재동결을 잊는 순간 그림만 옛 절을 가리킨다.
+EPISODES = ROOT / "paper" / "episodes.yaml"
+
+
+def episode_sections() -> dict[str, str]:
+    """`{"EP1": "5.1", …}` — 본문에서 그 에피소드가 실린 절."""
+    import yaml
+
+    spec = yaml.safe_load(EPISODES.read_text(encoding="utf-8"))
+    return {ep: str(d["section"]) for ep, d in spec["episodes"].items()}
+
 # 출처 파일 — 전부 저장소 안의 산출물이다.
 _PLAN035 = "01.code_spec/archive/PLAN-035-h2-linker-preregistration.md"
 _FAULT_V4 = "paper/tables/fault_matrix_v4.md"

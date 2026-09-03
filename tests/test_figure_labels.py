@@ -61,10 +61,15 @@ def _numbers(s: str) -> list[str]:
     return sorted(n for n in re.findall(r"\d+(?:[.,]\d+)*", s) if len(n) > 1)
 
 
+# 호출 시점에 채워지는 자리표시자 — 동결 수치가 아니라 그리기 코드가 넘기는 값이다.
+# `ep`·`section` 은 그림 6 행 머리(`matrix.row_tag`)가 쓰며 원천은 paper/episodes.yaml 이다.
+CALL_TIME = {"status": "", "target": "", "cq": "", "abox": "", "ep": "", "section": ""}
+
+
 @pytest.mark.parametrize("key", sorted(labels.LABELS))
 def test_two_languages_state_the_same_numbers(key):
     entry = labels.LABELS[key]
-    extra = {"status": "", "target": "", "cq": "", "abox": ""}
+    extra = CALL_TIME
     labels.set_lang("ko")
     ko = labels.render(entry["ko"], **extra)
     labels.set_lang("en")
@@ -88,7 +93,7 @@ def test_english_labels_obey_the_verdict_wording():
     labels.set_lang("en")
     fails = []
     for key, entry in _all_entries():
-        text = labels.render(entry["en"], status="", target="", cq="", abox="")
+        text = labels.render(entry["en"], **CALL_TIME)
         for pat, better in sce.VERDICT_FORBIDDEN_EN:
             if re.search(pat, text, re.I):
                 fails.append(f"{key}: 금지 판정 문구 — {better}\n    {text}")
@@ -115,7 +120,7 @@ def test_cell_translations_agree_with_the_submission_builder():
 # ── 라벨 표의 위생 ───────────────────────────────────────────────────────────
 def test_every_placeholder_resolves():
     """자리표시자가 동결 수치나 기호에 닿는가 — 닿지 않으면 그림이 실행 중에 죽는다."""
-    known = set(labels.values()) | set(labels.MARKS) | {"status", "target", "cq", "abox"}
+    known = set(labels.values()) | set(labels.MARKS) | set(CALL_TIME)
     unknown = set()
     for _, entry in _all_entries():
         for text in entry.values():

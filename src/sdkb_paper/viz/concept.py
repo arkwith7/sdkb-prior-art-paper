@@ -78,7 +78,11 @@ def fig_overview(out: Path | None = None) -> Path:
     fig, ax = _canvas(11.0, 6.6)
 
     # ── A1 · 산출물 자원 (위 띠) ──────────────────────────────────────────────
-    _rbox(ax, 0.035, 0.715, 0.60, 0.245,
+    # 아래 줄 하나가 **관통 예시의 정박점**이다(PLAN-087 §4.2 그림 1). 이 줄이 없으면 캡션의
+    # 첫 문장("거절특허 한 건의 사실이 세 태스크가 공유하는 노드에 모인다")이 도판에 없는
+    # 것을 진술하게 된다 — 규격 F2 는 캡션을 주장으로 쓰라 하고, F3 은 그 주장이 예시 위에
+    # 있음을 표식으로 밝히라 한다. 수치는 넣지 않는다: 예시는 구조를 설명할 뿐이다.
+    _rbox(ax, 0.035, 0.700, 0.60, 0.260,
           title=T("overview.a1_title"),
           body="", fill="#FFFFFF", edge=BORDER, ts=11)
     _fit_text(ax, 0.058, 0.855, T("overview.core_head"), 0.560, where="그림1 코어 제목",
@@ -91,8 +95,11 @@ def fig_overview(out: Path | None = None) -> Path:
         (0.530, "overview.view_foresight", MUTE, "#F1F3F6"),
     ):
         _chip(ax, x, 0.772, T(key), color=color, fill=fill)
-    ax.text(0.350, 0.737, T("overview.quant_target"), ha="center", va="center",
+    ax.text(0.350, 0.740, T("overview.quant_target"), ha="center", va="center",
             fontsize=7.6, color=TOBE)
+    _fit_text(ax, 0.058, 0.716, T("overview.example_anchor"), 0.560,
+              where="그림1 예시 정박점",
+              ha="left", va="center", fontsize=7.4, color=MUTE)
 
     # 변경 유입 — 자원은 고정된 것이 아니라 갱신된다.
     _rbox(ax, 0.680, 0.740, 0.285, 0.190,
@@ -313,7 +320,12 @@ def fig_tbox_views(out: Path | None = None) -> Path:
         ax.annotate("", xy=(tx, 0.322), xytext=(0.5, 0.322),
                     arrowprops=dict(arrowstyle="-", linestyle=(0, (2, 2)),
                                     color=GOLD, lw=1.2))
+    # 통로 이름 옆에 **예시 노드**를 적는다 — 캡션이 "같은 공정 노드" 를 주장하므로 도판이
+    # 어느 노드인지 말해야 한다. 예시 1 과 같은 인스턴스이며 표식으로 지위를 밝힌다(규격 F3).
     _chip(ax, 0.500, 0.322, "Process · SubProcess", color=GOLD, fill="#FBF3E4")
+    _fit_text(ax, 0.500, 0.288, T("tbox.channel_example"), 0.560,
+              where="그림3 예시 정박점",
+              ha="center", va="center", fontsize=7.4, color=MUTE)
 
     # ── 공유 코어 ────────────────────────────────────────────────────────────
     _rbox(ax, 0.030, 0.055, 0.940, 0.190,
@@ -404,24 +416,30 @@ def fig_experiment_flow(out: Path | None = None) -> Path:
     ax.text(0.700, 0.945, T("flow.col_experiment"), ha="center", va="center",
             fontsize=10.5, fontweight="bold", color=INK)
 
+    # 둘째 행이 **누출 차단**이다(PLAN-087 §4.2 그림 5). 캡션 첫 문장이 인용 간선의 제거를
+    # 주장하므로 도판에 그 단계가 있어야 한다 — 없으면 캡션이 그림을 앞질러 간다(규격 F2).
+    # 이 행의 왼쪽 칸은 대응이 아니라 **부재**를 적는다: 출원 시점에는 인용이 아직 없다.
     rows = [
-        (T("flow.task_claims"), T("flow.title_claims"), T("flow.body_claims"),
+        ("claims", T("flow.task_claims"), T("flow.title_claims"), T("flow.body_claims"),
          TOBE_FILL, TOBE_EDGE, TOBE),
-        (T("flow.task_query"), T("flow.title_query"), T("flow.body_query"),
+        ("query", T("flow.task_query"), T("flow.title_query"), T("flow.body_query"),
          "#FFFFFF", BORDER, INK),
-        (T("flow.task_search"), T("flow.title_search"), T("flow.body_search"),
+        ("leak", T("flow.task_leak"), T("flow.title_leak"), T("flow.body_leak"),
+         ASIS_FILL, ASIS_EDGE, ASIS),
+        ("search", T("flow.task_search"), T("flow.title_search"), T("flow.body_search"),
          "#FFFFFF", BORDER, INK),
-        (T("flow.task_fuse"), T("flow.title_fuse"), T("flow.body_fuse"),
+        ("fuse", T("flow.task_fuse"), T("flow.title_fuse"), T("flow.body_fuse"),
          "#FFFFFF", BORDER, INK),
-        (T("flow.task_review"), T("flow.title_review"), T("flow.body_review"),
+        ("review", T("flow.task_review"), T("flow.title_review"), T("flow.body_review"),
          TOBE_FILL, TOBE_EDGE, TOBE),
-        (T("flow.task_reach"), T("flow.title_reach"), T("flow.body_reach"),
+        ("reach", T("flow.task_reach"), T("flow.title_reach"), T("flow.body_reach"),
          GREEN_FILL, GREEN, GREEN),
     ]
+    at = {key: i for i, (key, *_) in enumerate(rows)}
 
-    top, h, gap = 0.900, 0.108, 0.026
+    top, h, gap = 0.900, 0.104, 0.014
     ys = []
-    for i, (task, title, body, fill, edge, tcolor) in enumerate(rows):
+    for i, (_key, task, title, body, fill, edge, tcolor) in enumerate(rows):
         y = top - i * (h + gap) - h
         ys.append(y)
         _rbox(ax, 0.030, y, 0.370, h, title=task, body="",
@@ -435,10 +453,12 @@ def fig_experiment_flow(out: Path | None = None) -> Path:
                    lw=1.5, ms=11)
 
     # 대응이 없는 자리 둘 — 오른쪽 여백에 표시한다.
-    _fit_text(ax, 0.945, ys[1] + h / 2, T("flow.gap_baseline"),
+    # 행 번호가 아니라 **행 이름**으로 찾는다 — 행이 하나 늘 때 주석이 다른 행에 붙는
+    # 사고를 구조로 막는다.
+    _fit_text(ax, 0.945, ys[at["query"]] + h / 2, T("flow.gap_baseline"),
               _ko_width(ax, "flow.gap_baseline", 7.6), where="그림5 결손 주석 1",
               ha="left", va="center", fontsize=7.6, color=ASIS, linespacing=1.5)
-    _fit_text(ax, 0.945, ys[4] + h / 2, T("flow.gap_pool"),
+    _fit_text(ax, 0.945, ys[at["review"]] + h / 2, T("flow.gap_pool"),
               _ko_width(ax, "flow.gap_pool", 7.6), where="그림5 결손 주석 2",
               ha="left", va="center", fontsize=7.6, color=ASIS, linespacing=1.5)
 
@@ -551,15 +571,22 @@ def fig_ep_gate_matrix(out: Path | None = None) -> Path:
         ax.text(cx, 0.900, sub, ha="center", va="center", fontsize=6.8, color=MUTE)
     ax.text(0.020, 0.930, T("matrix.head_episode"), ha="left", va="center", fontsize=9.6,
             fontweight="bold", color=INK)
+    # 둘째 축 — **번호 순서와 본문 순서는 다르다**(PLAN-087 §7 ⑦). 캡션이 그 구분을
+    # 주장하므로 도판이 그것을 보여야 한다: 행은 EP 번호 순이고, 각 행의 절 포인터가
+    # 본문에서 읽히는 순서를 준다.
+    _fit_text(ax, 0.020, 0.899, T("matrix.head_order"), 0.148, where="그림6 둘째 축",
+              ha="left", va="center", fontsize=6.8, color=MUTE)
     ax.text(0.645, 0.930, T("matrix.head_verdict"), ha="left", va="center", fontsize=9.6,
             fontweight="bold", color=INK)
     ax.plot([0.020, 0.985], [0.876, 0.876], color=BORDER, lw=1.0)
 
     # ── 행 ───────────────────────────────────────────────────────────────────
     top, h, gap = 0.865, 0.145, 0.025
+    sections = figdata.episode_sections()
     for i, (tag, name, status, cells, verdict) in enumerate(rows):
         y = top - i * (h + gap) - h
-        _rbox(ax, 0.020, y, 0.145, h, title=tag, body=name,
+        _rbox(ax, 0.020, y, 0.145, h,
+              title=T("matrix.row_tag", ep=tag, section=sections[tag]), body=name,
               fill="#FFFFFF", edge=BORDER, ts=10, bs=7.8)
         _rbox(ax, x0 - 0.004, y, len(cells) * (cw + cgap), h, title="", body="",
               fill="#FBFCFD", edge=BORDER)

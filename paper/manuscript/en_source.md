@@ -53,6 +53,12 @@ unreached. Such a knowledge base is not a finished asset, however. It keeps chan
 procedure that decides whether a change may be released is far less developed than the accumulation
 itself.
 
+The absence of such a procedure shows in a single incident. After a resource change, the concepts
+linked to each document increased. The structural, logical, and functional checks all passed. In the
+sealed retrieval evaluation, however, recall fell below the tolerated margin. This paper concerns
+the acceptance procedure that blocks such a change before deployment, and Figure 1 is the map of
+that incident. The numbers of the incident are reported in §5.2.
+
 Semiconductor knowledge serves more than one task. An equipment defect must be traced from a
 failure mode through root causes to the people and skills that address it. Patent analysis must run
 from claims through their limitations to a prior-art judgment. Technology planning must connect
@@ -686,6 +692,10 @@ prioritization and does not replace a legal judgment. The expert-matching and fo
 objects of T3 regression monitoring, and the retrieval performance of those two is not claimed in
 this study.
 
+So far we have looked at the representation of one patent and a change on top of it. The next
+chapter asks how the same structure is measured in an evaluation over 198 queries; the unit of
+analysis moves from the patent instance to the evaluation query.
+
 ---
 
 # 4. From the example patent to evaluation queries and release verdicts
@@ -943,7 +953,9 @@ frozen predictions are in §4.5.
 
 The first paragraph of each section states both the conclusion and the confirmatory status of that
 section, and the status of each episode is in Table 2. Figure 6 maps the five episodes onto the
-terms of the acceptance rule of §3.5 and gives the verdict for each.
+terms of the acceptance rule of §3.5 and gives the verdict for each. The example deltas are
+synthetic executions that explain the detection mechanism; they are not evidence for the cause of
+the real rejection. The verdicts of this chapter are drawn from preregistered aggregates only.
 
 {{FIGURE:6}}
 
@@ -976,48 +988,35 @@ not establish generation safety (§6.4).
 
 ## 5.2 Increased document-concept linking and an actual rejection by the retrieval condition (EP3)
 
-The performance condition T1 rejected a change that passed all four formal layers and increased
-every prespecified resource-side quantity indicator. This is a recorded rejection of a real delta
-under the acceptance rule in §3.5. It shows that formal validation cannot stand in for the task
-conditions.
+The performance condition T1 rejected one real change that passed all four formal layers and
+increased every prespecified resource-side quantity indicator. The synthetic example patent only
+illustrates the resource-side scene in which concept links multiply; it does not represent the
+queries of this verdict or the cause of the drop. The two left panels of Figure 7 show the rise of
+the resource indicator and the fall of the retrieval metric as preregistered aggregates. The scope
+of this statement is one qualified real change; it says nothing about how often such incidents are
+blocked. The full freeze scope and eligibility screening are in
+[S6](../../supplementary/en/S6-preregistration-crosswalk.md)·[S7](../../supplementary/en/S7-release-crosswalk.md).
+
+Per-query results are aggregated at the release level; the gate judges whether a resource bundle
+may be deployed, not an individual patent. This is a recorded rejection of a real delta under the
+acceptance rule in §3.5. It shows that formal validation cannot stand in for the task conditions.
 
 This section reports a verdict under a separate preregistration, and its resource snapshot is a
 post-correction generation. It therefore does not change the confirmatory verdicts of §5.3, and the
 verdict on acceptance safety is in §6.4.
 
 The change under review is the first T-Box predicate delta in this study, and it arose from an
-upstream correction. The delta moves the upstream snapshot `d578bf3` → `2839afb`, triples 105,588 →
-105,713, `owl:ObjectProperty` 97 → 98, and `skos:broader` 11 → 18, with classes unchanged at 103.
-There are two arms. Arm O ran the pre-correction resource bundle and arm O′ the post-correction
-bundle through the same pipeline. A resource bundle here consists of the ontology, the surface-form
-dictionary, and the concept mapping. The text-to-concept linker was frozen before the two arms were
-produced, and both run records point to the same code commit. All seven items of the eligibility screening passed, and
-the delta was classified as a T-Box delta (§3.0). In arm O the concept dictionary was absent from
-that snapshot, so the linker was inactive. Reassembly with the linker running but the
-dictionary removed reproduced the corpus hash byte for byte (pre-check P-1), so the two arms differ
-only in the resource bundle. In arm O′ the dictionary applied. The mean number of ontology concepts
+upstream correction. There are two arms. Arm O ran the pre-correction resource bundle and arm O′
+the post-correction bundle through the same pipeline. A resource bundle consists of the ontology,
+the surface-form dictionary, and the concept mapping. Documents, code, retrieval settings, weights,
+splits, and the sealed qrel all remained frozen, and the performance conditions ran only after the
+seven eligibility items and the leakage audit had passed. The mean number of ontology concepts
 linked to each existing patent document rose from 1.545 to 3.779 (2.4×). This metric measures
-document-to-concept linking density, not the T-Box class count. The number of distinct concepts
-linked at least once across the corpus grew from 141 to 199, and the linker created 128,875 new
-links. T-Box classes remained at 103, and both arms retained the same 40,552 documents. The two arms
-therefore established, for the first time, conditions that differed only in the resource bundle.
-Documents, code, retrieval settings, weights, splits, and the sealed qrel all remained frozen. Every
-prespecified resource-side quantity indicator increased, and formal validation L0–L3 passed in full.
-We then fed the new resource into the same pipeline and measured again.
-
-The scope of the freeze is every input to the acceptance rule; the list and the time of each freeze
-are in the preregistration chronology
-([S6](../../supplementary/en/S6-preregistration-crosswalk.md) §5). Only the resource bundle
-therefore differs between the two runs (§4.5).
-
-Eligibility screening asks whether a verdict is admissible; it is not the verdict itself. If any of
-its seven items fails, we report the run as untested rather than running the performance conditions.
-Recording such a failure as a rejection would place an inadmissible run in the verdict record. In
-this screening the delta was classified as a T-Box delta and five files had changed. Six pre-checks
-also passed. All seven ranking runs of the two arms reproduced the earlier runs byte for byte, which
-confirms the determinism of the retrieval pipeline by execution. The document set was identical at
-40,552 rows in both arms, and the leakage audit reported zero violations across its four layers. T1
-is valid only when the leakage audit passes, so that confirmation is a precondition of the verdict.
+document-to-concept linking density, not the T-Box class count. Under those conditions every
+prespecified resource-side quantity indicator increased, and formal validation L0–L3 passed in
+full. The snapshot, triple, vocabulary, and link counts, the freeze list, the screening items, and
+the reproduction checks are in
+[S9-T3](../../supplementary/en/S9-retrieval-evaluation-detail.md#s9-t3--delta-counts-and-eligibility-screening-of-the-controlled-resource-substitution).
 
 {{TABLE:5}}
 

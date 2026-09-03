@@ -28,6 +28,7 @@ hand.
 | [S8-T1](S8-second-domain-port.md#s8-t1--release-lineage-and-operational-cost) | Release lineage and operational cost of resource 2 | §5.5 |
 | [S9-T1](S9-retrieval-evaluation-detail.md#s9-t1--complete-subgroup-and-ablation-results) | Subgroup and ablation results | §5.3.2 |
 | [S9-T2](S9-retrieval-evaluation-detail.md#s9-t2--exploratory-baselines-and-original-sample-summary) | Exploratory baselines and original-sample summary | §5.3.1 |
+| [S9-T3](S9-retrieval-evaluation-detail.md#s9-t3--delta-counts-and-eligibility-screening-of-the-controlled-resource-substitution) | Delta counts, eligibility screening, and reproduction checks of the controlled resource substitution | §5.2 |
 
 `S4` is a retired number and is not reused.
 
