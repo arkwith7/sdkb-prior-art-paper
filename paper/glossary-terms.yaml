@@ -114,7 +114,24 @@ terms:
     en: concepts per document
     aliases_ko: [문서당 개념]
     define_in: "§1"
-    gloss: 온톨로지 링커가 한 문서에 붙인 개념 IRI 의 평균 수 — 자원 층 지표의 대표 예
+    gloss: 기존 문서 한 건에 연결된 온톨로지 개념 IRI의 평균 수. T-Box 클래스 수나 코퍼스 문서
+      수가 아니라 문서–개념 연결 밀도를 측정한다
+
+  - id: task-extensible
+    category: concept
+    ko: 태스크 확장형
+    en: task-extensible
+    define_in: "§1"
+    gloss: 공유 T-Box와 기존 식별자를 공통 기반으로 유지하면서 태스크별 클래스·관계·제약·역량질문·
+      A-Box 인스턴스를 추가할 수 있는 성질. T-Box 불변이나 태스크 성능 검증을 뜻하지 않는다
+
+  - id: task-semantic-regression
+    category: concept
+    ko: 태스크 의미 회귀
+    en: task-semantic regression
+    define_in: "§1"
+    gloss: 변경이 형식 검증 L0–L3를 모두 통과하였지만 봉인된 하류 평가에서 태스크 수준의 기능이
+      저하되는 현상
 
   - id: deep-recall
     category: concept
@@ -128,7 +145,8 @@ terms:
     ko: 교차 태스크 회귀
     en: cross-task regression
     define_in: "§1"
-    gloss: 한 태스크를 위한 변경이 다른 태스크의 질의 경로를 훼손하는 현상
+    gloss: 특정 태스크를 위해 도입한 변경이 공유 어휘를 사용하는 다른 태스크의 질의 경로나 기능을
+      훼손하는 현상. 첫 태스크의 실제 성능 향상을 성립 조건으로 요구하지 않는다
 
   - id: eligibility-screening
     category: concept
@@ -142,13 +160,33 @@ terms:
     ko: 통제된 자원 교체
     en: controlled resource substitution
     define_in: "§3"
-    gloss: 문서집합·코드·설정·분할을 전부 동결하고 온톨로지 번들만 교체하는 비교
+    gloss: 문서집합·검색 코드·설정·가중치·분할·봉인 qrel을 동결하고 온톨로지·표면형 사전·
+      문서–개념 매핑으로 구성된 자원 번들만 교체하는 비교. 번들 내부 구성요소의 단독 효과는
+      식별하지 않는다
 
   - id: cross-layer-misalignment
     category: concept
     ko: 층간 지표 불일치
     en: cross-layer metric misalignment
     define_in: "§1"
+    gloss: 한 평가 층의 지표가 다음 층의 성능을 대표하지 못하는 관측 관계. 층 사이의 성능 저하
+      원인을 특정하는 인과 개념이 아니다
+
+  - id: observed-positive
+    category: concept
+    ko: 관측된 양성
+    en: observed positive
+    define_in: "§2.1"
+    gloss: 질의에 대하여 심사관 기록에서 인용이 확인된 개별 문헌. 인용되지 않은 문헌은 비적합이
+      아니라 미관측 상태이다
+
+  - id: examiner-weak-ground-truth
+    category: concept
+    ko: 심사관 검증 약한 정답
+    en: examiner-validated weak ground truth
+    define_in: "§2.1"
+    gloss: 관측된 양성을 질의별로 모은 불완전한 정답 집합. 검증은 인용 사실의 감사 가능성을 뜻하며
+      모든 법적 관련 문헌의 적합성 확인을 뜻하지 않는다
 
   # PLAN-067 신설 둘. 이식 판정의 결과를 읽는 데 필요한 개념어이며, 정의 없이 쓰면 검출 0 이
   # "게이트가 놓쳤다" 로 읽힌다 — 이 두 낱말이 그 오독을 막는 자리에 서 있다.
@@ -164,7 +202,8 @@ terms:
     ko: 이식 계층 분리
     en: port-layer separation
     define_in: "§6.4"
-    gloss: 게이트의 기제는 자원에 의존하지 않으나 명세는 대상 자원의 표현 관습과 관찰면에 재접지해야 한다는 설계원리(DP7)
+    gloss: 게이트의 기제와 대상별 명세를 분리하고, 명세는 대상 자원의 표현 관습과 관찰면에
+      재접지해야 한다는 후속 가설. 근거는 이식 사례 1건에 한정된다
 
   # ───────── (나) standard — 정보검색·통계·온톨로지 표준 용어 ─────────
   - id: qrel

@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Conventional resource-level evaluation does not establish whether a formally valid ontology change preserves downstream task performance, especially when several tasks share a vocabulary. We present the Semiconductor Domain Knowledge Base (SDKB), which supports three task-specific views on a shared schema, and a task-aware release gate. The gate augments four formal validation layers with retrieval non-inferiority, a subgroup guardrail, and cross-task competency-question non-regression. We evaluated the artifacts through controlled resource substitution, holdout fault injection, two non-overlapping 198-query retrieval splits, and a port to a building-metadata ontology. A real change increased concepts per document 2.4-fold and passed every formal layer but reduced family Recall@100 by 0.0293 (95% CI [−0.0542, −0.0053]); the gate rejected it. Resource-layer indicators thus failed to represent next-layer performance, and the same mismatch appeared within the retrieval layer. The preregistered composite prediction held in neither retrieval split, and although family-level Recall@100 improved in both (+0.0534 and +0.0343), neither the prespecified configuration nor nDCG@20 improved. The cross-task condition alone detected 12 of 45 faults missed by both the focal-task and retrieval checks, and false positives among 27 sound deltas were 0. The separation pins down attribution between layers, not overall detection strength. On the second ontology, the procedure ran unchanged and accepted all 30 sound deltas, but the frozen fault specification detected none of 12 adjudicable faults. The procedure transferred, whereas the specification required regrounding. The evidence is limited to one domain, one rejected change whose causal component could not be isolated, and an evaluation without expert relevance judgments.
+Formal ontology validation does not establish whether a change preserves downstream performance when tasks share a vocabulary. We present the Semiconductor Domain Knowledge Base (SDKB), with three task views on a shared T-Box, and a task-aware release gate. The gate combines four formal layers with retrieval non-inferiority, subgroup, and cross-task conditions. We evaluated it through controlled resource substitution, holdout fault injection, two disjoint 198-query retrieval splits, and a port to a building-metadata ontology. The substituted bundle comprised the ontology, surface-form dictionary, and document-to-concept mappings. Mean concepts linked per patent document rose from 1.545 to 3.779 (2.4-fold). This measures mapping density, not growth in T-Box classes or documents. Although the change passed all formal layers, it reduced family Recall@100 by 0.0293 (95% CI [−0.0542, −0.0053]) and did not meet the preregistered T1 criterion; the gate rejected it. For this change, resource indicators did not represent next-layer performance. The preregistered composite prediction held in neither retrieval split. Family-level Recall@100 improved in both (+0.0534 and +0.0343), but neither the prespecified configuration nor nDCG@20 improved. The cross-task condition alone detected 12 of 45 faults missed by the focal-task and retrieval checks, with 0 false positives among 27 sound deltas. This separation supports attribution between layers, not overall detection strength. On the second ontology, the procedure accepted 30 sound deltas, but the frozen specification detected none of 12 adjudicable faults. The procedure transferred, whereas the specification required regrounding. Evidence is confined to one domain, one rejection with unseparated causal components, and no expert relevance judgments.
 
 **Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
@@ -15,7 +15,7 @@ uses.
 
 | Symbol | Meaning (where defined) |
 |---|---|
-| A-Box | assertional box — the instance layer of an ontology (§3.1) |
+| A-Box | assertions about individual entities and their relations (§1 and §3.1) |
 | A1–A8 | ablation conditions; A8 is the negative control (§4.4) |
 | ART-1 / ART-2 | research artifacts — the SDKB ontology dataset / release acceptance gate (§3) |
 | E1 | the evaluation environment — the multi-layer benchmark (§4) |
@@ -36,7 +36,7 @@ uses.
 | RRF | reciprocal rank fusion |
 | SHACL | Shapes Constraint Language |
 | SPARQL | SPARQL Protocol and RDF Query Language |
-| T-Box | terminological box — the schema layer of an ontology (§3.1) |
+| T-Box | declarations of classes, properties, and axioms (§1 and §3.1) |
 | T1–T4 | the task conditions — retrieval non-inferiority, subgroup non-regression guardrail, cross-task CQ non-regression, downstream generation-layer non-regression (§3.5) |
 | \(\epsilon\), \(\delta\) | the non-inferiority margin 0.02 and the subgroup drop limit 0.05 (§3.5) |
 
@@ -61,12 +61,13 @@ uses of the same knowledge, sharing a vocabulary of processes, devices, material
 organizations. **SDKB** (Semiconductor Domain Knowledge Base) is a semiconductor domain ontology
 dataset that grew by taking on these three requirements in turn.
 
-**Task-extensible** here denotes a property. Per-task assets can be added without damaging the
-existing structure, while the shared schema (T-Box) and the identifiers are preserved. Per-task
-assets are the classes, relations, constraints, competency questions (CQs) and instances (the
-A-Box) that a task requires. The property does not imply that one ontology performs equally well on
-every task. What an ontology can represent and how far its performance has been verified must
-therefore be described separately.
+The T-Box declares classes, properties, and axioms. The A-Box asserts the types of individual
+entities and the relations among them. **Task-extensible** means that task-specific assets can be
+added while the shared T-Box and existing identifiers remain a common foundation. These assets are
+the classes, relations, constraints, competency questions (CQs), and A-Box instances a task needs.
+The property does not mean that the T-Box remains unchanged: new classes, relations, and constraints
+may extend it. Nor does it imply equal performance across tasks. Representational scope and verified
+task performance must therefore be reported separately.
 
 Among the three tasks, prior-art retrieval sits at the front end of research and development and
 is also open to quantitative measurement. Pre-filing novelty and inventive-step judgments and the
@@ -82,10 +83,11 @@ validation have nevertheless developed with little reference to each other (§2)
 ontology-side checks does not guarantee retrieval performance.
 
 This mismatch between ontology checks and task performance takes two forms. First, a change can
-pass the four conventional layers of ontology change validation — freshness, structure, logic and
-function (L0–L3) — and still degrade retrieval on a sealed evaluation set. We call this
-**task-semantic regression**. Second, where one vocabulary supports three tasks, a change that
-favors one task can damage the query paths of another. Merging two similar concepts to raise
+pass the four conventional layers of ontology change validation — freshness, structure, logic, and
+function (L0–L3) — and still degrade retrieval on a sealed downstream evaluation set. We call this
+task-level functional degradation **task-semantic regression**. Second, where one vocabulary
+supports three tasks, a change introduced for one task can impair another task's query paths or
+functions. Merging two similar concepts to raise
 recall, for instance, degrades the ability to discriminate `Skill` in expert matching. We call this
 **cross-task regression**.
 
@@ -99,11 +101,14 @@ industry, and that is what makes approval by formal validation alone fragile.
 
 The two regressions escape detection for one reason. Whoever edits an ontology usually observes
 resource-side indicators: growth of the vocabulary, or **concepts per document**, the mean number of
-ontology concepts linked to one document. By **resource** we mean the dataset in the state before it
-enters an application, comprising the T-Box, the A-Box, and the document-to-concept links.
+ontology concepts linked to one existing document. This metric measures neither the number of T-Box
+classes nor the number of documents in the corpus. By **resource** we mean the dataset before it
+enters an application. In the controlled substitution, the resource bundle comprises the ontology,
+the surface-form dictionary, and the document-to-concept mappings.
 Evaluation, however, has three layers: resource, retrieval, and generation (§2.3). We call it
 **cross-layer metric misalignment** when an indicator at one layer does not represent performance at
-the next. Whether it does so cannot be known before measurement, so resource-layer checks alone
+the next. The term describes an observed relation between layers; it does not identify the cause of
+degradation. Whether the indicator is representative cannot be known before measurement, so resource-layer checks alone
 observe neither regression.
 
 This study therefore asks a single question. When an ontology dataset representing
@@ -186,13 +191,15 @@ strands: lexical ranking functions, patent-specific semantic representations (Be
 Ghosh et al., 2024), and citation-network signals (Mahdabi & Crestani, 2014). The stronger systems
 do not rely on a single representation (Krestel et al., 2021; Shomee et al., 2025).
 
-An examiner citation is an **observed positive**, not complete ground truth. A cited document is a
+One examiner citation is an individual **observed positive**, not complete ground truth. A cited document is a
 relevance signal observed in institutional review, and one that is not cited is unobserved rather
 than non-relevant. Examiner citations and applicant citations differ in meaning (Alcácer &
 Gittelman, 2006), and the examiner search itself is bounded by time, classification, and
 jurisdiction (USPTO, 2023). Recall@K therefore measures the recovery of known positives, not the
-recovery of every legally relevant document. We call these labels **examiner-citation-based
-positive-only relevance judgments**. The score sheet that records which documents are relevant for each query is the list
+recovery of every legally relevant document. We call the incomplete set formed from these observed
+positives **examiner-validated weak ground truth**. Here, validated means that the citation can be
+audited against an examination record; it does not mean that every legally relevant document was
+identified. The score sheet that records which documents are relevant for each query is the list
 of **relevance judgments (qrel)**, and ours records relevant documents only; it is therefore
 **positive-only**.
 
@@ -402,8 +409,9 @@ faults. Each was adjudicated for the first time after the decision rule and thre
 frozen, and none was used to tune that rule.
 
 The effect of a real delta is measured by **controlled resource substitution**. Documents, retrieval
-code, settings, splits, and the sealed ground truth are all frozen, and only the ontology bundle is
-replaced. The difference between two runs can therefore arise only from the resource.
+code, settings, splits, and the sealed ground truth are all frozen. We replace only the resource
+bundle, which comprises the ontology, surface-form dictionary, and document-to-concept mappings.
+The difference between two runs can therefore arise only from the bundle.
 
 Real deltas divide further into three kinds. A **T-Box delta** changes the declaration of classes,
 predicates, or axioms. A **concept-layer delta** changes vocabulary, hierarchy, labels, or
@@ -1018,11 +1026,12 @@ it does not validate the accuracy of the three tasks. And the T-Box of G0, G1, a
 so pass-rate variation follows from how far the A-Box is populated. The numbers here therefore do
 not establish generation safety (§6.4).
 
-## 5.2 Improved resource indicators and an actual rejection by the retrieval condition (EP3)
+## 5.2 Increased document-concept linking and an actual rejection by the retrieval condition (EP3)
 
-The performance condition T1 rejected a change that passed all four formal layers and improved every
-resource-side indicator. This is the record of the acceptance rule of §3.5 rejecting a real delta,
-and it shows that formal validation cannot stand in for the task conditions.
+The performance condition T1 rejected a change that passed all four formal layers and increased
+every prespecified resource-side quantity indicator. This is a recorded rejection of a real delta
+under the acceptance rule in §3.5. It shows that formal validation cannot stand in for the task
+conditions.
 
 This section reports a verdict under a separate preregistration, and its resource snapshot is a
 post-correction generation. It therefore does not change the confirmatory verdicts of §5.3, and the
@@ -1038,12 +1047,15 @@ produced, and both run records point to the same code commit. All seven items of
 the delta was classified as a T-Box delta (§3.0). In arm O the concept dictionary was absent from
 that snapshot, so the linker was inactive. Reassembly with the linker running but the
 dictionary removed reproduced the corpus hash byte for byte (pre-check P-1), so the two arms differ
-only in the resource bundle. In arm O′ the dictionary applied and concepts per document rose from
-1.545 to 3.779 (2.4×). The concept vocabulary grew from 141 to 199, and 128,875 new links were
-created. Two conditions differing only in the resource bundle were thus established for the first
-time, with documents, code, retrieval settings, weights, splits, and the sealed qrel all frozen. In
-that state every resource-side indicator improved and formal validation L0–L3 passed in full. We
-then fed the new resource into the same pipeline and measured again.
+only in the resource bundle. In arm O′ the dictionary applied. The mean number of ontology concepts
+linked to each existing patent document rose from 1.545 to 3.779 (2.4×). This metric measures
+document-to-concept linking density, not the T-Box class count. The number of distinct concepts
+linked at least once across the corpus grew from 141 to 199, and the linker created 128,875 new
+links. T-Box classes remained at 103, and both arms retained the same 40,552 documents. The two arms
+therefore established, for the first time, conditions that differed only in the resource bundle.
+Documents, code, retrieval settings, weights, splits, and the sealed qrel all remained frozen. Every
+prespecified resource-side quantity indicator increased, and formal validation L0–L3 passed in full.
+We then fed the new resource into the same pipeline and measured again.
 
 The scope of the freeze is every input to the acceptance rule; the list and the time of each freeze
 are in the preregistration chronology
@@ -1121,9 +1133,11 @@ the verdict. The interval excludes zero, and its upper bound is also negative at
 interval nevertheless crosses the non-inferiority margin of −0.02. What this sample established is
 not that the degradation exceeded the margin, but that it could not be shown to lie within it.
 
-This case exhibits cross-layer metric misalignment directly. Every indicator observable at the
-resource layer moved in one direction. Vocabulary grew, concepts per document rose 2.4-fold, and
-links were created in bulk. Those are the indicators visible to whoever edits the ontology, so from
+This case exhibits cross-layer metric misalignment directly. Every quantity indicator observable at
+the resource layer moved in one direction. The linked concept vocabulary grew, concepts linked per
+document rose 2.4-fold, and links were created in bulk. These values capture expanded concept
+mapping over existing documents, not growth in T-Box classes. Those are the indicators visible to
+whoever edits the ontology, so from
 the resource layer alone this change is an evident improvement. The retrieval metric one layer down
 moved the other way. For this change, the resource-layer indicators did not represent the
 performance of the next layer. This is why we place the acceptance condition at the layer of use
@@ -1384,8 +1398,10 @@ only within the top 1,000 of the text baseline (§4.3), so a document the text s
 nominate cannot be recovered by any ontology feature. Queries whose vocabulary does not overlap are
 exactly the queries whose candidate set is impoverished (baseline R@100 of 0.1975 in the low-overlap
 subgroup against 0.4685 in the high-overlap subgroup). The observed pattern therefore does not mean
-that the ontology is semantically powerless; it exposes the **reranking ceiling**, the performance
-limit that arises from not enlarging the candidate set.
+that the ontology is semantically powerless. It exposes the **reranking ceiling**. This limit arises
+when the fixed-candidate reranking architecture cannot enlarge the candidate set.
+This is a limit of our candidate-generation and reranking design, not a theoretical limit of the
+ontology itself.
 
 The value of an ontology combined by reranking lies not in resolving lexical mismatch. It lies in
 raising, into the review depth, documents that share the same technical concepts among the
@@ -1450,7 +1466,7 @@ generalized automatically to review efficiency or to the quality of generated an
 runs in that direction, but whether the failure arose from absence of transfer or from insufficient
 power is not separated (the width of the failure is in Table 7). The hypothesis weakens if
 improvements in retrieval metrics transfer consistently to review counts or generation quality. The
-second is **port-layer separation**. When an acceptance gate is moved to another resource, the
+second follow-up hypothesis is **port-layer separation**. When an acceptance gate is moved to another resource, the
 mechanism — the layer structure, the decision rule, and the execution — transfers. The
 specification — the delta constraints, the fault definitions, and the competency questions — must
 instead be regrounded on the representational conventions and the instance observable surface of the target

@@ -12,7 +12,22 @@
 
 평가는 다섯 에피소드로 수행하였다. 첫째는 SHACL과 역량질문 31개에 의한 표현 감사이고, 둘째는 아직 판정한 적 없는 결함 45건에 대한 홀드아웃 결함주입이다. 셋째는 문서집합·코드·설정을 전부 동결하고 자원 번들만 교체한 통제된 자원 교체이다. 넷째는 거절 특허 1,000건과 심사관 인용을 부분 정답으로 사용한 누출 통제 검색 비교이며, 겹치지 않는 확증 분할 2개(각 198질의)에서 수행하였다. 다섯째는 형식 층과 교차 태스크 층을 제2 공학 온톨로지(건물 메타데이터)에 이식하여 동일 절차로 판정한 이식 평가이다.
 
-주요 결과는 넷이며 넷은 하나의 논증을 이룬다. 첫째, 자원 교체에서는 문서당 개념 수를 2.4배로 증가시키고 형식 검증 네 층을 모두 통과한 실제 변경이 검색 회수를 저하시켰다(family Recall@100 −0.0293, 95% CI [−0.0542, −0.0053]). 자격을 갖춘 변경 1건에 대하여 조건 T1은 그 변경을 거부하였다. 이는 형식 검증이 놓치는 회귀를 태스크 조건이 검출한 실증 사례이다. 둘째, 이 거부가 필요한 이유는 자원 층의 지표가 다음 층의 성능을 대표하지 못한 데 있으며, 같은 불일치는 검색 층 안에서도 관측되었다. 온톨로지·한정요소 재순위화는 family-level Recall@100을 두 분할 모두에서 개선하였다(+0.0534 · +0.0343). 다만 사전 지정한 주 구성은 유의에 이르지 못하였고 상위 정렬(nDCG@20)은 개선되지 않았다. 셋째, 판정 규칙을 동결한 채 홀드아웃 결함주입을 수행하였다. 주 태스크 검사와 검색 검사가 모두 놓친 교차 결함 45건 가운데 12건을 조건 T3이 단독으로 검출하였다. 정상 변경 27건에 대한 오경보는 0건이었다. 이 12건은 층 사이의 귀속을 특정하며 게이트 전체의 검출력을 늘리지 않는다. 넷째, 이식한 두 층은 코드 변경 없이 실행되어 정상 변경 30건을 하나도 거부하지 않았다. 다만 동결한 결함 명세는 판정 가능한 12건에서 교차 결함을 검출하지 못하였다. 곧 이 한 건의 이식에서 절차는 이전되었고 결함 명세는 이전되지 않았다.
+주요 결과는 넷이며 넷은 하나의 논증을 이룬다. 첫째, 온톨로지·표면형 사전·문서–개념
+매핑으로 구성된 자원 번들을 교체하였다. 기존 특허 문서 한 건에 연결된 온톨로지 개념의 평균은
+1.545개에서 3.779개로 증가하였다(2.4배). 이 수치는 T-Box 클래스 수가 아니라 문서–개념 연결
+밀도의 변화이다. 해당 변경은 형식 검증 네 층을 모두 통과하였지만, family-level Recall@100은
+0.0293 감소하였다(95% CI [−0.0542, −0.0053]). 조건 T1은 이 변경을 사전 지정 비열등 기준을
+충족하지 못한 것으로 판정하였다. 따라서 게이트는 승인을 거부하였다. 이는 형식 검증이 놓치는
+회귀를 태스크 조건이 검출한 실증 사례이다. 둘째, 이 거부가 필요한 이유는 자원 층의 지표가 다음 층의 성능을
+대표하지 못한 데 있으며, 같은 불일치는 검색 층 안에서도 관측되었다. 온톨로지·한정요소
+재순위화는 family-level Recall@100을 두 분할 모두에서 개선하였다(+0.0534 · +0.0343). 다만
+사전 지정한 주 구성은 유의에 이르지 못하였고 상위 정렬(nDCG@20)은 개선되지 않았다. 셋째,
+판정 규칙을 동결한 채 홀드아웃 결함주입을 수행하였다. 주 태스크 검사와 검색 검사가 모두 놓친
+교차 결함 45건 가운데 12건을 조건 T3이 단독으로 검출하였다. 정상 변경 27건에 대한 오경보는
+0건이었다. 이 12건은 층 사이의 귀속을 특정하며 게이트 전체의 검출력을 늘리지 않는다. 넷째,
+이식한 두 층은 코드 변경 없이 실행되어 정상 변경 30건을 하나도 거부하지 않았다. 다만 동결한
+결함 명세는 판정 가능한 12건에서 교차 결함을 검출하지 못하였다. 곧 이 한 건의 이식에서 절차는
+이전되었고 결함 명세는 이전되지 않았다.
 
 본 연구는 이 평가로부터 한 층 아래 승인, 교차 태스크 감시, 후보생성 분리라는 교훈 셋을 후속 연구가 검정할 가설의 형태로 제시한다. 한계도 명확하다. 태스크 성능을 측정한 대상은 단일 도메인이고, 승인 거부의 실제 사례는 1회이며, 그 원인이 자원에 있는지 점수 계산식에 있는지는 구분하지 못하였다. 전문가 관련성 판정은 수행하지 않았으며, 그 취약도는 계량하고 외생 라벨로 부분 축소하였다. 다국어 융합 기준선을 별도 점검으로 추가하였으나 기준선 강도는 유의하게 변하지 않았다. 질의는 이미 온톨로지에 등재된 특허로 한정되므로, 자유 텍스트 질의를 처리하는 텍스트–개념 매핑 단계와 결손 아홉의 해소 명세는 후속 과제로 제시한다.
 
@@ -20,7 +35,7 @@
 
 ## Abstract
 
-Conventional resource-level evaluation does not establish whether a formally valid ontology change preserves downstream task performance, especially when several tasks share a vocabulary. We present the Semiconductor Domain Knowledge Base (SDKB), which supports three task-specific views on a shared schema, and a task-aware release gate. The gate augments four formal validation layers with retrieval non-inferiority, a subgroup guardrail, and cross-task competency-question non-regression. We evaluated the artifacts through controlled resource substitution, holdout fault injection, two non-overlapping 198-query retrieval splits, and a port to a building-metadata ontology. A real change increased concepts per document 2.4-fold and passed every formal layer but reduced family Recall@100 by 0.0293 (95% CI [−0.0542, −0.0053]); the gate rejected it. Resource-layer indicators thus failed to represent next-layer performance, and the same mismatch appeared within the retrieval layer. The preregistered composite prediction held in neither retrieval split, and although family-level Recall@100 improved in both (+0.0534 and +0.0343), neither the prespecified configuration nor nDCG@20 improved. The cross-task condition alone detected 12 of 45 faults missed by both the focal-task and retrieval checks, and false positives among 27 sound deltas were 0. The separation pins down attribution between layers, not overall detection strength. On the second ontology, the procedure ran unchanged and accepted all 30 sound deltas, but the frozen fault specification detected none of 12 adjudicable faults. The procedure transferred, whereas the specification required regrounding. The evidence is limited to one domain, one rejected change whose causal component could not be isolated, and an evaluation without expert relevance judgments.
+Formal ontology validation does not establish whether a change preserves downstream performance when tasks share a vocabulary. We present the Semiconductor Domain Knowledge Base (SDKB), with three task views on a shared T-Box, and a task-aware release gate. The gate combines four formal layers with retrieval non-inferiority, subgroup, and cross-task conditions. We evaluated it through controlled resource substitution, holdout fault injection, two disjoint 198-query retrieval splits, and a port to a building-metadata ontology. The substituted bundle comprised the ontology, surface-form dictionary, and document-to-concept mappings. Mean concepts linked per patent document rose from 1.545 to 3.779 (2.4-fold). This measures mapping density, not growth in T-Box classes or documents. Although the change passed all formal layers, it reduced family Recall@100 by 0.0293 (95% CI [−0.0542, −0.0053]) and did not meet the preregistered T1 criterion; the gate rejected it. For this change, resource indicators did not represent next-layer performance. The preregistered composite prediction held in neither retrieval split. Family-level Recall@100 improved in both (+0.0534 and +0.0343), but neither the prespecified configuration nor nDCG@20 improved. The cross-task condition alone detected 12 of 45 faults missed by the focal-task and retrieval checks, with 0 false positives among 27 sound deltas. This separation supports attribution between layers, not overall detection strength. On the second ontology, the procedure accepted 30 sound deltas, but the frozen specification detected none of 12 adjudicable faults. The procedure transferred, whereas the specification required regrounding. Evidence is confined to one domain, one rejection with unseparated causal components, and no expert relevance judgments.
 
 **Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
@@ -42,7 +57,7 @@ Conventional resource-level evaluation does not establish whether a formally val
 | L0–L3 | 형식 검증 4층 — 신선도·무결성, SHACL 구조, 논리 일관성, CQ 기능 (§3.4) |
 | nDCG | normalized discounted cumulative gain — 상위 정렬 품질 (§4.5) |
 | SDKB / SHACL | Semiconductor Domain Knowledge Base / Shapes Constraint Language |
-| T-Box / A-Box | 스키마 어휘 / 인스턴스 단언 (§3.1) |
+| T-Box / A-Box | 클래스·속성·공리의 선언 / 개별 개체와 관계에 관한 단언 (§1·§3.1) |
 | T1–T4 | 태스크 조건 — 검색 비열등성 · 하위집단 비회귀 방호 · 교차 태스크 CQ 비회귀 · 하류 생성 층 비회귀 (§3.5) |
 | B0–B5 / P0–P2 | 비교 시스템 — 기준선 / 제안 시스템 (§4.3) |
 | A1–A8 | 절제(ablation) 조건 · A8은 음성 대조군 (§4.4) |
@@ -68,11 +83,13 @@ Conventional resource-level evaluation does not establish whether a formally val
 관점이다. **SDKB**(Semiconductor Domain Knowledge Base)는 이 세 요구를 차례로 수용하며 성장한
 반도체 도메인 온톨로지 데이터셋이다.
 
-여기서 **태스크 확장형(task-extensible)** 이란 공유 스키마(T-Box)와 식별자를 유지한 채
-태스크별 자산을 기존 구조의 훼손 없이 추가할 수 있다는 성질이다. 태스크별 자산이란 그 태스크에
-필요한 클래스·관계·제약·역량질문(competency question, CQ)과 인스턴스(A-Box)를 가리킨다. 이는 하나의 온톨로지가 모든 태스크에서 동일한
-성능을 낸다는 의미가 아니다. 따라서 온톨로지가 표현할 수 있는 범위와 성능이 검증된 정도는
-구분하여 기술해야 한다.
+T-Box는 클래스·속성·공리의 선언을, A-Box는 개별 개체의 유형과 개체 사이 관계에 관한 단언을
+가리킨다. 여기서 **태스크 확장형(task-extensible)** 이란 공유 T-Box와 기존 식별자를 공통 기반으로
+유지하면서 태스크별 자산을 추가할 수 있다는 성질이다. 태스크별 자산은 그 태스크에 필요한
+클래스·관계·제약·역량질문(competency question, CQ)과 A-Box 인스턴스이다. 따라서 태스크 확장형은
+T-Box가 변경되지 않는다는 뜻이 아니다. 새 클래스·관계·제약을 추가하더라도 공유 식별자와 기존
+구조가 유지된다는 뜻이다. 또한 하나의 온톨로지가 모든 태스크에서 동일한 성능을 낸다는 의미도
+아니다. 따라서 온톨로지가 표현할 수 있는 범위와 성능이 검증된 정도는 구분하여 기술해야 한다.
 
 세 태스크 가운데 선행기술 검색은 연구개발의 전단에 위치하면서 정량 측정에도 적합하다. 출원 전
 신규성·진보성 판단과 조사 보고서 작성이 이 태스크에 의존하며, 심사관이 실제로 인용한 문헌이라는
@@ -85,11 +102,11 @@ Conventional resource-level evaluation does not establish whether a formally val
 온톨로지 품질 검증은 서로를 거의 참조하지 않은 채 발전해 왔으며(§2), 온톨로지 측 검사의 통과가
 검색 성능을 보장하지는 않는다.
 
-온톨로지 검사와 태스크 성능의 이러한 불일치는 두 형태로 나타난다. 첫째, 온톨로지 변경 검사의
-통상적인 네 층(신선도·구조·논리·기능 · L0–L3)을 모두 통과하고도 봉인된 평가셋에서 검색 성능이
-저하될 수 있다. 본 논문은 이 현상을 **태스크 의미 회귀(task-semantic regression)** 라 정의한다.
-둘째, 하나의 어휘 체계가 세 태스크를 함께 지탱하는 경우 한 태스크에 유리한 변경이 다른 태스크의
-질의 경로를 훼손할 수 있다. 예컨대 회수를 높이기 위해 유사한 두 개념을 통합하면 전문가 매칭에서
+온톨로지 검사와 태스크 성능의 이러한 불일치는 두 형태로 나타난다. 첫째, 온톨로지 변경이
+신선도·구조·논리·기능의 네 검증 층(L0–L3)을 모두 통과하고도 봉인된 하류 평가셋에서 검색 성능이
+저하될 수 있다. 본 논문은 이러한 태스크 수준의 기능 저하를
+**태스크 의미 회귀(task-semantic regression)** 라 정의한다. 둘째, 하나의 어휘 체계가 세 태스크를 함께 지탱하는 경우 특정 태스크를
+위해 도입한 변경이 다른 태스크의 질의 경로나 기능을 훼손할 수 있다. 예컨대 회수를 높이기 위해 유사한 두 개념을 통합하면 전문가 매칭에서
 `Skill` 을 변별하는 능력이 저하된다. 본 논문은 이 현상을 **교차 태스크 회귀(cross-task regression)** 라
 정의한다.
 
@@ -101,11 +118,14 @@ Conventional resource-level evaluation does not establish whether a formally val
 아니며, 형식 검증만으로 승인하는 절차가 취약해지는 이유가 여기에 있다.
 
 두 현상이 검출되지 않는 이유는 같다. 온톨로지를 수정하는 주체는 대개 자원 측 지표, 곧 어휘의
-증가나 **문서당 개념 수(concepts per document)**, 곧 문서 하나에 연결된 온톨로지 개념의 평균
-개수를 관찰한다. 여기서 **자원(resource)** 은 응용에 투입되기 이전 상태의 데이터셋
-전체(T-Box·A-Box·문서–개념 링크)를 가리킨다. 그러나 평가에는 자원 층·검색 층·생성 층의 세 층이
+증가나 **문서당 개념 수(concepts per document)**, 곧 기존 문서 하나에 연결된 온톨로지 개념의
+평균 개수를 관찰한다. 이 지표는 T-Box의 클래스 수나 코퍼스의 문서 수를 측정하지 않는다. 여기서
+**자원(resource)** 은 응용에 투입되기 이전 상태의 데이터셋 전체를 가리킨다. 본 연구의 통제된
+교체에서 자원 번들은 온톨로지·표면형 사전·문서–개념 매핑으로 구성된다. 그러나 평가에는
+자원 층·검색 층·생성 층의 세 층이
 존재한다(§2.3). 한 층의 지표가 다음 층의 성능을 대표하지 못하는 현상을 본 논문은
-**층간 지표 불일치(cross-layer metric misalignment)** 라 부른다. 대표 여부는 측정하기 전에는 알 수 없으므로,
+**층간 지표 불일치(cross-layer metric misalignment)** 라 부른다. 이 용어는 층 사이의 관측 관계를
+기술하며 성능 저하의 원인을 특정하지 않는다. 대표 여부는 측정하기 전에는 알 수 없으므로,
 자원 층의 검사만으로는 두 회귀 모두 관측되지 않는다.
 
 따라서 본 연구가 제기하는 질문은 하나이다. 세 태스크를 표현하는 온톨로지 데이터셋이 성장할 때,
@@ -191,12 +211,14 @@ et al., 2024; Ghosh et al., 2024), 그리고 인용망 활용(Mahdabi & Crestani
 발전하였다. 성능이 높은 시스템일수록 단일 표현에 의존하지 않는다(Krestel et al., 2021; Shomee
 et al., 2025).
 
-여기서 심사관 인용은 완전한 정답이 아니라 **관측된 양성(observed positive)** 이다. 인용되지 않은
-문헌은 부적합이 아니라 미관측(unobserved) 상태에 있으며, 심사관 인용과 출원인 인용(applicant
+여기서 심사관 인용 한 건은 완전한 정답이 아니라 개별 **관측된 양성(observed positive)** 이다.
+인용되지 않은 문헌은 부적합이 아니라 미관측(unobserved) 상태에 있으며, 심사관 인용과 출원인 인용(applicant
 citation)은 의미가 다르고(Alcácer & Gittelman, 2006) 심사관의 검색 자체도 시간·분류·관할의
 제약을 받는다(USPTO, 2023). 그러므로 Recall@K가 측정하는 것은 알려진 양성의 회수 비율이며, 모든
-법적 관련 문헌의 회수율이 아니다. 이하에서 본 논문은 이 정답을
-**심사관 검증 약한 정답(examiner-validated weak ground truth)** 이라 지칭한다. 질의마다 어느
+법적 관련 문헌의 회수율이 아니다. 본 논문은 관측된 양성을 질의별로 모은 불완전한 정답 집합을
+**심사관 검증 약한 정답(examiner-validated weak ground truth)** 이라 지칭한다. 여기서 검증은
+인용 사실을 심사 기록으로 확인할 수 있다는 뜻이며, 모든 관련 문헌의 법적 적합성을 확인하였다는
+뜻이 아니다. 질의마다 어느
 문헌이 적합인지를 적어 둔 채점표를 **적합성 판정 목록(relevance judgments, qrel)** 이라 하며, 본
 연구의 판정 목록은 적합만을 담으므로 **양성 전용(positive-only)** 이다.
 
@@ -378,8 +400,8 @@ non-regression)** 조건으로 통제한 릴리스 전 승인 설계가 없다. 
 처음 판정한 것으로 판정식을 조정하는 데 사용된 적이 없다.
 
 실제 델타의 효과는 **통제된 자원 교체(controlled resource substitution)** 로 측정한다. 문서집합·
-검색 코드·설정·분할·봉인된 정답을 전부 동결하고 온톨로지 번들만 교체하여, 두 실행의 차이가 자원의
-차이에서만 비롯되게 하는 비교이다.
+검색 코드·설정·분할·봉인된 정답을 전부 동결한다. 그 상태에서 온톨로지·표면형 사전·문서–개념
+매핑으로 구성된 자원 번들만 교체하여 두 실행의 차이가 번들의 차이에서만 비롯되게 한다.
 
 실제 델타는 다시 세 유형으로 구분된다. **T-Box 델타**는 클래스·술어·공리의 선언이 바뀐
 변경이다. **개념층 델타**는 어휘·계층·라벨·문서–개념 링크가 바뀐 변경이다. **A-Box 코퍼스
@@ -970,12 +992,13 @@ T3 단독 검출 ≥1 ∧ 단측 **맥니마 검정(McNemar test, McNemar)** *p*
 CQ 통과는 질의 경로와 비공집합 응답의 존재를 지시할 뿐 세 태스크의 정확도를 검증하지 않는다. 그리고 G0·G1·G2의 T-Box가 동일하고 통과율 변동은
 A-Box 인스턴스가 채워진 정도의 결과이므로, 본 절의 수치는 세대 안전성의 증거가 아니다(§6.4).
 
-## 5.2 자원 지표 향상과 검색 조건의 실제 거부 (EP3)
+## 5.2 문서–개념 연결 증가와 검색 조건의 실제 거부 (EP3)
 
 그림 7의 왼쪽 두 패널은 예시 1의 공정 노드에서 시작한 자원 변경이 검색 층에서 반대 방향으로
 움직인 실제 집계를 보인다.
 
-형식 검증 네 층을 전부 통과하고 자원 지표를 전부 향상시킨 변경을 성능 조건 T1이 거부하였다.
+형식 검증 네 층을 전부 통과하고 사전 지정 자원 측 수량 지표를 모두 증가시킨 변경을 성능 조건
+T1이 거부하였다.
 이는 §3.5의 승인식이 실제 델타를 거부한 기록이다. 곧 형식 검증은 태스크 조건을 대신할 수 없다.
 본 절은 별도 사전등록 아래의 판정이고 자원 스냅샷도 교정 후 세대이므로, §5.3의 확증 판정은 이
 절로 변경되지 않는다. 승인 안전성에 대한 판정은 §6.4에 있다.
@@ -988,9 +1011,13 @@ A-Box 인스턴스가 채워진 정도의 결과이므로, 본 절의 수치는 
 적격심사 일곱 항은 전부 통과하였으며 델타 유형은 T-Box 델타로 분류되었다(§3.0). O 군에서는
 개념 사전이 그 스냅샷에 없어 적용기가 무작동이었다. 적용기를 실행한 채 사전만 제거한 재조립이
 코퍼스 해시를 바이트 단위로 재현하였으므로(사전 점검 P-1), 두 군의 차이는 자원 번들뿐이다. O′
-군에서는 사전이 적용되어 문서당 개념이 1.545 → 3.779(2.4배)로 증가하였다. 개념 어휘는 141 →
-199로 늘었고 신규 링크 128,875건이 생성되었다. <!-- sig-history --> 곧 자원 번들만 교체한
-두 조건이 최초로 성립하였다. 문서집합·코드·검색 설정·가중치·분할·봉인 qrel은 전부 동결하였다. 그 조건에서 자원 측 지표는 전부 향상되었고 형식 검증 L0–L3도 전부 통과하였다.
+군에서는 사전이 적용되었다. 기존 특허 문서 한 건에 연결된 온톨로지 개념의 평균은 1.545개에서
+3.779개로 증가하였다(2.4배). 이 수치는 T-Box 클래스 수가 아니라 문서–개념 연결 밀도를 측정한다.
+코퍼스 전체에서 한 번 이상 연결된 서로 다른 개념은 141개에서 199개로 늘었고, 적용기는 신규
+링크 128,875건을 생성하였다. <!-- sig-history --> T-Box 클래스는 103개로 유지되었으며 평가
+문서도 두 군에서 40,552건으로 동일하였다. 따라서 자원 번들만 다른 두 조건이 최초로 성립하였다.
+문서집합·코드·검색 설정·가중치·분할·봉인 qrel은 전부 동결하였다. 그 조건에서 사전 지정 자원 측
+수량 지표는 모두 증가하였고 형식 검증 L0–L3도 전부 통과하였다.
 
 동결의 범위는 판정식의 입력 전량이며 그 목록과 동결 시점은 사전등록 연대기 표에
 있다([S6](../supplementary/S6-preregistration-crosswalk.md) §5). 그러므로 두 실행 사이에서 변한
@@ -1048,9 +1075,11 @@ T3(em·tf·core 통과율 1.000 유지)는 통과하였으며, 미충족 조건�
 음수이다. 다만 구간은 비열등 마진 −0.02를 가로지른다. 이 표본이 확정한 것은 저하폭이 마진을 초과하였다는
 사실이 아니라, 마진 안에 있음을 보이지 못하였다는 사실이다.
 
-이 사례는 층간 지표 불일치를 그대로 보여준다. 자원 층에서 관찰할 수 있는 지표는 방향이 하나로
-일치하였다. 어휘가 늘고 문서당 개념이 2.4배가 되었으며 링크가 대량으로 생성되었다. 온톨로지를
-수정하는 주체가 관찰하는 것이 바로 이 지표들이므로, 자원 층만 본다면 이 변경은 명백한 개선이다.
+이 사례는 층간 지표 불일치를 그대로 보여준다. 자원 층의 수량 지표는 방향이 하나로 일치하였다.
+코퍼스에 연결된 개념 어휘가 늘고 문서 한 건당 연결 개념이 2.4배가 되었으며 링크가 대량으로
+생성되었다. 이 값들은 T-Box 클래스 증가가 아니라 기존 문서에 대한 개념 매핑의 확대를 나타낸다.
+온톨로지를 수정하는 주체가 관찰하는 것이 바로 이 지표들이므로, 자원 층만 본다면 이 변경은
+명백한 개선이다.
 그러나 한 층 아래의 검색 지표는 반대 방향으로 움직였다. 곧 자원 층의 지표는 이 변경에 관한 한
 다음 층의 성능을 대표하지 못하였다. 이것이 본 연구가 승인 조건을 자원 층이 아니라 사용 층에 두는
 근거이며, 그 근거는 논증이 아니라 한 건의 관측이다.
@@ -1271,9 +1300,10 @@ A의 것을 승계하여 개봉 이전 커밋(`67568c8`)에 고정되어 있다.
 집중되었으며, 그 원인은 설계에 있다. 제안 순위 함수는 텍스트 기준선의 상위 1,000 안에서만
 재정렬하므로(§4.3), 텍스트가 후보로 올리지 못한 문서는 어떤 온톨로지 특징으로도 복구할 수 없다.
 어휘가 겹치지 않는 질의가 바로 그 후보 집합이 빈약한 질의이다(저중첩 기준선 R@100 = 0.1975 대
-고중첩 0.4685). 따라서 관측된 패턴은 온톨로지가 의미적으로 무력하다는 뜻이 아니라
-**재순위화 상한(reranking ceiling)**, 곧 후보 집합을 확대하지 못하여 발생하는 성능의 상한을
-드러낸 것이다. 온톨로지의 가치는 어휘 불일치의 해소가 아니라, 텍스트가 이미 회수한 후보 가운데
+고중첩 0.4685). 따라서 관측된 패턴은 온톨로지가 의미적으로 무력하다는 뜻이 아니다. 이 패턴은
+**재순위화 상한(reranking ceiling)** 을 드러낸다. 이는 현재의 고정 후보 재순위화 구조가 후보
+집합을 확대하지 못하여 발생하는 성능의 상한이다. 이는 온톨로지 자체의 이론적 상한이 아니라 본 연구의
+후보생성–재순위화 구조에서 생긴 한계이다. 온톨로지의 가치는 어휘 불일치의 해소가 아니라, 텍스트가 이미 회수한 후보 가운데
 같은 개념을 공유하는 문서를 검토 깊이 안으로 상승시키는 데 있다. 이 상한은 교차언어 축에서 가장
 크게 관측되었으며, 상한의 정량과 보조 논거는
 [S9](../supplementary/S9-retrieval-evaluation-detail.md)에 있다(§5.3.3).
@@ -1321,7 +1351,7 @@ L0–L3에서는 관측되지 않았다. 사전에 명시한 두 갈래는 특�
 **후속 가설 둘.** 위 결손 가운데 둘은 후속 연구가 검정할 가설의 형태로 진술할 수 있다. 첫째는
 전달 검증이며, 검색 지표의 개선을 검토 효율이나 생성 답변의 품질로 자동 일반화하지 않는다는
 명제이다. 본 연구의 판정은 이 방향을 지지하나 실패의 원인을 구분하지 못하였다(실패의 폭은 표 7).
-검색 지표의 개선이 검토 건수나 생성 품질로 일관되게 전달되면 이 가설은 약화된다. 둘째는
+검색 지표의 개선이 검토 건수나 생성 품질로 일관되게 전달되면 이 가설은 약화된다. 둘째 후속 가설은
 **이식 계층 분리(port-layer separation)** 이다. 승인 게이트를 다른 자원으로 옮길 때 층 구조와
 판정식, 실행으로 이루어진 기제는 이전된다. 반면 델타 제약과 결함 정의, 역량질문으로 이루어진
 명세는 대상 자원의 표현 관습과 인스턴스 관찰면에 재접지하여야 한다. 근거는 제2 자원에서 관측된 세

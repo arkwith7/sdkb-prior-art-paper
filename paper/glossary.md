@@ -32,9 +32,9 @@
 | 같은 발명의 다른 나라 출원을 한 건으로 세기 | 패밀리 단위 | **family-level** | `family_id`(DOCDB)와 구분해 쓴다 |
 | 심사관이 실제로 든 문헌 | 심사관 인용 | **examiner citation** | |
 | 출원인이 스스로 적어 낸 문헌 | 출원인 인용 | **applicant citation** | 둘을 `citation` 하나로 합치지 않는다 — 생성 과정이 다르다 |
-| 실제로 관측된 "맞다" 신호 | 관측된 양성 | **observed positive** | |
+| 실제로 관측된 "맞다" 신호 한 건 | 관측된 양성 | **observed positive** | 심사관 기록에서 인용이 확인된 개별 문헌 |
 | 인용되지 않았을 뿐 아닌 것은 아님 | 미관측 | **unobserved** | ⚠ 현재 원고는 `미관측(unknown)`으로 병기 — **`unknown`을 버리고 `unobserved`로 통일 권고**(D-1) |
-| 심사관 기록에 기댄 불완전한 정답 | 심사관 검증 약한 정답 | **examiner-validated weak ground truth** | 이미 원고에 병기됨 |
+| 관측된 양성을 질의별로 모은 불완전한 정답 집합 | 심사관 검증 약한 정답 | **examiner-validated weak ground truth** | `검증`은 인용 사실의 감사 가능성을 뜻하며 법적 관련성의 완전한 확인을 뜻하지 않음 |
 | "맞다"만 있고 "아니다"가 없는 채점표 | 양성 전용 qrel | **positive-only qrel** | |
 | 적합성 판정 목록 | qrel | **relevance judgments (qrel)** | 불변 표기 |
 | 아니라고 판정된 문헌의 집합 | 판정된 비적합 집합 | **judged non-relevant set** | bpref 배제 근거의 핵심어 |
@@ -61,6 +61,9 @@
 | 돌아간다는 것을 보여 주기 | 시연 | **demonstration** | |
 | **"쓸 수 있는가"가 아니라 "바꿔도 되는가"** | — | **"can it be used?" vs "may it be changed?"** | 논문의 캐치프레이즈 · 영문에서도 한 쌍으로 유지 |
 | 신선도·구조·논리·기능 네 가지 검사 | 형식 검증 L0–L3 | **formal validation (L0–L3)** | `verification`으로 흔들지 않는다 |
+| 공유 T-Box와 식별자를 유지하며 태스크별 자산을 추가하는 성질 | 태스크 확장형 | **task-extensible** | T-Box 불변이나 태스크 성능 검증을 뜻하지 않는다 |
+| 형식 검증을 통과한 변경의 하류 태스크 기능 저하 | 태스크 의미 회귀 | **task-semantic regression** | 실제 서비스 장애가 아니라 봉인된 하류 평가에서 관측한 성능 저하 |
+| 한 태스크를 위한 변경이 다른 태스크의 기능을 훼손하는 현상 | 교차 태스크 회귀 | **cross-task regression** | 첫 태스크의 실제 성능 향상은 성립 조건이 아니다 |
 
 ---
 
@@ -73,14 +76,14 @@
 | 어휘·링크·해상도를 보는 층 | 자원 층 | **resource layer** | §1.1에서 도입 |
 | 순위를 재는 층 | 검색 층 | **retrieval layer** | |
 | 찾은 문헌으로 답을 만드는 층 | 생성 층 | **generation layer** | |
-| 층마다 지표가 **어긋난다** | 층간 지표 불일치 | **cross-layer metric misalignment** | ⚠ 명사는 `misalignment` 하나로 고정. 동사로 풀 때만 `diverge`(D-4) |
+| 층마다 지표가 **어긋난다** | 층간 지표 불일치 | **cross-layer metric misalignment** | 층 사이의 관측 관계이며 원인을 특정하지 않는다. 명사는 `misalignment`, 동사로 풀 때만 `diverge`(D-4) |
 | 자원 자체만 보는 평가 | 내재적 평가 | **intrinsic evaluation** | 짝은 `extrinsic` |
 | 온톨로지를 실제 일에 꽂아 결과로 재는 평가 | 과제 기반 평가 | **task-based (application-based) evaluation** | 이미 원고에 병기됨 |
 | 여러 온톨로지 중 하나를 **고르는 잣대** | — | **selection criterion** | 계보 3단계의 1단 |
 | 승인식 안의 한 항 | 승인식의 항 | **term in the acceptance rule** | 수식의 term |
 | 승인식의 판정 대상이 되는 변경 | 자격 있는 델타 | **eligible delta** | T-Box 델타·개념층 델타 둘 · A-Box 코퍼스 델타는 제외 · 정의는 §3 (glossary-terms.yaml `eligible-delta`) |
 | 비교가 성립하는지 판정 **이전에** 보는 일곱 항 | 사전 적격심사 | **eligibility screening** | 미충족은 불통과가 아니라 **미검정**이다 |
-| 문서·설정을 다 고정하고 **자원만 갈아 끼우기** | 통제된 자원 교체 | **controlled resource substitution** | 작업 정본의 **DP4** · 투고본에서는 §4 서두의 방법론적 요구로 싣는다(S6 §4) |
+| 문서·코드·설정·가중치·분할·정답지를 고정하고 자원 번들만 교체하기 | 통제된 자원 교체 | **controlled resource substitution** | 번들은 온톨로지·표면형 사전·문서–개념 매핑으로 구성된다. 번들 내부 구성요소의 단독 효과는 식별하지 않는다 |
 | 성능이 떨어지지 않았는지 보는 검사 | 비열등성 검정 | **non-inferiority test** | T1의 정의 |
 | 다른 갈래가 뒷걸음치지 않았는지 | 교차 태스크 비회귀 | **cross-task non-regression** | T3의 정의 |
 
@@ -99,7 +102,7 @@
 | 데이터셋 판본을 해시로 붙잡는 것 | 고정 | **pin (pinned)** | ⚠ §4.3이 이미 둘을 구분한다 — 영문에서 합치지 않는다 |
 | 검색 층의 이득이 생성 층으로 옮겨가는지 | 전달 | **transfer** | C2′의 이름 · `propagation` 금지 |
 | 같은 실험을 다른 방식으로 **읽어내기** | 판독 | **readout** | "두 번째 벤치마크가 아니다"의 근거어 |
-| 재정렬 방식이 만드는 한계 | 천장 | **ceiling** | 첫 등장에 정의 1회: *재순위화가 후보 집합을 넓히지 못해 생기는 상한* |
+| 고정 후보 재순위화가 만드는 한계 | 재순위화 상한 | **reranking ceiling** | 후보생성–재순위화 구조의 한계이며 온톨로지 자체의 이론적 상한이 아니다 |
 | 해상도를 달리해 층층이 적은 도달성 표 | 도달성 사다리 | **reachability ladder** | 은유 유지 · 첫 등장에 위 정의를 반드시 붙인다 |
 | 방해문서까지 포함한 검색 대상 전체 | 후보 모집단 | **candidate pool** | 방해문서 = `distractors` |
 | 표현할 수 있는 범위 | 표현 범위 | **representational scope** | |
@@ -287,7 +290,7 @@ D5 상한(14 = 분리행 기준, 약어표 포함)에 닿아 있으므로 **새 
 | 쉬운 한국어 (본문에서 쓰는 말) | 한국어 정식 용어 (첫 등장 1회 병기) | **영문 확정어** | 주의 |
 |---|---|---|---|
 | 역량질문이 실제로 행을 내는 범위 | 관찰면 | **observable surface** | 행이 0 인 질문은 어떤 변경도 회귀로 보일 수 없다 (§5.5) |
-| 기제는 옮겨지고 명세는 다시 붙여야 한다 | 이식 계층 분리 | **port-layer separation** | 후속 가설로만 쓴다 — 「원리」로 부르지 않는다 (§6.4) |
+| 기제와 대상별 명세를 분리하여 이식하기 | 이식 계층 분리 | **port-layer separation** | 이식 사례 1건에 근거한 후속 가설로만 쓴다 — 「원리」로 부르지 않는다 (§6.4) |
 | 미판정에 강건한 지표 | 판정 비적합 기반 선호도(bpref) | **binary preference (bpref)** | 본 자원에는 판정된 비적합 집합이 없어 **쓰지 않는다**. 인용할 때는 배제 사유와 함께 (§0.8) |
 | 첫 정답이 몇 번째에 오는가 | 평균 역순위(MRR) | **mean reciprocal rank (MRR)** | 지표명은 불변 |
 | 상위 정렬의 품질 | 정규화 할인 누적 이득(nDCG) | **normalized discounted cumulative gain (nDCG)** | 지표명은 불변 · `nDCG@20` 표기 고정 |
