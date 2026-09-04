@@ -29,15 +29,15 @@ z
   </g>
   <g id="axes_1">
    <g id="patch_2">
-    <path d="M 24.3864 111.848544 
-L 103.5666 111.848544 
-Q 112.1598 111.848544 112.1598 106.725888 
-L 112.1598 59.524272 
-Q 112.1598 54.401616 103.5666 54.401616 
-L 24.3864 54.401616 
-Q 15.7932 54.401616 15.7932 59.524272 
-L 15.7932 106.725888 
-Q 15.7932 111.848544 24.3864 111.848544 
+    <path d="M 26.2278 110.750832 
+L 95.5872 110.750832 
+Q 104.1804 110.750832 104.1804 105.628176 
+L 104.1804 60.621984 
+Q 104.1804 55.499328 95.5872 55.499328 
+L 26.2278 55.499328 
+Q 17.6346 55.499328 17.6346 60.621984 
+L 17.6346 105.628176 
+Q 17.6346 110.750832 26.2278 110.750832 
 z
 " clip-path="url(#p91b36f6844)" style="fill: #ffffff; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
@@ -55,15 +55,15 @@ z
 " clip-path="url(#p91b36f6844)" style="fill: #fbfcfd; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="patch_4">
-    <path d="M 24.3864 174.052224 
-L 103.5666 174.052224 
-Q 112.1598 174.052224 112.1598 168.929568 
-L 112.1598 121.727952 
-Q 112.1598 116.605296 103.5666 116.605296 
-L 24.3864 116.605296 
-Q 15.7932 116.605296 15.7932 121.727952 
-L 15.7932 168.929568 
-Q 15.7932 174.052224 24.3864 174.052224 
+    <path d="M 26.2278 172.954512 
+L 95.5872 172.954512 
+Q 104.1804 172.954512 104.1804 167.831856 
+L 104.1804 122.825664 
+Q 104.1804 117.703008 95.5872 117.703008 
+L 26.2278 117.703008 
+Q 17.6346 117.703008 17.6346 122.825664 
+L 17.6346 167.831856 
+Q 17.6346 172.954512 26.2278 172.954512 
 z
 " clip-path="url(#p91b36f6844)" style="fill: #ffffff; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
@@ -81,15 +81,15 @@ z
 " clip-path="url(#p91b36f6844)" style="fill: #fbfcfd; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="patch_6">
-    <path d="M 24.3864 236.255904 
-L 103.5666 236.255904 
-Q 112.1598 236.255904 112.1598 231.133248 
-L 112.1598 183.931632 
-Q 112.1598 178.808976 103.5666 178.808976 
-L 24.3864 178.808976 
-Q 15.7932 178.808976 15.7932 183.931632 
-L 15.7932 231.133248 
-Q 15.7932 236.255904 24.3864 236.255904 
+    <path d="M 26.2278 235.158192 
+L 95.5872 235.158192 
+Q 104.1804 235.158192 104.1804 230.035536 
+L 104.1804 185.029344 
+Q 104.1804 179.906688 95.5872 179.906688 
+L 26.2278 179.906688 
+Q 17.6346 179.906688 17.6346 185.029344 
+L 17.6346 230.035536 
+Q 17.6346 235.158192 26.2278 235.158192 
 z
 " clip-path="url(#p91b36f6844)" style="fill: #ffffff; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
@@ -107,15 +107,15 @@ z
 " clip-path="url(#p91b36f6844)" style="fill: #fbfcfd; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="patch_8">
-    <path d="M 24.3864 298.459584 
-L 103.5666 298.459584 
-Q 112.1598 298.459584 112.1598 293.336928 
-L 112.1598 246.135312 
-Q 112.1598 241.012656 103.5666 241.012656 
-L 24.3864 241.012656 
-Q 15.7932 241.012656 15.7932 246.135312 
-L 15.7932 293.336928 
-Q 15.7932 298.459584 24.3864 298.459584 
+    <path d="M 26.2278 297.361872 
+L 95.5872 297.361872 
+Q 104.1804 297.361872 104.1804 292.239216 
+L 104.1804 247.233024 
+Q 104.1804 242.110368 95.5872 242.110368 
+L 26.2278 242.110368 
+Q 17.6346 242.110368 17.6346 247.233024 
+L 17.6346 292.239216 
+Q 17.6346 297.361872 26.2278 297.361872 
 z
 " clip-path="url(#p91b36f6844)" style="fill: #ffffff; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
@@ -133,15 +133,15 @@ z
 " clip-path="url(#p91b36f6844)" style="fill: #fbfcfd; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="patch_10">
-    <path d="M 24.3864 360.663264 
-L 103.5666 360.663264 
-Q 112.1598 360.663264 112.1598 355.540608 
-L 112.1598 308.338992 
-Q 112.1598 303.216336 103.5666 303.216336 
-L 24.3864 303.216336 
-Q 15.7932 303.216336 15.7932 308.338992 
-L 15.7932 355.540608 
-Q 15.7932 360.663264 24.3864 360.663264 
+    <path d="M 26.2278 359.565552 
+L 95.5872 359.565552 
+Q 104.1804 359.565552 104.1804 354.442896 
+L 104.1804 309.436704 
+Q 104.1804 304.314048 95.5872 304.314048 
+L 26.2278 304.314048 
+Q 17.6346 304.314048 17.6346 309.436704 
+L 17.6346 354.442896 
+Q 17.6346 359.565552 26.2278 359.565552 
 z
 " clip-path="url(#p91b36f6844)" style="fill: #ffffff; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
@@ -1753,7 +1753,7 @@ z
    </g>
    <g id="text_16">
     <!-- EP1 (§5.1) -->
-    <g style="fill: #1a202c" transform="translate(37.1765 75.642352) scale(0.1 -0.1)">
+    <g style="fill: #1a202c" transform="translate(34.1075 75.642352) scale(0.1 -0.1)">
      <defs>
       <path id="NotoSansCJKjp-Bold-26" d="M 582 0 
 L 3558 0 
@@ -1874,7 +1874,7 @@ z
    </g>
    <g id="text_17">
     <!-- 표현 감사 -->
-    <g style="fill: #5a6472" transform="translate(48.750656 94.616608) scale(0.078 -0.078)">
+    <g style="fill: #5a6472" transform="translate(45.681656 94.616608) scale(0.078 -0.078)">
      <use xlink:href="#NotoSansCJKjp-Regular-e257"/>
      <use xlink:href="#NotoSansCJKjp-Regular-e3ff" transform="translate(92 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-1" transform="translate(184 0)"/>
@@ -2774,7 +2774,7 @@ z
    </g>
    <g id="text_27">
     <!-- EP2 (§5.4) -->
-    <g style="fill: #1a202c" transform="translate(37.1765 137.846032) scale(0.1 -0.1)">
+    <g style="fill: #1a202c" transform="translate(34.1075 137.846032) scale(0.1 -0.1)">
      <use xlink:href="#NotoSansCJKjp-Bold-26"/>
      <use xlink:href="#NotoSansCJKjp-Bold-31" transform="translate(61.5 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-f6b3" transform="translate(128.203125 0)"/>
@@ -2789,7 +2789,7 @@ z
    </g>
    <g id="text_28">
     <!-- 게이트 판별력 -->
-    <g style="fill: #5a6472" transform="translate(41.574656 156.816022) scale(0.078 -0.078)">
+    <g style="fill: #5a6472" transform="translate(38.505656 156.816022) scale(0.078 -0.078)">
      <defs>
       <path id="NotoSansCJKjp-Regular-ba87" d="M 4730 5293 
 L 4730 -499 
@@ -3996,7 +3996,7 @@ z
    </g>
    <g id="text_39">
     <!-- EP3 (§5.2) -->
-    <g style="fill: #1a202c" transform="translate(37.1765 200.049712) scale(0.1 -0.1)">
+    <g style="fill: #1a202c" transform="translate(34.1075 200.049712) scale(0.1 -0.1)">
      <use xlink:href="#NotoSansCJKjp-Bold-26"/>
      <use xlink:href="#NotoSansCJKjp-Bold-31" transform="translate(61.5 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-f6b4" transform="translate(128.203125 0)"/>
@@ -4011,7 +4011,7 @@ z
    </g>
    <g id="text_40">
     <!-- 통제된 자원 교체 -->
-    <g style="fill: #5a6472" transform="translate(37.112813 219.023968) scale(0.078 -0.078)">
+    <g style="fill: #5a6472" transform="translate(34.043813 219.023968) scale(0.078 -0.078)">
      <defs>
       <path id="NotoSansCJKjp-Regular-dfb0" d="M 2931 1370 
 C 1664 1370 947 1043 947 442 
@@ -5419,7 +5419,7 @@ z
    </g>
    <g id="text_54">
     <!-- EP4 (§5.3) -->
-    <g style="fill: #1a202c" transform="translate(37.1765 262.253392) scale(0.1 -0.1)">
+    <g style="fill: #1a202c" transform="translate(34.1075 262.253392) scale(0.1 -0.1)">
      <use xlink:href="#NotoSansCJKjp-Bold-26"/>
      <use xlink:href="#NotoSansCJKjp-Bold-31" transform="translate(61.5 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-f6b5" transform="translate(128.203125 0)"/>
@@ -5434,7 +5434,7 @@ z
    </g>
    <g id="text_55">
     <!-- 검색 이득의 범위 -->
-    <g style="fill: #5a6472" transform="translate(37.112813 281.211804) scale(0.078 -0.078)">
+    <g style="fill: #5a6472" transform="translate(34.043813 281.211804) scale(0.078 -0.078)">
      <defs>
       <path id="NotoSansCJKjp-Regular-c2d8" d="M 320 2477 
 L 320 2042 
@@ -6836,7 +6836,7 @@ z
    </g>
    <g id="text_67">
     <!-- EP5 (§5.5) -->
-    <g style="fill: #1a202c" transform="translate(37.1765 324.457072) scale(0.1 -0.1)">
+    <g style="fill: #1a202c" transform="translate(34.1075 324.457072) scale(0.1 -0.1)">
      <use xlink:href="#NotoSansCJKjp-Bold-26"/>
      <use xlink:href="#NotoSansCJKjp-Bold-31" transform="translate(61.5 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-f6b6" transform="translate(128.203125 0)"/>
@@ -6851,7 +6851,7 @@ z
    </g>
    <g id="text_68">
     <!-- 제2 자원 이식 -->
-    <g style="fill: #5a6472" transform="translate(42.124313 343.427062) scale(0.078 -0.078)">
+    <g style="fill: #5a6472" transform="translate(39.055313 343.427062) scale(0.078 -0.078)">
      <use xlink:href="#NotoSansCJKjp-Regular-d617"/>
      <use xlink:href="#NotoSansCJKjp-Regular-13" transform="translate(92 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-1" transform="translate(147.5 0)"/>

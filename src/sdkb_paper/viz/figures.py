@@ -109,8 +109,13 @@ class TextOverflow(RuntimeError):
     """상자 폭을 넘는 라벨 — 라벨을 줄여야 한다(그림 기하는 이 작업의 대상이 아니다)."""
 
 
-def _text_width(ax, s: str, fontsize: float) -> float:
-    """정규좌표(0–1) 기준 최대 줄 폭."""
+def _text_width(ax, s: str, fontsize: float, fontweight: str = "normal") -> float:
+    """정규좌표(0–1) 기준 최대 줄 폭.
+
+    **굵기를 함께 받는다.** 상자 제목은 굵게 그리는데 폭은 보통 굵기로 재고 있었고,
+    그래서 실제보다 좁게 나온 값이 축소 판정을 통과했다 — 영문판에서 제목이 상자를
+    넘던 자리가 그 경로다(국문판은 `_fit_size` 가 무동작이라 영향이 없다).
+    """
     fig = ax.figure
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
@@ -119,14 +124,15 @@ def _text_width(ax, s: str, fontsize: float) -> float:
     for line in s.split("\n"):
         if not line:
             continue
-        art = ax.text(0.5, 0.5, line, fontsize=fontsize)
+        art = ax.text(0.5, 0.5, line, fontsize=fontsize, fontweight=fontweight)
         bb = art.get_window_extent(renderer=renderer)
         art.remove()
         widest = max(widest, inv.transform((bb.x1, 0))[0] - inv.transform((bb.x0, 0))[0])
     return widest
 
 
-def _fit_size(ax, s: str, fontsize: float, max_w: float, where: str) -> float:
+def _fit_size(ax, s: str, fontsize: float, max_w: float, where: str,
+              fontweight: str = "normal") -> float:
     """상자에 들어가는 글자 크기. 바닥까지 줄여도 넘치면 실패한다.
 
     **한국어에서는 무동작이다.** 한국어판은 눈으로 검수를 마친 **동결 기준선**이고,
@@ -140,7 +146,7 @@ def _fit_size(ax, s: str, fontsize: float, max_w: float, where: str) -> float:
         return fontsize
     size = fontsize
     while size >= FIT_FLOOR:
-        if _text_width(ax, s, size) <= max_w * FIT_TOLERANCE:
+        if _text_width(ax, s, size, fontweight) <= max_w * FIT_TOLERANCE:
             return size
         size -= 0.2
     raise TextOverflow(
@@ -169,12 +175,19 @@ def _rbox(
     ts: int = 11,
     bs: int = 9,
     align: str = "center",
+    pad: float = 0.006,
 ) -> None:
-    """제목+본문을 담은 둥근 상자."""
+    """제목+본문을 담은 둥근 상자.
+
+    **`pad` 는 장식이 아니라 기하다.** `FancyBboxPatch` 의 여백은 상자를 사방으로 넓히므로
+    실제 자리는 선언한 `w`×`h` 가 아니라 `(w+2·pad)`×`(h+2·pad)` 다. 상자를 촘촘히 늘어놓는
+    자리에서 간격을 `2·pad` 이하로 잡으면 **반드시 겹친다** — 실측으로 그림 1 의 에피소드
+    상자 다섯과 그림 6 의 행 라벨이 그렇게 겹쳐 있었다. 그런 자리에서는 이 값을 줄인다.
+    """
     ax.add_patch(
         FancyBboxPatch(
             (x, y), w, h,
-            boxstyle="round,pad=0.006,rounding_size=0.014",
+            boxstyle=f"round,pad={pad},rounding_size=0.014",
             linewidth=1.4, edgecolor=edge, facecolor=fill,
         )
     )
@@ -183,7 +196,7 @@ def _rbox(
     inner = w - 0.030          # 좌우 안여백 — 글자가 테두리에 닿지 않게 한다
     if title:
         ax.text(tx, y + h - 0.028, title, ha=ha, va="top",
-                fontsize=_fit_size(ax, title, ts, inner, "상자 제목"),
+                fontsize=_fit_size(ax, title, ts, inner, "상자 제목", "bold"),
                 fontweight="bold", color=tcolor)
     if body:
         dy = 0.028 + 0.045 * (title.count("\n") + 1) + 0.008

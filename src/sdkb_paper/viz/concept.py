@@ -149,14 +149,17 @@ def fig_overview(out: Path | None = None) -> Path:
     # 그림이 "게이트가 놓쳤다"고 말하게 된다(§0.8 판정 문구 사전과 같은 규율).
     episodes = [(0.128, "ep1"), (0.314, "ep2"), (0.500, "ep3"),
                 (0.686, "ep4"), (0.872, "ep5")]
+    # 상자 폭과 여백은 **간격에서 역산한다.** 중심 간격이 0.186 이므로 실제 자리
+    # `w + 2·pad` 가 그보다 작아야 한다 — 구 기하는 0.178 + 0.012 = 0.190 이어서 인접
+    # 상자마다 0.004 씩 겹쳐 있었다(실측). 0.170 + 0.006 = 0.176 이면 0.010 이 남는다.
     for x, ep in episodes:
-        _rbox(ax, x - 0.089, 0.045, 0.178, 0.170, title=T(f"overview.{ep}_title"),
-              body="", fill="#FFFFFF", edge=BORDER, ts=8.4)
-        _fit_text(ax, x, 0.148,
+        _rbox(ax, x - 0.085, 0.045, 0.170, 0.170, title=T(f"overview.{ep}_title"),
+              body="", fill="#FFFFFF", edge=BORDER, ts=8.4, pad=0.003)
+        _fit_text(ax, x, 0.150,
                   T("overview.ep_target", target=T(f"overview.{ep}_target")),
-                  0.170, where=f"그림1 {ep} 측정 대상",
+                  0.140, where=f"그림1 {ep} 측정 대상",
                   ha="center", va="center", fontsize=7.2, fontweight="bold", color=TOBE)
-        _fit_text(ax, x, 0.092, T(f"overview.{ep}_body"), 0.170,
+        _fit_text(ax, x, 0.090, T(f"overview.{ep}_body"), 0.140,
                   where=f"그림1 {ep} 본문",
                   ha="center", va="center", fontsize=7.0, color=MUTE, linespacing=1.45)
     ax.text(0.5, 0.018, T("overview.dsr_cycle"), ha="center", va="center",
@@ -411,9 +414,11 @@ def fig_experiment_flow(out: Path | None = None) -> Path:
     out = out or FIGURES / "concept_experiment_flow.svg"
     fig, ax = _canvas(11.0, 7.4)
 
-    ax.text(0.215, 0.945, T("flow.col_practice"), ha="center", va="center",
+    # **오른쪽에 여백을 만든다.** 구 기하는 두 열이 0.030–0.930 를 다 써서 결손 주석을
+    # 놓을 자리가 없었고, 그래서 주석이 도판 밖으로 0.10 넘어갔다(실측 x=1.109).
+    ax.text(0.195, 0.945, T("flow.col_practice"), ha="center", va="center",
             fontsize=10.5, fontweight="bold", color=MUTE)
-    ax.text(0.700, 0.945, T("flow.col_experiment"), ha="center", va="center",
+    ax.text(0.600, 0.945, T("flow.col_experiment"), ha="center", va="center",
             fontsize=10.5, fontweight="bold", color=INK)
 
     # 둘째 행이 **누출 차단**이다(PLAN-087 §4.2 그림 5). 캡션 첫 문장이 인용 간선의 제거를
@@ -437,33 +442,36 @@ def fig_experiment_flow(out: Path | None = None) -> Path:
     ]
     at = {key: i for i, (key, *_) in enumerate(rows)}
 
-    top, h, gap = 0.900, 0.104, 0.014
+    # 행 간격은 **여백의 두 배보다 커야** 흐름 화살표가 보인다. 구 기하는 간격 0.014 에
+    # 여백 0.006 씩이어서 상자 사이가 0.002 로 붙었고, 그 틈에 그린 화살표가 상자에
+    # 묻혀 오른쪽 열이 흐름이 아니라 붙은 더미로 읽혔다.
+    top, h, gap, bpad = 0.902, 0.104, 0.020, 0.004
     ys = []
     for i, (_key, task, title, body, fill, edge, tcolor) in enumerate(rows):
         y = top - i * (h + gap) - h
         ys.append(y)
-        _rbox(ax, 0.030, y, 0.370, h, title=task, body="",
-              fill="#F1F3F6", edge="#D7DBE0", tcolor=MUTE, ts=9.4)
-        _rbox(ax, 0.470, y, 0.460, h, title=title, body=body,
-              fill=fill, edge=edge, tcolor=tcolor, ts=9.6, bs=8.0)
-        _arrow(ax, 0.404, y + h / 2, 0.466, y + h / 2, color=MUTE,
+        _rbox(ax, 0.010, y, 0.370, h, title=task, body="",
+              fill="#F1F3F6", edge="#D7DBE0", tcolor=MUTE, ts=9.4, pad=bpad)
+        _rbox(ax, 0.400, y, 0.400, h, title=title, body=body,
+              fill=fill, edge=edge, tcolor=tcolor, ts=9.6, bs=8.0, pad=bpad)
+        _arrow(ax, 0.386, y + h / 2, 0.396, y + h / 2, color=MUTE,
                lw=1.2, style="-", ms=10)
         if i < len(rows) - 1:
-            _arrow(ax, 0.700, y - 0.002, 0.700, y - gap + 0.002, color=INK,
+            _arrow(ax, 0.600, y - bpad, 0.600, y - gap + bpad, color=INK,
                    lw=1.5, ms=11)
 
     # 대응이 없는 자리 둘 — 오른쪽 여백에 표시한다.
     # 행 번호가 아니라 **행 이름**으로 찾는다 — 행이 하나 늘 때 주석이 다른 행에 붙는
     # 사고를 구조로 막는다.
-    _fit_text(ax, 0.945, ys[at["query"]] + h / 2, T("flow.gap_baseline"),
+    _fit_text(ax, 0.815, ys[at["query"]] + h / 2, T("flow.gap_baseline"),
               _ko_width(ax, "flow.gap_baseline", 7.6), where="그림5 결손 주석 1",
               ha="left", va="center", fontsize=7.6, color=ASIS, linespacing=1.5)
-    _fit_text(ax, 0.945, ys[at["review"]] + h / 2, T("flow.gap_pool"),
+    _fit_text(ax, 0.815, ys[at["review"]] + h / 2, T("flow.gap_pool"),
               _ko_width(ax, "flow.gap_pool", 7.6), where="그림5 결손 주석 2",
               ha="left", va="center", fontsize=7.6, color=ASIS, linespacing=1.5)
 
     # 전제 상자 — 본 장의 수치가 성립하는 조건이다.
-    _fit_text(ax, 0.5, 0.028, T("flow.premise"), 0.940, where="그림5 전제",
+    _fit_text(ax, 0.5, 0.016, T("flow.premise"), 0.940, where="그림5 전제",
               ha="center", va="center", fontsize=8.6, color=INK,
             bbox=dict(boxstyle="round,pad=0.5", fc="#F7F9FB", ec=BORDER, lw=1.0))
     return _save(fig, out)
@@ -585,9 +593,10 @@ def fig_ep_gate_matrix(out: Path | None = None) -> Path:
     sections = figdata.episode_sections()
     for i, (tag, name, status, cells, verdict) in enumerate(rows):
         y = top - i * (h + gap) - h
-        _rbox(ax, 0.020, y, 0.145, h,
+        # 폭 0.145 + 여백 0.006 은 오른쪽 매트릭스(0.165 에서 시작)와 0.006 겹쳤다(실측).
+        _rbox(ax, 0.020, y, 0.135, h,
               title=T("matrix.row_tag", ep=tag, section=sections[tag]), body=name,
-              fill="#FFFFFF", edge=BORDER, ts=10, bs=7.8)
+              fill="#FFFFFF", edge=BORDER, ts=10, bs=7.8, pad=0.003)
         _rbox(ax, x0 - 0.004, y, len(cells) * (cw + cgap), h, title="", body="",
               fill="#FBFCFD", edge=BORDER)
         for cx, (mark, note) in zip(centers, cells):

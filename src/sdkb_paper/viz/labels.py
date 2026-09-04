@@ -249,9 +249,9 @@ LABELS: dict[str, dict[str, str]] = {
     "overview.ep2_title": {"ko": "EP2 · 게이트 판별력", "en": "EP2 · Gate discrimination"},
     "overview.ep2_target": {"ko": "ART-2 게이트", "en": "ART-2 gate"},
     "overview.ep2_body": {
-        "ko": "홀드아웃 결함 {ep2.t3_only} 를 T3 가 단독 검출\n"
+        "ko": "홀드아웃 결함 {ep2.t3_only} 를\nT3 가 단독 검출\n"
               "정상 델타 오거부 {ep2.false_positive}",
-        "en": "T3 alone detects {ep2.t3_only} holdout faults\n"
+        "en": "T3 alone detects\n{ep2.t3_only} holdout faults\n"
               "false rejections {ep2.false_positive}"},
     "overview.ep3_title": {"ko": "EP3 · 통제된 자원 교체", "en": "EP3 · Resource substitution"},
     "overview.ep3_target": {"ko": "ΔG → ART-2 판정", "en": "ΔG → ART-2 verdict"},
@@ -267,9 +267,9 @@ LABELS: dict[str, dict[str, str]] = {
     "overview.ep5_target": {
         "ko": "ART-2 자원 비의존성", "en": "ART-2 portability"},
     "overview.ep5_body": {
-        "ko": "형식 층·T3 코드 변경 없이 실행\n"
+        "ko": "형식 층·T3\n코드 변경 없이 실행\n"
               "관찰면 {ep5.observable}/{ep5.cq_total} · 명세 재접지",
-        "en": "Formal layers and T3 ran unchanged\n"
+        "en": "Formal layers and T3\nran unchanged\n"
               "surface {ep5.observable}/{ep5.cq_total} · spec regrounded"},
     "overview.dsr_cycle": {
         "ko": "DSR 순환 · 문제 식별 → 설계·개발 → 1차 평가 → 설계 개선 → 재평가 → 실제 개정·이식 판정 → 설계지식",
@@ -405,9 +405,10 @@ LABELS: dict[str, dict[str, str]] = {
     "gate.rule_t1": {
         "ko": "회수의 95% 신뢰구간 하한이 허용 폭 ε = {gate.epsilon} 를\n초과하여 저하되면 거부",
         "en": "Reject if the 95% CI lower bound of recall falls\nbeyond the margin ε = {gate.epsilon}"},
+    # 두 줄이다 — 한 줄로는 판정 열의 폭(0.198)을 넘어 도판 밖으로 나갔다(실측 x=1.087).
     "gate.detail_t1": {
-        "ko": "ΔRecall@100 {ep3.p1.delta:sig} · 95% CI [{ep3.p1.ci_lo:sig}, {ep3.p1.ci_hi:sig}]",
-        "en": "ΔRecall@100 {ep3.p1.delta:sig} · 95% CI [{ep3.p1.ci_lo:sig}, {ep3.p1.ci_hi:sig}]"},
+        "ko": "ΔRecall@100 {ep3.p1.delta:sig}\n95% CI [{ep3.p1.ci_lo:sig}, {ep3.p1.ci_hi:sig}]",
+        "en": "ΔRecall@100 {ep3.p1.delta:sig}\n95% CI [{ep3.p1.ci_lo:sig}, {ep3.p1.ci_hi:sig}]"},
     "gate.row_t2": {"ko": "T2 · 하위집단 안전성", "en": "T2 · Subgroup safety"},
     "gate.rule_t2": {
         "ko": "한 집단이라도 δ = {gate.delta} 이상 저하되면 거부.\n"

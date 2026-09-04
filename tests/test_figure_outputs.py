@@ -46,11 +46,17 @@ BODY_FIGURES = (
 # 줄였다. ⓑ `concept_overview`·ⓒ `concept_tbox_views`: 영문판에서 라벨이 옆 상자를 침범하던
 # 자리를 두 언어의 라벨을 함께 줄여 해소하였다. **수치와 자리표시자는 하나도 바뀌지 않았다** —
 # 바뀐 것은 설명하는 말의 길이다(규격 F6).
+# 2026-09-04 갱신 (사용자 승인 · 기하 수정) — 네 장의 **자리만** 고쳤다. `_rbox` 의 여백이
+# 상자를 사방으로 넓힌다는 사실이 간격 계산에서 빠져 있었고, 그래서 그림 1 의 에피소드 상자
+# 다섯은 인접 쌍마다 0.004 겹쳤으며(간격 0.186 < 폭 0.178 + 여백 0.012) 그림 6 의 행 라벨은
+# 매트릭스와 0.006 겹쳤다. 그림 5 는 행 간격이 0.002 로 붙어 흐름 화살표가 상자에 묻혔고
+# 결손 주석 둘이 도판 밖으로 나갔다(x=1.109). 그림 4 는 T1 판정 상세가 x=1.087 까지 나갔다.
+# **수치·판정·용어는 하나도 바뀌지 않았다** — 바뀐 것은 상자의 폭·간격·여백과 줄바꿈 자리다.
 KO_SHA256 = {
     # 2026-09-03 갱신 (PLAN-087 §11 잔여 ②) — ART-1 띠에 관통 예시의 정박점 한 줄을 넣고
     # EP1 상자의 "실재" 를 "선언" 으로 고쳤다. **수치는 넣지도 바꾸지도 않았다.**
     "concept_overview.svg":
-        "631d4561688a0f8436f507666a71c537a465c9bc5fadc71bd65c3a67fa489946",
+        "d75ba5c6c674e5a8614bf4f19fed01d8a6c040066e00dda0605fddbfad1c6e70",
     "concept_layer_mismatch.svg":
         "2c9ff70afceef91b525b3de085689261436974fbbae073ac42c9d0f8aab26e3a",
     # 2026-09-03 갱신 (PLAN-087 §11 잔여 ②) — 캡션이 주장하는 것을 도판이 보이게 하였다:
@@ -59,11 +65,11 @@ KO_SHA256 = {
     "concept_tbox_views.svg":
         "1d484c6176a163864d3f6f2af35ea8761b1ebcd215ae3906ee146a774a0e72b5",
     "concept_gate_flow.svg":
-        "03c21457fc5d57985881a2981f5ef189a83553f6713a17afb5c1eb71086ddb0f",
+        "3e73cb1772f0a36e9f90db3eb7777e39511d4d5fca5b518650f158ee34c2e1cb",
     "concept_experiment_flow.svg":
-        "292547b6130460929d7e400caf33bde340e9f174dd9686c9eeadc1e3dd34c10a",
+        "7055a14f0693305ba41c5f9bb83e7653d6836e7f7a12c1de7156e060c3a9807b",
     "concept_ep_gate_matrix.svg":
-        "bf82bd1ff9210afe72655347d2288c060c6b8738f1e69646097f02e47be232f0",
+        "51d0698f055fbf28a8341bd6be932678ddbb50caf71b1e46e261d693807e655f",
     "ir_metrics.svg":
         "c3118b3128d9b95cb8d33f7c8891b49179d4e0cc433bb3b7463838c966478ee0",
     "concept_detection_port_boundary.svg":
