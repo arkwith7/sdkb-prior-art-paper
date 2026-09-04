@@ -79,11 +79,11 @@ confirmatory split, the same removal of the expert-matching-only layer was 0.000
 
 ## S9-B · Exploratory baselines and original-sample summary
 
-> Moved from manuscript Table 6. [Return to manuscript §5.3.1](../../manuscript/en_source.md#531-retrieval-performance-and-the-verdicts-of-the-confirmatory-checks)
+> Moved from manuscript Table 7. [Return to manuscript §5.3.1](../../manuscript/en_source.md#531-retrieval-performance-and-the-verdicts-of-the-confirmatory-checks)
 
 The multilingual-fusion and bibliographic-condition baselines do not enter the confirmatory verdict.
 Their split-level values and the original-sample win/loss/tie summary remain in the full two-panel
-retrieval table in S5. Manuscript Table 6 retains only Text Hybrid, Text+Ontology, and +ClaimFeature,
+retrieval table in S5. Manuscript Table 7 retains only Text Hybrid, Text+Ontology, and +ClaimFeature,
 the three configurations directly used in the verdict.
 
 ## S9-C · Delta counts and eligibility screening of the controlled resource substitution
@@ -126,7 +126,7 @@ is valid only when the leakage audit passes, so that confirmation is a precondit
 ## 5. The layer-contribution check — verdicts on the twelve ablation rows
 
 Details of the layer-contribution check summarised in §5.3.2 of the manuscript. **Values are
-identical to Table 6 of the manuscript.**
+identical to Table 7 of the manuscript.**
 
 The prediction that the removal loss of the claim-feature and rejection-ground layers would exceed
 the removal loss of the classification signal did not hold. The configuration with all ontology

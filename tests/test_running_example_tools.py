@@ -18,13 +18,35 @@ def _load(name: str):
     return module
 
 
-def test_example_excerpt_is_derived_from_fixture():
+def test_example_excerpt_is_derived_from_measured_graph():
+    """PLAN-088 — 예시 1은 합성 픽스처가 아니라 실측 그래프의 거절특허다."""
     mod = _load("gen_example_excerpt")
-    assert len(mod.required_triples()) == 9
     text = mod.render()
-    assert "pat:1020130000004" in text
-    assert "hasPriorArtExaminer" in text
-    assert "expert/EXP_M01" in text
+    assert f"pat:{mod.QID}" in text
+    assert mod.CITED in text
+    assert mod.SKILL in text            # 전문가 매칭 뷰로 이어지는 경로
+    # §1-5 — 원문 리터럴과 제목은 어떤 경로로도 나오지 않는다.
+    for pred in mod.FORBIDDEN_PREDICATES:
+        assert pred not in text
+
+
+def test_case_selection_rule_is_deterministic():
+    """PLAN-088 §3.1 — 선정 규칙에 자유도가 없다(중앙값 근접 · 동률은 unit_id 오름차순)."""
+    card = _load("gen_case_card")
+    unit = card.select_unit()
+    assert card.select_unit() == unit                       # 재실행해도 같다
+    excerpt = _load("gen_example_excerpt")
+    assert unit["qid"] == excerpt.QID                       # §3 예시와 §5 추적이 같은 특허다
+    assert unit["lost_doc"] == excerpt.CITED
+
+
+def test_case_card_answer_key_comes_from_the_graph_not_the_seal():
+    """PLAN-088 §3.4 — 정답은 봉인 qrel 이 아니라 심사관 인용 간선에서 읽는다(O-18)."""
+    card = _load("gen_case_card")
+    unit = card.select_unit()
+    cited = card.examiner_citations(card.config.GRAPH_V0, unit["qid"])
+    assert unit["lost_doc"] in cited
+    assert all("," not in c for c in cited)
 
 
 def test_skim_explicit_figure_reference_pattern():

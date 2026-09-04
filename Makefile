@@ -582,6 +582,20 @@ example-excerpt:
 example-excerpt-check:
 	uv run python scripts/gen_example_excerpt.py --check
 
+# case-card : PLAN-088 관통 사례의 추적표를 동결 runset 과 그래프에서 생성한다.
+#             **봉인은 열지 않는다** — 정답은 `hasPriorArtExaminer` 간선이고 순위는 run 조회다.
+# case-card-check : 생성 결과와 디스크가 같은지 + 산문 소스의 캡션이 선정 사례를 가리키는지.
+# case-crossings  : C단계 환산 — 상위 100 안에 심사관 인용을 보유한 질의 수(두 팔).
+.PHONY: case-card case-card-check case-crossings
+case-card:
+	uv run python scripts/gen_case_card.py
+
+case-card-check:
+	uv run python scripts/gen_case_card.py --check
+
+case-crossings:
+	uv run python scripts/gen_case_card.py --crossings
+
 example-delta:
 	uv run python scripts/example_delta_demo.py --summary-out paper/tables/example_delta_summary.md
 	uv run python scripts/example_delta_demo.py --delta merge_etch_into_plasma --md > paper/tables/example_delta_a.md

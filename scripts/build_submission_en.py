@@ -113,14 +113,14 @@ CAPTIONS: dict[str, str] = {
           "the EP4 row a configuration passing T1 did not show non-inferiority at T4. T4 is marked "
           "with an asterisk because it is not part of the acceptance rule; its status is a design "
           "and one verdict.",
-    "T7": "**Table 7. Decision stability — the point at which each verdict switches under the "
+    "T8": "**Table 8. Decision stability — the point at which each verdict switches under the "
            "frozen thresholds.**",
     "T9": "**Table 9. Six deficits in validation strength and generalizability — every remedy "
            "is the object of a new preregistration.** Deficits ⑥–⑧ are confined to the retrieval "
            "layer and are in [S9](../../supplementary/en/S9-retrieval-evaluation-detail.md) under "
            "the same numbers. The numbers are fixed identifiers linking the manuscript to the "
            "supplementary material and are not reassigned.",
-    "T6": "**Table 6. Retrieval performance in the two confirmatory splits (2 panels) — the "
+    "T7": "**Table 7. Retrieval performance in the two confirmatory splits (2 panels) — the "
           "baseline is the Text Hybrid (B3) of each panel; Δ and the win/loss/tie counts summarize "
           "the original sample paired per query, and the 95% confidence intervals and two-sided "
           "*p* values come from a query-level paired bootstrap with 10,000 resamples.**",
@@ -132,6 +132,9 @@ CAPTIONS: dict[str, str] = {
           "improve the ordering quality of the top 20.",
     "T5": "**Table 5. Retrieval performance when only the resource bundle is substituted (test, 198 "
           "queries, family Recall@100).**",
+    # PLAN-088 · 관통 사례 — 캡션의 식별자는 `scripts/gen_case_card.py --check` 가 대조한다.
+    "T6": "**Table 6. One query traced across the resource substitution — rejected patent "
+          "`kr_1020210110925` and one of its examiner citations, `kr_KR1020140023210A`.**",
     # 그림 5(실무 절차 ↔ 실험 구성)는 재구성에서 신설된 도식이다 — 조립 동결 기간에
     # 추가되어 이 지도에 항목이 없었다(2026-08-29 · O-13 에서 확인).
     "F5alt": "Figure 5. The steps of prior art search in practice mapped onto the configuration of "
@@ -168,6 +171,14 @@ CAPTIONS: dict[str, str] = {
 # 지표·게이트·라벨 이름(L0–L3 · T1–T4 · Recall@100 · P0★ · B3 · EP1–EP4)은 이미 라틴 문자이며
 # 바꾸면 다른 것을 가리키므로 사전에 없다. 숫자만 든 셀도 없다 — 손대지 않는다.
 CELLS: dict[str, str] = {
+    # ── PLAN-088 · 본문 표 6 (관통 사례 추적) ──────────────────────────────
+    "순위 함수": "Ranking function",
+    "교체 전 자원(O)": "Resource before (O)",
+    "교체 후 자원(O′)": "Resource after (O′)",
+    "텍스트 하이브리드 B3": "Text Hybrid B3",
+    "온톨로지 결합 P1": "Text+Ontology P1",
+    "온톨로지 단독 B5": "Ontology-only B5",
+    "미회수": "not retrieved",
     # ── PLAN-087 · 본문 표 2–4 ─────────────────────────────────────────────
     "묻는 질문": "Question asked",
     "입력 신호": "Input signals",
@@ -212,7 +223,7 @@ CELLS: dict[str, str] = {
     "검색 유용성 점검": "retrieval utility check",
     "첫 분할 부분 지지 · 두 번째 분할 미지지":
         "first split supported in part · second split not supported",
-    "표 6 · S9": "Table 6 · S9",
+    "표 7 · S9": "Table 7 · S9",
     "계층 특이성 점검": "layer specificity check",
     "첫 분할 기각 · 두 번째 분할 재현되지 않음":
         "first split rejected · not reproduced in the second split",

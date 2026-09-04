@@ -347,26 +347,32 @@ when such a design is ported to a resource with different representational conve
 
 # 3. Reading the dataset and acceptance gate through a rejected-patent example
 
-> **Example 1 · example graph · synthetic explanation.** The next three chapters use one rejected
-> patent as an explanatory lens. A synthetic patent application for “plasma-etch endpoint
-> detection” is rejected for lack of inventive step over one examiner-cited US reference. The nine
-> RDF triples below encode the facts used by the example.
+> **Example 1 · a real case · a rejected patent held in the dataset.** The next three chapters use
+> one rejected patent as an explanatory lens. Filed in 2021, it was refused for lack of inventive
+> step over six examiner-cited references and is held in the dataset as A-Box. Nine of the facts in
+> its notice of rejection, excerpted from the graph, are below.
 >
 ```turtle
-pat:1020130000004  a  ont:Patent, ont:RejectedPatent ;
-    skos:prefLabel          "플라즈마 식각 종점 검출 방법"@ko ;
-    ont:filingDate          "2013-05-10"^^xsd:date ;
-    ont:realizesProcess     <…/subprocess/plasma_etch> ;
+pat:kr_1020210110925  a  ont:Patent, ont:RejectedPatent ;
+    ont:filingDate          "2021-08-23"^^xsd:date ;
+    ont:realizesProcess     <…/process/etch> ;
     ont:rejectedFor         ont:Rejection_Inventiveness ;
-    ont:hasPriorArtExaminer <…/patent/us_US7000001> .
-<…/subprocess/plasma_etch>  ont:requiresSkill <…/skill/endpoint_detection> .
-<…/expert/EXP_M01>          ont:hasSkill      <…/skill/endpoint_detection> .
+    ont:hasPriorArtExaminer <…/patent/kr_KR1020140023210A> .
+<…/process/etch>          ont:hasSubprocess <…/subprocess/plasma_etch> .
+<…/subprocess/plasma_etch>    ont:requiresSkill <…/skill/endpoint_detection> .
+<…/expert/EXP_013>        ont:hasSkill      <…/skill/endpoint_detection> .
 ```
 
-> The upper seven triples are read by the prior-art view and the lower two by the expert-matching
+> The upper five triples are read by the prior-art view and the lower three by the expert-matching
 > view. Both paths meet at `plasma_etch`. Sections 3–5 follow this shared node from representation,
-> through evaluation, to a release verdict. The example is synthetic; every empirical value in §5
-> comes from the frozen evaluation artifacts.
+> through evaluation, to a release verdict.
+
+This patent is the one traced in §5.2. It was designated by a frozen rule rather than chosen after
+inspecting results (§4.5), so the structural account of §3 and the verdict of §5 are read on the
+same instance. Two limits apply to the excerpt. The redistribution scope of KIPRIS Plus full text is
+restricted, so abstracts and claim text are not reproduced. The full neighborhood of one patent
+would also exceed the space available, so only the path where the two views meet is kept. A generator
+verifies the excerpt against the graph before emitting it; it is not transcribed by hand.
 
 This section describes what we built and the criteria by which we evaluated it. There are two
 artifacts and one evaluation environment that measures them. **ART-1 · the SDKB ontology dataset** is a
@@ -771,7 +777,7 @@ separate file (479 edges over 198 queries).
 
 ## 4.2 Removing answer edges and freezing the candidate population
 
-> **Example 3 · answer-free query · synthetic explanation.** When Example 1 becomes an evaluation
+> **Example 3 · answer-free query · procedure explanation.** When Example 1 becomes an evaluation
 > query, the examiner-citation edge is removed before indexing. The query retains its claim text and
 > process relation, while the cited patent remains only in the sealed score sheet. Thus the ranking
 > path cannot read the answer edge it is evaluated against.
@@ -953,7 +959,7 @@ two points at which reproducibility control is incomplete are in §6.5.
 |---|---|---|
 |A real change that passed formal validation was rejected by the retrieval condition|Accept = 0 · T1 not met|Table 5 · S7 · S9|
 |T3 detects cross-task regressions admitted by focal-task monitoring|all three conditions met| §5.4 · S2 |
-|retrieval utility check|first split supported in part · second split not supported|Table 6 · S9|
+|retrieval utility check|first split supported in part · second split not supported|Table 7 · S9|
 |layer specificity check|first split rejected · not reproduced in the second split| S9 |
 |transfer check|non-inferiority not met · 1 verdict|S5 Appendix A|
 |Port verdict|procedure transferred · fault-specification transfer not confirmed · precision validation not met| §5.5 · S8 |
@@ -1053,9 +1059,7 @@ not establish generation safety (§6.4).
 ## 5.2 Increased document-concept linking and an actual rejection by the retrieval condition (EP3)
 
 The performance condition T1 rejected one real change that passed all four formal layers and
-increased every prespecified resource-side quantity indicator. The synthetic example patent only
-illustrates the resource-side scene in which concept links multiply; it does not represent the
-queries of this verdict or the cause of the drop. The two left panels of Figure 7 show the rise of
+increased every prespecified resource-side quantity indicator. The two left panels of Figure 7 show the rise of
 the resource indicator and the fall of the retrieval metric as preregistered aggregates. The scope
 of this statement is one qualified real change; it says nothing about how often such incidents are
 blocked. The full freeze scope and eligibility screening are in
@@ -1115,6 +1119,36 @@ T1 is the only unmet condition. This is a case in which a single performance con
 change that passed every formal layer, and it is the observed instance of the task-semantic
 regression defined in §1.
 
+Table 6 shows what this verdict looks like on a single query. The case was designated by a frozen
+rule, which picks the query whose rank drop under the ontology-coupled configuration is closest to
+the median. The selected rejected patent was refused for lack of inventive step, and the examiner
+cited six prior-art documents. For one of them the rank produced by the text hybrid was unchanged
+by the substitution, whereas the ontology-coupled configuration pushed the same document further
+down after it. The ontology-only configuration did not retrieve the document at all, because the
+query and that document share almost no concepts.
+
+**Table 6. One query traced across the resource substitution — rejected patent `kr_1020210110925` and one of its examiner citations, `kr_KR1020140023210A`.**
+
+|Ranking function|Resource before (O)|Resource after (O′)|
+|---|---:|---:|
+|Text Hybrid B3| 91 | 91 |
+|Text+Ontology P1| 123 | 147 |
+|Ontology-only B5|not retrieved|not retrieved|
+
+The six examiner citations of this patent include the one traced above. The case was chosen by a
+frozen rule rather than after inspecting results (§4.5). The ranks are per document and not per
+family, so they are not read as the values of Table 5. The table is a lens on the per-query mean of
+Table 5 and not a ground of the verdict. The answer key was read from the examiner-citation edges of
+the graph rather than from the sealed evaluation set. Of the eight concepts held by the query and
+the seven held by this document, one is shared. A document that is not an answer, by contrast,
+shares five concepts with the query and led on the concept term by +0.1038 while trailing on the
+text score by −0.0974. The concept term thus overturned the judgment of the text score.
+
+Counting the same substitution over all 198 queries at the document level, the number of queries
+holding at least one examiner citation within the top 100 falls from 136 to 133. This count is in a
+different unit from the primary metric and is therefore not a ground of the verdict. It indicates
+the size of the primary-metric drop on a review screen.
+
 What this comparison identifies is not the effect of the T-Box alone. It is the change in mean
 per-query recall when the resource bundle is substituted in a frozen pipeline. Which component
 inside the bundle produced the drop is not separated by this comparison alone. That a defect in the
@@ -1138,21 +1172,18 @@ preventive effect.
 We read the blocked magnitude as two numbers. The point estimate 0.0293 is the mean per-query drop
 observed in this sample, and the confidence bound 0.0542 is the conservative limit the rule uses.
 The rule uses the bound in order to exclude cases in which sampling variation understates a drop.
-The ground for rejection is therefore not the size of the observed drop. It is that this sample does
-not show the drop to lie within the margin. Interchanging the two numbers changes the strength of
-the verdict. The interval excludes zero, and its upper bound is also negative at −0.0053. The
-interval nevertheless crosses the non-inferiority margin of −0.02. What this sample established is
-not that the degradation exceeded the margin, but that it could not be shown to lie within it.
+Interchanging the two numbers changes the strength of the verdict. The interval excludes zero and
+its upper bound is also negative at −0.0053, yet it crosses the non-inferiority margin of −0.02.
+What this sample established is therefore not that the degradation exceeded the margin, but that it
+could not be shown to lie within it.
 
 This case exhibits cross-layer metric misalignment directly. Every quantity indicator observable at
 the resource layer moved in one direction. The linked concept vocabulary grew, concepts linked per
-document rose 2.4-fold, and links were created in bulk. These values capture expanded concept
-mapping over existing documents, not growth in T-Box classes. Those are the indicators visible to
-whoever edits the ontology, so from
+document rose 2.4-fold. These values capture expanded concept mapping over existing documents, not
+growth in T-Box classes. Those are the indicators visible to whoever edits the ontology, so from
 the resource layer alone this change is an evident improvement. The retrieval metric one layer down
 moved the other way. For this change, the resource-layer indicators did not represent the
-performance of the next layer. This is why we place the acceptance condition at the layer of use
-rather than at the resource layer, and that ground is one observation rather than an argument.
+performance of the next layer (§6.1).
 
 Operationally this verdict is one release decision in a continuous integration pipeline (§3.6). A
 resource revision published upstream was blocked by the approval procedure before it reached the
@@ -1175,7 +1206,9 @@ statement is in §6.3.
 The conclusion of this episode is the range within which the gain was observed. Ontology reranking
 showed no improvement in the three places we had expected: queries with a lexical mismatch, ordering
 at the top, and review efficiency. The one place where an improvement appeared is deep recall, and
-that gain vanishes once converted into an operational unit. This episode ran preregistered
+that gain vanishes once converted into an operational unit. Table 6 illustrates the shape of that
+narrowness. Where the shared concepts carry no discriminative power, the concept term pushes an
+examiner citation down instead. The decomposition is given with that table. This episode ran preregistered
 confirmatory evaluations on sealed splits twice, and all accesses to the seal of the second split
 were recorded in the access ledger.
 
@@ -1189,7 +1222,7 @@ non-overlapping split (198 queries, 503 qrel edges). The two panels are neither 
 The decision rule, margin, weights, and retrieval settings of panel B were inherited from panel A
 and fixed in a commit made before unsealing (`67568c8`).
 
-**Table 6. Retrieval performance in the two confirmatory splits (2 panels) — the baseline is the Text Hybrid (B3) of each panel; Δ and the win/loss/tie counts summarize the original sample paired per query, and the 95% confidence intervals and two-sided *p* values come from a query-level paired bootstrap with 10,000 resamples.**
+**Table 7. Retrieval performance in the two confirmatory splits (2 panels) — the baseline is the Text Hybrid (B3) of each panel; Δ and the win/loss/tie counts summarize the original sample paired per query, and the 95% confidence intervals and two-sided *p* values come from a query-level paired bootstrap with 10,000 resamples.**
 
 | |System| R@100 | Δ vs B3 | 95% CI | *p* |Win/loss/tie| Δ nDCG@20 | *p* |
 |---|---|---:|---:|---|---:|---|---:|---:|
@@ -1212,7 +1245,7 @@ panel B is about two thirds of that in panel A, and the full set of results is i
 both R@100 and nDCG@20, and a larger improvement in the subgroup with low lexical overlap. In the
 first split R@100 improved significantly on the secondary configuration under the paired bootstrap,
 but the nDCG clause was not met. The prespecified configuration did not reach significance, and the low-overlap clause was
-contradicted (Table 6; S9). Under the first preregistration the verdict recorded for that split
+contradicted (Table 7; S9). Under the first preregistration the verdict recorded for that split
 was "supported for the primary outcome only". In the second split the same structure appeared, but
 the preregistration required simultaneous improvement on both metrics, so the verdict is not
 supported. We do not retract either verdict.
@@ -1226,10 +1259,7 @@ reproduced. That value does not separate the case of no effect from the case of 
 (§6.3).
 
 **Premises for reading the two verdicts.** The ground truth is partial, so we ran the two checks of
-§4.5, and the difference held after merging examiner citations of foreign counterparts. The queries
-of panel B carry a sparse ontology signal. The shrinkage of the effect runs in the same direction as
-that property, which the preregistration document describes before unsealing. Of
-the five conditions under which an effect may be described as certain, one is met, so we do not use
+§4.5, and the difference held thereafter. Of the five conditions under which an effect may be described as certain, one is met, so we do not use
 that expression. The three premises in full and the quantification of the residual vulnerability are
 in [S9](../../supplementary/en/S9-retrieval-evaluation-detail.md).
 
@@ -1242,9 +1272,7 @@ The layer-contribution check was rejected: which layer produces the contribution
 by the ablations. The remaining twelve rows and the verdicts on them are in S9.
 
 That most ablations do not reach significance admits two explanations, absence of layer contribution
-and pressure from the reranking ceiling, and the two are not separated. In the second confirmatory
-split A8 is again exactly 0.0000, and the gain appeared in queries whose vocabulary already
-overlapped and in queries whose positives are entirely Korean. The ontology as a whole contributes,
+and pressure from the reranking ceiling, and the two are not separated. The ontology as a whole contributes,
 but which axis produces that contribution is not separated. The scope of the claims the ablations
 support, and the resource limit on the rejection-ground axis, are in
 [S9](../../supplementary/en/S9-retrieval-evaluation-detail.md).
@@ -1263,8 +1291,7 @@ metrics, and the recall-by-depth curves were moved in full to
 
 The same diagnosis shows that the concept path reaches documents different from those the text path
 reaches. Superiority of the concept path is not supported by these values. The decomposition of
-recall, the quantification of the upper bound on reachability, and the factors that overstate the
-foreign-language subpool are in
+recall and the quantification of the upper bound on reachability are in
 [S9](../../supplementary/en/S9-retrieval-evaluation-detail.md).
 
 ## 5.4 Scope of faults detected by the cross-task condition alone (EP2)
@@ -1312,8 +1339,9 @@ detection power is preserved and only the detecting component changes (full hist
 [S2](../../supplementary/en/S2-fault-injection-v09.md)).
 
 We report the boundary of this discriminative power as well. Detection is sensitive to the threshold
-of the distribution check: the 12/45 at the prespecified τ=0.05 falls to 4/45 at τ=0.10 and rises to
-17/45 at τ=0.00 (Table 7). Even at the prespecified threshold, 33 of the 45 faults were not
+of the distribution check; the switching points are in Table 8 and the detection counts and test
+results across the frozen grid are in [S2](../../supplementary/en/S2-fault-injection-v09.md).
+Even at the prespecified threshold, 33 of the 45 faults were not
 detected by T3 alone. The 95% one-sided upper bound on the false-positive rate is 10.5%. The
 formal layer L2 also has, in effect, no logical constraint capable of detecting such faults. The
 T-Box carries no disjointness or cardinality constraints, so an injected type contradiction does not
@@ -1345,18 +1373,19 @@ had 0 injection sites in the holdout model and so never entered the graph. Count
 was never injected as a detection failure would record the gate as having missed what it never had
 the chance to miss. This account of the denominator does not account for the result on the 12. Two
 separate grounds keep that 0 from being carried over into a failure of the gate itself. First, we call the range over which a competency question actually returns rows on the
-target instances its **observable surface**. The observable surface of the holdout model was 7 of
-the 15 competency questions, and in the development model all 15 returned rows. This deficit
+target instances its **observable surface**. That surface was narrower in the holdout model than in
+the development model. This deficit
 therefore lies in the population range of the holdout instances rather than in the questions. Second, in all 21
 instances the four formal layers and the cross-task condition were alike non-detecting, so this
 sample does not permit comparison of T3 against the other layers. The cause is the direction of the
-predicate. The development model expresses containment with `brick:hasPart`, which gave 90 injection
-sites, whereas the holdout model uses `brick:isPartOf`. A fault specification must therefore be
+predicate, the two models expressing containment with different predicates. A fault specification must therefore be
 redefined for the modeling conventions of the target resource. We do not convert that into a
-statement that the gate missed cross-task faults.
+statement that the gate missed cross-task faults. The observable-surface counts and the injection
+sites per predicate are in
+[S8-A](../../supplementary/en/S8-second-domain-port.md#s8-a--release-lineage-and-operating-cost).
 
 On the real release lineage we adjudicated five adjacent release pairs under two migration
-conditions (Table 7). Partial acceptance holds in two verdicts, and the pair that passed is
+conditions (Table 8). Partial acceptance holds in two verdicts, and the pair that passed is
 v1.4.1 → v1.4.2, which the preregistration had named in advance as a negative control. The remaining
 eight verdicts were all unmet at the delta-structure check, and the cross-task condition passed in
 all ten verdicts. What was unmet is a declaration convention of the resource: it declares domains
@@ -1475,7 +1504,7 @@ reduces that proportion.
 studies to test. The first is verification of transfer: an improvement in retrieval metrics is not
 generalized automatically to review efficiency or to the quality of generated answers. Our verdict
 runs in that direction, but whether the failure arose from absence of transfer or from insufficient
-power is not separated (the width of the failure is in Table 7). The hypothesis weakens if
+power is not separated (the width of the failure is in Table 8). The hypothesis weakens if
 improvements in retrieval metrics transfer consistently to review counts or generation quality. The
 second follow-up hypothesis is **port-layer separation**. When an acceptance gate is moved to another resource, the
 mechanism — the layer structure, the decision rule, and the execution — transfers. The
@@ -1489,12 +1518,12 @@ earlier results are read, since reading the 0 detections on the second resource 
 gate would conflate mechanism with specification.
 
 **Stability region of the verdicts.** All four gate verdicts are decided by comparison against a
-threshold, and those thresholds are normative choices taken from testing convention (§3.5). Table 7
+threshold, and those thresholds are normative choices taken from testing convention (§3.5). Table 8
 reports how far each verdict sits from its switching point. The T1 rejection has ample margin and
 the T4 failure sits at the edge. T3 detection is sensitive to the threshold of the distribution
 check and loses support at the upper end of the frozen grid.
 
-**Table 7. Decision stability — the point at which each verdict switches under the frozen thresholds.**
+**Table 8. Decision stability — the point at which each verdict switches under the frozen thresholds.**
 
 |Condition|Frozen threshold|Observed|Verdict|Switching point|
 |---|---|---|---|---|
