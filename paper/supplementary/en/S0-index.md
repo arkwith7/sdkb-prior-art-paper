@@ -23,12 +23,12 @@ hand.
 
 | Identifier | Content | Return to the manuscript |
 |---|---|---|
-| [S1-T1](S1-appendices-v09.md#s1-t1--classification-and-uses-of-the-31-competency-questions) | Classification and uses of the 31 competency questions | §3.4 |
-| [S3-T1](S3-unexecuted-design-v09.md#s3-t1--six-gaps-in-validation-strength-and-generalizability) | Specifications for resolving the six gaps | §6.4 |
-| [S8-T1](S8-second-domain-port.md#s8-t1--release-lineage-and-operational-cost) | Release lineage and operational cost of resource 2 | §5.5 |
-| [S9-T1](S9-retrieval-evaluation-detail.md#s9-t1--complete-subgroup-and-ablation-results) | Subgroup and ablation results | §5.3.2 |
-| [S9-T2](S9-retrieval-evaluation-detail.md#s9-t2--exploratory-baselines-and-original-sample-summary) | Exploratory baselines and original-sample summary | §5.3.1 |
-| [S9-T3](S9-retrieval-evaluation-detail.md#s9-t3--delta-counts-and-eligibility-screening-of-the-controlled-resource-substitution) | Delta counts, eligibility screening, and reproduction checks of the controlled resource substitution | §5.2 |
+| [S1-A](S1-appendices-v09.md#s1-a--classification-and-uses-of-the-31-competency-questions) | Classification and uses of the 31 competency questions | §3.4 |
+| [S3-A](S3-unexecuted-design-v09.md#s3-a--six-gaps-in-validation-strength-and-generalizability) | Specifications for resolving the six gaps | §6.4 |
+| [S8-A](S8-second-domain-port.md#s8-a--release-lineage-and-operational-cost) | Release lineage and operational cost of resource 2 | §5.5 |
+| [S9-A](S9-retrieval-evaluation-detail.md#s9-a--complete-subgroup-and-ablation-results) | Subgroup and ablation results | §5.3.2 |
+| [S9-B](S9-retrieval-evaluation-detail.md#s9-b--exploratory-baselines-and-original-sample-summary) | Exploratory baselines and original-sample summary | §5.3.1 |
+| [S9-C](S9-retrieval-evaluation-detail.md#s9-c--delta-counts-and-eligibility-screening-of-the-controlled-resource-substitution) | Delta counts, eligibility screening, and reproduction checks of the controlled resource substitution | §5.2 |
 
 `S4` is a retired number and is not reused.
 

@@ -54,9 +54,9 @@ development model expresses the building–floor–room containment with `brick:
 90 injection sites and detected faults, whereas the holdout model expresses the same relation with
 `brick:isPartOf`. What was observed is that a fault specification does not transfer unchanged
 across resources; porting a procedure and porting a fault specification are different problems. The
-remedy is deficit ⑨ in S3-T1.
+remedy is deficit ⑨ in S3-A.
 
-## S8-T1 · Release lineage and operational cost
+## S8-A · Release lineage and operational cost
 
 > Moved from manuscript §5.5. [Return to manuscript §5.5](../../manuscript/en_source.md#55-boundary-between-procedure-transfer-and-fault-specification-transfer-ep5)
 

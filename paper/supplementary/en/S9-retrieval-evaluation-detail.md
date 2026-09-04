@@ -62,7 +62,7 @@ renumbering them would break the correspondence with the manuscript.
 | ⑦ | Absence of a strong multilingual baseline | **Partially resolved** — a multilingual fusion baseline was added and baseline strength did not change significantly (§4.3 · Table 5). Because both encoders share a backbone family, **family diversity is not achieved** | Re-evaluation including an encoder from a different family |
 | ⑧ | Expert relevance judgments not carried out | The protocol was frozen but no judgments were made (§4.4). Vulnerability is quantified as the minimum number of judgment flips and **partially reduced** by merging exogenous labels (§5.3.1) | Two-rater blinded independent judgment of a **targeted sample** of top-ranked uncited candidates, with κ reported |
 
-## S9-T1 · Complete subgroup and ablation results
+## S9-A · Complete subgroup and ablation results
 
 > Moved from manuscript §5.3.2. [Return to manuscript §5.3.2](../../manuscript/en_source.md#532-subgroups-and-ablation)
 
@@ -77,7 +77,7 @@ renumbering them would break the correspondence with the manuscript.
 Of all 17 rows, the twelve not shown above remain in the frozen full version in S5. In the second
 confirmatory split, the same removal of the expert-matching-only layer was 0.0000 and was not reproduced.
 
-## S9-T2 · Exploratory baselines and original-sample summary
+## S9-B · Exploratory baselines and original-sample summary
 
 > Moved from manuscript Table 6. [Return to manuscript §5.3.1](../../manuscript/en_source.md#531-retrieval-performance-and-the-verdicts-of-the-confirmatory-checks)
 
@@ -86,7 +86,7 @@ Their split-level values and the original-sample win/loss/tie summary remain in 
 retrieval table in S5. Manuscript Table 6 retains only Text Hybrid, Text+Ontology, and +ClaimFeature,
 the three configurations directly used in the verdict.
 
-## S9-T3 · Delta counts and eligibility screening of the controlled resource substitution
+## S9-C · Delta counts and eligibility screening of the controlled resource substitution
 
 > Moved from manuscript §5.2. [Return to manuscript §5.2](../../manuscript/en_source.md#52-increased-document-concept-linking-and-an-actual-rejection-by-the-retrieval-condition-ep3)
 

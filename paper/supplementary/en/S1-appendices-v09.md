@@ -242,7 +242,7 @@ The five are the publishable core, the development and validation qrel, the test
 until evaluation (hash-pinned, with an access log), derived features generated independently of the
 qrel, and provenance. Pinning does not constrain improvement in later versions.
 
-## S1-T1 · Classification and uses of the 31 competency questions
+## S1-A · Classification and uses of the 31 competency questions
 
 > Moved from manuscript §3.4. [Return to manuscript §3.4](../../manuscript/en_source.md#34-task-level-acceptance-after-formal-validation)
 

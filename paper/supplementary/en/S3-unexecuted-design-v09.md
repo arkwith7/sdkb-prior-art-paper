@@ -1,6 +1,6 @@
 # S3 · Evaluation options designed but not executed
 
-## S3-T1 · Six gaps in validation strength and generalizability
+## S3-A · Six gaps in validation strength and generalizability
 
 > Moved from manuscript §6.4. [Return to manuscript §6.4](../../manuscript/en_source.md#64-limitations-competing-explanations-and-a-specification-of-the-deficits)
 

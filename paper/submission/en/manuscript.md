@@ -1068,7 +1068,7 @@ document-to-concept linking density, not the T-Box class count. Under those cond
 prespecified resource-side quantity indicator increased, and formal validation L0–L3 passed in
 full. The snapshot, triple, vocabulary, and link counts, the freeze list, the screening items, and
 the reproduction checks are in
-[S9-T3](../../supplementary/en/S9-retrieval-evaluation-detail.md#s9-t3--delta-counts-and-eligibility-screening-of-the-controlled-resource-substitution).
+[S9-C](../../supplementary/en/S9-retrieval-evaluation-detail.md#s9-c--delta-counts-and-eligibility-screening-of-the-controlled-resource-substitution).
 
 **Table 5. Retrieval performance when only the resource bundle is substituted (test, 198 queries, family Recall@100).**
 
