@@ -664,6 +664,14 @@ the evaluation set was unsealed. They are normative choices taken from testing c
 not calibrated against reindexing variation or a practitioner-tolerated drop. That deficit and the
 method of calibration appear under deficit ④ in S3.
 
+The following states what each condition asks and what decides it.
+
+| Condition | Question | Metric | Decision statistic | Threshold | Evidence |
+|---|---|---|---|---|---|
+| T1 | Has recall at review depth 100 fallen? | family-level Recall@100 (§4.5) | Lower bound of a query-level paired bootstrap interval, 10,000 resamples | \(\epsilon\) = 0.02 | §5.2, §5.3.1 |
+| T2 | Is there a local regression in a subgroup? | Recall@100 by subgroup | Maximum drop across subgroups, deterministic rule | \(\delta\) = 0.05 | §5.2, §5.3.2 |
+| T3 | Do the query paths of other tasks regress? | CQ v2 pass rate by suite | Pass-rate comparison across generations, deterministic rule | \(\tau\) = 0.05 | §5.2, §5.4 |
+
 T2 carries a conservatism that we stated before results were seen. T2 compares the maximum subgroup
 drop against \(\delta\) by a deterministic rule and does not use the lower bound of a per-subgroup
 interval. A chance drop in a small subgroup can therefore drive the verdict. When there are few
@@ -805,7 +813,11 @@ what makes the control valid. B0, B2, and B4 are integrity controls and B3 is a 
 should not respond to an ontology change. B5 is the exposure control that responds most directly,
 and P0 and P1 are the downstream sensors that produce the verdict of condition T1. Observation
 confirmed the distinction. When only the resource bundle was substituted, the values of B0, B2, B3,
-and B4 were unchanged and only the Ontology-only configuration moved, by 27% (Table 5). The role of
+and B4 were unchanged and only the Ontology-only configuration moved, by 27% (Table 5). A single
+configuration would not sustain this division of roles. Had only the exposure control been
+observed, the same substitution would have read as an improvement in recall. The downstream
+sensors instead registered a decline, and the release was rejected (§5.2). Approval of a resource
+change is decided at the downstream sensors, not at the exposure control. The role of
 each configuration and the observation it requires are in
 [S5](../../supplementary/en/S5-submission-full-v2.md). That file also gives the reasons for using
 Titan Embed v2 alone as the dense baseline B2, and the history of adding a multilingual
