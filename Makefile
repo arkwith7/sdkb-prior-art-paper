@@ -561,11 +561,10 @@ figures-en:
 # 지면 기준 글자 크기(F2′)와 상자 기하. **기하는 차단이고 글자 크기는 경고다** —
 # 기하 위반은 2026-09-04 에 0 으로 만들었고(커밋 a388da3), 캔버스를 지면 폭으로 내리는
 # 재설계는 PLAN-089 2단계다. 산출물을 쓰지 않고 메모리에서 재며 그림을 바꾸지 않는다.
-# **영문은 아직 경고다** — 라벨이 상자를 넘는 자리가 남아 있고(도입 시 19건) 그것을 줄이는
-# 작업이 PLAN-089 5단계다. 해소되면 `--strict` 를 붙여 국문과 같은 차단으로 올린다.
+# **영문도 차단이다** — 도입 시 19건이던 라벨 이탈을 PLAN-089 에서 0 으로 만들었다.
 figure-typo:
 	uv run python scripts/figure_typography.py --strict
-	uv run python scripts/figure_typography.py --lang en
+	uv run python scripts/figure_typography.py --strict --lang en
 
 # --- 온톨로지 탐색·모니터링 로컬 웹앱 (읽기 전용) ---
 serve:

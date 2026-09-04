@@ -66,104 +66,68 @@ def _sig(v: float, nd: int = 4) -> str:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 그림 1 — 연구 개요도
+# 그림 1 — 통제된 자원 교체의 판정 경로 (PLAN-089 · 구 개요도를 대체한다)
 # ═══════════════════════════════════════════════════════════════════════════
 def fig_overview(out: Path | None = None) -> Path:
-    """산출물 셋 · 승인 절차 · 평가 에피소드의 측정 지점을 한 장에 담는다.
+    """자원 변경 하나가 승인 절차를 지나 거부되기까지를 한 장에 담는다.
 
-    읽는 순서는 위에서 아래다. 위 띠가 **무엇을 만들었는가**(A1), 가운데 띠가 **변경을
-    어떻게 승인하는가**(A2), 아래 띠가 **그 둘을 무엇으로 평가하였는가**(A3)이다.
+    **왜 개요도를 대체하는가.** 서론이 *"그림 1이 이 사건의 지도이다"* 라고 적는데 그
+    *"사건"* 은 자원 변경이 형식 검증을 전부 통과하고 태스크 조건에서 거부된 일, 곧 기여 ②
+    (통제된 거부 사례)다. 구 개요도는 산출물 셋의 카탈로그여서 그 문장을 지탱하지 못하였고,
+    판정은 구 그림 4의 셋째 열과 구 그림 6의 한 행에 나뉘어 있었다(PLAN-089 §1.1).
+
+    **읽는 방향은 위에서 아래 하나다.** 왼쪽이 단계와 그 단계가 속한 산출물, 오른쪽이 그
+    단계에서 실제로 관측된 값이다. 구 개요도의 세 띠는 이름표로 남아 한 사건의 경로 위에서
+    산출물 둘과 평가환경 하나를 차례로 지난다.
+
+    **거부를 결함으로 적지 않는다** — §0.8 문구 사전대로 *"사전 지정 비열등 기준을 충족하지
+    못한 변경"* 이다. 수치는 한 개도 이 파일에 없다(규격 F6).
     """
     out = out or FIGURES / "concept_overview.svg"
-    fig, ax = _canvas(11.0, 6.6)
+    # 캔버스를 9인치로 잡는다 — 지면 7인치 기준 축소율이 0.78 이므로 10.3pt 이상이면
+    # 지면에서 8pt 를 넘는다(규격 F2′). 구 개요도의 11인치·7pt 는 지면에서 4.5pt 였다.
+    fig, ax = _canvas(9.0, 6.0)
 
-    # ── A1 · 산출물 자원 (위 띠) ──────────────────────────────────────────────
-    # 아래 줄 하나가 **관통 예시의 정박점**이다(PLAN-087 §4.2 그림 1). 이 줄이 없으면 캡션의
-    # 첫 문장("거절특허 한 건의 사실이 세 태스크가 공유하는 노드에 모인다")이 도판에 없는
-    # 것을 진술하게 된다 — 규격 F2 는 캡션을 주장으로 쓰라 하고, F3 은 그 주장이 예시 위에
-    # 있음을 표식으로 밝히라 한다. 수치는 넣지 않는다: 예시는 구조를 설명할 뿐이다.
-    _rbox(ax, 0.035, 0.700, 0.60, 0.260,
-          title=T("overview.a1_title"),
-          body="", fill="#FFFFFF", edge=BORDER, ts=11)
-    _fit_text(ax, 0.058, 0.855, T("overview.core_head"), 0.560, where="그림1 코어 제목",
-              ha="left", va="center", fontsize=9, fontweight="bold", color=MUTE)
-    _fit_text(ax, 0.058, 0.826, T("overview.core_body"), 0.560, where="그림1 코어 본문",
-              ha="left", va="center", fontsize=8.2, color=MUTE)
-    for x, key, color, fill in (
-        (0.170, "overview.view_match", MUTE, "#F1F3F6"),
-        (0.350, "overview.view_priorart", TOBE, TOBE_FILL),
-        (0.530, "overview.view_foresight", MUTE, "#F1F3F6"),
-    ):
-        _chip(ax, x, 0.772, T(key), color=color, fill=fill)
-    ax.text(0.350, 0.740, T("overview.quant_target"), ha="center", va="center",
-            fontsize=7.6, color=TOBE)
-    _fit_text(ax, 0.058, 0.716, T("overview.example_anchor"), 0.560,
-              where="그림1 예시 정박점",
-              ha="left", va="center", fontsize=7.4, color=MUTE)
-
-    # 변경 유입 — 자원은 고정된 것이 아니라 갱신된다.
-    _rbox(ax, 0.680, 0.740, 0.285, 0.190,
-          title=T("overview.delta_title"), body=T("overview.delta_body"),
-          fill="#FFFFFF", edge=BORDER, ts=10.5, bs=8.4)
-    _arrow(ax, 0.822, 0.735, 0.822, 0.625, color=INK, lw=1.8)
-
-    # ── A2 · 승인 게이트 (가운데 띠) ─────────────────────────────────────────
-    _rbox(ax, 0.035, 0.330, 0.930, 0.290, title="", body="",
-          fill="#FBFCFD", edge=BORDER)
-    _fit_text(ax, 0.055, 0.585, T("overview.a2_title"), 0.900, where="그림1 A2 제목",
-              ha="left", va="center", fontsize=11, fontweight="bold", color=INK)
-
-    stages = [
-        (0.055, 0.200, T("overview.stage_l0l3"), T("overview.stage_l0l3_body"),
-         "#FFFFFF", BORDER, INK),
-        (0.288, 0.170, T("overview.stage_index"), T("overview.stage_index_body"),
-         "#FFFFFF", BORDER, INK),
-        (0.491, 0.195, T("overview.stage_t12"), T("overview.stage_t12_body"),
-         TOBE_FILL, TOBE_EDGE, TOBE),
-        (0.719, 0.140, T("overview.stage_t3"), T("overview.stage_t3_body"),
-         TOBE_FILL, TOBE_EDGE, TOBE),
-        (0.892, 0.073, T("overview.stage_verdict"), T("overview.stage_verdict_body"),
-         GREEN_FILL, GREEN, GREEN),
+    # 행마다 높이가 다르다 — T1 행만 조건 넷 가운데 하나가 거부된 근거를 함께 적는다.
+    rows = [
+        (0.140, "proof.step_delta", "proof.step_delta_tag", "proof.step_delta_body",
+         None, None, "#FFFFFF", BORDER, INK),
+        (0.125, "proof.step_resource", "proof.step_resource_tag", "proof.step_resource_body",
+         "proof.step_resource_mark", GREEN, "#FFFFFF", BORDER, INK),
+        (0.125, "proof.step_formal", "proof.step_formal_tag", "proof.step_formal_body",
+         "proof.step_formal_mark", GREEN, "#FFFFFF", BORDER, INK),
+        (0.230, "proof.step_task", "proof.step_task_tag", "proof.step_task_body",
+         "mark.fail", ASIS, ASIS_FILL, ASIS_EDGE, ASIS),
     ]
-    for x, w, title, body, fill, edge, tcolor in stages:
-        _rbox(ax, x, 0.395, w, 0.150, title=title, body=body,
-              fill=fill, edge=edge, tcolor=tcolor, ts=10, bs=8.2)
-    for x1, x2 in ((0.259, 0.285), (0.461, 0.488), (0.689, 0.716),
-                   (0.862, 0.889)):
-        _arrow(ax, x1, 0.470, x2, 0.470, color=INK, lw=1.6, ms=12)
 
-    # T4 는 승인식 밖이다 — 점선과 별도 자리가 그 지위를 진다(§4.5.1).
-    ax.annotate("", xy=(0.928, 0.372), xytext=(0.928, 0.393),
-                arrowprops=dict(arrowstyle="-|>", linestyle=(0, (3, 2)),
-                                color=GOLD, lw=1.4))
-    _fit_text(ax, 0.916, 0.352, T("overview.t4_note"), 0.880, where="그림1 T4 주석",
-              ha="right", va="center", fontsize=8, color=GOLD)
+    y, gap = 0.960, 0.030
+    label_w, body_x, body_w = 0.250, 0.300, 0.590
+    for i, (h, title, tag, body, mark, mcolor, fill, edge, tcolor) in enumerate(rows):
+        y -= h
+        _rbox(ax, 0.020, y, label_w, h, title=T(title), body=T(tag),
+              fill=fill, edge=edge, tcolor=tcolor, ts=12, bs=10.3, pad=0.004)
+        _fit_text(ax, body_x, y + h - 0.030, T(body), body_w, where=f"그림1 {title}",
+                  ha="left", va="top", fontsize=10.5, color=INK, linespacing=1.7)
+        if mark:
+            label = T(mark) if mark.startswith("proof.") else _mark(mark)
+            _chip(ax, 0.935, y + h - 0.052, label, color=mcolor,
+                  fill=GREEN_FILL if mcolor is GREEN else ASIS_FILL, fs=10.5)
+        if i == len(rows) - 1:
+            # **다른 두 조건은 충족하였다.** 이 줄이 없으면 도판이 "게이트가 통째로
+            # 거부하였다" 로 읽히고, 그것은 판정보다 강한 진술이다.
+            _fit_text(ax, body_x, y + 0.098, T("proof.step_task_sub"), body_w + 0.090,
+                      where="그림1 T1 부가 조건",
+                      ha="left", va="top", fontsize=10.3, color=MUTE, linespacing=1.7)
+        _arrow(ax, 0.145, y - 0.006, 0.145, y - gap + 0.006, color=INK, lw=1.8, ms=13)
+        y -= gap
 
-    # ── A3 · 평가 벤치마크 (아래 띠) ─────────────────────────────────────────
-    # **화살표를 쓰지 않는다.** 다섯 에피소드의 측정 대상이 위 두 띠에 흩어져 있어 선으로
-    # 이으면 교차가 생기고, 교차한 선은 단색 인쇄에서 읽히지 않는다(규격 F1). 대상은
-    # 상자 안의 한 줄이 지시한다.
-    _fit_text(ax, 0.055, 0.262, T("overview.a3_title"), 0.900, where="그림1 A3 제목",
-              ha="left", va="center", fontsize=11, fontweight="bold", color=INK)
-    # 다섯째 상자의 아래 줄은 **검출 수가 아니라 관찰면**이다. 분모가 없는 0 을 적으면
-    # 그림이 "게이트가 놓쳤다"고 말하게 된다(§0.8 판정 문구 사전과 같은 규율).
-    episodes = [(0.128, "ep1"), (0.314, "ep2"), (0.500, "ep3"),
-                (0.686, "ep4"), (0.872, "ep5")]
-    # 상자 폭과 여백은 **간격에서 역산한다.** 중심 간격이 0.186 이므로 실제 자리
-    # `w + 2·pad` 가 그보다 작아야 한다 — 구 기하는 0.178 + 0.012 = 0.190 이어서 인접
-    # 상자마다 0.004 씩 겹쳐 있었다(실측). 0.170 + 0.006 = 0.176 이면 0.010 이 남는다.
-    for x, ep in episodes:
-        _rbox(ax, x - 0.085, 0.045, 0.170, 0.170, title=T(f"overview.{ep}_title"),
-              body="", fill="#FFFFFF", edge=BORDER, ts=8.4, pad=0.003)
-        _fit_text(ax, x, 0.150,
-                  T("overview.ep_target", target=T(f"overview.{ep}_target")),
-                  0.140, where=f"그림1 {ep} 측정 대상",
-                  ha="center", va="center", fontsize=7.2, fontweight="bold", color=TOBE)
-        _fit_text(ax, x, 0.090, T(f"overview.{ep}_body"), 0.140,
-                  where=f"그림1 {ep} 본문",
-                  ha="center", va="center", fontsize=7.0, color=MUTE, linespacing=1.45)
-    ax.text(0.5, 0.018, T("overview.dsr_cycle"), ha="center", va="center",
-            fontsize=7.2, color=MUTE)
+    # 판정 — 절차의 바깥이 아니라 끝이다. 상자 하나로 폭 전체를 쓴다.
+    y -= 0.140
+    _rbox(ax, 0.020, y, 0.960, 0.140, title=T("proof.step_verdict"),
+          body=T("proof.step_verdict_body"), fill=ASIS_FILL, edge=ASIS_EDGE,
+          tcolor=ASIS, ts=12, bs=10.5, align="left", pad=0.004)
+    _fit_text(ax, 0.980, 0.020, T("proof.footer"), 0.940, where="그림1 지위",
+              ha="right", va="bottom", fontsize=10.3, style="italic", color=MUTE)
     return _save(fig, out)
 
 
@@ -233,7 +197,7 @@ def fig_layer_mismatch(out: Path | None = None) -> Path:
                  T("layer.obs3_status"), ASIS, ASIS_FILL, ASIS_EDGE)
 
     # ── 결론 띠 ──────────────────────────────────────────────────────────────
-    _fit_text(ax, 0.5, 0.022, T("layer.conclusion"), 0.940, where="그림2 결론 띠",
+    _fit_text(ax, 0.5, 0.022, T("layer.conclusion"), 0.900, where="그림2 결론 띠",
               ha="center", va="center", fontsize=9.4, fontweight="bold", color=INK,
               bbox=dict(boxstyle="round,pad=0.5", fc="#F7F9FB", ec=BORDER, lw=1.0))
     return _save(fig, out)
@@ -341,6 +305,14 @@ def fig_tbox_views(out: Path | None = None) -> Path:
               ha="center", va="center", fontsize=8.6, color=MUTE)
     _fit_text(ax, 0.5, 0.085, T("tbox.core_note"), 0.910, where="그림3 코어 주석",
               ha="center", va="center", fontsize=8, color=MUTE)
+
+    # ── 자원 변경의 유입 ─────────────────────────────────────────────────────
+    # 구 개요도의 ΔG 상자를 여기로 옮긴다(PLAN-089 이동 대장). 이 자원이 고정된 것이
+    # 아니라는 사실이 그림 4의 승인 절차가 존재하는 이유이며, 캡션이 그것을 주장한다.
+    # 화살표를 쓰지 않는다 — 코어 상자와 이 줄 사이의 여백이 0.019 뿐이라 선을 넣으면
+    # 글자를 지난다(실측). 방향은 문장이 진술하고 색이 통로 표기와 묶는다.
+    _fit_text(ax, 0.5, 0.010, T("tbox.delta_in"), 0.930, where="그림3 자원 변경 유입",
+              ha="center", va="bottom", fontsize=9, color=GOLD)
     return _save(fig, out)
 
 
@@ -348,56 +320,43 @@ def fig_tbox_views(out: Path | None = None) -> Path:
 # 그림 4 — T-gate 절차와 실제 판정
 # ═══════════════════════════════════════════════════════════════════════════
 def fig_gate_flow(out: Path | None = None) -> Path:
-    """승인 절차의 순서와 각 항의 미충족 시 처리, 그리고 실제 거부 사례의 판정.
+    """승인 절차의 순서와 각 항의 미충족 시 처리.
 
-    오른쪽 열은 통제된 자원 교체(EP3)에서 각 항이 실제로 낸 판정이다. 형식 검증을 전부
-    통과한 변경이 성능 조건 하나에서 거부되었다는 사실이 이 열에서 읽힌다.
+    **판정 열은 그림 1이 전담한다(2026-09-04 · PLAN-089).** 구 판은 셋째 열에 통제된 자원
+    교체의 판정을 함께 실었고, 그 결과 같은 판정이 두 도판에 나뉘어 어느 쪽도 완결되지
+    않았다. 여기서는 **절차만** 보이고 그 절차가 실제로 무엇을 낸는가는 그림 1이 보인다.
     """
     out = out or FIGURES / "concept_gate_flow.svg"
     fig, ax = _canvas(11.0, 7.4)
 
-    ax.text(0.175, 0.960, T("gate.col_procedure"), ha="center", va="center",
-            fontsize=10, fontweight="bold", color=INK)
-    ax.text(0.560, 0.960, T("gate.col_unmet"), ha="center", va="center",
-            fontsize=10, fontweight="bold", color=INK)
-    ax.text(0.860, 0.960, T("gate.col_verdict"), ha="center", va="center",
-            fontsize=10, fontweight="bold", color=INK)
+    ax.text(0.200, 0.960, T("gate.col_procedure"), ha="center", va="center",
+            fontsize=11, fontweight="bold", color=INK)
+    ax.text(0.680, 0.960, T("gate.col_unmet"), ha="center", va="center",
+            fontsize=11, fontweight="bold", color=INK)
 
     rows = [
-        (T("gate.row_delta"), "", "", "", "#FFFFFF", BORDER, INK),
-        (T("gate.row_formal"), T("gate.rule_formal"),
-         _mark("mark.pass"), T("gate.detail_formal"), "#FFFFFF", BORDER, INK),
-        (T("gate.row_index"), T("gate.rule_index"),
-         _mark("mark.pass"), T("gate.detail_index"), "#FFFFFF", BORDER, INK),
-        (T("gate.row_t1"), T("gate.rule_t1"),
-         _mark("mark.fail"), T("gate.detail_t1"), ASIS_FILL, ASIS_EDGE, ASIS),
-        (T("gate.row_t2"), T("gate.rule_t2"),
-         _mark("mark.pass"), T("gate.detail_t2"), TOBE_FILL, TOBE_EDGE, TOBE),
-        (T("gate.row_t3"), T("gate.rule_t3"),
-         _mark("mark.pass"), T("gate.detail_t3"), TOBE_FILL, TOBE_EDGE, TOBE),
-        (T("gate.row_merge"), "", "", "", GREEN_FILL, GREEN, GREEN),
+        (T("gate.row_delta"), "", "#FFFFFF", BORDER, INK),
+        (T("gate.row_formal"), T("gate.rule_formal"), "#FFFFFF", BORDER, INK),
+        (T("gate.row_index"), T("gate.rule_index"), "#FFFFFF", BORDER, INK),
+        (T("gate.row_t1"), T("gate.rule_t1"), TOBE_FILL, TOBE_EDGE, TOBE),
+        (T("gate.row_t2"), T("gate.rule_t2"), TOBE_FILL, TOBE_EDGE, TOBE),
+        (T("gate.row_t3"), T("gate.rule_t3"), TOBE_FILL, TOBE_EDGE, TOBE),
+        (T("gate.row_merge"), "", GREEN_FILL, GREEN, GREEN),
     ]
 
     top, h, gap = 0.905, 0.093, 0.032
-    for i, (title, rule, mark, detail, fill, edge, tcolor) in enumerate(rows):
+    for i, (title, rule, fill, edge, tcolor) in enumerate(rows):
         y = top - i * (h + gap) - h
-        _rbox(ax, 0.030, y, 0.290, h, title=title, body="",
-              fill=fill, edge=edge, tcolor=tcolor, ts=9.6)
+        _rbox(ax, 0.030, y, 0.340, h, title=title, body="",
+              fill=fill, edge=edge, tcolor=tcolor, ts=10.5, pad=0.004)
         if rule:
-            ax.text(0.348, y + h / 2, rule, ha="left", va="center",
-                    fontsize=8, color=MUTE, linespacing=1.5)
-        if mark:
-            color = ASIS if mark == _mark("mark.fail") else GREEN
-            _chip(ax, 0.760, y + h / 2, mark, color=color,
-                  fill=ASIS_FILL if mark == _mark("mark.fail") else GREEN_FILL)
-            _fit_text(ax, 0.800, y + h / 2, detail, 0.198, where="그림4 판정 상세",
-                      ha="left", va="center", fontsize=8,
-                      color=color if mark == _mark("mark.fail") else MUTE)
+            ax.text(0.410, y + h / 2, rule, ha="left", va="center",
+                    fontsize=9.5, color=MUTE, linespacing=1.5)
         if i < len(rows) - 1:
-            _arrow(ax, 0.175, y - 0.004, 0.175, y - gap + 0.004, color=INK, lw=1.6, ms=12)
+            _arrow(ax, 0.200, y - 0.006, 0.200, y - gap + 0.006, color=INK, lw=1.6, ms=12)
 
     _fit_text(ax, 0.030, 0.032, T("gate.example_footer"), 0.950, where="그림4 합성 실행 각주",
-              ha="left", va="center", fontsize=7.8, color=INK)
+              ha="left", va="center", fontsize=9, color=INK)
     return _save(fig, out)
 
 
@@ -594,10 +553,12 @@ def fig_ep_gate_matrix(out: Path | None = None) -> Path:
     for i, (tag, name, status, cells, verdict) in enumerate(rows):
         y = top - i * (h + gap) - h
         # 폭 0.145 + 여백 0.006 은 오른쪽 매트릭스(0.165 에서 시작)와 0.006 겹쳤다(실측).
-        _rbox(ax, 0.020, y, 0.135, h,
+        # 폭이 아니라 **여백과 매트릭스의 시작점**으로 푼다 — 폭을 줄이면 영문 라벨이
+        # 바닥 글자 크기에서도 들어가지 않는다.
+        _rbox(ax, 0.020, y, 0.145, h,
               title=T("matrix.row_tag", ep=tag, section=sections[tag]), body=name,
               fill="#FFFFFF", edge=BORDER, ts=10, bs=7.8, pad=0.003)
-        _rbox(ax, x0 - 0.004, y, len(cells) * (cw + cgap), h, title="", body="",
+        _rbox(ax, x0 + 0.003, y, len(cells) * (cw + cgap), h, title="", body="",
               fill="#FBFCFD", edge=BORDER)
         for cx, (mark, note) in zip(centers, cells):
             _cell(ax, cx, y + h / 2, mark, note)
@@ -619,7 +580,10 @@ def fig_detection_port_boundary(out: Path | None = None) -> Path:
     """그림 8 — SDKB 홀드아웃 검출과 제2 자원 이식의 관찰 범위를 분리한다."""
     out = out or FIGURES / "concept_detection_port_boundary.svg"
     v = figdata.load()
-    fig, ax = _canvas(11.0, 4.8)
+    # 캔버스를 키우고 아래로 음수 좌표를 쓴다 — 위쪽 관측 표의 자리를 하나도
+    # 건드리지 않고 교훈 띠만 더하기 위해서다(구 배치의 회귀를 막는다).
+    fig, ax = _canvas(11.0, 6.0)
+    ax.set_ylim(-0.30, 1.0)
     ax.text(0.04, 0.93, T("boundary.title"), ha="left", va="center",
             fontsize=12, fontweight="bold", color=INK)
 
@@ -649,6 +613,17 @@ def fig_detection_port_boundary(out: Path | None = None) -> Path:
 
     _rbox(ax, 0.04, 0.055, 0.90, 0.12, title="", body=T("boundary.scope"),
           fill=ASIS_FILL, edge=ASIS_EDGE, bs=8.5)
+
+    # ── 교훈 셋 (2026-09-04 · PLAN-089) ──────────────────────────────────────
+    # **기여 ③ 에는 담당 도판이 없었다** — §6 전체의 그림이 0 이었고, 그래서 그림만 이어
+    # 읽으면 "무엇을 배웠는가"에서 경로가 끊겼다. 판정을 올리지 않는다: 교훈은 확립된
+    # 원리가 아니라 후속 연구가 검정할 가설이며, 그 지위를 머리글이 진술한다.
+    _fit_text(ax, 0.04, -0.055, T("boundary.lessons_head"), 0.900,
+              where="그림8 교훈 머리글", ha="left", va="center",
+              fontsize=9.5, fontweight="bold", color=INK)
+    for k, key in enumerate(("boundary.lesson1", "boundary.lesson2", "boundary.lesson3")):
+        _fit_text(ax, 0.055, -0.110 - k * 0.052, T(key), 0.900,
+                  where=f"그림8 {key}", ha="left", va="center", fontsize=9, color=MUTE)
     return _save(fig, out)
 
 

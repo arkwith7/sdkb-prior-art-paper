@@ -64,7 +64,9 @@ def _measure(fig) -> tuple[list[str], list[str]]:
 
 
 def _is_normalized(ax) -> bool:
-    return ax.get_xlim() == (0.0, 1.0) and ax.get_ylim() == (0.0, 1.0)
+    """0–1 도화지인가. 세로는 아래로 넓힌 도판이 있어(그림 8 의 교훈 띠) 상한만 본다."""
+    y0, y1 = ax.get_ylim()
+    return ax.get_xlim() == (0.0, 1.0) and y1 == 1.0 and y0 <= 0.0
 
 
 def _measure_axes(ax, r, scale: float) -> tuple[list[str], list[str]]:

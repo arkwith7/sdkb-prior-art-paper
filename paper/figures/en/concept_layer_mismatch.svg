@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="697.614031pt" height="413.568pt" viewBox="0 0 697.614031 413.568" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="628.2pt" height="413.568pt" viewBox="0 0 628.2 413.568" xmlns="http://www.w3.org/2000/svg" version="1.1">
  <metadata>
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
@@ -21,124 +21,124 @@
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 413.568 
-L 697.614031 413.568 
-L 697.614031 0 
+L 628.2 413.568 
+L 628.2 0 
 L 0 0 
 z
 " style="fill: #ffffff"/>
   </g>
   <g id="axes_1">
    <g id="patch_2">
-    <path d="M 74.438416 101.403648 
-L 310.137616 101.403648 
-Q 318.730816 101.403648 318.730816 95.815296 
-L 318.730816 28.355904 
-Q 318.730816 22.767552 310.137616 22.767552 
-L 74.438416 22.767552 
-Q 65.845216 22.767552 65.845216 28.355904 
-L 65.845216 95.815296 
-Q 65.845216 101.403648 74.438416 101.403648 
+    <path d="M 39.7314 101.403648 
+L 275.4306 101.403648 
+Q 284.0238 101.403648 284.0238 95.815296 
+L 284.0238 28.355904 
+Q 284.0238 22.767552 275.4306 22.767552 
+L 39.7314 22.767552 
+Q 31.1382 22.767552 31.1382 28.355904 
+L 31.1382 95.815296 
+Q 31.1382 101.403648 39.7314 101.403648 
 z
-" clip-path="url(#pac8ade734b)" style="fill: #ffffff; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
+" clip-path="url(#pc234c6bced)" style="fill: #ffffff; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="patch_3">
-    <path d="M 74.438416 237.120768 
-L 310.137616 237.120768 
-Q 318.730816 237.120768 318.730816 231.532416 
-L 318.730816 164.073024 
-Q 318.730816 158.484672 310.137616 158.484672 
-L 74.438416 158.484672 
-Q 65.845216 158.484672 65.845216 164.073024 
-L 65.845216 231.532416 
-Q 65.845216 237.120768 74.438416 237.120768 
+    <path d="M 39.7314 237.120768 
+L 275.4306 237.120768 
+Q 284.0238 237.120768 284.0238 231.532416 
+L 284.0238 164.073024 
+Q 284.0238 158.484672 275.4306 158.484672 
+L 39.7314 158.484672 
+Q 31.1382 158.484672 31.1382 164.073024 
+L 31.1382 231.532416 
+Q 31.1382 237.120768 39.7314 237.120768 
 z
-" clip-path="url(#pac8ade734b)" style="fill: #e4eef8; stroke: #7fa8d6; stroke-width: 1.4; stroke-linejoin: miter"/>
+" clip-path="url(#pc234c6bced)" style="fill: #e4eef8; stroke: #7fa8d6; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="patch_4">
-    <path d="M 74.438416 372.837888 
-L 310.137616 372.837888 
-Q 318.730816 372.837888 318.730816 367.249536 
-L 318.730816 299.790144 
-Q 318.730816 294.201792 310.137616 294.201792 
-L 74.438416 294.201792 
-Q 65.845216 294.201792 65.845216 299.790144 
-L 65.845216 367.249536 
-Q 65.845216 372.837888 74.438416 372.837888 
+    <path d="M 39.7314 372.837888 
+L 275.4306 372.837888 
+Q 284.0238 372.837888 284.0238 367.249536 
+L 284.0238 299.790144 
+Q 284.0238 294.201792 275.4306 294.201792 
+L 39.7314 294.201792 
+Q 31.1382 294.201792 31.1382 299.790144 
+L 31.1382 367.249536 
+Q 31.1382 372.837888 39.7314 372.837888 
 z
-" clip-path="url(#pac8ade734b)" style="fill: #ffffff; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
+" clip-path="url(#pc234c6bced)" style="fill: #ffffff; stroke: #cbd5e0; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="patch_5">
-    <path d="M 124.770016 101.00448 
-Q 124.770016 129.544992 124.770016 156.073043 
-" clip-path="url(#pac8ade734b)" style="fill: none; stroke: #1a202c; stroke-width: 1.8; stroke-linecap: round"/>
-    <path d="M 127.970016 149.673043 
-L 124.770016 156.073043 
-L 121.570016 149.673043 
+    <path d="M 90.063 101.00448 
+Q 90.063 129.544992 90.063 156.073043 
+" clip-path="url(#pc234c6bced)" style="fill: none; stroke: #1a202c; stroke-width: 1.8; stroke-linecap: round"/>
+    <path d="M 93.263 149.673043 
+L 90.063 156.073043 
+L 86.863 149.673043 
 z
-" clip-path="url(#pac8ade734b)" style="fill: #1a202c; stroke: #1a202c; stroke-width: 1.8; stroke-linecap: round"/>
+" clip-path="url(#pc234c6bced)" style="fill: #1a202c; stroke: #1a202c; stroke-width: 1.8; stroke-linecap: round"/>
    </g>
    <g id="patch_6">
-    <path d="M 124.770016 236.7216 
-Q 124.770016 265.262112 124.770016 291.790163 
-" clip-path="url(#pac8ade734b)" style="fill: none; stroke: #1a202c; stroke-width: 1.8; stroke-linecap: round"/>
-    <path d="M 127.970016 285.390163 
-L 124.770016 291.790163 
-L 121.570016 285.390163 
+    <path d="M 90.063 236.7216 
+Q 90.063 265.262112 90.063 291.790163 
+" clip-path="url(#pc234c6bced)" style="fill: none; stroke: #1a202c; stroke-width: 1.8; stroke-linecap: round"/>
+    <path d="M 93.263 285.390163 
+L 90.063 291.790163 
+L 86.863 285.390163 
 z
-" clip-path="url(#pac8ade734b)" style="fill: #1a202c; stroke: #1a202c; stroke-width: 1.8; stroke-linecap: round"/>
+" clip-path="url(#pc234c6bced)" style="fill: #1a202c; stroke: #1a202c; stroke-width: 1.8; stroke-linecap: round"/>
    </g>
    <g id="patch_7">
-    <path d="M 318.117016 197.603136 
-Q 337.144816 197.603136 354.383761 197.603136 
-" clip-path="url(#pac8ade734b)" style="fill: none; stroke: #1a202c; stroke-width: 1.6; stroke-linecap: round"/>
-    <path d="M 349.583761 195.203136 
-L 354.383761 197.603136 
-L 349.583761 200.003136 
+    <path d="M 283.41 197.603136 
+Q 302.4378 197.603136 319.676746 197.603136 
+" clip-path="url(#pc234c6bced)" style="fill: none; stroke: #1a202c; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 314.876746 195.203136 
+L 319.676746 197.603136 
+L 314.876746 200.003136 
 z
-" clip-path="url(#pac8ade734b)" style="fill: #1a202c; stroke: #1a202c; stroke-width: 1.6; stroke-linecap: round"/>
+" clip-path="url(#pc234c6bced)" style="fill: #1a202c; stroke: #1a202c; stroke-width: 1.6; stroke-linecap: round"/>
    </g>
    <g id="patch_8">
-    <path d="M 365.993416 103.399488 
-L 635.451616 103.399488 
-Q 644.044816 103.399488 644.044816 97.811136 
-L 644.044816 18.376704 
-Q 644.044816 12.788352 635.451616 12.788352 
-L 365.993416 12.788352 
-Q 357.400216 12.788352 357.400216 18.376704 
-L 357.400216 97.811136 
-Q 357.400216 103.399488 365.993416 103.399488 
+    <path d="M 331.2864 103.399488 
+L 600.7446 103.399488 
+Q 609.3378 103.399488 609.3378 97.811136 
+L 609.3378 18.376704 
+Q 609.3378 12.788352 600.7446 12.788352 
+L 331.2864 12.788352 
+Q 322.6932 12.788352 322.6932 18.376704 
+L 322.6932 97.811136 
+Q 322.6932 103.399488 331.2864 103.399488 
 z
-" clip-path="url(#pac8ade734b)" style="fill: #f7e8ea; stroke: #d98a92; stroke-width: 1.4; stroke-linejoin: miter"/>
+" clip-path="url(#pc234c6bced)" style="fill: #f7e8ea; stroke: #d98a92; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="patch_9">
-    <path d="M 365.993416 239.116608 
-L 635.451616 239.116608 
-Q 644.044816 239.116608 644.044816 233.528256 
-L 644.044816 154.093824 
-Q 644.044816 148.505472 635.451616 148.505472 
-L 365.993416 148.505472 
-Q 357.400216 148.505472 357.400216 154.093824 
-L 357.400216 233.528256 
-Q 357.400216 239.116608 365.993416 239.116608 
+    <path d="M 331.2864 239.116608 
+L 600.7446 239.116608 
+Q 609.3378 239.116608 609.3378 233.528256 
+L 609.3378 154.093824 
+Q 609.3378 148.505472 600.7446 148.505472 
+L 331.2864 148.505472 
+Q 322.6932 148.505472 322.6932 154.093824 
+L 322.6932 233.528256 
+Q 322.6932 239.116608 331.2864 239.116608 
 z
-" clip-path="url(#pac8ade734b)" style="fill: #fbf3e4; stroke: #dcc08a; stroke-width: 1.4; stroke-linejoin: miter"/>
+" clip-path="url(#pc234c6bced)" style="fill: #fbf3e4; stroke: #dcc08a; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="patch_10">
-    <path d="M 365.993416 374.833728 
-L 635.451616 374.833728 
-Q 644.044816 374.833728 644.044816 369.245376 
-L 644.044816 289.810944 
-Q 644.044816 284.222592 635.451616 284.222592 
-L 365.993416 284.222592 
-Q 357.400216 284.222592 357.400216 289.810944 
-L 357.400216 369.245376 
-Q 357.400216 374.833728 365.993416 374.833728 
+    <path d="M 331.2864 374.833728 
+L 600.7446 374.833728 
+Q 609.3378 374.833728 609.3378 369.245376 
+L 609.3378 289.810944 
+Q 609.3378 284.222592 600.7446 284.222592 
+L 331.2864 284.222592 
+Q 322.6932 284.222592 322.6932 289.810944 
+L 322.6932 369.245376 
+Q 322.6932 374.833728 331.2864 374.833728 
 z
-" clip-path="url(#pac8ade734b)" style="fill: #f7e8ea; stroke: #d98a92; stroke-width: 1.4; stroke-linejoin: miter"/>
+" clip-path="url(#pc234c6bced)" style="fill: #f7e8ea; stroke: #d98a92; stroke-width: 1.4; stroke-linejoin: miter"/>
    </g>
    <g id="text_1">
     <!-- Resource indicators -->
-    <g style="fill: #1a202c" transform="translate(80.576416 45.579264) scale(0.105 -0.105)">
+    <g style="fill: #1a202c" transform="translate(45.8694 45.579264) scale(0.105 -0.105)">
      <defs>
       <path id="NotoSansCJKjp-Bold-33" d="M 1530 2541 
 L 1530 3987 
@@ -365,7 +365,7 @@ z
    </g>
    <g id="text_2">
     <!-- Concepts per document 1.545 → 3.779 (2.4×) -->
-    <g style="fill: #5a6472" transform="translate(80.576416 65.848574) scale(0.084 -0.084)">
+    <g style="fill: #5a6472" transform="translate(45.8694 65.848574) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Regular-24" d="M 2413 -83 
 C 3021 -83 3482 160 3853 589 
@@ -784,7 +784,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-a" transform="translate(2076.71875 0)"/>
     </g>
     <!-- Concept vocabulary 141 → 199 -->
-    <g style="fill: #5a6472" transform="translate(80.576416 77.495043) scale(0.084 -0.084)">
+    <g style="fill: #5a6472" transform="translate(45.8694 77.495043) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Regular-57" d="M 1338 0 
 L 2022 0 
@@ -901,7 +901,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-f6ba" transform="translate(1373.796875 0)"/>
     </g>
     <!-- L0–L3 all Pass -->
-    <g style="fill: #5a6472" transform="translate(80.576416 90.183637) scale(0.084 -0.084)">
+    <g style="fill: #5a6472" transform="translate(45.8694 90.183637) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Regular-2d" d="M 646 0 
 L 3290 0 
@@ -968,7 +968,7 @@ z
    </g>
    <g id="text_3">
     <!-- Resource layer -->
-    <g style="fill: #5a6472" transform="translate(60.145853 94.605834) rotate(-90) scale(0.09 -0.09)">
+    <g style="fill: #5a6472" transform="translate(25.438838 94.605834) rotate(-90) scale(0.09 -0.09)">
      <defs>
       <path id="NotoSansCJKjp-Bold-4d" d="M 1395 -90 
 C 1613 -90 1766 -51 1875 -6 
@@ -1018,7 +1018,7 @@ z
    </g>
    <g id="text_4">
     <!-- Retrieval metrics -->
-    <g style="fill: #1a202c" transform="translate(80.576416 181.296384) scale(0.105 -0.105)">
+    <g style="fill: #1a202c" transform="translate(45.8694 181.296384) scale(0.105 -0.105)">
      <defs>
       <path id="NotoSansCJKjp-Bold-57" d="M 1312 0 
 L 2400 0 
@@ -1078,7 +1078,7 @@ z
    </g>
    <g id="text_5">
     <!-- family Recall@100 (secondary) -->
-    <g style="fill: #5a6472" transform="translate(80.576416 201.544694) scale(0.084 -0.084)">
+    <g style="fill: #5a6472" transform="translate(45.8694 201.544694) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Regular-47" d="M 211 3002 
 L 685 3002 
@@ -1196,7 +1196,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-a" transform="translate(1392.203125 0)"/>
     </g>
     <!-- +0.0534 [+0.0145, +0.0926] -->
-    <g style="fill: #5a6472" transform="translate(80.576416 213.380819) scale(0.084 -0.084)">
+    <g style="fill: #5a6472" transform="translate(45.8694 213.380819) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Regular-c" d="M 1542 742 
 L 2010 742 
@@ -1411,7 +1411,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-3e" transform="translate(1188.796875 0)"/>
     </g>
     <!-- 198 queries · confirmatory split -->
-    <g style="fill: #5a6472" transform="translate(80.576416 225.027288) scale(0.084 -0.084)">
+    <g style="fill: #5a6472" transform="translate(45.8694 225.027288) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Regular-f6b9" d="M 1792 -83 
 C 2669 -83 3258 448 3258 1126 
@@ -1533,7 +1533,7 @@ z
    </g>
    <g id="text_6">
     <!-- Retrieval layer -->
-    <g style="fill: #5a6472" transform="translate(60.145853 229.984751) rotate(-90) scale(0.09 -0.09)">
+    <g style="fill: #5a6472" transform="translate(25.438838 229.984751) rotate(-90) scale(0.09 -0.09)">
      <use xlink:href="#NotoSansCJKjp-Bold-33"/>
      <use xlink:href="#NotoSansCJKjp-Bold-46" transform="translate(67 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-55" transform="translate(123.890625 0)"/>
@@ -1553,7 +1553,7 @@ z
    </g>
    <g id="text_7">
     <!-- Generation metrics -->
-    <g style="fill: #1a202c" transform="translate(80.576416 317.013504) scale(0.105 -0.105)">
+    <g style="fill: #1a202c" transform="translate(45.8694 317.013504) scale(0.105 -0.105)">
      <defs>
       <path id="NotoSansCJKjp-Bold-28" d="M 2618 -90 
 C 3270 -90 3834 160 4160 480 
@@ -1595,7 +1595,7 @@ z
    </g>
    <g id="text_8">
     <!-- Citation accuracy · hallucination -->
-    <g style="fill: #5a6472" transform="translate(80.576416 337.169283) scale(0.084 -0.084)">
+    <g style="fill: #5a6472" transform="translate(45.8694 337.169283) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Regular-49" d="M 589 0 
 L 1178 0 
@@ -1649,7 +1649,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-4f" transform="translate(1458.890625 0)"/>
     </g>
     <!-- Retrieval arm only · generator fixed -->
-    <g style="fill: #5a6472" transform="translate(80.576416 348.91747) scale(0.084 -0.084)">
+    <g style="fill: #5a6472" transform="translate(45.8694 348.91747) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Regular-48" d="M 1760 -1600 
 C 2835 -1600 3520 -1043 3520 -397 
@@ -1747,7 +1747,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-45" transform="translate(1585.625 0)"/>
     </g>
     <!-- Margin ε = 0.02 frozen -->
-    <g style="fill: #5a6472" transform="translate(80.576416 360.67747) scale(0.084 -0.084)">
+    <g style="fill: #5a6472" transform="translate(45.8694 360.67747) scale(0.084 -0.084)">
      <defs>
       <path id="NotoSansCJKjp-Regular-2e" d="M 646 0 
 L 1178 0 
@@ -1848,7 +1848,7 @@ z
    </g>
    <g id="text_9">
     <!-- Generation layer -->
-    <g style="fill: #5a6472" transform="translate(60.145853 370.440231) rotate(-90) scale(0.09 -0.09)">
+    <g style="fill: #5a6472" transform="translate(25.438837 370.440231) rotate(-90) scale(0.09 -0.09)">
      <use xlink:href="#NotoSansCJKjp-Bold-28"/>
      <use xlink:href="#NotoSansCJKjp-Bold-46" transform="translate(71.703125 0)"/>
      <use xlink:href="#NotoSansCJKjp-Bold-4f" transform="translate(129.796875 0)"/>
@@ -1869,7 +1869,7 @@ z
    </g>
    <g id="text_10">
     <!-- ① -->
-    <g style="fill: #1a202c" transform="translate(104.563016 133.724992) scale(0.11 -0.11)">
+    <g style="fill: #1a202c" transform="translate(69.856 133.724992) scale(0.11 -0.11)">
      <defs>
       <path id="NotoSansCJKjp-Bold-396" d="M 3200 -589 
 C 4851 -589 6221 755 6221 2432 
@@ -1899,7 +1899,7 @@ z
    </g>
    <g id="text_11">
     <!-- Acceptance is decided at the next layer -->
-    <g style="fill: #5a6472" transform="translate(140.115016 132.128742) scale(0.08 -0.08)">
+    <g style="fill: #5a6472" transform="translate(105.408 132.128742) scale(0.08 -0.08)">
      <defs>
       <path id="NotoSansCJKjp-Regular-22" d="M 26 0 
 L 621 0 
@@ -1964,7 +1964,7 @@ z
    </g>
    <g id="text_12">
     <!-- ③ -->
-    <g style="fill: #1a202c" transform="translate(104.563016 269.442112) scale(0.11 -0.11)">
+    <g style="fill: #1a202c" transform="translate(69.856 269.442112) scale(0.11 -0.11)">
      <defs>
       <path id="NotoSansCJKjp-Bold-398" d="M 3200 -589 
 C 4851 -589 6221 755 6221 2432 
@@ -2003,7 +2003,7 @@ z
    </g>
    <g id="text_13">
     <!-- Whether it transfers to the next layer -->
-    <g style="fill: #5a6472" transform="translate(140.115016 267.845862) scale(0.08 -0.08)">
+    <g style="fill: #5a6472" transform="translate(105.408 267.845862) scale(0.08 -0.08)">
      <defs>
       <path id="NotoSansCJKjp-Regular-38" d="M 1158 0 
 L 1862 0 
@@ -2073,7 +2073,7 @@ z
    </g>
    <g id="text_14">
     <!-- ② -->
-    <g style="fill: #1a202c" transform="translate(332.144816 186.423936) scale(0.1 -0.1)">
+    <g style="fill: #1a202c" transform="translate(297.4378 186.423936) scale(0.1 -0.1)">
      <defs>
       <path id="NotoSansCJKjp-Bold-397" d="M 3200 -589 
 C 4851 -589 6221 755 6221 2432 
@@ -2108,7 +2108,7 @@ z
    </g>
    <g id="text_15">
     <!-- ① Resource indicators up · retrieval down -->
-    <g style="fill: #b23a48" transform="translate(372.131416 34.808064) scale(0.096 -0.096)">
+    <g style="fill: #b23a48" transform="translate(337.4244 34.808064) scale(0.096 -0.096)">
      <defs>
       <path id="NotoSansCJKjp-Bold-51" d="M 506 -1376 
 L 1446 -1376 
@@ -2209,7 +2209,7 @@ z
    </g>
    <g id="text_16">
     <!-- With only the resource replaced, recall of the substituted configuration fell. -->
-    <g style="fill: #5a6472" transform="translate(372.131416 55.548124) scale(0.082 -0.082)">
+    <g style="fill: #5a6472" transform="translate(337.4244 54.960405) scale(0.076 -0.076)">
      <use xlink:href="#NotoSansCJKjp-Regular-38"/>
      <use xlink:href="#NotoSansCJKjp-Regular-4a" transform="translate(87.796875 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-55" transform="translate(115.296875 0)"/>
@@ -2289,7 +2289,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-f" transform="translate(3432.9375 0)"/>
     </g>
     <!-- ΔRecall@100 = −0.0293 · 95% CI [−0.0542, −0.0053] → T1 Reject · Accept = 0 -->
-    <g style="fill: #5a6472" transform="translate(372.131416 67.006984) scale(0.082 -0.082)">
+    <g style="fill: #5a6472" transform="translate(337.4244 65.580812) scale(0.076 -0.076)">
      <defs>
       <path id="NotoSansCJKjp-Regular-104" d="M 211 0 
 L 3987 0 
@@ -2458,7 +2458,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-f6b1" transform="translate(3433.28125 0)"/>
     </g>
     <!-- The ontology-only arm improved (0.1800 → 0.2282) — cause not separated -->
-    <g style="fill: #5a6472" transform="translate(372.131416 78.54464) scale(0.082 -0.082)">
+    <g style="fill: #5a6472" transform="translate(337.4244 76.274249) scale(0.076 -0.076)">
      <defs>
       <path id="NotoSansCJKjp-Regular-e" d="M 294 1568 
 L 1933 1568 
@@ -2549,7 +2549,7 @@ z
    </g>
    <g id="text_17">
     <!-- Status · Unsealed split · acceptance rule applied -->
-    <g style="fill: #5a6472" transform="translate(462.930566 93.675253) scale(0.076 -0.076)">
+    <g style="fill: #5a6472" transform="translate(428.22355 93.675253) scale(0.076 -0.076)">
      <defs>
       <path id="NotoSansCJKjp-Regular-34" d="M 1946 -83 
 C 2925 -83 3539 506 3539 1248 
@@ -2637,7 +2637,7 @@ z
    </g>
    <g id="text_18">
     <!-- ② Primary metric up · review count flat -->
-    <g style="fill: #b7791f" transform="translate(372.131416 170.525184) scale(0.096 -0.096)">
+    <g style="fill: #b7791f" transform="translate(337.4244 170.525184) scale(0.096 -0.096)">
      <defs>
       <path id="NotoSansCJKjp-Bold-31" d="M 582 0 
 L 1530 0 
@@ -2728,7 +2728,7 @@ z
    </g>
    <g id="text_19">
     <!-- Converted into documents reviewed, the median reduction is 0.0%. -->
-    <g style="fill: #5a6472" transform="translate(372.131416 191.457432) scale(0.082 -0.082)">
+    <g style="fill: #5a6472" transform="translate(337.4244 191.457432) scale(0.082 -0.082)">
      <defs>
       <path id="NotoSansCJKjp-Regular-58" d="M 1139 0 
 L 1818 0 
@@ -2822,7 +2822,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-f" transform="translate(3096.5625 0)"/>
     </g>
     <!-- Win/tie/loss per query is 62/16/64, close to balanced. -->
-    <g style="fill: #5a6472" transform="translate(372.131416 202.756775) scale(0.082 -0.082)">
+    <g style="fill: #5a6472" transform="translate(337.4244 202.756775) scale(0.082 -0.082)">
      <defs>
       <path id="NotoSansCJKjp-Regular-10" d="M 70 -1146 
 L 499 -1146 
@@ -2906,7 +2906,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-f" transform="translate(2424.5625 0)"/>
     </g>
     <!-- Reranking cannot recover documents outside the candidate pool. -->
-    <g style="fill: #5a6472" transform="translate(372.131416 214.171432) scale(0.082 -0.082)">
+    <g style="fill: #5a6472" transform="translate(337.4244 214.171432) scale(0.082 -0.082)">
      <defs>
       <path id="NotoSansCJKjp-Regular-4c" d="M 589 0 
 L 1165 0 
@@ -2991,7 +2991,7 @@ z
    </g>
    <g id="text_20">
     <!-- Status · Exploratory descriptive -->
-    <g style="fill: #5a6472" transform="translate(523.332753 229.354373) scale(0.076 -0.076)">
+    <g style="fill: #5a6472" transform="translate(488.625738 229.354373) scale(0.076 -0.076)">
      <defs>
       <path id="NotoSansCJKjp-Regular-26" d="M 646 0 
 L 3418 0 
@@ -3045,7 +3045,7 @@ z
    </g>
    <g id="text_21">
     <!-- ③ Point estimate ahead · non-inferiority not met -->
-    <g style="fill: #b23a48" transform="translate(372.131416 306.242304) scale(0.096 -0.096)">
+    <g style="fill: #b23a48" transform="translate(337.4244 306.242304) scale(0.096 -0.096)">
      <defs>
       <path id="NotoSansCJKjp-Bold-49" d="M 506 0 
 L 1446 0 
@@ -3142,7 +3142,7 @@ z
    </g>
    <g id="text_22">
     <!-- On citation accuracy the arm with the ontology led on the point estimate (+0.0236). -->
-    <g style="fill: #5a6472" transform="translate(372.131416 327.01888) scale(0.082 -0.082)">
+    <g style="fill: #5a6472" transform="translate(337.4244 325.444505) scale(0.066 -0.066)">
      <defs>
       <path id="NotoSansCJKjp-Regular-30" d="M 2374 -83 
 C 3552 -83 4378 858 4378 2362 
@@ -3243,7 +3243,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-f" transform="translate(3816.28125 0)"/>
     </g>
     <!-- The 95% CI lower bound −0.0205 passed the margin −0.02, so the T4 verdict failed. -->
-    <g style="fill: #5a6472" transform="translate(372.131416 338.462364) scale(0.082 -0.082)">
+    <g style="fill: #5a6472" transform="translate(337.4244 334.655114) scale(0.066 -0.066)">
      <use xlink:href="#NotoSansCJKjp-Regular-35"/>
      <use xlink:href="#NotoSansCJKjp-Regular-49" transform="translate(59.90625 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-46" transform="translate(120.609375 0)"/>
@@ -3327,7 +3327,7 @@ z
      <use xlink:href="#NotoSansCJKjp-Regular-f" transform="translate(3764.40625 0)"/>
     </g>
     <!-- Absence of transfer is not distinguished from insufficient power. -->
-    <g style="fill: #5a6472" transform="translate(372.131416 349.942364) scale(0.082 -0.082)">
+    <g style="fill: #5a6472" transform="translate(337.4244 343.895114) scale(0.066 -0.066)">
      <defs>
       <path id="NotoSansCJKjp-Regular-e661" d="M 4710 0 
 L 5293 0 
@@ -3440,7 +3440,7 @@ z
    </g>
    <g id="text_23">
     <!-- Status · Confirmatory · one verdict -->
-    <g style="fill: #5a6472" transform="translate(510.389003 365.071493) scale(0.076 -0.076)">
+    <g style="fill: #5a6472" transform="translate(475.681988 365.071493) scale(0.076 -0.076)">
      <use xlink:href="#NotoSansCJKjp-Regular-34"/>
      <use xlink:href="#NotoSansCJKjp-Regular-55" transform="translate(56.890625 0)"/>
      <use xlink:href="#NotoSansCJKjp-Regular-42" transform="translate(92.1875 0)"/>
@@ -3479,20 +3479,20 @@ z
    </g>
    <g id="text_24">
     <g id="patch_11">
-     <path d="M 7.2 407.564257 
-L 690.414031 407.564257 
-Q 695.114031 407.564257 695.114031 402.864257 
-L 695.114031 392.308351 
-Q 695.114031 387.608351 690.414031 387.608351 
-L 7.2 387.608351 
-Q 2.5 387.608351 2.5 392.308351 
-L 2.5 402.864257 
-Q 2.5 407.564257 7.2 407.564257 
+     <path d="M 16.102391 406.290476 
+L 612.097609 406.290476 
+Q 616.197609 406.290476 616.197609 402.190476 
+L 616.197609 392.982132 
+Q 616.197609 388.882132 612.097609 388.882132 
+L 16.102391 388.882132 
+Q 12.002391 388.882132 12.002391 392.982132 
+L 12.002391 402.190476 
+Q 12.002391 406.290476 16.102391 406.290476 
 z
 " style="fill: #f7f9fb; stroke: #cbd5e0; stroke-linejoin: miter"/>
     </g>
     <!-- One proposition runs through all three — a change that improves resource indicators and passes formal validation does not guarantee the next layer. -->
-    <g style="fill: #1a202c" transform="translate(7.2 400.580351) scale(0.094 -0.094)">
+    <g style="fill: #1a202c" transform="translate(16.102391 400.198132) scale(0.082 -0.082)">
      <defs>
       <path id="NotoSansCJKjp-Bold-30" d="M 2464 -90 
 C 3718 -90 4582 851 4582 2394 
@@ -3732,8 +3732,8 @@ z
   </g>
  </g>
  <defs>
-  <clipPath id="pac8ade734b">
-   <rect x="41.907016" y="7.2" width="613.8" height="399.168"/>
+  <clipPath id="pc234c6bced">
+   <rect x="7.2" y="7.2" width="613.8" height="399.168"/>
   </clipPath>
  </defs>
 </svg>

@@ -119,7 +119,10 @@ def _text_width(ax, s: str, fontsize: float, fontweight: str = "normal") -> floa
     fig = ax.figure
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
-    inv = fig.transFigure.inverted()
+    # **data 좌표로 잰다.** 상자의 폭(`_rbox` 의 `w`)이 data 좌표이므로 figure 좌표로 재면
+    # 축 여백만큼(기본 배치에서 약 22 %) 작게 나오고, 그 값이 축소 판정을 통과한다 —
+    # 영문판에서 라벨이 상자를 넘던 자리의 나머지 절반이 이 불일치였다.
+    inv = ax.transData.inverted()
     widest = 0.0
     for line in s.split("\n"):
         if not line:
@@ -145,10 +148,14 @@ def _fit_size(ax, s: str, fontsize: float, max_w: float, where: str,
     if not s or max_w <= 0 or lang() == "ko":
         return fontsize
     size = fontsize
-    while size >= FIT_FLOOR:
+    while True:
         if _text_width(ax, s, size, fontweight) <= max_w * FIT_TOLERANCE:
             return size
-        size -= 0.2
+        if size <= FIT_FLOOR:
+            break
+        # 바닥을 건너뛰지 않는다 — 0.2 씩 빼기만 하면 시작 크기에 따라 바닥이 한 번도
+        # 평가되지 않고 실패한다(실측: 7.8pt 에서 시작하면 6.6 다음이 6.4 라 6.5 를 지난다).
+        size = max(size - 0.2, FIT_FLOOR)
     raise TextOverflow(
         f"{where}: 라벨이 폭 {max_w:.3f} 를 넘는다 — {FIT_FLOOR}pt 로 줄여도 "
         f"{_text_width(ax, s, FIT_FLOOR):.3f}. 라벨을 줄여라.\n  {s.splitlines()[0][:70]}"
@@ -214,8 +221,9 @@ def _arrow(ax, x1, y1, x2, y2, color=INK, lw=2.0, style="-|>", ms=16) -> None:
     )
 
 
-def _chip(ax, x, y, text, color=GREEN, fill=GREEN_FILL) -> None:
-    ax.text(x, y, text, ha="center", va="center", fontsize=8.5,
+def _chip(ax, x, y, text, color=GREEN, fill=GREEN_FILL, fs: float = 8.5) -> None:
+    """판정 부호 하나. `fs` 는 **지면 기준 하한(F2′)을 지켜야 하는 도판**이 올려 쓴다."""
+    ax.text(x, y, text, ha="center", va="center", fontsize=fs,
             fontweight="bold", color=color,
             bbox=dict(boxstyle="round,pad=0.3", fc=fill, ec=color, lw=1.0))
 

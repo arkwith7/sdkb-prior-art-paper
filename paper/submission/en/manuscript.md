@@ -166,9 +166,9 @@ Section 3 the artifacts and the design and evaluation procedure. Section 4 sets 
 design, Section 5 the results of the five episodes, and Section 6 the discussion, the lessons and
 the limitations. Section 7 concludes.
 
-![Figure 1. Study overview — two artifacts and one evaluation environment, the release approval procedure, and what the five episodes measure.](../../figures/en/concept_overview.svg)
+![Figure 1. How one resource change was judged as it passed through the approval procedure — the change, the resource indicators, formal validation, the task condition, and the outcome.](../../figures/en/concept_overview.svg)
 
-**Figure 1.** Study overview. The top band is artifact ART-1, a resource placing three task views on one shared T-Box; the middle band is artifact ART-2, the release gate that reviews a resource change before it ships; the bottom band is evaluation environment E1, the five episodes and what each measures. The middle band reads left to right, and a failed stage stops the ones behind it. T4, shown dashed, is not part of the approval rule (§3.5.1).
+**Figure 1.** The resource indicators improved and all four formal layers passed, yet the change did not meet the pre-specified non-inferiority criterion and was rejected. One event is followed from top to bottom. The left column gives each step and the artifact it belongs to, running from the resource ART-1 through the release gate ART-2 to the metric of the evaluation environment E1; the right side gives what was observed at that step. The line beneath the task-condition row records that the other two conditions were met. The numbers of this verdict and its conditions are reported in §5.2.
 
 The structure of the supplementary material, and the question each file answers, is set out in
 [S0](../../supplementary/en/S0-index.md). The full text of abridged sections, the appendices, and the
@@ -464,7 +464,7 @@ tasks and serves as the propagation path of a regression.
 
 ![Figure 3. Three task views on one shared T-Box and the channels of cross-task coupling.](../../figures/en/concept_tbox_views.svg)
 
-**Figure 3.** The shared T-Box and three task views. The three boxes at the top give the main classes of each view, a representative competency question, the A-Box evidence, and the status of that view in this paper. The three channels in the middle are vocabulary used by two or more views, and the dashed lines from each channel show the two views it joins. The box at the bottom gives the shared core and the number of competency questions per suite that the gate observes. That the three views are not exclusive modules is why the cross-task regression of §1 can occur.
+**Figure 3.** The three task views are not separate ontologies but query paths crossing the same process node by different predicates, and that resource keeps being updated. The three boxes at the top give the main classes of each view, a representative competency question, the A-Box evidence, and the status of that view in this paper. The three channels in the middle are vocabulary used by two or more views, and the dashed lines from each channel show the two views it joins. The box at the bottom gives the shared core and the number of competency questions per suite that the gate observes, and the last line records the resource change entering that core. That the three views are not exclusive modules is why the cross-task regression of §1 can occur.
 
 Shared vocabulary is the channel along which cross-task dependency forms (Fig. 3). That a class or
 relation exists in the T-Box does not mean that every view is populated to the same degree. The
@@ -638,9 +638,9 @@ therefore apply in the same form to a change of system configuration. The accept
 resource change is the single case in §5.2, and the verdict in §5.3.1 is a dry run that applies the
 rule to a change of system configuration.
 
-![Figure 4. The order of the acceptance procedure, the handling of each unmet term, and the actual verdicts in the controlled resource substitution.](../../figures/en/concept_gate_flow.svg)
+![Figure 4. The order of the acceptance procedure and the handling of each unmet term.](../../figures/en/concept_gate_flow.svg)
 
-**Figure 4.** The T-gate procedure and the actual verdicts. The left column is the order of the acceptance procedure and reads downward. The middle column is the handling when a term is not met, and the right column is the verdict each term actually produced in the controlled resource substitution (§5.2). The right column shows that a change passing every formal layer was rejected on one performance condition.
+**Figure 4.** A change that passes all four formal layers still halts at the task conditions, and an unmet term stops the ones behind it. The left column is the order of the acceptance procedure and reads downward; the right column is the handling when a term is not met. What this procedure actually produced in the controlled resource substitution is shown in Figure 1, and the numbers are in §5.2.
 
 \(\Delta R_{100}\) is the difference in Recall@100 against the reference version.
 \(LB_{95\%}\) is the lower bound of the **confidence interval (CI)** obtained by a
@@ -1396,9 +1396,9 @@ questions, mean execution time per layer was 124 s for L1, 12.5 s for L2 and 1.6
 states feasibility rather than scalability. The verdicts for every fault instance and the frozen
 lists are in S8.
 
-![Figure 8. Detection scope observed in the SDKB holdout and the port to resource 2.](../../figures/en/concept_detection_port_boundary.svg)
+![Figure 8. Detection scope observed in the SDKB holdout and the port to resource 2, and the three lessons drawn from those observations.](../../figures/en/concept_detection_port_boundary.svg)
 
-**Figure 8.** The cross-task condition detected faults missed by the formal layers in the SDKB holdout, whereas transfer of the frozen fault specification's effect was not confirmed on resource 2. The upper row summarizes 45 SDKB faults and 27 sound changes; the lower row summarizes adjudicable faults and sound changes on resource 2. The rates are not compared directly because their denominators differ; details are in §5.4–§5.5 and S2 and S8.
+**Figure 8.** The cross-task condition detected faults missed by the formal layers in the SDKB holdout, whereas transfer of the frozen fault specification's effect was not confirmed on resource 2. The upper row summarizes 45 SDKB faults and 27 sound changes; the lower row summarizes adjudicable faults and sound changes on resource 2. The rates are not compared directly because their denominators differ; details are in §5.4–§5.5 and S2 and S8. The three lessons in the bottom band are hypotheses for later work rather than established principles; their evidence and defeating conditions are in §6.3.
 
 ---
 

@@ -122,7 +122,7 @@ CELL_TRANSLATIONS: dict[str, str] = {
         "1,000 rejected patents\n2,534 examiner citations · claim sidecar",
     "G1·G2 시계열": "G1·G2 time series",
     "표현 타당성 + **음성 대조군**(§5.12) · 성능 미평가":
-        "Representation + negative control · not evaluated",
+        "Representation + negative control\nnot evaluated",
     "**주 정량 검증** (Recall@K·nDCG·게이트)":
         "**Primary quantitative validation**",
     "2차 재사용 증거 (§7.4)": "Evidence of secondary reuse",
@@ -184,11 +184,70 @@ LABELS: dict[str, dict[str, str]] = {
     "boundary.brick_note": {
         "ko": "판정 가능 {ep5.judgeable}/{ep5.instances} · 관찰면 {ep5.observable}/{ep5.cq_total}",
         "en": "Judgeable {ep5.judgeable}/{ep5.instances} · observable {ep5.observable}/{ep5.cq_total}"},
+    # 교훈 셋 — 본문 §6.3 의 진술을 한 줄로 줄인 것이며 **가설의 형태**를 유지한다.
+    # 라벨은 「교훈 ①–③」이고 `DP` 기호를 도판에 쓰지 않는다(CLAUDE.md §0.5 · L0–L3 과의 충돌).
+    "boundary.lessons_head": {
+        "ko": "이 관측에서 나온 교훈 셋 — 확립된 원리가 아니라 후속 연구가 검정할 가설이다",
+        "en": "Three lessons from these observations — hypotheses for later work, not established principles"},
+    "boundary.lesson1": {
+        "ko": "① 한 층 아래 승인 — 자원 변경은 자원 지표가 아니라 다음 사용 층의 비회귀 결과로 승인한다",
+        "en": "① Approve one layer down — approve a resource change on the next layer's non-regression, not on resource indicators"},
+    "boundary.lesson2": {
+        "ko": "② 교차 태스크 감시 — 공유 T-Box 에서는 주 태스크의 성능만으로 변경을 승인하지 않는다",
+        "en": "② Watch across tasks — on a shared T-Box, do not approve a change on primary-task performance alone"},
+    "boundary.lesson3": {
+        "ko": "③ 후보생성 분리 — 재순위화는 후보 풀 밖을 회수할 수 없으므로 후보 생성과 구분하여 평가한다",
+        "en": "③ Separate candidate generation — reranking cannot recover what lies outside the pool, so evaluate it apart from generation"},
     "boundary.scope": {
         "ko": "검출 기제는 실행되었으나 동결한 결함 명세의 효과는 이전되지 않았다",
         "en": "The detection mechanism ran, but transfer of the frozen fault specification was not confirmed"},
 
     # ── 그림 1 · 연구 개요도 ─────────────────────────────────────────────────
+    # ── 그림 1 · 통제된 자원 교체의 판정 경로 (PLAN-089 · 구 개요도를 대체한다) ──────────
+    # **거부를 결함으로 적지 않는다**(§0.8 EP3 행) — "사전 지정 비열등 기준을 충족하지 못한
+    # 변경"이며 "불안전한 변경"이 아니다. 수치는 전량 concept_values.json 의 ep3.*·gate.* 다.
+    "proof.step_delta": {"ko": "자원 변경 ΔG", "en": "Resource change ΔG"},
+    "proof.step_delta_tag": {"ko": "ART-1 · 자원", "en": "ART-1 · resource"},
+    "proof.step_delta_body": {
+        "ko": "상류 교정으로 개념 어휘와 문서–개념 연결이 증가하였다.\n"
+              "문서집합·검색 설정·가중치·분할은 동결하였다.",
+        "en": "Upstream repair increased the concept vocabulary and the document-concept links.\n"
+              "The document set, retrieval settings, weights and splits were frozen."},
+    "proof.step_resource": {"ko": "자원 지표", "en": "Resource indicators"},
+    "proof.step_resource_tag": {"ko": "ART-1 · 자원", "en": "ART-1 · resource"},
+    "proof.step_resource_body": {
+        "ko": "문서당 개념 {ep3.concepts_per_doc.before} → {ep3.concepts_per_doc.after} · "
+              "개념 어휘 {ep3.concept_vocab.before} → {ep3.concept_vocab.after}",
+        "en": "Concepts per document {ep3.concepts_per_doc.before} → {ep3.concepts_per_doc.after} · "
+              "concept vocabulary {ep3.concept_vocab.before} → {ep3.concept_vocab.after}"},
+    "proof.step_resource_mark": {"ko": "개선", "en": "improved"},
+    "proof.step_formal": {"ko": "형식 검증 L0–L3", "en": "Formal validation L0–L3"},
+    "proof.step_formal_tag": {"ko": "ART-2 · 게이트", "en": "ART-2 · gate"},
+    "proof.step_formal_body": {
+        "ko": "신선도 · 구조 제약 · 논리 일관 · 주 태스크 역량질문",
+        "en": "Freshness · structural constraints · logical consistency · primary-task questions"},
+    "proof.step_formal_mark": {"ko": "전부 통과", "en": "all passed"},
+    "proof.step_task": {"ko": "태스크 조건 T1", "en": "Task condition T1"},
+    "proof.step_task_tag": {"ko": "ART-2 · 게이트 · E1 평가", "en": "ART-2 · gate · E1 evaluation"},
+    "proof.step_task_body": {
+        "ko": "ΔRecall@100 {ep3.p1.delta:sig} · 95% CI "
+              "[{ep3.p1.ci_lo:sig}, {ep3.p1.ci_hi:sig}]\n허용 폭 ε = {gate.epsilon}",
+        "en": "ΔRecall@100 {ep3.p1.delta:sig} · 95% CI "
+              "[{ep3.p1.ci_lo:sig}, {ep3.p1.ci_hi:sig}]\nmargin ε = {gate.epsilon}"},
+    "proof.step_task_sub": {
+        "ko": "다른 두 조건은 충족하였다\n"
+              "T2 최대 하락 {ep3.t2_max_drop:sig} < δ = {gate.delta} · T3 {ep3.t3_suites_head}",
+        "en": "The other two conditions held\n"
+              "T2 max drop {ep3.t2_max_drop:sig} < δ = {gate.delta} · T3 {ep3.t3_suites_head}"},
+    "proof.step_verdict": {"ko": "승인 결과", "en": "Acceptance"},
+    "proof.step_verdict_body": {
+        "ko": "승인 = 0 — 사전 지정 비열등 기준을 충족하지 못하여 릴리스하지 않았다.",
+        "en": "Accept = 0 — the change did not meet the pre-specified non-inferiority criterion "
+              "and was not released."},
+    "proof.footer": {
+        "ko": "지위 · 별도 사전등록의 판정 1회 · 수치는 §5.2 가 보고한다.",
+        "en": "Status · one verdict under a separate preregistration · the numbers are reported in §5.2."},
+
     "overview.a1_title": {
         "ko": "ART-1 · SDKB 데이터셋 — 공유 T-Box 하나 위의 세 태스크 뷰",
         "en": "ART-1 · SDKB dataset — three task views on one shared T-Box"},
@@ -369,6 +428,13 @@ LABELS: dict[str, dict[str, str]] = {
     "tbox.channel_example": {
         "ko": "합성 설명 · 예시 1 의 Plasma Etch ⊂ Etch 가 이 통로 위의 노드다",
         "en": "Synthetic illustration · Plasma Etch ⊂ Etch from Example 1 sits on this channel"},
+    # 자원은 고정된 것이 아니라 갱신된다 — 구 개요도에서 옮겨 온 요소이며(PLAN-089 이동
+    # 대장) 그림 4의 승인 절차가 존재하는 이유를 이 한 줄이 진술한다.
+    "tbox.delta_in": {
+        "ko": "자원 변경 ΔG — 상류 교정 · 어휘 확장 · 새 A-Box 유입이 이 공유 코어로 들어온다. "
+              "그 변경을 릴리스 이전에 심사하는 절차가 그림 4다.",
+        "en": "Resource change ΔG — upstream repair, vocabulary growth and new A-Box instances enter "
+              "this shared core. Figure 4 is the procedure that reviews such a change before release."},
     "tbox.core_title": {
         "ko": "공유 코어 T_core — 세 뷰가 함께 서는 자리",
         "en": "Shared core T_core — where the three views meet"},
@@ -521,19 +587,19 @@ LABELS: dict[str, dict[str, str]] = {
     # 두 축을 한 줄로 밝힌다 — 행은 추적 번호 순, 절 포인터는 본문에서 읽히는 순서다.
     "matrix.head_order": {
         "ko": "행 = 번호 순 · (§) = 본문 순서",
-        "en": "Rows: EP no. · (§): body order"},
+        "en": "Rows: EP no.\n(§): body order"},
     "matrix.row_tag": {"ko": "{ep} (§{section})", "en": "{ep} (§{section})"},
     "matrix.head_verdict": {"ko": "판정", "en": "Verdict"},
     "matrix.ep1_name": {"ko": "표현 감사", "en": "Representation audit"},
     "matrix.ep1_status": {"ko": "관측 사실", "en": "Observed fact"},
     "matrix.ep1_cell": {
         "ko": "역량질문 {cq.total}개\n세 태스크 어휘",
-        "en": "{cq.total} questions\nthree task vocabularies"},
+        "en": "{cq.total} questions\nthree task\nvocabularies"},
     # **"실재" 라 쓰지 않는다** — EP1 이 관측한 것은 선언 층이고 본문 §5.1 의 제목도
     # 「선언 범위」다(CLAUDE.md §0 표현의 세 층 · 그림 1 EP1 상자와 같은 교정).
     "matrix.ep1_verdict": {
         "ko": "세 태스크의 어휘·관계·역량질문이 자원에 선언되어 있다.",
-        "en": "The three task vocabularies, relations and questions are declared."},
+        "en": "The three task vocabularies, relations\nand questions are declared."},
     "matrix.ep2_name": {"ko": "게이트 판별력", "en": "Gate discrimination"},
     "matrix.ep2_status": {"ko": "홀드아웃 확증", "en": "Holdout confirmatory"},
     "matrix.ep2_cell_l3": {"ko": "주 태스크 CQ\n검출", "en": "Primary-task CQ\ndetection"},
@@ -541,13 +607,12 @@ LABELS: dict[str, dict[str, str]] = {
     "matrix.ep2_verdict": {
         "ko": "교차 결함은 T3 가 단독 검출 · 오거부 {ep2.false_positive} "
               "(McNemar p = {ep2.mcnemar_p:.4f}).",
-        "en": "T3 alone detected them · false rejections {ep2.false_positive} "
-              "(McNemar p = {ep2.mcnemar_p:.4f})."},
+        "en": "T3 alone detected them · false rejections\n{ep2.false_positive} (McNemar p = {ep2.mcnemar_p:.4f})."},
     "matrix.ep3_name": {"ko": "통제된 자원 교체", "en": "Resource substitution"},
     "matrix.ep3_status": {"ko": "별도 사전등록", "en": "Separate preregistration"},
     "matrix.ep3_cell_resource": {
         "ko": "문서당 개념\n{ep3.concepts_per_doc.before} → {ep3.concepts_per_doc.after}",
-        "en": "Concepts per doc\n{ep3.concepts_per_doc.before} → {ep3.concepts_per_doc.after}"},
+        "en": "Concepts\nper doc\n{ep3.concepts_per_doc.before} → {ep3.concepts_per_doc.after}"},
     "matrix.ep3_cell_formal": {"ko": "전부 통과", "en": "All passed"},
     "matrix.ep3_cell_t1": {"ko": "ΔR@100\n{ep3.p1.delta:sig}", "en": "ΔR@100\n{ep3.p1.delta:sig}"},
     "matrix.ep3_cell_t2": {
@@ -556,7 +621,7 @@ LABELS: dict[str, dict[str, str]] = {
         "ko": "CQ {cq.t3_total}개\n통과율 유지", "en": "{cq.t3_total} CQs\npass rate held"},
     "matrix.ep3_verdict": {
         "ko": "형식 검증을 전부 통과한 변경을 성능 조건 하나가 차단하였다.",
-        "en": "One performance condition blocked a change that passed every formal layer."},
+        "en": "One performance condition blocked a change\nthat passed every formal layer."},
     "matrix.ep4_name": {"ko": "검색 이득의 범위", "en": "Scope of the gain"},
     "matrix.ep4_status": {"ko": "확증 · 분할 둘", "en": "Confirmatory · two splits"},
     "matrix.ep4_cell_t1": {
