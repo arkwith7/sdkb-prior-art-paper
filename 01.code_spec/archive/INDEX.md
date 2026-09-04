@@ -14,7 +14,7 @@
 > 손으로 쓴 요약은 원문과 조용히 어긋난다). 빈 칸은 그 문서가 머리말에 상태를 적지 않았다는
 > 뜻이며, 완료 여부는 원문에서 확인한다.
 >
-> *생성: 2026-09-02 (PLAN-086 1행 추가 · 같은 추출 규칙) · 이전: 2026-08-30 (PLAN-071 · PLAN-079-prereg 2행 추가) · 재생성은 이 파일 말미의 규칙으로 한다.*
+> *생성: 2026-09-04 (PLAN-077 · PLAN-087 · PLAN-087 스니펫 3행 추가 · 같은 추출 규칙) · 이전: 2026-09-02 (PLAN-086 1행 추가) · 이전: 2026-08-30 (PLAN-071 · PLAN-079-prereg 2행 추가) · 재생성은 이 파일 말미의 규칙으로 한다.*
 
 | 문서 | 제목 | 문서가 밝힌 상태 |
 |---|---|---|
@@ -98,6 +98,7 @@
 | [PLAN-074-part1-redesign-extraction-unit.md](PLAN-074-part1-redesign-extraction-unit.md) | 이관 기록: 판단 쌍 추출 단위 재설계는 상류로 갔다 (2026-08-29) |  |
 | [PLAN-075-operative-channel-path-term-and-projection-wiring.md](PLAN-075-operative-channel-path-term-and-projection-wiring.md) | 요구정의: 작동 층의 **통로**를 연다 (경로 점수 항 + 한정요소 투영 배선 · 하류 §2 1단계 🛑) | 지위: 요구정의 · 1단계 승인 완료 (2026-08-24 · §11 다섯 항 전부) |
 | [PLAN-076-seal-ledger-wiring.md](PLAN-076-seal-ledger-wiring.md) | 봉인 열람 원장 배선 교정 (O-6 · PLAN-068 트랙 C) |  |
+| [PLAN-077-lambda-selection-configuration-gate.md](PLAN-077-lambda-selection-configuration-gate.md) | PLAN-077 — 요구정의: λ dev 가중 선택과 구성 변경 승인식 적용 (경로 항 `w_r` · 투영 항 `w_f2` · O-10) | 아카이빙 (2026-09-04 · 사용자 지시) — 요구정의 🛑 · 승인 대기 · 동결 아님 · 현 투고본 자리 0 · 착수는 투고 후 · O-10 은 열린 채 남는다 |
 | [PLAN-078-prereg-snapshot-013854b.md](PLAN-078-prereg-snapshot-013854b.md) | 사전등록: 스냅샷 `48971f8` → `013854b` 반영 (B층 인용문헌 복원) | 아카이빙 2026-08-25 — 실행 완주 |
 | [PLAN-079-prereg-measurement-013854b.md](PLAN-079-prereg-measurement-013854b.md) | 사전등록: CR-001B ⑤ · CR-020 ⑥ 하류 판정과 T3 (스냅샷 `013854b` · D-53) | 지위: 미실행 종결 · 아카이브 (2026-08-30 · 사용자 지시) |
 | [PLAN-081-reframe-existence-proof.md](PLAN-081-reframe-existence-proof.md) | 투고처 재조준과 주장 크기 재정렬 (§2.2 요건 다섯 · 정지 게이트 1개) | 아카이빙 (2026-08-29 · 사용자 지시) |
@@ -106,10 +107,12 @@
 | [PLAN-084-supplementary-reader-facing.md](PLAN-084-supplementary-reader-facing.md) | supplementary 를 편집 이력이 아니라 독자용 부록으로 재조직 | 아카이빙 (2026-08-29 · 사용자 지시) |
 | [PLAN-085-restructure-findings-first.md](PLAN-085-restructure-findings-first.md) | 발견 중심 재구성과 작업 정본 층의 복원 | 아카이빙 (2026-08-29 · 사용자 지시) |
 | [PLAN-086-body-condense-supplementary-coherence.md](PLAN-086-body-condense-supplementary-coherence.md) | 층간 서술 정합과 본문 감량: 같은 결과를 모든 문서가 같은 방법·지위·범위로 말하게 한다 | 아카이빙 (2026-09-02 · 사용자 지시) — 실행 완료 (2026-09-01) · DoD 11항 대조는 §13 |
+| [PLAN-087-running-example-ch3-5.md](PLAN-087-running-example-ch3-5.md) | PLAN-087(v3) — 사례·그림 중심의 읽기 쉬운 본문: 관통 예시 도입, 본문·보충자료 분리, 그림 프로그램 | 아카이빙 (2026-09-04 · 사용자 지시) — 본체 완주(착수 `79e995c` · 잔여 마감 `47f0253`) · 잔여 셋은 O-18·O-19 로 이관 · 판정·수치 변경 0 |
 | [README-PLAN-066-files.md](README-PLAN-066-files.md) | PLAN-066 산출물 — 리포 반영 안내 | 아카이빙 2026-08-23 |
 | [SPEC-003-competency-questions.md](SPEC-003-competency-questions.md) | SPEC-003 · 역량질문(CQ)과 §4.2 의 측정 지표 |  |
 | [STATUS-v05.md](STATUS-v05.md) | 진행 실적 — v0.5 구본 (ARCHIVED · 인용 금지) |  |
 | [PLAN-040-oprime-snapshot-signatures.json](PLAN-040-oprime-snapshot-signatures.json) | (데이터 파일 — 스냅샷 서명) |  |
+| [PLAN-087-glossary-snippet.yaml](PLAN-087-glossary-snippet.yaml) | (데이터 파일 — 용어집 등재 스니펫) |  |
 
 ---
 
