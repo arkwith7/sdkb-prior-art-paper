@@ -30,7 +30,7 @@
 | ~~O-7~~ | CR-020 ⑥ 재판정 · CR-020 종료 결정 | PLAN-072-prereg · D-51 | — | **이관 종결 → PLAN-075** |
 | ~~O-8~~ | G₀ A-Box 순감 확인 (D-52) · 회귀 신호 4건 | 회귀 신호 복구 실행 · [DEFECT-LEDGER](../../upstream/DEFECT-LEDGER.md) D-52 | §2.1 ([PLAN-078-prereg](../archive/PLAN-078-prereg-snapshot-013854b.md)) | **종결 (2026-08-25)** — ①②③ 완주 · 세대 편입 완료 · 남은 미측정은 [D-53](../../upstream/DEFECT-LEDGER.md) 으로 이관 |
 | ~~O-9~~ | `ir_panel` 기대값 대장 기록 (arm `4d9c2b8382cf`) | 회귀 신호 복구 실행 | §2 | **종결 (2026-08-26)** — 보류 해제·기록 완료 · `make test` 3 오류 해소 |
-| **O-10** | λ dev 가중 선택과 그 위의 검정 (경로 항 `w_r` · 투영 항 `w_f2`) | [PLAN-075](../archive/PLAN-075-operative-channel-path-term-and-projection-wiring.md) §14.5 | **§2.1 새 사전등록** | **열림 · PLAN-077 로 예정** |
+| **O-10** | λ dev 가중 선택과 그 위의 검정 (경로 항 `w_r` · 투영 항 `w_f2`) | [PLAN-075](../archive/PLAN-075-operative-channel-path-term-and-projection-wiring.md) §14.5 | **§2.1 새 사전등록** | **열림 · 요구정의 초안 [PLAN-077](PLAN-077-lambda-selection-configuration-gate.md) (2026-09-04 · 승인 대기 🛑 · 동결 아님 · 착수는 투고 후)** |
 | ~~O-11~~ | 본문 약 63,000자 목표 · §5.2+§5.3 비중 상승 | [PLAN-069](../archive/PLAN-069-axiomatization-reframe.md) DoD 6 | — | **이관 종결 (2026-08-25)** → [PLAN-080](PLAN-080-submission-close.md) **B** · 결정 1 |
 | ~~O-12~~ | S5 발췌본 교체 · 구 S5 는 `paper/archive/` 로 | [PLAN-084](../archive/PLAN-084-supplementary-reader-facing.md) §2.2 ④ | §2.3 파생본 절차 | **종결 (2026-08-29)** — 141,850 → **89,697자**(−36.8 %) · 절 102 → 45 · 조립 산출 **바이트 단위 동일**(양쪽 77,430자) · `FROZEN` 경로 불변(코드 변경 0) |
 | ~~O-13~~ | 파생 재조립과 마감 (조립 동결 해제 · 검사 다섯 재가동 · 영문 반영) | [PLAN-085](../archive/PLAN-085-restructure-findings-first.md) 7단계 | §2.3 파생본 절차 | **종결 (2026-08-29)** — 조립 재가동 · 검사 다섯 통과 · 동결이 가린 불일치 **6건** 교정 · 용어 등재 1건 |
