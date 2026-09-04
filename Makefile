@@ -1,4 +1,4 @@
-.PHONY: crossref-check claims-check score-spec supplementary-check-en figures-en concept-rel style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check concept-status
+.PHONY: figure-typo crossref-check claims-check score-spec supplementary-check-en figures-en concept-rel style-check-en glossary-check glossary-inventory gate-profile cq-freeze-profile ep5 figure-data rag ragcount rageval t4 typology-sheet typology-code typology-table faults faults-baseline faults-fc faults-n03 faults-rejudge faults-n03adv faults-rejudge-v3 faults-holdout faults-holdout-judge tables setup lint test vendor snapshot baseline collect profile merge corpus corpus-check family split dense hybrid userdict index eval mapping candidates validate reason cq vocab gate gate-graph leakage cq-freeze tgate freeze-runset runsets tgate-resource s1 s2 h1 h2 cpc cpc-vintage figures serve sig-check verdicts submission-build submission-check style-check submission-stage3 submission-en tables-stability tables-stability-check concept-status
 
 setup:
 	uv sync --all-extras
@@ -558,6 +558,15 @@ figures-en:
 	uv run python -m sdkb_paper.viz.concept --lang en
 	uv run python -m sdkb_paper.viz.figures --lang en
 
+# 지면 기준 글자 크기(F2′)와 상자 기하. **기하는 차단이고 글자 크기는 경고다** —
+# 기하 위반은 2026-09-04 에 0 으로 만들었고(커밋 a388da3), 캔버스를 지면 폭으로 내리는
+# 재설계는 PLAN-089 2단계다. 산출물을 쓰지 않고 메모리에서 재며 그림을 바꾸지 않는다.
+# **영문은 아직 경고다** — 라벨이 상자를 넘는 자리가 남아 있고(도입 시 19건) 그것을 줄이는
+# 작업이 PLAN-089 5단계다. 해소되면 `--strict` 를 붙여 국문과 같은 차단으로 올린다.
+figure-typo:
+	uv run python scripts/figure_typography.py --strict
+	uv run python scripts/figure_typography.py --lang en
+
 # --- 온톨로지 탐색·모니터링 로컬 웹앱 (읽기 전용) ---
 serve:
 	uv run python -m sdkb_paper.explore.server --port $(or $(PORT),8000)
@@ -575,7 +584,9 @@ serve:
 # example-both  : 두 경로(rdflib · 저장소 엔진)의 CQ 행 수 대조. 갈리면 예시 서사의 근거가 갈린 것이다.
 # skim          : 제목·그림 캡션·예시 첫 문장만 뽑은 paper/SKIM.md 갱신 (PR 마다 diff 검토).
 # skim-check    : 같은 것 + K1(§3–§5 절마다 그림/예시) 위반 시 실패 — 재구성 완료 후 CI 에 배선한다.
-.PHONY: example-excerpt example-excerpt-check example-delta example-gate example-both skim skim-check
+#                 K4(그림 ↔ 기여 선언 대조 · figures-claims.yaml)는 경고로 함께 출력된다.
+# skim-figures  : 캡션 첫 문장만 순서대로 — 그림만 읽는 경로를 사람이 판정하는 자리.
+.PHONY: example-excerpt example-excerpt-check example-delta example-gate example-both skim skim-check skim-figures
 example-excerpt:
 	uv run python scripts/gen_example_excerpt.py
 
@@ -628,3 +639,6 @@ skim:
 
 skim-check:
 	uv run python scripts/skim_outline.py paper/submission/manuscript.md --check -o paper/SKIM.md
+
+skim-figures:
+	uv run python scripts/skim_outline.py paper/submission/manuscript.md --figures-only

@@ -1,0 +1,67 @@
+# 도판 담당 주장 선언 — 그림 규격 F8 의 단일 원천 (PLAN-089 · 2026-09-04)
+#
+# 왜 파일로 두는가. 캡션 문구를 정규식으로 훑어 "이 그림이 어떤 기여를 담당하는가"를 추측하면,
+# 문구를 다듬을 때마다 검사가 조용히 거짓 통과한다. 담당은 선언이지 추론이 아니다.
+#
+# 이 파일이 정하는 것은 담당이지 판정이 아니다. 판정 문구의 정본은 paper/verdicts.yaml 이고,
+# EP ↔ 절 대응의 정본은 paper/episodes.yaml 이다. 여기서 그 둘을 다시 적지 않는다.
+#
+# 검사: make skim-check (K4) — 선언된 기여 셋이 각각 하나 이상의 도판을 갖는가,
+#       선언한 자리에 실제로 그 도판이 있는가.
+
+# 기여 셋은 CLAUDE.md §0.5 의 것이며 여기서 새로 만들지 않는다.
+contributions:
+  C1:
+    label: "산출물"
+    text: "세 태스크 뷰를 공유 T-Box 로 잇는 SDKB 와 태스크 조건을 결합한 릴리스 게이트, 그리고 그 자산의 공개"
+  C2:
+    label: "통제된 거부 사례 1건"
+    text: "파이프라인을 동결하고 자원 번들만 교체한 조건에서 형식 검증을 전부 통과한 변경이 거부된 기록과 그 절차"
+  C3:
+    label: "교훈 셋"
+    text: "후속 연구가 검정할 가설로 명시한 형태의 설계 교훈"
+
+figures:
+  - number: 1
+    file: concept_overview.svg
+    section: "1"
+    claim: "자원 지표는 개선되었고 형식 검증 네 층을 전부 통과하였으나, 사전 지정 비열등 기준을 충족하지 못하여 그 변경은 거부되었다."   # 목표 — 캡션 개정 대기
+    carries: C2
+  - number: 2
+    file: concept_layer_mismatch.svg
+    section: "2.3"
+    claim: "자원 층의 지표가 2.4배로 향상되는 동안 한 층 아래의 검색 지표는 저하되었다."
+    carries: null          # 발견 — 기여가 아니라 관측이다
+  - number: 3
+    file: concept_tbox_views.svg
+    section: "3.1"
+    claim: "세 태스크 뷰는 별개의 온톨로지가 아니라 같은 공정 노드를 서로 다른 술어로 지나는 질의 경로이며, 그 자원은 계속 갱신된다."   # 목표 — 캡션 개정 대기
+    carries: C1
+  - number: 4
+    file: concept_gate_flow.svg
+    section: "3.5"
+    claim: "형식 검증 네 층을 통과한 변경도 태스크 조건에서 멈추며, 각 항은 미충족 시 뒤를 실행하지 않는다."   # 목표 — 캡션 개정 대기
+    carries: C1
+  - number: 5
+    file: concept_experiment_flow.svg
+    section: "4"
+    claim: "질의 특허 자신의 인용 간선을 색인에서 제거한 뒤 남는 신호만으로 후보를 정렬한다."
+    carries: null          # 방법
+  - number: 6
+    file: concept_ep_gate_matrix.svg
+    section: "4.5"
+    claim: "다섯 에피소드는 승인식의 서로 다른 항을 검증하고, 본문은 번호가 아니라 승인 논증의 순서로 결과를 제시한다."
+    carries: null          # 지도
+  - number: 7
+    file: ir_metrics.svg
+    section: "5.3.1"
+    claim: "자원 지표의 개선은 검색 층으로 그대로 전달되지 않았고, 검색 이득도 깊은 회수에 한정되었다."
+    carries: null          # 발견
+  - number: 8
+    file: concept_detection_port_boundary.svg
+    section: "5.5"
+    claim: "교차 태스크 조건은 SDKB 홀드아웃에서 형식 층이 놓친 결함을 단독 검출하였으나, 동결한 결함 명세의 효과는 제2 자원으로 이전되지 않았다."
+    carries: C3
+
+# 주석 「목표 — 캡션 개정 대기」가 붙은 셋은 도판 재설계와 함께 캡션을 고칠 자리다.
+# K4 는 그때까지 경고를 낸다 — 선언이 원고를 앞서 있음을 기계가 계속 알리는 것이 목적이다.
