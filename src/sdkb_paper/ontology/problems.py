@@ -2,7 +2,8 @@
 
 특허 제목+초록을 Bedrock Haiku 로 파싱해 "이 특허가 푸는 문제"(FailureMode·RootCause)를 추출한다.
 목적: 특허를 문제 공간에 연결하는 데이터층(선행기술 설명 + 하류 매칭 substrate). 매칭 성능은
-만들지 않는다(AFCP-EM 별도 논문). 파일럿(2026-07-22)에서 추출수율 89% 실증.
+만들지 않는다 — **전문가 매칭 뷰에 외부 정답이 없기 때문이다**(A-Box 는 전량 합성 ·
+CLAUDE.md §0.0.2·§0.0.3). 파일럿(2026-07-22)에서 추출수율 89% 실증.
 
 - **어휘 발명 0**: 기존 ont:FailureMode 25 · ont:RootCause 20 개념에 정렬한다(delta 가
   ont:exhibitsFailureMode / ont:relatedToTopic 로 실체화 — 둘 다 SDKB TBox 에 이미 있는 술어).
