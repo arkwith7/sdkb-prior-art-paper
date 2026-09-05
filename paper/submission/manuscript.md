@@ -19,7 +19,7 @@
 0.0293 감소하였다(95% CI [−0.0542, −0.0053]). 조건 T1은 이 변경을 사전 지정 비열등 기준을
 충족하지 못한 것으로 판정하였다. 따라서 게이트는 승인을 거부하였다. 이는 형식 검증이 놓치는
 회귀를 태스크 조건이 검출한 실증 사례이다. 둘째, 이 거부가 필요한 이유는 자원 층의 지표가 다음 층의 성능을
-대표하지 못한 데 있으며, 같은 불일치는 검색 층 안에서도 관측되었다. 온톨로지·한정요소
+대표하지 못한 데 있으며, 같은 불일치는 검색 층 안에서도 관측되었다. 부차 구성의 개념·한정요소
 재순위화는 family-level Recall@100을 두 분할 모두에서 개선하였다(+0.0534 · +0.0343). 다만
 사전 지정한 주 구성은 유의에 이르지 못하였고 상위 정렬(nDCG@20)은 개선되지 않았다. 셋째,
 판정 규칙을 동결한 채 홀드아웃 결함주입을 수행하였다. 주 태스크 검사와 검색 검사가 모두 놓친
@@ -29,13 +29,13 @@
 결함 명세는 판정 가능한 12건에서 교차 결함을 검출하지 못하였다. 곧 이 한 건의 이식에서 절차는
 이전되었고 결함 명세는 이전되지 않았다.
 
-본 연구는 이 평가로부터 한 층 아래 승인, 교차 태스크 감시, 후보생성 분리라는 교훈 셋을 후속 연구가 검정할 가설의 형태로 제시한다. 한계도 명확하다. 태스크 성능을 측정한 대상은 단일 도메인이고, 승인 거부의 실제 사례는 1회이며, 그 원인이 자원에 있는지 점수 계산식에 있는지는 구분하지 못하였다. 전문가 관련성 판정은 수행하지 않았으며, 그 취약도는 계량하고 외생 라벨로 부분 축소하였다. 다국어 융합 기준선을 별도 점검으로 추가하였으나 기준선 강도는 유의하게 변하지 않았다. 질의는 이미 온톨로지에 등재된 특허로 한정되므로, 자유 텍스트 질의를 처리하는 텍스트–개념 매핑 단계와 결손 아홉의 해소 명세는 후속 과제로 제시한다.
+본 연구는 이 평가로부터 한 층 아래 승인, 교차 태스크 감시, 후보생성 분리라는 교훈 셋을 후속 연구가 검정할 가설의 형태로 제시한다. 한계도 명확하다. 태스크 성능을 측정한 대상은 단일 도메인이고, 승인 거부의 실제 사례는 1회이며, 그 원인이 자원에 있는지 점수 계산식에 있는지는 구분하지 못하였다. 전문가 관련성 판정은 수행하지 않았으며, 그 취약도는 계량하고 외생 라벨로 부분 축소하였다. 다국어 융합 기준선을 별도 점검으로 추가하였으나 기준선 강도는 유의하게 변하지 않았다. 질의는 이미 온톨로지에 등재된 특허로 한정되므로, 자유 텍스트 질의를 처리하는 텍스트–개념 매핑 단계와 결손 열하나의 해소 명세는 후속 과제로 제시한다.
 
 **주제어:** 반도체 도메인 온톨로지 데이터셋, 온톨로지 진화, 태스크 인식 승인 게이트, 교차 태스크 비회귀, 자원–태스크 성능 불일치, 선행기술 검색, 설계과학연구
 
 ## Abstract
 
-Formal ontology validation does not establish whether a change preserves downstream performance when tasks share a vocabulary. We present the Semiconductor Domain Knowledge Base (SDKB), with three task views on a shared T-Box, and a task-aware release gate. The gate combines four formal layers with retrieval non-inferiority, subgroup, and cross-task conditions. We evaluated it through controlled resource substitution, holdout fault injection, two disjoint 198-query retrieval splits, and a port to a building-metadata ontology. The substituted bundle comprised the ontology, surface-form dictionary, and document-to-concept mappings. Mean concepts linked per patent document rose from 1.545 to 3.779 (2.4-fold). This measures mapping density, not growth in T-Box classes or documents. Although the change passed all formal layers, it reduced family Recall@100 by 0.0293 (95% CI [−0.0542, −0.0053]) and did not meet the preregistered T1 criterion; the gate rejected it. For this change, resource indicators did not represent next-layer performance. The preregistered composite prediction held in neither retrieval split. Family-level Recall@100 improved in both (+0.0534 and +0.0343), but neither the prespecified configuration nor nDCG@20 improved. The cross-task condition alone detected 12 of 45 faults missed by the focal-task and retrieval checks, with 0 false positives among 27 sound deltas. This separation supports attribution between layers, not overall detection strength. On the second ontology, the procedure accepted 30 sound deltas, but the frozen specification detected none of 12 adjudicable faults. The procedure transferred, whereas the specification required regrounding. Evidence is confined to one domain, one rejection with unseparated causal components, and no expert relevance judgments.
+Formal ontology validation does not establish whether a change preserves downstream performance when tasks share a vocabulary. We present the Semiconductor Domain Knowledge Base (SDKB), with three task views on a shared T-Box, and a task-aware release gate. The gate combines four formal layers with retrieval non-inferiority, subgroup, and cross-task conditions. We evaluated it through controlled resource substitution, holdout fault injection, two disjoint 198-query retrieval splits, and a port to a building-metadata ontology. The substituted bundle comprised the ontology, surface-form dictionary, and document-to-concept mappings. Mean concepts linked per patent document rose from 1.545 to 3.779 (2.4-fold). This measures mapping density, not growth in T-Box classes or documents. Although the change passed all formal layers, it reduced family Recall@100 by 0.0293 (95% CI [−0.0542, −0.0053]) and did not meet the preregistered T1 criterion; the gate rejected it. For this change, resource indicators did not represent next-layer performance. The preregistered composite prediction held in neither retrieval split. The secondary configuration improved family-level Recall@100 in both (+0.0534 and +0.0343), but neither the prespecified configuration nor nDCG@20 improved. The cross-task condition alone detected 12 of 45 faults missed by the focal-task and retrieval checks, with 0 false positives among 27 sound deltas. This separation supports attribution between layers, not overall detection strength. On the second ontology, the procedure accepted 30 sound deltas, but the frozen specification detected none of 12 adjudicable faults. The procedure transferred, whereas the specification required regrounding. Evidence is confined to one domain, one rejection with unseparated causal components, and no expert relevance judgments.
 
 **Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
@@ -459,7 +459,7 @@ SDKB의 T-Box는 선행기술 검색만을 위한 단일목적 스키마가 아�
 ![그림 3. 공유 T-Box 하나 위의 세 태스크 뷰와 교차 태스크 결합 통로.](../figures/concept_tbox_views.svg)
 
 **그림 3.** 세 태스크 뷰는 별개의 온톨로지가 아니라 같은 공정 노드를 서로 다른 술어로 지나는 질의 경로이며, 그 자원은 계속 갱신된다. 위의 세 칸은 각 뷰의 주요 클래스와 대표 역량질문, A-Box
-근거, 그리고 본 논문에서의 지위를 나타낸다. 가운데의 세 통로는 둘 이상의 뷰가 함께 사용하는
+충전 상태, 그리고 본 논문에서의 지위를 나타낸다. 가운데의 세 통로는 둘 이상의 뷰가 함께 사용하는
 어휘이며, 각 통로에서 뻗은 점선은 그 어휘가 잇는 두 뷰를 보여준다. 아래 칸은 공유 코어와 게이트가
 관찰하는 역량질문의 스위트별 개수이고, 맨 아래 줄은 그 코어로 들어오는 자원 변경을 밝힌다. 세 뷰가
 배타적 모듈이 아니라는 사실이 §1의 교차 태스크 회귀가 발생할 수 있는 이유이다.
@@ -493,7 +493,7 @@ SDKB의 T-Box는 선행기술 검색만을 위한 단일목적 스키마가 아�
 연결하는 질문(예: CQ13·14·19·21)은 **공유 코어(CQ-CORE)** 스위트로 귀속한다(§3.4 · S1-A). 세 뷰
 가운데 선행기술조사만 약한 qrel을 보유하므로 정량 검증이 가능하며, 이 비대칭은 결함이 아니라 주장
 범위를 통제하기 위한 설계이다. 세 태스크를 포괄하는 것은 T-Box와 CQ의 관측 사실이고, 본 연구는 세
-태스크의 성능이 모두 검증되었다고 주장하지 않는다. 한편 `NoveltyScore`는 정답에서 파생된 지표이므로
+태스크의 성능이 모두 검증되었다고 주장하지 않는다. 나머지 두 뷰의 인스턴스가 어떤 성격인지는 §5.1에 있다. 한편 `NoveltyScore`는 정답에서 파생된 지표이므로
 검색 피처에서 배제한다.
 
 따라서 태스크의 추가는 클래스의 추가만으로 완결되지 않는다. 본 데이터셋은 새 태스크를 수용할 때
@@ -1029,6 +1029,11 @@ T3 단독 검출 ≥1 ∧ 단측 **맥니마 검정(McNemar test, McNemar)** *p*
 CQ 통과는 질의 경로와 비공집합 응답의 존재를 지시할 뿐 세 태스크의 정확도를 검증하지 않는다. 그리고 G0·G1·G2의 T-Box가 동일하고 통과율 변동은
 A-Box 인스턴스가 채워진 정도의 결과이므로, 본 절의 수치는 세대 안전성의 증거가 아니다(§6.4).
 
+인스턴스의 성격도 뷰마다 다르며 이것이 정량 평가를 한 태스크로 한정한 이유이다. 전문가 매칭
+뷰의 사례 163건은 전량 온톨로지에서 생성한 합성 인스턴스이고(`caseSource` 속성으로 표시된다),
+기술예측 뷰에는 태스크 인스턴스가 없으며 열거 개체 12건만 있다. 선행기술조사 뷰만 심사관 인용이라는
+외부 기준을 가지므로, 나머지 두 뷰는 성능이 아니라 역량질문 통과율로만 감시한다(결손 ⑩).
+
 ## 5.2 문서–개념 연결 증가와 검색 조건의 실제 거부 (EP3)
 
 형식 검증 네 층을 전부 통과하고 사전 지정 자원 측 수량 지표를 모두 증가시킨 실제 변경 하나를
@@ -1147,7 +1152,7 @@ T3(em·tf·core 통과율 1.000 유지)는 통과하였으며, 미충족 조건�
 
 본 에피소드는 검색 층을 측정하여 두 가지를 확인한다. 조건 T1이 사용하는 센서가 자원 변경에 실제로
 반응하는가와, 자원 층의 지표가 검색 층의 성능을 어느 범위까지 대표하는가이다. 결론은 대표 범위가
-좁다는 것이다. 온톨로지 재순위화는 사전에 기대하였던 세 자리, 곧 어휘 불일치 질의와 상위 정렬,
+좁다는 것이다. 개념 기반 재순위화는 사전에 기대하였던 세 자리, 곧 어휘 불일치 질의와 상위 정렬,
 검토 효율에서 개선을 보이지 않았다. 개선이 관측된 자리는 깊은 회수 하나이며 그 이득도 운용 단위로
 환산하면 소멸한다. 곧 검색 층 안에서도 지표에 따라 결과가 갈리며, 이는 §5.2가 자원 층과 검색 층
 사이에서 관측한 불일치가 층 하나 안에서도 나타남을 뜻한다. 표 6의 사례가 그 좁음의 형태를
@@ -1182,7 +1187,7 @@ A의 것을 승계하여 개봉 이전 커밋(`67568c8`)에 고정되어 있다.
 ![그림 7. 시스템 × 지표 — 깊은 회수의 개선과 상위 정렬의 미개선.](../figures/ir_metrics.svg)
 
 **그림 7.** 자원 지표의 개선은 검색 층으로 그대로 전달되지 않았고, 검색 이득도 깊은 회수에 한정되었다. (a) 주 지표 family Recall@100, (b) 보조 지표의 B3 대비 차이와 95%
-신뢰구간. 온톨로지 재순위화는 검토 깊이 100 이내로 더 많은 알려진 양성을 회수하지만, 최상위 20위의
+신뢰구간. 개념 기반 재순위화는 검토 깊이 100 이내로 더 많은 알려진 양성을 회수하지만, 최상위 20위의
 정렬 품질은 개선하지 않는다.
 
 **두 확증 점검의 판정.** 아래에 분할별로 제시한다. 동결한 예측은 §4.5에 있고, 점검 명칭과 등록
@@ -1242,7 +1247,9 @@ A의 것을 승계하여 개봉 이전 커밋(`67568c8`)에 고정되어 있다.
 규칙을 변경하지 않은 상태에서 교차 결함 45개와 정상 델타 27개를 주입한 결과, 사전 지정한 세
 조건이 모두 충족되었다(T3 단독 검출 12/45 · 단측 McNemar *p* = .0001 · 위양성 0/27). 회귀한 CQ는
 결함군마다 다른 태스크를 지목하므로(F13→CQ11 · F11→CQ18 · F14→CQ28 · F15→CQ13), T3는 훼손의
-발생 여부만이 아니라 어느 태스크의 어느 명세가 훼손되었는지를 식별한다.
+발생 여부만이 아니라 어느 태스크의 어느 명세가 훼손되었는지를 식별한다. 이 수는 논리 공리가 사실상
+없는 T-Box에서 관측한 값이다. 공리를 갖춘 자원이었다면 같은 결함의 일부는 형식 층에 귀속되었을
+것이므로, 이 값은 층 사이의 귀속이 현 공리 구성에서 어떻게 나뉘는가를 가리킨다(결손 ⑪).
 
 홀드아웃은 판정 규칙이 이미 본 결함에 결과가 의존하지 않도록 두 축으로 구성하였다. 첫째는
 재현이다. 앞 회차의 교차 태스크 결함군 둘을 새로운 반복 회차에서 다시 주입하였다. 시드가
@@ -1355,10 +1362,10 @@ A의 것을 승계하여 개봉 이전 커밋(`67568c8`)에 고정되어 있다.
 집중되었으며, 그 원인은 설계에 있다. 제안 순위 함수는 텍스트 기준선의 상위 1,000 안에서만
 재정렬하므로(§4.3), 텍스트가 후보로 올리지 못한 문서는 어떤 온톨로지 특징으로도 복구할 수 없다.
 어휘가 겹치지 않는 질의가 바로 그 후보 집합이 빈약한 질의이다(저중첩 기준선 R@100 = 0.1975 대
-고중첩 0.4685). 따라서 관측된 패턴은 온톨로지가 의미적으로 무력하다는 뜻이 아니다. 이 패턴은
+고중첩 0.4685). 따라서 관측된 패턴은 개념 신호가 무력하다는 뜻이 아니다. 이 패턴은
 **재순위화 상한(reranking ceiling)** 을 드러낸다. 이는 현재의 고정 후보 재순위화 구조가 후보
 집합을 확대하지 못하여 발생하는 성능의 상한이다. 이는 온톨로지 자체의 이론적 상한이 아니라 본 연구의
-후보생성–재순위화 구조에서 생긴 한계이다. 온톨로지의 가치는 어휘 불일치의 해소가 아니라, 텍스트가 이미 회수한 후보 가운데
+후보생성–재순위화 구조에서 생긴 한계이다. 개념 신호의 값은 어휘 불일치의 해소가 아니라, 텍스트가 이미 회수한 후보 가운데
 같은 개념을 공유하는 문서를 검토 깊이 안으로 상승시키는 데 있다. 이 상한은 교차언어 축에서 가장
 크게 관측되었으며, 상한의 정량과 보조 논거는
 [S9](../supplementary/S9-retrieval-evaluation-detail.md)에 있다(§5.3.3).
@@ -1434,8 +1441,8 @@ L0–L3에서는 관측되지 않았다. 사전에 명시한 두 갈래는 특�
 
 ## 6.4 한계 · 경쟁 설명 · 결손의 명세
 
-본 절은 본 연구의 검증 강도와 일반화를 제약하는 결손을 다룬다. 결손 여섯의 해소 명세는
-[S3-A](../supplementary/S3-unexecuted-design-v09.md#s3-a--검증-강도와-일반화-가능성의-결손-여섯)에
+본 절은 본 연구의 검증 강도와 일반화를 제약하는 결손을 다룬다. 결손 여덟의 해소 명세는
+[S3-A](../supplementary/S3-unexecuted-design-v09.md#s3-a--검증-강도와-일반화-가능성의-결손-여덟)에
 있으며, 본문은 결론의 해석에 직접 필요한 한계만 다룬다.
 
 **재순위화와 매핑 단계의 부재.** 측정된 값은 온톨로지가 검색을 개선하는 정도의 상한이 아니라
@@ -1459,7 +1466,7 @@ L0–L3에서는 관측되지 않았다. 사전에 명시한 두 갈래는 특�
 평가는 생성 측 조건을 고정하고 검색 구성만 교체한 설계이므로, 그래프 기반 검색 증강 생성과
 비교하지 않은 것은 누락이 아니라 설계상의 선택이다.
 
-**실패 유형의 질적 분류.** 본 연구는 온톨로지 구성이 순위를 악화시킨 질의를 코딩하였으나, 분류
+**실패 유형의 질적 분류.** 본 연구는 제안 구성이 순위를 악화시킨 질의를 코딩하였으나, 분류
 절차의 신뢰도가 사전에 정한 기준 κ = 0.4에 미달하였다(관측 0.000–0.172). 따라서 결과 표는 사전에
 정한 대로 S5로 이관하고, 이 분류에 근거한 주장은 제시하지 않는다.
 
@@ -1472,8 +1479,9 @@ L0–L3에서는 관측되지 않았다. 사전에 명시한 두 갈래는 특�
 승인할 수 없다는 명제는 유지된다. 경쟁 설명이 다루는 것은 승인 규칙의 필요성이 아니라 개선의
 방향이다.
 
-**결손의 명세.** 결손은 모두 아홉이다. 승인 게이트에 관한 여섯은 마진 미보정, 하위집단 구간
-미추정, 자격 있는 델타 1건, 전문가 관련성 미판정, T4 판정 1회, 이식 사례 1건이다. 검색 층
+**결손의 명세.** 결손은 모두 열하나이다. 승인 게이트에 관한 여덟 가운데 여섯은 마진 미보정,
+하위집단 구간 미추정, 자격 있는 델타 1건, 전문가 관련성 미판정, T4 판정 1회, 이식 사례 1건이다.
+나머지 둘은 뷰별 외부 정답의 비대칭과 교차 태스크 검출의 공리 조건이다. 검색 층
 평가에 국한된 셋은 S9에 있다. 주장의 범위를 가장 크게 제약하는 것은 승인 안전성의 미검정이다.
 이 결손들은 판정 자체보다 주장의 범위를 제한한다. 우선순위는 상위 미인용 후보의 표적 표본에 대한
 2인 가림 판정과 자격 있는 델타의 외부 검증이며, 두 작업 모두 새 사전등록이 필요한 별개의

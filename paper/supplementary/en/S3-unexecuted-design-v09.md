@@ -1,6 +1,6 @@
 # S3 · Evaluation options designed but not executed
 
-## S3-A · Six gaps in validation strength and generalizability
+## S3-A · Eight gaps in validation strength and generalizability
 
 > Moved from manuscript §6.4. [Return to manuscript §6.4](../../manuscript/en_source.md#64-limitations-competing-explanations-and-a-specification-of-the-deficits)
 
@@ -12,8 +12,12 @@
 | ④ | No practical basis for the threshold set | ε=0.02, δ=0.05, and τ=0.05 are frozen normative choices and were not calibrated (§3.5) | Measure recall variation across repeated reindexing and survey practitioner tolerance |
 | ⑤ | No resource permitting full evaluation of the acceptance gate | The formal layers and T3 were adjudicated on resource 2, but evaluation of the whole gate remains incomplete (§4.6 · §5.5) | Re-evaluate on a resource with both a release lineage and downstream task benchmark |
 | ⑨ | Transfer of the fault specification between resources | The 9 containment-inversion faults had no injection sites and were not adjudicated (§5.5) | Measure predicate direction in the target resource, redefine the fault specification, and adjudicate again |
+| ⑩ | Only 1 of the 3 views has external ground truth | Only prior-art search has an external standard in examiner citations. The cases in the expert-matching view are synthetic instances generated from the ontology, and the foresight view holds no task instances, so both views were monitored by competency-question pass rate alone (§3.1 · §5.1) | Build ground truth that originates outside the ontology and adjudicate again. Masking the links of synthetic cases and measuring recovery is circular and is not used |
+| ⑪ | The cross-task detection count is conditional on the axiom set | Detection by T3 alone of 12/45 was observed on a T-Box that carries virtually no logical axioms. That the formal layers could not detect these faults was declared before execution (§5.4) | Overlay the axiom set of upstream request CR-005 on a counterfactual graph, reapply the formal layers alone, and measure the shift in attribution |
 
 Every remedy requires a new preregistration. Retrieval-specific gaps ⑥–⑧ are in S9.
+**The deficit numbers are stable identifiers and are not reassigned** — ⑩ and ⑪ take the next
+numbers, and what ①–⑨ refer to is unchanged.
 
 > Full specifications of the evaluation options this study specified at the design stage but did
 > not execute: the comparison of query representations, the auxiliary indicators separating

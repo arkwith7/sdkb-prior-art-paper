@@ -155,7 +155,7 @@ CAPTIONS: dict[str, str] = {
     "F3": "**Figure 3.** The three task views are not separate ontologies but query paths crossing "
           "the same process node by different predicates, and that resource keeps being updated. The "
           "three boxes at the top give the main classes of each view, a representative competency "
-          "question, the A-Box evidence, and the status of that view in this paper. The three channels "
+          "question, how far the A-Box is populated, and the status of that view in this paper. The three channels "
           "in the middle are vocabulary used by two or more views, and the dashed lines from each "
           "channel show the two views it joins. The box at the bottom gives the shared core and the "
           "number of competency questions per suite that the gate observes, and the last line records "

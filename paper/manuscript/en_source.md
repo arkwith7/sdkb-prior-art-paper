@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Formal ontology validation does not establish whether a change preserves downstream performance when tasks share a vocabulary. We present the Semiconductor Domain Knowledge Base (SDKB), with three task views on a shared T-Box, and a task-aware release gate. The gate combines four formal layers with retrieval non-inferiority, subgroup, and cross-task conditions. We evaluated it through controlled resource substitution, holdout fault injection, two disjoint 198-query retrieval splits, and a port to a building-metadata ontology. The substituted bundle comprised the ontology, surface-form dictionary, and document-to-concept mappings. Mean concepts linked per patent document rose from 1.545 to 3.779 (2.4-fold). This measures mapping density, not growth in T-Box classes or documents. Although the change passed all formal layers, it reduced family Recall@100 by 0.0293 (95% CI [−0.0542, −0.0053]) and did not meet the preregistered T1 criterion; the gate rejected it. For this change, resource indicators did not represent next-layer performance. The preregistered composite prediction held in neither retrieval split. Family-level Recall@100 improved in both (+0.0534 and +0.0343), but neither the prespecified configuration nor nDCG@20 improved. The cross-task condition alone detected 12 of 45 faults missed by the focal-task and retrieval checks, with 0 false positives among 27 sound deltas. This separation supports attribution between layers, not overall detection strength. On the second ontology, the procedure accepted 30 sound deltas, but the frozen specification detected none of 12 adjudicable faults. The procedure transferred, whereas the specification required regrounding. Evidence is confined to one domain, one rejection with unseparated causal components, and no expert relevance judgments.
+Formal ontology validation does not establish whether a change preserves downstream performance when tasks share a vocabulary. We present the Semiconductor Domain Knowledge Base (SDKB), with three task views on a shared T-Box, and a task-aware release gate. The gate combines four formal layers with retrieval non-inferiority, subgroup, and cross-task conditions. We evaluated it through controlled resource substitution, holdout fault injection, two disjoint 198-query retrieval splits, and a port to a building-metadata ontology. The substituted bundle comprised the ontology, surface-form dictionary, and document-to-concept mappings. Mean concepts linked per patent document rose from 1.545 to 3.779 (2.4-fold). This measures mapping density, not growth in T-Box classes or documents. Although the change passed all formal layers, it reduced family Recall@100 by 0.0293 (95% CI [−0.0542, −0.0053]) and did not meet the preregistered T1 criterion; the gate rejected it. For this change, resource indicators did not represent next-layer performance. The preregistered composite prediction held in neither retrieval split. The secondary configuration improved family-level Recall@100 in both (+0.0534 and +0.0343), but neither the prespecified configuration nor nDCG@20 improved. The cross-task condition alone detected 12 of 45 faults missed by the focal-task and retrieval checks, with 0 false positives among 27 sound deltas. This separation supports attribution between layers, not overall detection strength. On the second ontology, the procedure accepted 30 sound deltas, but the frozen specification detected none of 12 adjudicable faults. The procedure transferred, whereas the specification required regrounding. Evidence is confined to one domain, one rejection with unseparated causal components, and no expert relevance judgments.
 
 **Keywords:** semiconductor domain ontology dataset; ontology evolution; task-aware release gate; cross-task non-regression; proxy-metric mismatch; prior-art retrieval; design science research
 
@@ -475,7 +475,8 @@ linking two or more views, such as supply chain or regulation (CQ13, CQ14, CQ19,
 **shared core (CQ-CORE)** suite (§3.4, Table 3). Of the three views only prior-art search has weak
 qrel available, so only that view admits quantitative validation. That asymmetry controls the scope
 of the claims rather than being a defect. What covers the three tasks is the observed fact of the
-T-Box and the CQs, and we do not claim that the performance of all three was validated.
+T-Box and the CQs, and we do not claim that the performance of all three was validated. What the
+instances of the other two views consist of is stated in §5.1.
 `NoveltyScore` is derived from the ground truth and is excluded from the retrieval features.
 
 Adding a task is therefore not completed by adding classes. The dataset requires four assets
@@ -1004,6 +1005,13 @@ it does not validate the accuracy of the three tasks. And the T-Box of G0, G1, a
 so pass-rate variation follows from how far the A-Box is populated. The numbers here therefore do
 not establish generation safety (§6.4).
 
+The character of the instances also differs by view, and this is why quantitative evaluation is
+confined to one task. All 163 cases in the expert-matching view are synthetic instances generated
+from the ontology, marked by a `caseSource` property, and the foresight view holds no task
+instances, only 12 enumeration individuals. Only prior-art search carries an external standard in
+examiner citations, so the other two views are monitored by competency-question pass rate rather
+than by performance (deficit ⑩).
+
 ## 5.2 Increased document-concept linking and an actual rejection by the retrieval condition (EP3)
 
 The performance condition T1 rejected one real change that passed all four formal layers and
@@ -1138,7 +1146,7 @@ statement is in §6.3.
 
 ## 5.3 Retrieval gains confined to deep recall (EP4)
 
-The conclusion of this episode is the range within which the gain was observed. Ontology reranking
+The conclusion of this episode is the range within which the gain was observed. Concept-based reranking
 showed no improvement in the three places we had expected: queries with a lexical mismatch, ordering
 at the top, and review efficiency. The one place where an improvement appeared is deep recall, and
 that gain vanishes once converted into an operational unit. Table 6 illustrates the shape of that
@@ -1228,7 +1236,10 @@ With the rule unchanged, we injected 45 cross-task faults and 27 sound deltas, a
 prespecified conditions were met (detection by T3 alone 12/45; one-sided McNemar *p* = .0001; false
 positives 0/27). The CQ that regressed points to a different task in each fault family (F13→CQ11,
 F11→CQ18, F14→CQ28, F15→CQ13). T3 therefore identifies both the occurrence and the task suite
-affected.
+affected. This count was observed on a T-Box carrying virtually no logical axioms. On a resource
+with axioms, part of the same faults would have been attributed to the formal layers. The value
+therefore indicates how attribution divides between the layers under the present axiom set
+(deficit ⑪).
 
 The holdout was composed along two axes so that the result would not rest on the faults the rule had
 already seen. The first axis is re-injection. The two cross-task fault families of the earlier round
@@ -1360,12 +1371,12 @@ only within the top 1,000 of the text baseline (§4.3), so a document the text s
 nominate cannot be recovered by any ontology feature. Queries whose vocabulary does not overlap are
 exactly the queries whose candidate set is impoverished (baseline R@100 of 0.1975 in the low-overlap
 subgroup against 0.4685 in the high-overlap subgroup). The observed pattern therefore does not mean
-that the ontology is semantically powerless. It exposes the **reranking ceiling**. This limit arises
+that the concept signal is powerless. It exposes the **reranking ceiling**. This limit arises
 when the fixed-candidate reranking architecture cannot enlarge the candidate set.
 This is a limit of our candidate-generation and reranking design, not a theoretical limit of the
 ontology itself.
 
-The value of an ontology combined by reranking lies not in resolving lexical mismatch. It lies in
+The value of the concept signal combined by reranking lies not in resolving lexical mismatch. It lies in
 raising, into the review depth, documents that share the same technical concepts among the
 candidates the text side has already retrieved. This reranking ceiling was observed most strongly on the
 cross-lingual axis, and its quantification and supporting argument are in
@@ -1477,7 +1488,7 @@ insufficient power. The evaluation fixed the generation side and replaced only t
 configuration, so not comparing against graph-based retrieval-augmented generation is a design
 choice rather than an omission.
 
-**Qualitative typology of failures.** We coded the queries whose ranking the ontology configuration
+**Qualitative typology of failures.** We coded the queries whose ranking the proposed configuration
 degraded, but the coding reliability fell short of the criterion fixed in advance, κ = 0.4 (observed
 0.000–0.172). The result table moved to S5 as prescribed, and we present no claim based on it.
 
@@ -1489,8 +1500,8 @@ of the seven is in S5. Even if all seven were true, the proposition that resourc
 cannot authorize acceptance still holds. The competing explanations bear on the direction of
 improvement, not on the necessity of the acceptance rule.
 
-**Specification of the deficits.** There are nine deficits in all, carried in two places. The six
-concerning the acceptance gate (①–⑤, ⑨) are in the table below, and the three confined to the
+**Specification of the deficits.** There are eleven deficits in all, carried in two places. The
+eight concerning the acceptance gate (①–⑤, ⑨–⑪) are in S3, and the three confined to the
 retrieval-layer evaluation (⑥–⑧) are in S9. Those three are the language mismatch between queries and
 ground truth, the family diversity of the multilingual baseline, and the absence of expert
 relevance judgment. The numbers are fixed identifiers linking the two places and
