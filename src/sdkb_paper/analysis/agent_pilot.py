@@ -28,6 +28,9 @@ PILOT_SPLIT = "dev"
 SEED = 20261017
 N_SAMPLE = 30
 RUNS = config.PILOT_DIR / "runs"
+RUNS_SMOKE = config.PILOT_DIR / "runs_smoke"
+FREEZE = Path(config.ROOT) / "01.code_spec" / "plans" / "PLAN-096-freeze.json"
+FATAL = ("PermissionDeniedError", "BadRequestError", "NotFoundError", "AuthenticationError")
 LEDGER = config.PILOT_DIR / "cost_ledger.jsonl"
 _HANGUL = re.compile(r"[가-힣]")
 _ASCII_WORD = re.compile(r"[A-Za-z]{3,}")
@@ -216,9 +219,17 @@ def run_arms(qids: list[str], arms: list[str], client_for, ctx, guard, out_dir: 
                 raise SystemExit(f"비용 상한: 누적 ${guard.spent:.2f} + 여유 ${guard.reserve:.2f} > ${guard.cap:.2f}")
             sess = Session(ctx["search"], q, knowledge=view if arm == "A4" else None)
             t0 = time.perf_counter()
-            meta = run_one(client_for(q, arm), arm, ctx["claim"].get(q) or "", ctx["abstract"].get(q) or "",
-                           sess, guard, tag=f"{arm}:{q}:{rep}",
-                           knowledge_block=view.block_text() if arm == "A3" else None)
+            try:
+                meta = run_one(client_for(q, arm), arm, ctx["claim"].get(q) or "", ctx["abstract"].get(q) or "",
+                               sess, guard, tag=f"{arm}:{q}:{rep}",
+                               knowledge_block=view.block_text() if arm == "A3" else None)
+            except Exception as e:                    # 상류 failure_policy — 권한·요청·모델 오류는 멈춘다
+                if type(e).__name__ in FATAL:
+                    raise
+                from ..retrieval import agent_frozen as AF
+                guard.add_flat(AF.ERROR_CHARGE_USD, f"{arm}:{q}:{rep}", f"exception {type(e).__name__}")
+                meta = {"status": f"error:{type(e).__name__}", "usage": {}, "cost_usd": AF.ERROR_CHARGE_USD,
+                        "served_model": None, "turns": [], "user_chars": 0, "knowledge_block_chars": 0}
             rec = {"q": q, "arm": arm, "rep": rep, **meta, "seconds": round(time.perf_counter() - t0, 3),
                    "union": sorted(sess.union), "search_calls": sess.search_calls,
                    "knowledge_calls": sess.knowledge_calls, "leak_hits": sess.leak_hits, "log": sess.log,
@@ -342,8 +353,33 @@ def done_keys(out_dir: Path) -> set[tuple[str, str, int]]:
     return keys
 
 
+class StopRun(RuntimeError):
+    pass
+
+
+def check_stop(records: list[dict]) -> str | None:
+    """중단 조건(결과 전 고정 · PLAN-094 §4.4) — 성능은 보지 않는다."""
+    from ..retrieval import agent_frozen as AF
+
+    if sum(r.get("leak_hits", 0) for r in records) >= AF.LEAK_HITS_STOP:
+        return f"누출 검출 누적 ≥ {AF.LEAK_HITS_STOP}"
+    for arm in sorted({r["arm"] for r in records}):
+        rs = [r for r in records if r["arm"] == arm]
+        fail = sum(1 for r in rs if r["status"] != "ok")
+        if len(rs) >= AF.FAILURE_MIN_RUNS and fail / len(rs) > AF.FAILURE_RATE_STOP:
+            return f"{arm} 실패율 {fail}/{len(rs)} > {AF.FAILURE_RATE_STOP}"
+    if any(r["status"] == "cost_cap" for r in records):
+        return "비용 상한 도달"
+    return None
+
+
+def _records(out_dir: Path) -> list[dict]:
+    return [json.loads(line) for p in sorted(Path(out_dir).glob("*.jsonl"))
+            for line in p.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
 def execute(plan, client_factory, ctx, guard, out_dir: Path) -> int:
-    """계획을 순서대로 실행 · 끝난 키는 건너뛴다(재개 가능) · 상한에 걸리면 멈춘다."""
+    """계획을 순서대로 실행 · 끝난 키는 건너뛴다(재개 가능) · 중단 조건이나 상한에 걸리면 멈춘다."""
     done = done_keys(out_dir)
     n = 0
     for q, arm, rep in plan:
@@ -351,7 +387,83 @@ def execute(plan, client_factory, ctx, guard, out_dir: Path) -> int:
             continue
         run_arms([q], [arm], client_factory, ctx, guard, out_dir, rep=rep)
         n += 1
+        why = check_stop(_records(out_dir)) if ctx is not None else None
+        if why:
+            raise StopRun(why)
     return n
+
+
+def smoke_check(records: list[dict], ctx, ledger: Path) -> list[str]:
+    """연기 시험 판정 — 마스크 · 누출 방지 · 계측 · 비용 통제가 정상인가(성능은 보지 않는다)."""
+    probs = []
+    if len(records) != 4 or {r["arm"] for r in records} != {"A1", "A2", "A3", "A4"}:
+        probs.append(f"연기 시험 실행 수·팔 불일치: {len(records)}")
+    for r in records:
+        tag = f"{r['arm']}"
+        if r["status"] != "ok":
+            probs.append(f"{tag} 상태 {r['status']}")
+        allowed = ctx["search"].allowed(r["q"])
+        if any(d not in allowed for d in r["union"]):
+            probs.append(f"{tag} 적격 후보 위반")
+        from ..validate.leakage_check import scan_publication_numbers
+        if any(scan_publication_numbers(e.get("query") or "") for e in r["log"] if "size" in e):
+            probs.append(f"{tag} 공보번호가 든 검색식이 실행됨")
+        if not r["turns"] or any(t["ms"] <= 0 or t["input_tokens"] + t["cache_read"] + t["cache_write"] <= 0
+                                 or t["output_tokens"] <= 0 for t in r["turns"]):
+            probs.append(f"{tag} 턴 계측 결측")
+        if not r.get("served_model"):
+            probs.append(f"{tag} served_model 결측")
+        if any("ms" not in e or "ret_chars" not in e for e in r["log"]):
+            probs.append(f"{tag} 도구 계측 결측")
+        if r["arm"] == "A3" and r["knowledge_items_visible"] and r["knowledge_block_chars"] <= 0:
+            probs.append("A3 지식 블록 누락")
+        if r["arm"] != "A4" and r["knowledge_calls"] > 0:
+            probs.append(f"{tag} 지식 도구가 A4 밖에서 호출됨")
+    led = [json.loads(line) for line in Path(ledger).read_text(encoding="utf-8").splitlines() if line.strip()]
+    if abs(sum(x["usd"] for x in led) - sum(r["cost_usd"] for r in records)) > 1e-3:
+        probs.append("원장 합계 ≠ 실행 비용 합계")
+    if len(led) != sum(len(r["turns"]) for r in records):
+        probs.append("원장 행 수 ≠ 턴 수")
+    return probs
+
+
+def freeze_state(sample: list[str]) -> dict:
+    """동결 대상의 현재 해시. `run --paid` 는 이것이 동결 파일과 같을 때만 시작한다."""
+    from ..ontology.vendor_pilot import sha256_file
+    from ..retrieval import agent_frozen as AF
+
+    src = Path(config.ROOT) / "src" / "sdkb_paper"
+    code = ["retrieval/agent_search.py", "retrieval/agent_frozen.py", "retrieval/boolean_emulator.py",
+            "retrieval/candidate.py", "analysis/agent_pilot.py", "analysis/metrics.py",
+            "ontology/judgment_items.py", "validate/leakage_check.py"]
+    items_doc = json.loads((config.PILOT_DIR / "judgment_items.json").read_text(encoding="utf-8"))
+    return {
+        "model": AF.MODEL, "effort": AF.EFFORT, "max_tokens": AF.MAX_TOKENS, "max_turns": AF.MAX_TURNS,
+        "search_calls": AF.SEARCH_CALLS, "knowledge_calls": AF.KNOWLEDGE_CALLS, "budget": AF.BUDGET,
+        "fields": list(AF.FIELDS), "price_per_mtok": AF.PRICE_PER_MTOK, "price_safety": AF.PRICE_SAFETY,
+        "cost_cap_usd": AF.COST_CAP_USD, "run_reserve_usd": AF.RUN_RESERVE_USD,
+        "error_charge_usd": AF.ERROR_CHARGE_USD, "failure_rate_stop": AF.FAILURE_RATE_STOP,
+        "failure_min_runs": AF.FAILURE_MIN_RUNS, "leak_hits_stop": AF.LEAK_HITS_STOP,
+        "prompt_sha256": {a: AF.prompt_sha(a) for a in AF.ARMS},
+        "code_sha256": {c: sha256_file(src / c) for c in code},
+        "corpus_sha256": sha256_file(config.IR_CORPUS), "family_map_sha256": sha256_file(config.IR_FAMILY_MAP),
+        "split_sha256": sha256_file(config.IR_SPLIT),
+        "claim_features_sha256": sha256_file(config.EXTERNAL_SDKB / "claim_features.parquet"),
+        "a0_run_sha256": sha256_file(config.IR_RUNS_DIR / "hybrid_b3_rrf.txt"),
+        "argument_ttl_sha256": sha256_file(config.PILOT_ARGUMENT_TTL),
+        "items_sha256": items_doc["items_sha256"], "items_n": len(items_doc["items"]),
+        "items_status": "파일럿 잠정 입력으로 동결 — 판단 지식으로 확정된 것이 아니다 · 논증층 사람 대조 FAIL 보존",
+        "sample_sha256": hashlib.sha256("\n".join(sample).encode()).hexdigest(), "sample": sample,
+        "anthropic_sdk": __import__("anthropic").__version__,
+    }
+
+
+def verify_freeze(sample: list[str]) -> None:
+    want = json.loads(FREEZE.read_text(encoding="utf-8"))["state"]
+    have = freeze_state(sample)
+    diff = sorted(k for k in want if want[k] != have.get(k))
+    if diff:
+        raise SystemExit(f"ERROR: 동결과 다르다 — {diff}")
 
 
 def main(argv=None) -> int:
@@ -365,6 +477,7 @@ def main(argv=None) -> int:
     r.add_argument("--paid", action="store_true")
     r.add_argument("--smoke", action="store_true", help="연기 시험(첫 질의 × 4팔 × 1회)")
     sub.add_parser("report")
+    sub.add_parser("freeze")
     a = ap.parse_args(argv)
 
     gold = load_gold()
@@ -384,16 +497,38 @@ def main(argv=None) -> int:
         print(f"✓ 표집 {len(s)} · sha {body['sha256'][:16]} → {p}")
         return 0
 
+    if a.cmd == "freeze":
+        sample = json.loads((config.PILOT_DIR / "sample.json").read_text(encoding="utf-8"))["qids"]
+        body = {"_README": "PLAN-096 유료 파일럿 동결(사용자 승인 2026-10-17 · 204회 · 원장 누적 USD 30). "
+                           "run --paid 는 현재 상태가 이 state 와 같을 때만 시작한다.",
+                "state": freeze_state(sample)}
+        FREEZE.write_text(json.dumps(body, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        print(f"✓ 동결 → {FREEZE}")
+        return 0
     if a.cmd == "run":
         from ..retrieval.agent_search import CostGuard, make_client
 
-        client = make_client(paid=a.paid)              # --paid 가 없으면 여기서 멈춘다
         sample = json.loads((config.PILOT_DIR / "sample.json").read_text(encoding="utf-8"))["qids"]
+        verify_freeze(sample)                          # 동결과 다르면 여기서 멈춘다
+        client = make_client(paid=a.paid)              # --paid 가 없으면 여기서 멈춘다
         ctx = _setup()
         guard = CostGuard(LEDGER)                      # 연기 시험과 본 실행이 같은 원장 · 합계 상한
-        n = execute(run_plan(sample, list(("A1", "A2", "A3", "A4")), a.smoke), lambda q, arm: client,
-                    ctx, guard, RUNS)
-        print(f"✓ 실행 {n} · 누적 ${guard.spent:.2f} / 상한 ${guard.cap:.2f}")
+        arms = ["A1", "A2", "A3", "A4"]
+        if not done_keys(RUNS_SMOKE) >= {(sample[0], x, 0) for x in arms}:
+            execute(run_plan(sample, arms, smoke=True), lambda q, arm: client, ctx, guard, RUNS_SMOKE)
+        probs = smoke_check(_records(RUNS_SMOKE), ctx, LEDGER)
+        print(f"연기 시험 4 · 누적 ${guard.spent:.2f} · 판정 {'통과' if not probs else probs}")
+        if probs or a.smoke:
+            return 1 if probs else 0
+        try:
+            n = execute(run_plan(sample, arms, smoke=False), lambda q, arm: client, ctx, guard, RUNS)
+        except StopRun as e:
+            print(f"■ 중단: {e} · 누적 ${guard.spent:.2f}")
+            return 2
+        except SystemExit as e:
+            print(f"■ {e}")
+            return 3
+        print(f"✓ 본 실행 {n} · 누적 ${guard.spent:.2f} / 상한 ${guard.cap:.2f}")
         return 0
     if a.cmd == "report":
         rows = [json.loads(line) for p in sorted(RUNS.glob("*.jsonl"))

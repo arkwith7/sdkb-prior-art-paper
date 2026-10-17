@@ -78,6 +78,15 @@ class CostGuard:
     def exceeded(self) -> bool:
         return self.spent >= self.cap
 
+    def add_flat(self, usd: float, tag: str, note: str) -> float:
+        """usage 를 알 수 없는 실패(응답 없는 예외)의 보수적 비용."""
+        self.spent += usd
+        if self.ledger is not None:
+            Path(self.ledger).parent.mkdir(parents=True, exist_ok=True)
+            with Path(self.ledger).open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps({"tag": tag, "usd": round(usd, 6), "flat": note}) + "\n")
+        return usd
+
     def add(self, usage: dict, tag: str) -> float:
         c = usage_cost(usage)
         self.spent += c
@@ -224,8 +233,10 @@ def make_client(*, paid: bool):
     if not paid:
         raise PermissionError("유료 호출은 승인 후 --paid 로만 연다 (PLAN-096 D4)")
     from anthropic import AnthropicBedrock
+    from dotenv import load_dotenv
 
-    from ..config import get_secret
+    from ..config import ROOT, get_secret
+    load_dotenv(ROOT / ".env")                       # 접근 키를 환경으로(상류와 같다 · 값은 기록하지 않는다)
     return AnthropicBedrock(aws_region=get_secret("AWS_REGION"), max_retries=3)
 
 

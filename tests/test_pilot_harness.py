@@ -216,3 +216,17 @@ def test_replay_reproduces_union_and_respects_budget(search):
     sess.tool("submit", {"query": "식각"})
     assert P.replay(sess.log, "q0", search) == sess.union
     assert P.replay(sess.log, "q0", search, budget=1) == set()
+
+
+def test_stop_rules_ignore_performance():
+    ok = [{"arm": "A1", "status": "ok", "leak_hits": 0}] * 4
+    assert P.check_stop(ok + [{"arm": "A1", "status": "max_turns", "leak_hits": 0}]) is None   # 1/5 = 20% (초과 아님)
+    assert "실패율" in P.check_stop(ok + [{"arm": "A1", "status": "refusal", "leak_hits": 0}] * 2)
+    assert "누출" in P.check_stop([{"arm": "A2", "status": "ok", "leak_hits": 3}])
+    assert P.check_stop([{"arm": "A2", "status": "cost_cap", "leak_hits": 0}]) == "비용 상한 도달"
+
+
+def test_flat_error_charge_counts_toward_cap(tmp_path):
+    g = S.CostGuard(tmp_path / "l.jsonl", cap=1.0, reserve=0.0)
+    g.add_flat(0.5, "t", "exception X")
+    assert abs(S.CostGuard(tmp_path / "l.jsonl", cap=1.0).spent - 0.5) < 1e-9

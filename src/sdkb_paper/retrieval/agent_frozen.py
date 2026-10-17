@@ -34,6 +34,10 @@ PRICE_PER_MTOK = {"input": 4.00, "output": 20.00, "cache_write": 5.00, "cache_re
 PRICE_SAFETY = 1.25
 COST_CAP_USD = 30.0                             # 연기 시험 + 파일럿 합계(사용자 2026-10-17)
 RUN_RESERVE_USD = 0.50                          # 다음 실행 시작 전 남아 있어야 하는 최소 여유
+# 실패 호출·재시도 비용도 상한에 넣는다(사용자 2026-10-17). 응답 없이 끝난 예외는 usage 를 알 수 없으므로
+# 요청 1회의 최악 추정(입력 ~30k · 출력 16k 토큰 ≈ $0.44)을 올려 USD 0.50 을 원장에 보수적으로 적는다.
+ERROR_CHARGE_USD = 0.50
+FAILURE_MIN_RUNS = 5                            # 실패율 판정은 팔별 완료 실행이 이 수 이상일 때부터
 
 # ── 고장 정의(결과와 무관한 실패만 · rag/frozen.py 선례) ──────────────────────────
 FAILURE_RATE_STOP = 0.20                        # 팔별 실패율이 넘으면 중단
