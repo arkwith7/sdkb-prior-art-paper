@@ -5,6 +5,10 @@
 > 열지 못했고, 그 항목은 Crossref 레코드를 서지 확인으로 삼았다. **전문(full text)은 한 편도 읽지 않았다.**
 > 초록 확인 여부를 항목마다 적는다. 참고문헌 목록(`paper/assembly/references.md`)에는 아직 넣지 않았다.
 >
+> **2026-10-17 개정(PLAN-095).** 흐름 F(특허 의미 검색) · G(추론형 LLM·Agent 기반 특허 과제) · H(이론)와 **비교표 §4′** 를 추가했다.
+> **같은 날 2차:** F1·G1–G4·H1 여섯 편을 [TM-LITERATURE-FULLTEXT](TM-LITERATURE-FULLTEXT.md) 에서 전문 검토했다 — **서지 6/6 · 전문 4/6 · 초록만 2/6**(SEARCHFORMER · FOPNet 접근 거부).
+> 아래 F·G·H 행의 "확인" 열과 §4′ 의 "확인 수준" 열은 그 기록을 따른다. 서지 확인은 내용 확인이 아니다.
+>
 > **신규성은 확정하지 않는다.** 아래 공백은 *"확인한 출처 범위에서"* 의 관측이며, §6 에 확인하지 못한 범위를 적는다.
 
 ## A. 신준석 교수 연구 — 실제 내용과 이 연구의 연결
@@ -41,6 +45,8 @@
 | B8 | Yoon, B., & Park, Y. (2005). A systematic approach for identifying technology opportunities: Keyword-based morphology analysis. *TFSC*, 72(2), 145–160. doi:10.1016/j.techfore.2004.08.011 | 서지만 | 형태분석 기반 발굴 |
 | B9 | Lee, S., Yoon, B., & Park, Y. (2009). An approach to discovering new technology opportunities: Keyword-based patent map approach. *Technovation*, 29(6–7), 481–497. doi:10.1016/j.technovation.2008.10.006 | 초록 | 공백의 검증이 **중요도·추세** 검정이지 기존 개시 검정이 아님 |
 | B10 | Abbas, A., Zhang, L., & Khan, S. U. (2014). A literature review on the state-of-the-art in patent analysis. *WPI*, 37, 3–13. doi:10.1016/j.wpi.2013.12.006 | 서지만 | 리뷰 |
+| **B11** | Park, S., Kim, G., & Lee, S. (2026). Evaluating the value of LLMs in patent-based technology intelligence: Toward increasing efficiency and reducing expert dependency. *TFSC*, 222, 124375. doi:10.1016/j.techfore.2025.124375 | Crossref·OpenAlex **서지만 · 초록 미열람(폐쇄 접근)** | **가장 가까운 기술경영 게재 선례**(제목상 "전문가 의존 감소" · 검색 요약상 특허 질의 작성 과제 포함). 전문 검토 전에는 차별을 확정하지 않는다 — 투고 전 필수 확인 |
+| B12 | Jiang, P., Arena, A. P., Sorce, S., & Atherton, M. (2026). Large language models in the patent lifecycle: A systematic review. *WPI*, 87, 102506. doi:10.1016/j.wpi.2026.102506 | OpenAlex **초록 확인** | PRISMA · 129편(2018–2026초) · 심사·소추 단계 34편 · RAG 지배 · "사람 감독이 필요한 보조 도구" — 공백 4 의 전수 확인 대체물로 쓸 수 있는 후보(전문 미열람) |
 
 ## C. 선행기술 검색 평가 · 심사관 인용 정답의 한계 · 전문 검색 · LLM 질의
 
@@ -68,13 +74,54 @@
 | D2 | Risch, J., Alder, N., Hewel, C., & Krestel, R. (2020). PatentMatch. arXiv:2012.13919 | 초록 | 청구항–인용 문헌 구절 쌍(EPO 조사 범주) — **요소 수준** 판단 재사용 |
 | D3 | Parikh, A., & Dori-Hacohen, S. (2024). ClaimCompare. arXiv:2407.12193 | 초록 | OA 기반 신규성 파괴 쌍 |
 | D4 | Ikoma, H., & Mitamura, T. (2025). Can AI examine novelty of patents? arXiv:2502.06316 | 초록 | 실제 심사 사례 기반 신규성 판정 |
-| D5 | Lim, H. 외 (2025). PANORAMA: A dataset and benchmarks capturing decision trails and rationales in patent examination. arXiv:2510.24774 | 초록 · 게재처 미확인 | **가장 가까운 선행.** 심사 판단 궤적·논거를 과제로 분해 · LLM 은 선행기술 검색·위치 찾기는 비교적 잘하고 신규성·진보성 판단은 약함. 틀은 **심사 자동화 벤치마크**이지 기술 인텔리전스가 아니다 |
+| D5 | Lim, H. 외 (2025). PANORAMA: A dataset and benchmarks capturing decision trails and rationales in patent examination. arXiv:2510.24774 | 초록 · 게재처 미확인 | **가장 가까운 선행.** 심사 판단 궤적·논거를 과제로 분해 · LLM 은 선행기술 검색·위치 찾기는 비교적 잘하고 신규성·진보성 판단은 약함. 틀은 **심사 자동화 벤치마크**이지 기술 인텔리전스가 아니다. **→ G1 로 재분류 · 서지 확정(NeurIPS 2025 D&B) · 비교표 §4′** |
 
 ## E. 설계과학 방법론
 
 Hevner, March, Park & Ram (2004) *MISQ* 28(1), 75–106, doi:10.2307/25148625 · Peffers 외 (2007) *JMIS* 24(3), 45–77,
 doi:10.2753/mis0742-1222240302 · Gregor & Hevner (2013) *MISQ* 37(2), 337–355, doi:10.25300/misq/2013/37.2.01.
 → 방법론 장에만 둔다. 기여 유형은 Gregor & Hevner 의 틀에서 **개선(improvement)** 후보로 서술하되, 기술경영 측 기여는 발견과 적용 조건으로 쓴다.
+
+## F. 특허 의미 검색 — "키워드를 넘어서는 것" 자체는 신규성이 아니다
+
+| # | 서지 | 확인 | 내용(초록 기준) | 이 연구가 구분해야 할 것 |
+|---|---|---|---|---|
+| F1 | Vowinckel, K., & Hähnke, V. D. (2023). SEARCHFORMER: Semantic patent embeddings by siamese transformers for prior art search. *World Patent Information*, 73, 102192. doi:10.1016/j.wpi.2023.102192 | Crossref · **초록만 · 전문 접근 거부** · 2차 3편(FULLTEXT §4) | EPO 조사보고서의 청구항–인용 쌍으로 미세조정한 특허 전용 Sentence-BERT. 한정된 평가 집합(2,014쌍)에서 BM25·범용 모델을 유의하게 상회(α=.01). 전체 코퍼스 검색은 계산 제약으로 미수행 · 모델·데이터 비공개 | 의미 임베딩 + BM25 결합은 이미 있다. 이 연구의 A⓪(혼합 검색)은 **그 수준의 기준선**이며 기여가 아니다 |
+
+## G. 추론형 LLM · Agent 기반 특허 과제 — 서로 다른 부분을 다룬다
+
+| # | 서지 | 확인 | 내용(초록 기준) | 이 연구가 구분해야 할 것 |
+|---|---|---|---|---|
+| G1 | Lim, H., Nam, S., Na, S., Cho, J. Y., Yang, J. Y., Shin, H., Lee, Y., Kim, J., Lee, M., & Hong, H. (2025). PANORAMA: A dataset and benchmarks capturing decision trails and rationales in patent examination. *NeurIPS 2025 Datasets & Benchmarks*. arXiv:2510.24774 | **전문 확인**(arXiv v1 · FULLTEXT §1) · NeurIPS 게재 확인 | 미국 심사 기록 8,143건 · 과제 셋(PAR4PC 선행기술 검색 → PI4PC 구절 위치 → 신규성·진보성 판단). **PAR4PC 는 후보 8개 중 복수 선택(객관식 · 정확도)** · 2,896 인스턴스 · LLM 12종(추론형 QwQ-32B · EXAONE-Deep-32B 는 CoT 로만) · GPT-4o 최고 51.04% · HF 공개 | **가장 가까운 선행.** 그러나 평가는 "주어진 후보 8개에서 고르기"다. 검색식을 만들어 **대규모 후보에서 제한된 검토량 안에 발견**하는 평가와 다르다 — 이것이 차별화 지점 |
+| G2 | Zheng, G., An, T., Zuo, Y., Wang, S., & Zhai, Y. (2026). From LLMs to AI agents: a systematic benchmark for SAO structure extraction in patent analytics. *Scientific Reports*, 16, 19036. doi:10.1038/s41598-026-49727-1 | **전문 확인**(Europe PMC JATS · FULLTEXT §3) | 단일 LLM(GPT-4o · Gemini 1.5 Pro · Claude 3.5 Sonnet) 대 성찰·수정 루프 Agent. Agent 가 F1 을 올리나(최고 89.58%) 비용이 **40–60배**(문장당 11k–15k 토큰) | **정보 추출 성능과 선행기술 발견 성능을 구분한다.** 비용 보고 형식(토큰·호출)은 참고 |
+| G3 | Yoo, Xu, & Cao (2026). PatentMind: A multi-aspect reasoning graph for patent similarity evaluation. *Findings of ACL 2026*, 14947–14964. doi:10.18653/v1/2026.findings-acl.735 · arXiv:2505.19347 | **전문 확인**(arXiv v3 · 게재본 미대조 · FULLTEXT §2) | 기술특징·적용분야·청구범위를 분리한 추론 기반 유사성 평가 · 전문가 판정과 r=0.938 · 임베딩 대비 계산 비용 큼(2차 인용) | **주어진 특허쌍의 평가**와 **대규모 후보에서의 발견**을 구분한다 |
+| G4 | Wang, N., Wan, Z., Zhao, H., Wang, C., & Wang, Y. (2026). FOPNet: A comprehensive functional semantic knowledge graph for deep technical analysis in patents. *World Patent Information*, 84, 102427. doi:10.1016/j.wpi.2026.102427 | Crossref · **초록만(간접) · 전문 접근 거부**(FULLTEXT §5) | 기능–대상–속성 삼중항을 특허 지식그래프에 연결 · USPTO 심사 결정·PTAB 기반 유사성 벤치마크 공개 · 키워드 대비 +43%(초록 주장) | **온톨로지·지식그래프와 LLM 의 결합 자체를 신규성으로 제시하지 않는다.** 이 연구의 질문은 "결합" 이 아니라 "판단 지식의 제공이 Agent 의 검색 행동을 바꾸는가" 다 |
+
+## H. 이론적 출발점
+
+| # | 서지 | 확인 | 쓰임 |
+|---|---|---|---|
+| H1 | Zollo, M., & Winter, S. G. (2002). Deliberate learning and the evolution of dynamic capabilities. *Organization Science*, 13(3), 339–351. doi:10.1287/orsc.13.3.339.2780 | **전문 확인**(수락원고 · 출판본 쪽수 미대응 · FULLTEXT §6) | 경험 축적 · 지식 명료화 · 지식 체계화의 구분. **검증 가능한 작은 기제**(명시화된 판단 지식 → 검색 루틴 변화 · 과제 조건별 효용)만 가져온다. **동적역량 향상은 주장하지 않는다**(PLAN-095 §3) |
+
+## 4′. 비교표 — 입력 · 실행 · 후보 범위 · 추론 설정 · 외부 지식 · 비용 · 전문가 · 공개
+
+"초록만으로 판단한 칸은 **미확인**" 이 규칙이다. 빈 칸이 아니라 미확인이라고 적는다.
+
+| 연구 | 입력 자료 | 실제 검색 실행 | 후보 범위 | 모델 추론 설정 | 외부 지식 | 비용 통제 | 전문가 평가 | 공개 코드·데이터 | 확인 수준 |
+|---|---|---|---|---|---|---|---|---|---|
+| F1 SEARCHFORMER | 청구항 텍스트 | **없음** — 후보 집합 내 bi-encoder 순위(focal 당 음성 197–955 · 2차) | 2,014쌍 · 전체 코퍼스 아님 | 해당 없음(인코더) | 없음 | 미확인 | 미확인 | **모델·데이터 비공개** | 초록만 + 2차 |
+| G1 PANORAMA | 출원 제목·초록·청구항 전체 + 후보 8(각 제목·초록·청구항 · 평균 16,060 토큰) | **없음**(객관식 복수 선택 · 단일 호출) | 8(gold/silver/negative · negative 는 같은 class 타 출원의 인용) | zero-shot/CoT 프롬프트 · **추론형 2종도 CoT 프롬프트로만** · temp 0 | 없음 | **없음** | 파싱 검증 7인만(산출물 평가 없음) | HF + GitHub + 프롬프트 | **전문** |
+| G2 SAO Agent | 특허 문장 14,537(영어 72건) | **없음**(추출) | 해당 없음 | 반성–정련 루프 ≤3회 · **도구 호출 없음** · 네이티브 추론 모델 없음 · temp 0 | 없음 | **$0.0024–0.0038 → Agent $0.09–0.16/문장 · 40–60배**(Table 6) | 주석 5인만 | 데이터 요청 시 · 코드 없음 | **전문** |
+| G3 PatentMind | 특허쌍 500(제목·초록·청구항 + IPC) | **없음**(쌍 점수) | 2 | 고정 8호출 프롬프트 DAG · **Agent 아님** · 추론 모델은 백본 교체만 · temp 0.2 | IPC 코드만 | **20–30초 · ≈$0.003/쌍** | 주석 4인(κ 0.588) | "accept 후" · URL 없음 | **전문** |
+| G4 FOPNet | 미확인 | 미확인(쌍/후보 랭킹 추정) | 미확인 | 선택적 LLM 재순위만 | **F-O-P 기능 의미 KG(임베딩에 내장)** | 미확인 | 미확인 | 벤치마크 공개 선언 · 코드 미확인 | 초록만(간접) |
+| C12 Wang et al. 2023 | 체계적 고찰 주제 | **Boolean 실행** | 문헌 DB | ChatGPT 프롬프트 | 없음 | 미확인 | 미확인 | 미확인 | 초록 일부 |
+| **이 연구(PLAN-094 · 미실행)** | 청구항·초록 | **Boolean 실행(KIPRIS) + 혼합 순위 A⓪** | 대규모 후보 · 검토 200 | **동결된 추론 설정 · Agent 루프(턴 24 · 호출 12)** | **심사 판단 지식(표 / 온톨로지 도구)** | **호출·토큰·USD·지연·실패율** | **선택(EXPERT-CASE-PROTOCOL)** | 집계·식별자·프롬프트 sha 공개 예정 | 설계 |
+
+이 표가 보여 주는 공백은 한 줄이다 — **실제 검색을 실행하고 · 대규모 후보에서 · 제한된 검토량 아래 · 추론 설정을 통제한
+Agent 에 · 외부 판단 지식을 더한** 조건을 함께 갖춘 연구는 확인한 범위에 없다. 각 요소는 따로 존재한다 — 선택(G1) · 쌍 평가(G3) ·
+추출 루프(G2) · 임베딩 순위(F1) · KG 보강 임베딩(G4). **경쟁 설명과 재판정은 FULLTEXT §7** — 특히 PANORAMA 의 가이드라인 CoT 가
+자유 CoT 보다 낮았다는 관측은 "판단 지식 제공이 효과가 없을 수 있다" 는 선행 음성 신호이고, F1·G4 전문에 예산 통제가 있을 가능성은
+배제하지 못했다.
 
 ## 5. 공백 (확인한 출처 범위에서)
 
@@ -84,14 +131,18 @@ doi:10.2753/mis0742-1222240302 · Gregor & Hevner (2013) *MISQ* 37(2), 337–355
    그 판단 지식을 **심사 밖의 사용자(R&D·기술 인텔리전스 담당)의 입력**으로 재사용한 것은 확인한 범위에서 보이지 않았다.
 3. **OA·심사 논거 데이터셋은 심사 자동화를 겨냥한다.** D1–D5 는 거절 논거를 기계가 쓸 수 있게 만들지만, 기술
    인텔리전스·제한된 검토 자원과 연결하거나 재사용이 **언제 통하고 언제 실패하는지**를 진술하지 않았다(확인 범위).
-4. **LLM 질의 생성은 체계적 문헌고찰에서 평가됐다**(C12–C13). 특허 선행기술 조사에서 같은 검토량 조건으로 평가한
-   대응 연구는 이번 확인에서 검증되지 않았다.
+4. **추론·도구 사용이 가능한 AI 의 선행기술조사에서, 과거 전문가 판단을 명시적 지식으로 제공하는 것이 어떤 검색 행동을
+   바꾸고 어느 조건에서 추가적인 조사 가치를 만드는지에 대한 통제된 증거가 없다**(확인 범위 · §4′). LLM 질의 생성은 체계적
+   문헌고찰에서 평가됐고(C12–C13), 특허 쪽의 Agent·추론형 연구(G1–G4)는 **후보 선택 · 추출 · 쌍 평가**를 다룬다 — 검색식을
+   만들어 제한된 검토량 안에서 발견하는 평가가 아니다. 이 공백은 세 질문으로 좁힌다: **추가 가치**(강한 Agent + 판단 지식 =
+   같은 예산에서 근거 확보 개선?) · **작동 기제**(요소 분해 · 대체 표현 · 관점 확장 · 검색식 수정 중 무엇?) · **적용 조건**(어떤
+   질의에서 도움이 되고 어떤 질의에서 비용·잡음만 느는가 · 표 대 온톨로지).
 
 ## 6. 확인하지 못한 범위 (신규성 주장 금지의 근거)
 
 Google Scholar·Scopus·WoS 전수 검색 · Elsevier·Springer 원문 · **국내 문헌(KCI·RISS)과 신준석 교수 국문 논문 전체** ·
 KIPO·EPO 내부 AI 검색 도구와 상용 특허 분석 업체 자료 · 모든 논문의 전문 · C6·C7·B5·B6·A6·B8·B10 의 결론 ·
-D2–D5 의 학술지 게재처 · 특허 선행기술 조사 전용 LLM 질의 생성 연구.
+D2–D4 의 학술지 게재처 · 특허 선행기술 조사 전용 LLM 질의 생성 연구 · **Agent·추론형 LLM 특허 연구의 전수**(G1–G4 는 조언이 든 것만 확인) · F1·G1–G4·H1 의 전문.
 → 투고 전에 **국내 문헌과 특허 전용 LLM 검색 연구**를 한 번 더 확인한다.
 
 ## 7. 연구질문 검토와 수정안
@@ -101,3 +152,18 @@ D2–D5 의 학술지 게재처 · 특허 선행기술 조사 전용 LLM 질의 
 | RQ1 심사 기록에서 재사용할 수 있는 판단 지식은 무엇이며, 개별 사건의 판단과 어떻게 구분하는가? | 공백 3 에 대응. 근거는 상류 논증층(블록·논거 범위 · FAIL 보존 · 하류 미소비) | 유지. 답의 형태를 "구분 기준과 그 **검증 범위**"로 한정 |
 | RQ2 그 지식은 제한된 검토량에서 알려진 심사 근거의 확보·복원을 개선하는가? | 공백 2·4 에 대응. "개선"은 비교 기준이 없으면 요소 분해 지침의 효과와 섞인다 | **"같은 검토량에서, 요소 분해 지침만 준 경우와 구분되는 근거 확보 차이를 만드는가?"** (PLAN-094 주 대비) |
 | RQ3 효과가 발생하거나 실패하는 조건은 무엇인가? | 공백 3 에 대응. 기존 결과(EP3 · 미검색 89%)로 일부 답할 수 있음 | 유지. 조건 축을 사전 지정: 정답 언어 · 요소 수 · 부분 개시 · 지식 표현 형식(표 대 온톨로지) · 형식 검증 통과 여부 |
+
+### 7.1 v2 (2026-10-17 · PLAN-095 §2)
+
+중심 문장: *"추론형 LLM 과 검색 도구를 쓰는 AI Agent 가 선행기술조사를 수행하는 조건에서, 과거 특허 심사 판단 지식을
+어떻게 구조화하고 제공해야 제한된 조사 자원 안에서 기술대안 검토에 필요한 근거 확보를 개선하며, 어떤 조건에서 효과와
+한계를 보이는가?"*
+
+| 좌표 | 질문 | 공백 | 증거 자리 |
+|---|---|---|---|
+| RQ-0 (구 RQ1) | 재사용 가능한 판단 지식과 개별 사건 판단의 구분 | 3 | 상류 논증층 · 하류 소비 0 |
+| RQ-A 추가 가치 | 강한 Agent 에 판단 지식을 더하면 같은 예산에서 근거 확보가 개선되는가 | 4 | PLAN-094 A④−A② · 참조 A②−A⓪ |
+| RQ-B 작동 기제 | 요소 분해 · 대체 표현 · 관점 확장 · 검색식 수정 중 무엇을 통해 | 4 | PLAN-094 §3.4′ 코딩 · κ |
+| RQ-C 적용 조건 | 어떤 질의에서 도움·잡음 · 제공 방식(표 대 온톨로지) 차이 | 3·4 | PLAN-094 하위집단 · A④−A③ |
+
+설계 문서 밖(파생본 본문)에서는 영문자 좌표 대신 서술형 또는 `RQ1`–`RQ3` 을 쓴다(CLAUDE.md §0.9-2).

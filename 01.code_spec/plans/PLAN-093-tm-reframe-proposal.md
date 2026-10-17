@@ -10,6 +10,10 @@
 > 이 계획은 PLAN-092 를 **폐기하지 않는다** — PLAN-092 의 조건 `C-1`–`C-7` 과 거부 사례는 새 기조에서
 > **검증 절차와 보조 증거**의 자리로 이동한다(§2·§3).
 >
+> **2026-10-17 방향 확정 — [PLAN-095](PLAN-095-tm-direction-setting.md).** 중심 질문은 아래 문장을 뼈대로 **v2**(AI Agent 가
+> 조사를 수행하는 조건 · 구조화·제공 방식)로 개정되었다(PLAN-095 §2). 아래 2026-10-15 문장은 **상류와 공유한 판**이며, v2 통보는
+> 승격 시(O-27). 비교군은 5팔(A⓪ 추가 · PLAN-094) · 목표 저널 가설은 [JOURNAL-FIT](../research/JOURNAL-FIT.md).
+>
 > **공통 연구 질문(상류 `UPSTREAM-CLOSEOUT-2026-10.md` §5 와 같은 문장 · 2026-10-15 사용자 확정).**
 > *"과거 특허 심사 판단 지식의 재사용은 제한된 검토 자원에서 기술대안 검토에 필요한 근거 확보를
 > 어떻게 지원하며, 어떤 조건에서 효과와 한계를 보이는가?"*
@@ -25,6 +29,8 @@
 | [PLAN-094](PLAN-094-search-plan-validation-design.md) | 최소 추가 검증 설계(§2 1–3단계 문서 · 미실행) |
 | [research/EXPERT-CASE-PROTOCOL.md](../research/EXPERT-CASE-PROTOCOL.md) | 선택적 기업 사례 프로토콜 |
 | [paper/drafts/proposal/](../../paper/drafts/proposal/) | 지도 검토용 연구제안서 초안 |
+| [PLAN-095](PLAN-095-tm-direction-setting.md) | 방향 확정 — 층위표 · 용어 정의 · RQ v2 · 저널 전략 · 문헌 확장 · PLAN-094 개정 명세 · 요건 5 추가 충돌 |
+| [research/JOURNAL-FIT.md](../research/JOURNAL-FIT.md) | 목표 저널 적합성 표(가설 · 색인은 2차 확인) |
 
 ---
 
