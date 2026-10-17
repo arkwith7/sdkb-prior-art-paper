@@ -28,6 +28,15 @@ INTERIM = DATA / "interim"
 PROCESSED = DATA / "processed"
 SAMPLES = DATA / "samples"
 EXTERNAL_SDKB = DATA / "external" / "sdkb"   # 근간 온톨로지 스냅샷 (vendor.py 가 채운다)
+# --- 파일럿 별도 고정 자산 (PLAN-096 D2 · 주 스냅샷 밖) ------------------------------
+# 주 스냅샷 `EXTERNAL_SDKB` 의 PROVENANCE 를 바꾸지 않으려고 디렉터리를 따로 둔다(§2.1 발동 조건 밖).
+# 기존 파이프라인(corpus·index·retrieve·eval·gate)은 이 디렉터리를 읽지 않는다 — 회귀 시험이 고정한다.
+EXTERNAL_PILOT = DATA / "external" / "sdkb_pilot"
+PILOT_PROVENANCE = EXTERNAL_PILOT / "PROVENANCE.json"
+PILOT_ARGUMENT_TTL = EXTERNAL_PILOT / "sdkb-abox-argument.ttl"      # 비커밋(심사 기록 파생)
+PILOT_CONCORDANCE = EXTERNAL_PILOT / "ipc_concordance.csv"          # 에뮬레이터 IPC 판 대응표
+PILOT_PARITY = EXTERNAL_PILOT / "emulator_parity_upstream.json"     # 비커밋(검색식 원문 포함)
+PILOT_DIR = DATA / "processed" / "pilot"                            # 파일럿 산출(비커밋)
 # --- 제2 도메인 자원 (EP5 · PLAN-064-prereg §1) --------------------------------
 # TTL 은 공개 릴리스에서 재생성 가능하므로 커밋하지 않는다(.gitignore) — 커밋되는 정본은
 # PROVENANCE.json(파일별 sha256)과 CQ·shape 전문이다.

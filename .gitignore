@@ -32,6 +32,10 @@ data/external/sdkb/sdkb-abox-patents.ttl
 data/external/sdkb/sdkb-abox-prior-art.ttl
 # B층 확증분할 질의 200 (CR-012 · PLAN-045) — 초록·청구항 원문 포함
 data/external/sdkb/sdkb-abox-b-layer-queries.ttl
+# 파일럿 별도 고정 자산(PLAN-096 D2) — 논증층 TTL 과 상류 검색식 기준값은 커밋하지 않는다.
+# 커밋되는 것은 PROVENANCE.json(해시·버전·품질 상태·파생 규칙)과 IPC 판 대응표뿐이다.
+data/external/sdkb_pilot/sdkb-abox-argument.ttl
+data/external/sdkb_pilot/emulator_parity_upstream.json
 
 # 게이트 리포트 (make cq 가 그래프별로 매번 재생성)
 paper/figures/cq_report*.md

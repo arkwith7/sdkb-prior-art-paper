@@ -138,6 +138,19 @@ vendor:
 	$(MAKE) -C $(SDKB_HOME) owl convert abox abox-patents abox-vendors compliance
 	uv run python -m sdkb_paper.ontology.vendor --sdkb-home $(SDKB_HOME)
 
+.PHONY: vendor-pilot pilot-items pilot-sample pilot-dryrun
+# 파일럿 별도 고정 자산(PLAN-096 D2) — 주 스냅샷과 분리. 사람이 실행할 때만 상류를 읽는다(§0.1).
+vendor-pilot:
+	uv run python -m sdkb_paper.ontology.vendor_pilot --sdkb-home $(SDKB_HOME)
+
+# 파일럿 무과금 단계(PLAN-096 D4 1–2): 심사 이력 집계 정보 · 30질의 표집 · dev 1질의 대역 실행.
+pilot-items:
+	uv run python -m sdkb_paper.ontology.judgment_items
+pilot-sample:
+	uv run python -m sdkb_paper.analysis.agent_pilot sample
+pilot-dryrun: pilot-items pilot-sample
+	uv run python -m sdkb_paper.analysis.agent_pilot dryrun --n 1
+
 # baseline 그래프(graph_v0 = H1 의 "before") 를 스냅샷에서 조립. 결정적 산출물.
 baseline:
 	uv run python -m sdkb_paper.ontology.baseline

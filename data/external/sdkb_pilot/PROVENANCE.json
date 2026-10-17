@@ -1,0 +1,150 @@
+{
+ "_README": "파일럿 별도 고정 자산(PLAN-096 D2). 주 스냅샷 data/external/sdkb/ 와 분리 — 기존 파이프라인은 이 디렉터리를 읽지 않는다. 바뀌어도 §2.1 은 발동하지 않으며, 기존 모듈이 이 디렉터리를 읽게 되면 그때 §2.1 이 다시 적용된다.",
+ "vendored_at": "2026-10-17T13:13:55+00:00",
+ "command": "python -m sdkb_paper.ontology.vendor_pilot --sdkb-home <SDKB_HOME>",
+ "upstream": {
+  "head": "b061c0d194afe39aa9ca4c4da0788b6c0e6b70e2",
+  "branch": "plan006/closeout-handoff",
+  "dirty_paths": 1
+ },
+ "files": {
+  "sdkb-abox-argument.ttl": {
+   "source_path": "ontology/sdkb-abox-argument.ttl",
+   "sha256": "98bd5677dd12e5a7f193df46ffc5e843c6bf95767e774aa7c42bb8a5a2b85b3a",
+   "committed": false,
+   "tracked_upstream": false,
+   "note": "상류에서도 gitignore 된 빌드 산출물 — 상류 워킹트리에서 복사",
+   "generated_by": {
+    "command": "make abox-argument (scripts/build_abox_argument.py)",
+    "script_last_commit": "7ffc994a2ffa8022bb90388ff09ebb1a59274c0e 2026-10-09",
+    "script_sha256": "7ea25de83831f30f20b866090d2e7d90c1dabf457b90b0e7d8987ea69b682466",
+    "input": "의견제출통지서 원문(비공개) — 파일명은 싣지 않는다",
+    "input_digest": {
+     "present": true,
+     "files": 1155,
+     "content_digest": "0262436d829ca7951deae94326b63cae5ad583accc715a59973433f08c8aa428"
+    },
+    "report_sha256": "24955eb1ed15fa422f216b56ffc755e169b55dcdac9d883816cd408f2cfd9fc6"
+   },
+   "counts": {
+    "ExaminerJudgment": 6628,
+    "EvidenceSet": 6628,
+    "EvidenceLink": 3120,
+    "DocumentLocator": 5441,
+    "ExaminationDocument": 929,
+    "refersToJudgment": 140,
+    "categoryVariantOf": 69,
+    "commonKnowledgeSets": 206,
+    "rationale_DesignChoice": 703,
+    "rationale_PredictableEffect": 136,
+    "locator_Paragraph": 3003,
+    "locator_Figure": 2438
+   },
+   "judgments_by_split_upstream": {
+    "dev": 1474,
+    "test": 1490,
+    "train": 3664
+   }
+  },
+  "ipc_concordance.csv": {
+   "source_path": "mappings/ipc_concordance.csv",
+   "sha256": "694d5af6e15fd0e861d6e13aff400ba92d2be6c9f0da6da1f164cd9d5f2d3f21",
+   "last_commit": "7e4cf711e0275620174732a76de16398df8be57e 2026-10-09",
+   "committed": true
+  },
+  "emulator_parity_upstream.json": {
+   "sha256": "9c5393bfb57dfb41ed3b71fa95e64869675553b1386ad7594841514dcfc5eddb",
+   "committed": false,
+   "n_queries": 3156,
+   "logged_size_mismatch": 0,
+   "note": "상류 에뮬레이터를 상류와 같은 조건(자기 문서만 제외 · 마스크 없음 · TI+AB+CL)으로 다시 실행한 결과 집합 해시. 검색식 원문을 담으므로 비커밋"
+  }
+ },
+ "harness_port": {
+  "kipris_emulator.py": {
+   "last_commit": "d3d31fef0e4e05188271a1344a9c9f6193fc7f99 2026-10-09",
+   "sha256": "6a5fa8ffae44164efab1780792215eeaee76b435a0db69c6660b13163d97e79c",
+   "ported_to": "src/sdkb_paper/retrieval/boolean_emulator.py"
+  },
+  "llm_query_agent.py": {
+   "last_commit": "ad54abe9ada82e3b6676d1842f4c8743d9d54a60 2026-10-11",
+   "sha256": "c8536aee821e69bc407c089f3924471ee9c2a98311364ac90fad8a6012f3f28d",
+   "ported_to": "src/sdkb_paper/retrieval/agent_search.py"
+  }
+ },
+ "corpus_sha256": "d856269392bdad5222cf5f87cadade0f66b6c9d842c6205c208845f4fc7be51e",
+ "quality": {
+  "status": "이전 FAIL 산출물(전체 사람 대조 FAIL 보존) — 교정본 아님 · 검증된 부분집합 아님",
+  "human_gate_r6_pass": false,
+  "human_gate_r6_by_kind": {
+   "block": {
+    "judged": 29,
+    "correct": 27,
+    "rate": 0.931,
+    "pass": true,
+    "decidable": true
+   },
+   "DesignChoice": {
+    "judged": 10,
+    "correct": 10,
+    "rate": 1.0,
+    "pass": true,
+    "decidable": true
+   },
+   "PredictableEffect": {
+    "judged": 10,
+    "correct": 10,
+    "rate": 1.0,
+    "pass": true,
+    "decidable": true
+   },
+   "locator": {
+    "judged": 10,
+    "correct": 8,
+    "rate": 0.8,
+    "pass": false,
+    "decidable": true
+   },
+   "refersToJudgment": {
+    "judged": 0,
+    "correct": 0,
+    "rate": null,
+    "pass": false,
+    "decidable": false
+   },
+   "categoryVariantOf": {
+    "judged": 1,
+    "correct": 1,
+    "rate": 1.0,
+    "pass": false,
+    "decidable": false
+   }
+  },
+  "limited_variant": {
+   "sha256": "984e99b959dc9d00ef346df7330cebe5dc3285fc58c60bc1fc3a3dc288c0d635",
+   "note": "좌표·관계를 뺀 별도 산출물 — 상류 리포트가 '검증을 받은 것이 아니다'라고 적는다 · 반입하지 않는다"
+  },
+  "use_scope": "r6 에서 문턱을 넘은 종류(판단 블록 · 설계변경 · 예측가능 효과)와 그 구조 필드만 쓴다. 좌표(locator 0.80 FAIL)와 판단 간 관계(판정 불가)는 쓰지 않는다.",
+  "allowed_predicates": [
+   "judgesClaim",
+   "judgmentScope",
+   "onGround",
+   "hasRationale",
+   "reliesOnCommonKnowledge",
+   "supportedBy",
+   "includesDocument",
+   "assertedIn"
+  ],
+  "excluded_predicates": [
+   "locator",
+   "locatorType",
+   "locatorValue",
+   "partOfJudgment",
+   "inDocument",
+   "refersToJudgment",
+   "categoryVariantOf"
+  ],
+  "free_text": "없음 — 리터럴은 라이선스·출처 표기·위치 값·공지기술 플래그뿐(2026-10-17 길이 계수)"
+ },
+ "derivation_rule": "src/sdkb_paper/ontology/judgment_items.py — PLAN-096 D3 (심사 이력 집계 정보 · train 출원만 · 평가 질의 패밀리 제외 · 문헌 식별자 0 · 언어 분포 제외)"
+}
