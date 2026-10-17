@@ -196,3 +196,20 @@ test · test_b · `test_c` 접근 · 본실험 · 주 스냅샷 변경 · 상류
 | 산출 | 파일럿 보고서(PLAN-094 §4.2 일곱 항 판정 · 비용·지연·실패 분포 · 행동 지표 · 언어 구성 · 민감도 둘) — **효과 크기는 본문에 싣지 않는다** |
 | 하지 않는 것 | test · test_b · test_c 접근 · 본실험 · 프롬프트·지식 항목을 성능을 보고 고치는 것 |
 | 명령 | `python -m sdkb_paper.analysis.agent_pilot run --paid --smoke` → 확인 → `run --paid` → `report` |
+
+### 봉인 접근 조사 (2026-10-17 · 기존 로그·코드만 · 봉인 내용 추가 열람 없음)
+
+**기록은 실제 그대로 보존한다**(사용자 결정). 보존은 이 접근을 소급 승인하는 것이 아니다.
+
+| 질문 | 확인한 것 | 근거 |
+|---|---|---|
+| 접근한 분할·파일 | A층 test 봉인 사본 `data/processed/ir/qrel_test_sealed.parquet`(sha256 `984f8ef3…`) · 층 A · 분할 test · 2026-10-17T13:10:19Z · 당시 HEAD `0a838e1` | 원장 추가 행의 필드 전부 |
+| 발생 명령 | 구현 검증 중의 전체 `pytest`(이 세션 · `make lint` 뒤 `uv run pytest -q`) | 실행 시각과 원장 시각 일치 |
+| 코드 경로 | `tests/test_effort.py:52` 의 **모듈 범위 픽스처** `arm()` → `analysis.effort.load_arm()` → `load_qrel_for_split("test", reason="A층 재판독(split=test · analysis.effort)")` → `open_sealed`(A층은 "막지 않되 기록한다") | 코드 |
+| 왜 격리를 지나쳤나 | `tests/conftest.py` 의 원장 격리는 함수 범위 `monkeypatch` 로 `config.SEAL_ACCESS_LOG` 를 바꾼다. 모듈 범위 픽스처는 그보다 먼저 실행되므로 실제 원장에 기록된다 | 코드 |
+| 읽은 정보와 출력 노출 | 테스트는 질의별 정답 집합을 메모리에 읽고, 출력은 통과/실패와 **집계값 단언**(P1 R@100 0.4849 · B3 0.4315 등 원고에 이미 공표된 값)뿐이다. 질의별 정답은 출력되지 않는다. 실패 시 단언 메시지에 집계값이 나올 수 있다 | `tests/test_effort.py:67–98` · 이번 실행은 전부 통과 |
+| 같은 경로의 이전 기록 | 같은 사유 45행(2026-08-24 ~ 2026-10-17) · **45행 모두 같은 파일 해시** — 봉인 사본은 그동안 바뀌지 않았다 · 같은 현상을 기록한 이전 커밋 `21216c6` · `12e5419` · `d580ecc` | 원장 · git log |
+| 이번 파일럿과의 관련 | 없음 — 파일럿은 dev 만 받고(`agent_pilot.load_gold` 가 다른 분할을 거부) test 분할을 가리키는 코드가 없다(파일럿 모듈 grep 0) | 코드 · 시험 `test_pilot_refuses_confirmatory_splits` |
+| 향후 확증 평가와의 관련 | A층 test 는 이미 공표 개봉된 분할이고 PLAN-094 의 확증은 신규 `test_c` 로 한다(§2.1). 이 접근은 기존 판정을 바꾸지 않는다 — **판정은 손대지 않았다**. 다만 `test_c` 도입 후 같은 구조(모듈 범위 픽스처가 봉인을 여는 시험)가 생기면 그때는 **허가 없이 열리지 않는** B층과 같은 규율이 필요하다 | PLAN-094 §3.5 · `metrics.load_qrel_for_split` |
+| 재발 방지 방법(제안 · 이번에 구현하지 않음) | ① `conftest.py` 의 원장 격리를 **세션 범위**(`pytest.MonkeyPatch.context()`)로 올린다 ② 봉인 분할을 쓰는 시험(`test_effort.py` 의 동결 팔 시험)을 별도 표지(`@pytest.mark.sealed`)로 묶어 기본 실행에서 제외한다 ③ `test_c` 는 B층처럼 `allow=False` 기본 거부. 기존 시험 기반을 바꾸는 §2 변경이므로 O-14 에서 결정한다 | — |
+| 파일럿 실행 경로의 재발 확인 | 유료 호출 전에 dev 대역 실행을 원장 해시 전후 비교로 한 번 더 확인한다 · 유료 실행 동안 전체 `pytest` 를 돌리지 않는다 | 실행 기록(아래) |
