@@ -179,7 +179,7 @@ def test_behavior_indicators_from_log():
 def test_existing_pipeline_does_not_read_pilot_assets():
     """§2.1 적용 범위 고정(PLAN-096 D2): 파일럿 모듈 밖의 하류 코드는 별도 자산을 읽지 않는다."""
     pilot = {"vendor_pilot.py", "judgment_items.py", "agent_search.py", "agent_frozen.py",
-             "boolean_emulator.py", "agent_pilot.py", "config.py"}
+             "boolean_emulator.py", "agent_pilot.py", "config.py", "review_package.py"}
     rx = re.compile(r"EXTERNAL_PILOT|PILOT_ARGUMENT_TTL|PILOT_CONCORDANCE|PILOT_PARITY|sdkb_pilot")
     src = Path(config.ROOT) / "src" / "sdkb_paper"
     offenders = [str(p.relative_to(src)) for p in src.rglob("*.py")
@@ -308,3 +308,31 @@ def test_old_arms_unchanged_against_first_freeze():
         assert F.prompt_sha(a) == frozen["state"]["prompt_sha256"][a]
     assert F.prompt_sha("A4r") not in frozen["state"]["prompt_sha256"].values()
     assert "get_examination_history" in [t["name"] for t in F.tools_for("A4r")]
+
+
+def test_variance_components_and_sample_size_on_synthetic():
+    per = []
+    for i in range(30):
+        per += [{"q": f"q{i}", "arm": "X", "rep": 0, "recall_doc": 0.5 + (0.1 if i % 2 else -0.1)},
+                {"q": f"q{i}", "arm": "Y", "rep": 0, "recall_doc": 0.5}]
+    for i in range(5):
+        for r in (1, 2):
+            per += [{"q": f"q{i}", "arm": "X", "rep": r, "recall_doc": per[2 * i]["recall_doc"]},
+                    {"q": f"q{i}", "arm": "Y", "rep": r, "recall_doc": 0.5}]
+    c = P.variance_components(per, "X", "Y", n_boot=50)
+    assert c["within_x"] == pytest.approx(0, abs=1e-12) and c["within_y"] == pytest.approx(0, abs=1e-12)
+    assert c["between_diff"] > 0
+    t = P.sample_size_table(c, (0.05,), (1, 2), 0.1, 4)
+    assert t[0]["queries"] == t[1]["queries"]                    # 실행 간 변동 0 이면 반복은 질의 수를 줄이지 않는다
+    assert P.n_required(0.0, 0.04, 1, 0.05) > P.n_required(0.0, 0.04, 4, 0.05)
+
+
+def test_review_candidates_are_structural_and_public_numbers_strip_prefix():
+    from sdkb_paper.ontology import review_package as R
+
+    card = {"scope": "ScopeAddedLimitation", "rationale": ["RationaleDesignChoice"], "common_knowledge": True,
+            "cited": [{"ipc_main_groups": ["H01L21", "H10B69"]}]}
+    c = R.suggestion_candidates(card, {})
+    assert len(c) == 4 and any("H01L21" in x for x in c)
+    assert R._public_number("kr_KR1020090012345A") == "KR1020090012345A"
+    assert R.OUT.is_relative_to(config.PILOT_DIR)                     # 비커밋 디렉터리에만 쓴다

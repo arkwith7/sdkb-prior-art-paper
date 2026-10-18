@@ -191,6 +191,73 @@ def r2_plan(qids: list[str]) -> list[tuple[str, str, int]]:
     return [(q, a, r) for r in range(R2_REPS) for q in qids for a in AF.ARMS_R2]
 
 
+# ── 표본 규모 대안(2차 결정 · 2026-10-18) ──────────────────────────────────────
+Z_A2, Z_B80 = 1.959964, 0.841621          # 양측 α=.05 · 검정력 .8
+Z_A1, Z_B2_80 = 1.644854, 1.281552         # TOST 단측 α=.05 · 검정력 .8(β/2)
+
+
+def variance_components(per: list[dict], x: str, y: str, n_boot: int = 2000, seed: int = SEED) -> dict:
+    """대비 x−y 의 분산 성분 — 회수율(분모 A · 문헌 단위).
+
+    within_x, within_y : 같은 질의를 반복한 실행 간 분산(반복 질의만 · 질의별 표본분산의 평균)
+    between_diff       : 질의 간 **참 차이**의 분산 = Var(첫 실행 차) − (within_x + within_y) · 0 하한
+    paired_r1          : 반복 1회 대응 비교의 질의당 분산 = between_diff + within_x + within_y
+    부트스트랩(질의 재표집)으로 80% 상한도 낸다 — 반복 질의가 적어 성분 추정이 불안정하기 때문이다.
+    """
+    import numpy as np
+
+    def by(arm):
+        d: dict[str, dict[int, float]] = {}
+        for r in per:
+            if r["arm"] == arm and "rep" in r:
+                d.setdefault(r["q"], {})[r["rep"]] = r["recall_doc"]
+        return d
+    X, Y = by(x), by(y)
+    rep_q = sorted(q for q in X if len(X[q]) >= 2 and len(Y.get(q, {})) >= 2)
+    first_q = sorted(q for q in X if 0 in X[q] and 0 in Y.get(q, {}))
+
+    def comps(rq, fq):
+        wx = float(np.mean([np.var(list(X[q].values()), ddof=1) for q in rq])) if rq else float("nan")
+        wy = float(np.mean([np.var(list(Y[q].values()), ddof=1) for q in rq])) if rq else float("nan")
+        d0 = np.array([X[q][0] - Y[q][0] for q in fq])
+        vd = float(np.var(d0, ddof=1))
+        return wx, wy, max(0.0, vd - wx - wy), vd, float(d0.mean())
+    wx, wy, bd, vd, mean_d = comps(rep_q, first_q)
+    rng = np.random.default_rng(seed)
+    boots = []
+    for _ in range(n_boot):
+        rq = list(rng.choice(rep_q, len(rep_q))) if rep_q else []
+        fq = list(rng.choice(first_q, len(first_q)))
+        boots.append(comps(rq, fq))
+    b = np.array(boots)
+    up = {k: float(np.nanpercentile(b[:, i], 80)) for i, k in enumerate(("within_x", "within_y", "between_diff"))}
+    return {"contrast": f"{x}-{y}", "n_first_queries": len(first_q), "n_repeat_queries": len(rep_q),
+            "within_x": wx, "within_y": wy, "between_diff": bd, "paired_r1": vd,
+            "upper80": up, "observed_mean_diff_first_run": mean_d}
+
+
+def n_required(between: float, within_sum: float, reps: int, delta: float, test: str = "superiority") -> int:
+    """질의 수 — 질의당 반복 r 회 평균의 대응 차 분산 = between + within_sum / r."""
+    import math
+
+    v = between + within_sum / reps
+    z = (Z_A2 + Z_B80) if test == "superiority" else (Z_A1 + Z_B2_80)
+    return math.ceil(z * z * v / (delta * delta))
+
+
+def sample_size_table(comp: dict, deltas, reps_list, cost_per_run: float, arms_llm: int,
+                      inflate_within: float = 1.0, test: str = "superiority", use_upper: bool = False) -> list[dict]:
+    src = comp["upper80"] if use_upper else comp
+    w = (src["within_x"] * inflate_within) + src["within_y"]
+    rows = []
+    for dlt in deltas:
+        for r in reps_list:
+            n = n_required(src["between_diff"], w, r, dlt, test)
+            rows.append({"delta": dlt, "reps": r, "queries": n, "llm_runs": n * r * arms_llm,
+                         "usd_est": round(n * r * arms_llm * cost_per_run, 1)})
+    return rows
+
+
 # ── 대역 정책(무과금 실자료 시험) ───────────────────────────────────────────
 def scripted_policy(claim: str, arm: str):
     """청구항 낱말로 검색식을 만드는 결정적 대역. **품질을 재지 않는다** — 배선만 본다.
@@ -534,6 +601,7 @@ def main(argv=None) -> int:
     sub.add_parser("report")
     sub.add_parser("freeze")
     sub.add_parser("freeze-r2")
+    sub.add_parser("power", help="표본 규모 대안(파일럿 기록만 · API 0)")
     rr = sub.add_parser("recheck", help="수정 A4 재점검 — 승인 범위 20회 · 추가 USD 5")
     rr.add_argument("--paid", action="store_true")
     dr = sub.add_parser("dryrun-r2", help="수정 A4 무과금 대역 실행(dev 1질의)")
@@ -564,6 +632,50 @@ def main(argv=None) -> int:
                 "state": freeze_state(sample)}
         FREEZE.write_text(json.dumps(body, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
         print(f"✓ 동결 → {FREEZE}")
+        return 0
+    if a.cmd == "power":
+        per = json.loads((config.PILOT_DIR / "report.json").read_text(encoding="utf-8"))["per_query_arm"]
+        runs = _records(RUNS)
+        cost = sum(r["cost_usd"] for r in runs) / len(runs)
+        out = {"note": "파일럿 30질의(첫 실행) + 반복 10질의 × 3회의 제한된 추정 · 50회/팔은 독립 질의 50개가 아니다 · "
+                       "A4 는 지식이 전달되지 않은 기존 A4 — 수정 A4r 의 분산은 같다고 가정하지 않는다",
+               "cost_per_llm_run_usd_ledger": round(cost, 4), "components": {}, "tables": {}}
+        for x, y in (("A4", "A2"), ("A4", "A3"), ("A3", "A2")):
+            c = variance_components(per, x, y)
+            out["components"][c["contrast"]] = c
+        deltas, reps = (0.03, 0.05, 0.10), (1, 2, 3)
+        for key, test, ds in (("A4-A2", "superiority", deltas), ("A4-A3", "equivalence", (0.05, 0.10))):
+            c = out["components"][key]
+            for label, kw in (("point", {}), ("upper80", {"use_upper": True}),
+                              ("point_within_x1.5", {"inflate_within": 1.5})):
+                out["tables"][f"{key}:{test}:{label}"] = sample_size_table(c, ds, reps, cost, 4, test=test, **kw)
+        # 수정 A4r 의 실행 간 분산 — 기존 A4 와 같다고 가정하지 않는다. 세 시나리오(재점검 추정 · 기존 A4 · 기존 A4 ×1.5)로 범위를 낸다.
+        import numpy as np
+
+        gold_ = load_gold()
+        r2 = _records(RUNS_R2) if RUNS_R2.exists() else []
+        by: dict[str, list[float]] = {}
+        for r in r2:
+            if r["arm"] == "A4r":
+                by.setdefault(r["q"], []).append(recall(set(r["union"]), gold_[r["q"]]))
+        w_r2 = float(np.mean([np.var(v, ddof=1) for v in by.values() if len(v) >= 2])) if by else float("nan")
+        c = out["components"]["A4-A2"]
+        out["a4r_within_scenarios"] = {"r2_estimate(5q×2)": w_r2, "pilot_A4(10q×3)": c["within_x"],
+                                       "pilot_A4×1.5": 1.5 * c["within_x"]}
+        out["tables_a4r"] = {}
+        for name, wx in out["a4r_within_scenarios"].items():
+            for blabel, bd in (("between_point", c["between_diff"]), ("between_upper80", c["upper80"]["between_diff"])):
+                comp = {"within_x": wx, "within_y": c["within_y"], "between_diff": bd, "upper80": c["upper80"]}
+                out["tables_a4r"][f"A4r-A2:{name}:{blabel}"] = sample_size_table(comp, deltas, reps, cost, 4)
+        (config.PILOT_DIR / "power.json").write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n",
+                                                     encoding="utf-8")
+        for k, t in out["tables_a4r"].items():
+            print(k, [(r["delta"], r["reps"], r["queries"], r["usd_est"]) for r in t])
+        for k, c in out["components"].items():
+            print(k, {kk: (round(v, 4) if isinstance(v, float) else v) for kk, v in c.items() if kk != "upper80"},
+                  "upper80", {kk: round(v, 4) for kk, v in c["upper80"].items()})
+        for k, t in out["tables"].items():
+            print(k, [(r["delta"], r["reps"], r["queries"], r["usd_est"]) for r in t])
         return 0
     if a.cmd in ("freeze-r2", "recheck", "dryrun-r2"):
         from ..retrieval import agent_frozen as AF
