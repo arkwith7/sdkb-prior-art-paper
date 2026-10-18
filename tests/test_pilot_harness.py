@@ -230,3 +230,81 @@ def test_flat_error_charge_counts_toward_cap(tmp_path):
     g = S.CostGuard(tmp_path / "l.jsonl", cap=1.0, reserve=0.0)
     g.add_flat(0.5, "t", "exception X")
     assert abs(S.CostGuard(tmp_path / "l.jsonl", cap=1.0).spent - 0.5) < 1e-9
+
+
+# ── 수정 A4(2차 결정 · 2026-10-18) ───────────────────────────────────────────
+def _view():
+    items = {"process:etch": {"element_type": "process:etch", "applications": 7,
+                              "cited_ipc_main_groups": [{"ipc": "H01L21", "share": 0.9}]},
+             "material:dielectric": {"element_type": "material:dielectric", "applications": 9,
+                                     "cited_ipc_main_groups": [{"ipc": "C23C16", "share": 0.5}]}}
+    return items, KnowledgeView(items, {"process:etch", "material:dielectric"})
+
+
+def test_a4r_mandatory_lookup_happens_before_first_search(search):
+    items, v = _view()
+    seen = {}
+
+    def policy(turn, messages):
+        if turn == 0:
+            seen["first_request"] = [m["role"] for m in messages]
+            return [("count_results", {"query": "식각"})]
+        return []
+    sess = S.Session(search, "q0", knowledge=v)
+    S.run_one(S.ScriptedClient(policy), "A4r", "c", "a", sess, S.CostGuard(None, cap=1e9), tag="t")
+    assert seen["first_request"] == ["user", "assistant", "user"]           # 의무 조회 왕복이 첫 요청에 있다
+    assert sess.log[0]["tool"] == "get_examination_history" and sess.log[0]["mandatory"] is True
+    assert sess.log[1]["tool"] == "count_results" and sess.knowledge_calls == 0   # 의무 조회는 상한에 안 든다
+    d = P.delivery({"arm": "A4r", "log": sess.log, "knowledge_items_visible": sorted(v.items)}, items)
+    assert d["delivered"] and d["first_lookup_before_search"] and d["n_items_visible"] == 2
+
+
+def test_a3_block_equals_a4r_first_lookup():
+    _, v = _view()
+    block = [json.loads(line) for line in v.block_text().splitlines()]
+    first = v.all_items()["element_types"]
+    strip = lambda xs: sorted(json.dumps({k: x[k] for k in x if k != "label"}, sort_keys=True) for x in xs)  # noqa: E731
+    assert strip(block) == strip(first)
+
+
+def test_empty_lookup_is_not_a_delivery(search):
+    v = KnowledgeView({}, {"process:etch"})
+    sess = S.Session(search, "q0", knowledge=v)
+    out = json.loads(sess.tool("get_examination_history", {"_mandatory": True}))
+    assert out["element_types"] == []
+    d = P.delivery({"arm": "A4r", "log": sess.log, "knowledge_items_visible": []}, {})
+    assert d["has_items"] is False and d["delivered"] is False
+    d3 = P.delivery({"arm": "A3", "log": [], "knowledge_items_visible": [], "knowledge_block_chars": 0}, {})
+    assert d3["delivered"] is False
+
+
+def test_reflection_trace_counts_item_ipc_and_terms():
+    items, v = _view()
+    log = [{"tool": "count_results", "query": "etch*플라즈마", "ipc": ["H01L21/3065"], "size": 3}]
+    d = P.delivery({"arm": "A3", "log": log, "knowledge_items_visible": sorted(v.items),
+                    "knowledge_block_chars": 10}, items)
+    assert (d["searches_using_item_ipc"], d["searches_using_item_term"]) == (1, 1)
+
+
+def test_multiguard_writes_both_ledgers_and_respects_extra_cap(tmp_path):
+    g = S.MultiGuard(S.CostGuard(tmp_path / "all.jsonl", cap=30.0, reserve=0.5),
+                     S.CostGuard(tmp_path / "r2.jsonl", cap=1.0, reserve=0.5))
+    g.add({"input_tokens": 120_000, "output_tokens": 0}, "x")              # 0.48 × 1.25 = 0.6
+    assert not g.can_start() and g.guards[0].can_start()
+    assert S.CostGuard(tmp_path / "all.jsonl").spent == S.CostGuard(tmp_path / "r2.jsonl").spent
+
+
+def test_r2_selection_and_plan():
+    sample = [f"q{i:02d}" for i in range(30)]
+    a, b = P.r2_queries(sample), P.r2_queries(list(reversed(sample)))
+    assert a == b and len(a) == 5
+    assert len(P.r2_plan(a)) == 20 and {x[1] for x in P.r2_plan(a)} == {"A3", "A4r"}
+
+
+def test_old_arms_unchanged_against_first_freeze():
+    """기존 A1–A4 정의는 바꾸지 않았다 — 1차 동결의 프롬프트 sha 와 같다."""
+    frozen = json.loads((Path(config.ROOT) / "01.code_spec/plans/PLAN-096-freeze.json").read_text(encoding="utf-8"))
+    for a in F.ARMS:
+        assert F.prompt_sha(a) == frozen["state"]["prompt_sha256"][a]
+    assert F.prompt_sha("A4r") not in frozen["state"]["prompt_sha256"].values()
+    assert "get_examination_history" in [t["name"] for t in F.tools_for("A4r")]

@@ -175,6 +175,10 @@ class KnowledgeView:
         return "\n".join(json.dumps({"label": LABEL, **v}, ensure_ascii=False, sort_keys=True)
                          for v in self.items.values())
 
+    def all_items(self) -> dict:
+        """수정 A4 의 의무 최초 조회 응답 — A3 블록과 같은 항목 전부(빈 목록이면 항목 0)."""
+        return {"label": LABEL, "element_types": [dict(v) for v in self.items.values()]}
+
     def content_set(self) -> set[str]:
         return {json.dumps(v, sort_keys=True, ensure_ascii=False) for v in self.items.values()}
 

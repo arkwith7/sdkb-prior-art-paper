@@ -26,6 +26,9 @@ KNOWLEDGE_CALLS = 6                             # A4 지식 도구 합계
 BUDGET = 200                                    # 검토 문헌 수 상한
 FIELDS = ("AB", "CL")                           # PLAN-094 §2.4.4 ④ — 다섯 팔 공통(제목 제외)
 ARMS = ("A1", "A2", "A3", "A4")
+# 수정 A4(2026-10-18 · 사용자 결정) — 기존 A4 와 기록이 섞이지 않게 이름을 따로 둔다. 기존 A4 정의는 바꾸지 않는다.
+ARMS_R2 = ("A3", "A4r")
+MANDATORY_TOOL_ID = "toolu_harness_k0"            # 하네스가 실행한 의무 조회의 tool_use id
 
 # ── 단가(USD / 1M 토큰) · 비용 상한 ───────────────────────────────────────────
 # Anthropic 직접 API 요율(claude-api 참고 자료 · 2026-10-06 기준 표). **Bedrock 요율은 별도 고지되며
@@ -83,6 +86,12 @@ the share of novelty vs inventive-step grounds, whole-claim vs added-limitation 
 predictable-effect rationale or common general knowledge was relied on, and the IPC main groups of the documents examiners cited.
 It is a statistical summary, not a rule. Use it only if it helps plan your searches."""
 
+KNOWLEDGE_TOOL_INTRO_R = """
+An examination history tool is available (aggregated from past examiner judgments on OTHER applications; no document identifiers).
+Before your first search the system has already called `get_examination_history` for you; its full result is in the conversation.
+You may call `list_element_types` or `examination_history` for one element type again if useful. It is a statistical summary,
+not a rule. Use it only if it helps plan your searches."""
+
 SEARCH_TOOLS = [
     {"name": "count_results", "description": "Run a query without accepting it. Returns result count, how many are new versus the accepted set, and the remaining budget.",
      "input_schema": {"type": "object", "properties": {
@@ -103,6 +112,11 @@ KNOWLEDGE_TOOLS = [
 ]
 
 
+GET_ALL_TOOL = {"name": "get_examination_history",
+                "description": "Aggregated examination history for every element type found in this idea's claim (same content for every call).",
+                "input_schema": {"type": "object", "properties": {}, "additionalProperties": False}}
+
+
 def system_prompt(arm: str) -> str:
     """팔별 시스템 프롬프트. A3 의 지식 블록은 질의마다 다르므로 user 메시지에 붙는다(system 은 고정)."""
     if arm == "A1":
@@ -111,10 +125,14 @@ def system_prompt(arm: str) -> str:
         return SYSTEM_BASE + "\n" + PLAN_BLOCK
     if arm == "A4":
         return SYSTEM_BASE + "\n" + PLAN_BLOCK + "\n" + KNOWLEDGE_TOOL_INTRO
+    if arm == "A4r":
+        return SYSTEM_BASE + "\n" + PLAN_BLOCK + "\n" + KNOWLEDGE_TOOL_INTRO_R
     raise ValueError(arm)
 
 
 def tools_for(arm: str) -> list[dict]:
+    if arm == "A4r":
+        return SEARCH_TOOLS + [GET_ALL_TOOL] + KNOWLEDGE_TOOLS
     return SEARCH_TOOLS + (KNOWLEDGE_TOOLS if arm == "A4" else [])
 
 

@@ -98,6 +98,29 @@ class CostGuard:
 
 
 # ── 세션 ──────────────────────────────────────────────────────────────────────
+class MultiGuard:
+    """여러 상한을 함께 지킨다(예: 누적 USD 30 + 재점검 추가 USD 5). 비용은 모든 원장에 같은 값으로 적힌다."""
+
+    def __init__(self, *guards: "CostGuard"):
+        self.guards = guards
+
+    spent = property(lambda self: self.guards[0].spent)
+    cap = property(lambda self: self.guards[0].cap)
+    reserve = property(lambda self: self.guards[0].reserve)
+
+    def can_start(self) -> bool:
+        return all(g.can_start() for g in self.guards)
+
+    def exceeded(self) -> bool:
+        return any(g.exceeded() for g in self.guards)
+
+    def add(self, usage: dict, tag: str) -> float:
+        return [g.add(usage, tag) for g in self.guards][0]
+
+    def add_flat(self, usd: float, tag: str, note: str) -> float:
+        return [g.add_flat(usd, tag, note) for g in self.guards][0]
+
+
 @dataclass
 class Session:
     search: EligibleSearch
@@ -151,6 +174,17 @@ class Session:
             if name == "submit":
                 out["accepted"] = accepted
             return json.dumps(out)
+        if self.knowledge is not None and name == "get_examination_history":
+            mandatory = inp.get("_mandatory", False)
+            if not mandatory:
+                if self.knowledge_calls >= F.KNOWLEDGE_CALLS:
+                    self.log.append({"tool": name, "input": {}, "error": "limit"})
+                    return json.dumps({"error": "examination history call limit reached"})
+                self.knowledge_calls += 1
+            out = self.knowledge.all_items()
+            self.log.append({"tool": name, "input": {}, "mandatory": mandatory,
+                             "n_items": len(out["element_types"])})
+            return json.dumps(out, ensure_ascii=False)
         if self.knowledge is None or name not in ("list_element_types", "examination_history"):
             self.log.append({"tool": name, "input": inp, "error": "unknown tool"})
             return json.dumps({"error": f"unknown tool {name}"})
@@ -187,6 +221,13 @@ def run_one(client, arm: str, claim: str, abstract: str, sess: Session, guard: C
             tag: str, knowledge_block: str | None = None) -> dict:
     user = user_message(arm, claim, abstract, knowledge_block)
     messages = [{"role": "user", "content": user}]
+    if arm == "A4r":
+        # 의무 최초 조회 — 하네스가 첫 LLM 호출 전에 실행한다. 모델은 이것을 자기 대화의 도구 왕복으로 본다.
+        messages.append({"role": "assistant", "content": [
+            {"type": "tool_use", "id": F.MANDATORY_TOOL_ID, "name": "get_examination_history", "input": {}}]})
+        messages.append({"role": "user", "content": [
+            {"type": "tool_result", "tool_use_id": F.MANDATORY_TOOL_ID,
+             "content": sess.tool("get_examination_history", {"_mandatory": True})}]})
     usage = {"input_tokens": 0, "output_tokens": 0, "cache_read": 0, "cache_write": 0}
     turns, status, served, cost = [], "ok", None, 0.0
     system = [{"type": "text", "text": F.system_prompt(arm), "cache_control": {"type": "ephemeral"}}]

@@ -30,6 +30,12 @@ N_SAMPLE = 30
 RUNS = config.PILOT_DIR / "runs"
 RUNS_SMOKE = config.PILOT_DIR / "runs_smoke"
 FREEZE = Path(config.ROOT) / "01.code_spec" / "plans" / "PLAN-096-freeze.json"
+FREEZE_R2 = Path(config.ROOT) / "01.code_spec" / "plans" / "PLAN-096-freeze-r2.json"
+RUNS_R2 = config.PILOT_DIR / "runs_r2"
+LEDGER_R2 = config.PILOT_DIR / "cost_ledger_r2.jsonl"
+R2_N_QUERIES = 5
+R2_REPS = 2
+R2_EXTRA_CAP_USD = 5.0
 FATAL = ("PermissionDeniedError", "BadRequestError", "NotFoundError", "AuthenticationError")
 LEDGER = config.PILOT_DIR / "cost_ledger.jsonl"
 _HANGUL = re.compile(r"[가-힣]")
@@ -136,6 +142,55 @@ def language_composition(qid: str, allowed: frozenset[str], gold: set[str], lang
             "known_gold": dict(Counter(lang.get(d, "?") for d in gold))}
 
 
+# ── 지식 전달 지표(2차 결정 · 2026-10-18) ─────────────────────────────────────
+_TOKEN = re.compile(r"[a-z]{3,}")
+
+
+def delivery(rec: dict, items: dict) -> dict:
+    """① 항목 확보 ② 전달 성공(빈 목록은 실패) ③ 검색 행동 반영 흔적 — **추적이지 인과가 아니다**."""
+    vis = [c for c in rec.get("knowledge_items_visible", []) if c in items]
+    has = bool(vis)
+    log = rec.get("log", [])
+    if rec["arm"] == "A3":
+        delivered = has and rec.get("knowledge_block_chars", 0) > 0
+        first_before_search = None
+    else:
+        kcalls = [e for e in log if e.get("tool") in ("get_examination_history", "examination_history",
+                                                         "list_element_types")]
+        delivered = has and any(
+            (e.get("tool") == "get_examination_history" and e.get("n_items", 0) > 0)
+            or (e.get("tool") == "examination_history" and "error" not in e and e.get("ret_chars", 0) > 60)
+            for e in kcalls)
+        first_k = next((i for i, e in enumerate(log) if e in kcalls), None)
+        first_s = next((i for i, e in enumerate(log) if e.get("tool") in ("count_results", "submit")), None)
+        first_before_search = first_k is not None and (first_s is None or first_k < first_s)
+    ipcs = {x["ipc"] for c in vis for x in items[c].get("cited_ipc_main_groups", [])}
+    toks = {t for c in vis for t in _TOKEN.findall(c.split(":", 1)[-1].lower().replace("_", " "))}
+    searches = [e for e in log if e.get("tool") in ("count_results", "submit") and "size" in e]
+    from ..retrieval.boolean_emulator import norm_ipc
+
+    def mg(code):
+        n = norm_ipc(code)
+        return n.split("/", 1)[0] if n else None
+    ipc_hit = sum(1 for e in searches if any(mg(c) in ipcs for c in (e.get("ipc") or [])))
+    term_hit = sum(1 for e in searches if any(t in (e.get("query") or "").lower() for t in toks))
+    return {"has_items": has, "n_items_visible": len(vis), "delivered": delivered,
+            "first_lookup_before_search": first_before_search,
+            "searches": len(searches), "searches_using_item_ipc": ipc_hit,
+            "searches_using_item_term": term_hit}
+
+
+def r2_queries(sample: list[str]) -> list[str]:
+    """재점검 질의 선정 규칙(결과 전 고정) — 표집 30 의 해시 순 첫 5개. 성능·항목 유무를 보지 않는다."""
+    return sorted(sorted(sample, key=lambda q: hashlib.sha256(f"r2:{SEED}:{q}".encode()).hexdigest())[:R2_N_QUERIES])
+
+
+def r2_plan(qids: list[str]) -> list[tuple[str, str, int]]:
+    from ..retrieval import agent_frozen as AF
+
+    return [(q, a, r) for r in range(R2_REPS) for q in qids for a in AF.ARMS_R2]
+
+
 # ── 대역 정책(무과금 실자료 시험) ───────────────────────────────────────────
 def scripted_policy(claim: str, arm: str):
     """청구항 낱말로 검색식을 만드는 결정적 대역. **품질을 재지 않는다** — 배선만 본다.
@@ -217,7 +272,7 @@ def run_arms(qids: list[str], arms: list[str], client_for, ctx, guard, out_dir: 
         for arm in arms:
             if not guard.can_start():
                 raise SystemExit(f"비용 상한: 누적 ${guard.spent:.2f} + 여유 ${guard.reserve:.2f} > ${guard.cap:.2f}")
-            sess = Session(ctx["search"], q, knowledge=view if arm == "A4" else None)
+            sess = Session(ctx["search"], q, knowledge=view if arm in ("A4", "A4r") else None)
             t0 = time.perf_counter()
             try:
                 meta = run_one(client_for(q, arm), arm, ctx["claim"].get(q) or "", ctx["abstract"].get(q) or "",
@@ -444,7 +499,7 @@ def freeze_state(sample: list[str]) -> dict:
         "cost_cap_usd": AF.COST_CAP_USD, "run_reserve_usd": AF.RUN_RESERVE_USD,
         "error_charge_usd": AF.ERROR_CHARGE_USD, "failure_rate_stop": AF.FAILURE_RATE_STOP,
         "failure_min_runs": AF.FAILURE_MIN_RUNS, "leak_hits_stop": AF.LEAK_HITS_STOP,
-        "prompt_sha256": {a: AF.prompt_sha(a) for a in AF.ARMS},
+        "prompt_sha256": {a: AF.prompt_sha(a) for a in AF.ARMS + ("A4r",)},
         "code_sha256": {c: sha256_file(src / c) for c in code},
         "corpus_sha256": sha256_file(config.IR_CORPUS), "family_map_sha256": sha256_file(config.IR_FAMILY_MAP),
         "split_sha256": sha256_file(config.IR_SPLIT),
@@ -458,9 +513,9 @@ def freeze_state(sample: list[str]) -> dict:
     }
 
 
-def verify_freeze(sample: list[str]) -> None:
-    want = json.loads(FREEZE.read_text(encoding="utf-8"))["state"]
-    have = freeze_state(sample)
+def verify_freeze(sample: list[str], path: Path = FREEZE, extra: dict | None = None) -> None:
+    want = json.loads(Path(path).read_text(encoding="utf-8"))["state"]
+    have = {**freeze_state(sample), **(extra or {})}
     diff = sorted(k for k in want if want[k] != have.get(k))
     if diff:
         raise SystemExit(f"ERROR: 동결과 다르다 — {diff}")
@@ -478,6 +533,11 @@ def main(argv=None) -> int:
     r.add_argument("--smoke", action="store_true", help="연기 시험(첫 질의 × 4팔 × 1회)")
     sub.add_parser("report")
     sub.add_parser("freeze")
+    sub.add_parser("freeze-r2")
+    rr = sub.add_parser("recheck", help="수정 A4 재점검 — 승인 범위 20회 · 추가 USD 5")
+    rr.add_argument("--paid", action="store_true")
+    dr = sub.add_parser("dryrun-r2", help="수정 A4 무과금 대역 실행(dev 1질의)")
+    dr.add_argument("--n", type=int, default=1)
     a = ap.parse_args(argv)
 
     gold = load_gold()
@@ -504,6 +564,45 @@ def main(argv=None) -> int:
                 "state": freeze_state(sample)}
         FREEZE.write_text(json.dumps(body, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
         print(f"✓ 동결 → {FREEZE}")
+        return 0
+    if a.cmd in ("freeze-r2", "recheck", "dryrun-r2"):
+        from ..retrieval import agent_frozen as AF
+        from ..retrieval.agent_search import CostGuard, MultiGuard, ScriptedClient, make_client
+
+        sample = json.loads((config.PILOT_DIR / "sample.json").read_text(encoding="utf-8"))["qids"]
+        qids = r2_queries(sample)
+        extra = {"recheck_qids": qids, "recheck_arms": list(AF.ARMS_R2), "recheck_reps": R2_REPS,
+                 "recheck_extra_cap_usd": R2_EXTRA_CAP_USD}
+        if a.cmd == "freeze-r2":
+            body = {"_README": "PLAN-096 수정 A4 재점검 동결(사용자 승인 2026-10-18 · 최대 20회 · 추가 USD 5 · 누적 USD 30). "
+                               "기존 동결 PLAN-096-freeze.json 은 그대로 보존한다.",
+                    "state": {**freeze_state(sample), **extra}}
+            FREEZE_R2.write_text(json.dumps(body, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+            print(f"✓ 동결 r2 → {FREEZE_R2} · 질의 {qids}")
+            return 0
+        ctx = _setup()
+        if a.cmd == "dryrun-r2":
+            guard = CostGuard(config.PILOT_DIR / "dryrun" / "cost_ledger_scripted_r2.jsonl")
+            out = config.PILOT_DIR / "dryrun" / "runs_r2"
+            for p in out.glob("*.jsonl"):
+                p.unlink()
+            rows = run_arms(sample[: a.n], list(AF.ARMS_R2),
+                            lambda q, arm: ScriptedClient(scripted_policy(ctx["claim"].get(q), "A2")),
+                            ctx, guard, out)
+        else:
+            verify_freeze(sample, FREEZE_R2, extra)
+            client = make_client(paid=a.paid)
+            guard = MultiGuard(CostGuard(LEDGER), CostGuard(LEDGER_R2, cap=R2_EXTRA_CAP_USD))
+            try:
+                execute(r2_plan(qids), lambda q, arm: client, ctx, guard, RUNS_R2)
+            except StopRun as e:
+                print(f"■ 중단: {e}")
+            rows = _records(RUNS_R2)
+        for r in rows:
+            d = delivery(r, ctx["items"])
+            print(r["q"], r["arm"], r["rep"], r["status"], "cost", r["cost_usd"], "delivery", d)
+        if a.cmd == "recheck":
+            print(f"누적 원장 ${CostGuard(LEDGER).spent:.2f} · 재점검 원장 ${CostGuard(LEDGER_R2).spent:.2f}")
         return 0
     if a.cmd == "run":
         from ..retrieval.agent_search import CostGuard, make_client
