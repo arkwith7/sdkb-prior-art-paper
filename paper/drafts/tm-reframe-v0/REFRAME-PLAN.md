@@ -108,5 +108,11 @@ PLAN-094 또는 지정된 검증 전에는 **가설·계획 시제**로만 쓴�
 
 ## 7. 복구 경로
 
-현 완성 원고는 `main` 의 `paper/manuscript/stage3_source.md`(`3f8b11c`) 와 `paper/submission/` 이며 이 브랜치에서도
-변경되지 않았다. 재구성안을 버리려면 이 폴더와 PLAN-093·094 를 지우면 된다.
+현 완성 원고는 `paper/manuscript/stage3_source.md`(`3f8b11c` 이후 변경 0)와 `paper/submission/` 이다. **2026-10-18 부터 제안본은
+브랜치가 아니라 `main` 위에서 병치된다**(사용자 결정 — 장기 분기 브랜치를 두지 않는다). 병치는 **파일 단위**로 지킨다 — 정본 원고 ·
+CLAUDE.md · AGENTS.md · `verdicts.yaml` · `episodes.yaml` · CANONICAL-INDEX 는 승격(O-22) 전까지 바뀌지 않는다.
+
+재구성안을 버리려면 다음을 되돌린다: 이 폴더 · `paper/drafts/proposal/` · PLAN-093·094·095·096(+`PLAN-096-freeze.json`) ·
+`01.code_spec/research/` 의 TM·JOURNAL·EXPERT 문서. 파일럿 코드(`retrieval/agent_*.py` · `boolean_emulator.py` · `ontology/judgment_items.py` ·
+`vendor_pilot.py` · `analysis/agent_pilot.py` · 시험 둘)는 기존 파이프라인이 읽지 않으므로(시험 `test_existing_pipeline_does_not_read_pilot_assets`)
+지워도 기존 판정에 영향이 없다.

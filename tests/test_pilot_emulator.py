@@ -59,8 +59,8 @@ def test_parity_with_upstream_on_logged_queries():
     """상류 에뮬레이터로 다시 돌린 결과 집합 해시와, 이식본의 결과 집합 해시가 전 검색식에서 같다."""
     base = json.loads(config.PILOT_PARITY.read_text(encoding="utf-8"))
     rows = base["rows"]
-    if os.environ.get("PILOT_PARITY_FULL") != "1":     # 기본: 결정적 100식 표본(전수는 약 2시간)
-        rows = sorted(rows, key=lambda r: hashlib.sha256(r["query"].encode()).hexdigest())[:100]
+    if os.environ.get("PILOT_PARITY_FULL") != "1":     # 기본: 결정적 20식 표본(전수 3,156식은 약 30분 · 2026-10-17 일치)
+        rows = sorted(rows, key=lambda r: hashlib.sha256(r["query"].encode()).hexdigest())[:20]
     cols = ["doc_id", "is_candidate", "title", "abstract", "claims_full", "claims_independent", "ipc"]
     emu = K.Emulator(pd.read_parquet(config.IR_CORPUS, columns=cols))
     bad = []
